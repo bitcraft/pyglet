@@ -1,0 +1,395 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Keeping track of time &mdash; pyglet v1.2alpha1</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+  
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="top" title="pyglet v1.2alpha1" href="../index.html"/>
+        <link rel="up" title="pyglet Programming Guide" href="index.html"/>
+        <link rel="next" title="Displaying text" href="text.html"/>
+        <link rel="prev" title="Working with other input devices" href="input.html"/> 
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-nav-search">
+        <a href="../index.html" class="fa fa-home"> pyglet</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        
+        
+            <ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Chapters</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html">Writing a pyglet application</a></li>
+<li class="toctree-l2"><a class="reference internal" href="context.html">Creating an OpenGL context</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gl.html">The OpenGL interface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graphics.html">Graphics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="windowing.html">Windowing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="eventloop.html">The application event loop</a></li>
+<li class="toctree-l2"><a class="reference internal" href="events.html">The pyglet event framework</a></li>
+<li class="toctree-l2"><a class="reference internal" href="keyboard.html">Working with the keyboard</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mouse.html">Working with the mouse</a></li>
+<li class="toctree-l2"><a class="reference internal" href="input.html">Working with other input devices</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="">Keeping track of time</a></li>
+<li class="toctree-l2"><a class="reference internal" href="text.html">Displaying text</a></li>
+<li class="toctree-l2"><a class="reference internal" href="image.html">Images</a></li>
+<li class="toctree-l2"><a class="reference internal" href="media.html">Sound and video</a></li>
+<li class="toctree-l2"><a class="reference internal" href="resources.html">Application resources</a></li>
+<li class="toctree-l2"><a class="reference internal" href="debug.html">Debugging tools</a></li>
+<li class="toctree-l2"><a class="reference internal" href="features1.1.html">Appendix: Migrating to pyglet 1.1</a></li>
+</ul>
+</li>
+</ul>
+<ul class="simple">
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../internal/main.html">Importing pyglet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="advanced.html">Advanced topics</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="advanced.html#environment-settings">Environment settings</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../internal/gl.html">OpenGL Interface Implementation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../internal/gl.html#ctypes-linkage">ctypes linkage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../internal/gl.html#missing-extensions">Missing extensions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../internal/generated.html">ctypes Wrapper Generation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../internal/generated.html#generating-gl-wrappers">Generating GL wrappers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../internal/generated.html#generated-gl-wrappers">Generated GL wrappers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../internal/generated.html#generating-xlib-wrappers">Generating Xlib wrappers</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../internal/wraptypes.html">wraptypes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../internal/wraptypes.html#parser-modifications">Parser Modifications</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../internal/wraptypes.html#preprocessor">Preprocessor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../internal/wraptypes.html#cparser">CParser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../internal/wraptypes.html#ctypesparser">CtypesParser</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../internal/dist.html">Making a pyglet release</a></li>
+<li class="toctree-l1"><a class="reference internal" href="distribution.html">Distribution</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="distribution.html#self-contained-executables">Self-contained executables</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../internal/doc.html">Documentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../internal/doc.html#writing-documentation">Writing documentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../internal/doc.html#generation">Generation</a></li>
+</ul>
+</li>
+</ul>
+<ul class="simple">
+</ul>
+
+        
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../index.html">pyglet</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="index.html">pyglet Programming Guide</a> &raquo;</li>
+      
+    <li>Keeping track of time</li>
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            
+  <div class="section" id="keeping-track-of-time">
+<h1>Keeping track of time<a class="headerlink" href="#keeping-track-of-time" title="Permalink to this headline">¶</a></h1>
+<p>pyglet&#8217;s <cite>clock</cite> module provides functionality for scheduling functions for
+periodic or one-shot future execution and for calculating and displaying
+the application frame rate.</p>
+<div class="contents local topic" id="contents">
+<ul class="simple">
+<li><a class="reference internal" href="#calling-functions-periodically" id="id1">Calling functions periodically</a></li>
+<li><a class="reference internal" href="#animation-techniques" id="id2">Animation techniques</a></li>
+<li><a class="reference internal" href="#the-frame-rate" id="id3">The frame rate</a><ul>
+<li><a class="reference internal" href="#displaying-the-frame-rate" id="id4">Displaying the frame rate</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#user-defined-clocks" id="id5">User-defined clocks</a></li>
+</ul>
+</div>
+<div class="section" id="calling-functions-periodically">
+<h2><a class="toc-backref" href="#id1">Calling functions periodically</a><a class="headerlink" href="#calling-functions-periodically" title="Permalink to this headline">¶</a></h2>
+<p>pyglet applications begin execution with:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">pyglet</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Once called, this function doesn&#8217;t return until the application windows have
+been closed.  This may leave you wondering how to execute code while the
+application is running.</p>
+<p>Typical applications need to execute code in only three circumstances:</p>
+<ul class="simple">
+<li>A user input event (such as a mouse movement or key press) has been
+generated.  In this case the appropriate code can be attached as an
+event handler to the window.</li>
+<li>An animation or other time-dependent system needs to update the position
+or parameters of an object.  We&#8217;ll call this a &#8220;periodic&#8221; event.</li>
+<li>A certain amount of time has passed, perhaps indicating that an
+operation has timed out, or that a dialog can be automatically dismissed.
+We&#8217;ll call this a &#8220;one-shot&#8221; event.</li>
+</ul>
+<p>To have a function called periodically, for example, once every 0.1 seconds:</p>
+<div class="highlight-python"><div class="highlight"><pre>def update(dt):
+    # ...
+pyglet.clock.schedule_interval(update, 0.1)
+</pre></div>
+</div>
+<p>The <cite>dt</cite> parameter gives the number of seconds (due to latency, load and timer
+inprecision, this might be slightly more or less than the requested interval).</p>
+<p>Scheduling functions with a set interval is ideal for animation, physics
+simulation, and game state updates.  pyglet ensures that the application does
+not consume more resources than necessary to execute the scheduled functions
+in time.</p>
+<p>Rather than &#8220;limiting the frame rate&#8221;, as required in other toolkits, simply
+schedule all your update functions for no less than the minimum period your
+application or game requires.  For example, most games need not run at more
+than 60Hz (60 times a second) for imperceptibly smooth animation, so the
+interval given to <cite>schedule_interval</cite> would be <tt class="docutils literal"><span class="pre">1/60.0</span></tt> (or more).</p>
+<p>If you are writing a benchmarking program or otherwise wish to simply run at
+the highest possible frequency, use <cite>schedule</cite>:</p>
+<div class="highlight-python"><div class="highlight"><pre>def update(dt):
+    # ...
+pyglet.clock.schedule(update)
+</pre></div>
+</div>
+<p>By default pyglet window buffer swaps are synchronised to the display refresh
+rate, so you may also want to disable <cite>set_vsync</cite>.</p>
+<p>For one-shot events, use <cite>schedule_once</cite>:</p>
+<div class="highlight-python"><div class="highlight"><pre>def dismiss_dialog(dt):
+    # ...
+
+# Dismiss the dialog after 5 seconds.
+pyglet.clock.schedule_once(dismiss_dialog, 5.0)
+</pre></div>
+</div>
+<p>To stop a scheduled function from being called, including cancelling a
+periodic function, use <cite>pyglet.clock.unschedule</cite>.</p>
+</div>
+<div class="section" id="animation-techniques">
+<h2><a class="toc-backref" href="#id2">Animation techniques</a><a class="headerlink" href="#animation-techniques" title="Permalink to this headline">¶</a></h2>
+<p>Every scheduled function takes a <cite>dt</cite> parameter, giving the actual &#8220;wall
+clock&#8221; time that passed since the previous invocation (or the time the
+function was scheduled, if it&#8217;s the first period).  This parameter can be
+used for numerical integration.</p>
+<p>For example, a non-accelerating particle with velocity <tt class="docutils literal"><span class="pre">v</span></tt> will travel
+some distance over a change in time <tt class="docutils literal"><span class="pre">dt</span></tt>.  This distance is calculated as
+<tt class="docutils literal"><span class="pre">v</span> <span class="pre">*</span> <span class="pre">dt</span></tt>.  Similarly, a particle under constant acceleration <tt class="docutils literal"><span class="pre">a</span></tt> will have
+a change in velocity of <tt class="docutils literal"><span class="pre">a</span> <span class="pre">*</span> <span class="pre">dt</span></tt>.</p>
+<p>The following example demonstrates a simple way to move a sprite across the
+screen at exactly 10 pixels per second:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">sprite</span> <span class="o">=</span> <span class="n">pyglet</span><span class="o">.</span><span class="n">sprite</span><span class="o">.</span><span class="n">Sprite</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
+<span class="n">sprite</span><span class="o">.</span><span class="n">dx</span> <span class="o">=</span> <span class="mf">10.0</span>
+
+<span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="n">dt</span><span class="p">):</span>
+    <span class="n">sprite</span><span class="o">.</span><span class="n">x</span> <span class="o">+=</span> <span class="n">sprite</span><span class="o">.</span><span class="n">dx</span> <span class="o">*</span> <span class="n">dt</span>
+<span class="n">pyglet</span><span class="o">.</span><span class="n">clock</span><span class="o">.</span><span class="n">schedule_interval</span><span class="p">(</span><span class="n">update</span><span class="p">,</span> <span class="mi">1</span><span class="o">/</span><span class="mf">60.0</span><span class="p">)</span> <span class="c"># update at 60Hz</span>
+</pre></div>
+</div>
+<p>This is a robust technique for simple animation, as the velocity will remain
+constant regardless of the speed or load of the computer.</p>
+<p>Some examples of other common animation variables are given in the table
+below.</p>
+<blockquote>
+<div><table border="1" class="docutils">
+<colgroup>
+<col width="33%" />
+<col width="33%" />
+<col width="33%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Animation parameter</th>
+<th class="head">Distance</th>
+<th class="head">Velocity</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>Rotation</td>
+<td>Degrees</td>
+<td>Degrees per second</td>
+</tr>
+<tr class="row-odd"><td>Position</td>
+<td>Pixels</td>
+<td>Pixels per second</td>
+</tr>
+<tr class="row-even"><td>Keyframes</td>
+<td>Frame number</td>
+<td>Frames per second</td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+</div>
+<div class="section" id="the-frame-rate">
+<h2><a class="toc-backref" href="#id3">The frame rate</a><a class="headerlink" href="#the-frame-rate" title="Permalink to this headline">¶</a></h2>
+<p>Game performance is often measured in terms of the number of times the display
+is updated every second; that is, the frames-per-second or FPS.  You can
+determine your application&#8217;s FPS with a single function call:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">pyglet</span><span class="o">.</span><span class="n">clock</span><span class="o">.</span><span class="n">get_fps</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>The value returned is more useful than simply taking the reciprocal of <cite>dt</cite>
+from a period function, as it is averaged over a sliding window of several
+frames.</p>
+<div class="section" id="displaying-the-frame-rate">
+<h3><a class="toc-backref" href="#id4">Displaying the frame rate</a><a class="headerlink" href="#displaying-the-frame-rate" title="Permalink to this headline">¶</a></h3>
+<p>A simple way to profile your application performance is to display the frame
+rate while it is running.  Printing it to the console is not ideal as this
+will have a severe impact on performance.  pyglet provides the <cite>ClockDisplay</cite>
+class for displaying the frame rate with very little effort:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">fps_display</span> <span class="o">=</span> <span class="n">pyglet</span><span class="o">.</span><span class="n">clock</span><span class="o">.</span><span class="n">ClockDisplay</span><span class="p">()</span>
+
+<span class="nd">@window.event</span>
+<span class="k">def</span> <span class="nf">on_draw</span><span class="p">():</span>
+    <span class="n">window</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+    <span class="n">fps_display</span><span class="o">.</span><span class="n">draw</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>By default the frame rate will be drawn in the bottom-right corner of the
+window in a semi-translucent large font.  See the <cite>ClockDisplay</cite> documentation
+for details on how to customise this, or even display another clock value
+(such as the current time) altogether.</p>
+</div>
+</div>
+<div class="section" id="user-defined-clocks">
+<h2><a class="toc-backref" href="#id5">User-defined clocks</a><a class="headerlink" href="#user-defined-clocks" title="Permalink to this headline">¶</a></h2>
+<p>The default clock used by pyglet uses the system clock to determine the time
+(i.e., <tt class="docutils literal"><span class="pre">time.time()</span></tt>).  Separate clocks can be created, however, allowing
+you to use another time source.  This can be useful for implementing a
+separate &#8220;game time&#8221; to the real-world time, or for synchronising to a network
+time source or a sound device.</p>
+<p>Each of the <cite>clock</cite> functions are aliases for the methods on a global instance
+of <cite>clock.Clock</cite>.  You can construct or subclass your own <cite>Clock</cite>, which can
+then maintain its own schedule and framerate calculation.  See the class
+documentation for more details.</p>
+</div>
+</div>
+
+
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="text.html" class="btn btn-neutral float-right" title="Displaying text"/>Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="input.html" class="btn btn-neutral" title="Working with other input devices"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2006-2013, Alex Holkner.
+    </p>
+  </div>
+
+  <a href="https://github.com/snide/sphinx_rtd_theme">Sphinx theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'1.2alpha1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

@@ -1,0 +1,324 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>ctypes Wrapper Generation &mdash; pyglet v1.2alpha1</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+  
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="top" title="pyglet v1.2alpha1" href="../index.html"/>
+        <link rel="next" title="wraptypes" href="wraptypes.html"/>
+        <link rel="prev" title="OpenGL Interface Implementation" href="gl.html"/> 
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-nav-search">
+        <a href="../index.html" class="fa fa-home"> pyglet</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        
+        
+            <ul>
+<li class="toctree-l1"><a class="reference internal" href="../programming_guide/index.html">Chapters</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../programming_guide/installation.html">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_guide/quickstart.html">Writing a pyglet application</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_guide/context.html">Creating an OpenGL context</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_guide/gl.html">The OpenGL interface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_guide/graphics.html">Graphics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_guide/windowing.html">Windowing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_guide/eventloop.html">The application event loop</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_guide/events.html">The pyglet event framework</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_guide/keyboard.html">Working with the keyboard</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_guide/mouse.html">Working with the mouse</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_guide/input.html">Working with other input devices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_guide/time.html">Keeping track of time</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_guide/text.html">Displaying text</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_guide/image.html">Images</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_guide/media.html">Sound and video</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_guide/resources.html">Application resources</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_guide/debug.html">Debugging tools</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_guide/features1.1.html">Appendix: Migrating to pyglet 1.1</a></li>
+</ul>
+</li>
+</ul>
+<ul class="simple">
+</ul>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="main.html">Importing pyglet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../programming_guide/advanced.html">Advanced topics</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../programming_guide/advanced.html#environment-settings">Environment settings</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="gl.html">OpenGL Interface Implementation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="gl.html#ctypes-linkage">ctypes linkage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gl.html#missing-extensions">Missing extensions</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="">ctypes Wrapper Generation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#generating-gl-wrappers">Generating GL wrappers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#generated-gl-wrappers">Generated GL wrappers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#generating-xlib-wrappers">Generating Xlib wrappers</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="wraptypes.html">wraptypes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="wraptypes.html#parser-modifications">Parser Modifications</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wraptypes.html#preprocessor">Preprocessor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wraptypes.html#cparser">CParser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wraptypes.html#ctypesparser">CtypesParser</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="dist.html">Making a pyglet release</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../programming_guide/distribution.html">Distribution</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../programming_guide/distribution.html#self-contained-executables">Self-contained executables</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="doc.html">Documentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="doc.html#writing-documentation">Writing documentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="doc.html#generation">Generation</a></li>
+</ul>
+</li>
+</ul>
+<ul class="simple">
+</ul>
+
+        
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../index.html">pyglet</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../index.html">Docs</a> &raquo;</li>
+      
+    <li>ctypes Wrapper Generation</li>
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            
+  <div class="section" id="ctypes-wrapper-generation">
+<h1>ctypes Wrapper Generation<a class="headerlink" href="#ctypes-wrapper-generation" title="Permalink to this headline">¶</a></h1>
+<p>The following modules in pyglet are entirely (or mostly) generated from one or
+more C header files:</p>
+<ul class="simple">
+<li>pyglet.gl.agl</li>
+<li>pyglet.gl.gl</li>
+<li>pyglet.gl.glext_abi</li>
+<li>pyglet.gl.glext_nv</li>
+<li>pyglet.gl.glu</li>
+<li>pyglet.gl.glx</li>
+<li>pyglet.gl.glxext_abi</li>
+<li>pyglet.gl.glxext_nv</li>
+<li>pyglet.gl.wgl</li>
+<li>pyglet.gl.wglext_abi</li>
+<li>pyglet.gl.wglext_nv</li>
+<li>pyglet.window.xlib.xlib</li>
+<li>pyglet.window.xlib.xinerama</li>
+</ul>
+<p>The wrapping framework is in <tt class="docutils literal"><span class="pre">tools/wraptypes</span></tt>, and pyglet-specialised batch
+scripts are <tt class="docutils literal"><span class="pre">tools/genwrappers.py</span></tt> (generates xlib wrappers) and
+<tt class="docutils literal"><span class="pre">tools/gengl.py</span></tt> (generates gl wrappers).</p>
+<div class="section" id="generating-gl-wrappers">
+<h2>Generating GL wrappers<a class="headerlink" href="#generating-gl-wrappers" title="Permalink to this headline">¶</a></h2>
+<p>This process needs to be followed when the wraptypes is updated, the header
+files are updated (e.g., a new release of the operating system), or the GL
+extensions are updated.  Each file can only be generated a a specific
+platform.</p>
+<p>Before beginning, remove the file <tt class="docutils literal"><span class="pre">tools/.gengl.cache</span></tt> if it exists.  This
+merely caches header files so they don&#8217;t need to be repeatedly downloaded (but
+you&#8217;d prefer to use the most recent uncached copies if you&#8217;re reading this,
+presumably).</p>
+<p>On Linux, generate <tt class="docutils literal"><span class="pre">pyglet.gl.gl</span></tt>, <tt class="docutils literal"><span class="pre">pyglet.gl.glext_abi</span></tt>,
+<tt class="docutils literal"><span class="pre">pyglet.gl.glext_nv</span></tt> and <tt class="docutils literal"><span class="pre">pyglet.gl.glu</span></tt> (the complete user-visible GL
+package):</p>
+<div class="highlight-python"><div class="highlight"><pre>python tools/gengl.py gl glext_abi glext_nv glu
+</pre></div>
+</div>
+<p>The header files for <tt class="docutils literal"><span class="pre">pyglet.gl.gl</span></tt> and <tt class="docutils literal"><span class="pre">pyglet.gl.glu</span></tt> are located in
+<tt class="docutils literal"><span class="pre">/usr/include/GL</span></tt>.  Ensure your Linux distribution has recent versions
+of these files (unfortunately they do not seem to be accessible outside of a
+distribution or OS).</p>
+<p>The header files for <tt class="docutils literal"><span class="pre">pyglet.glext_abi</span></tt> and <tt class="docutils literal"><span class="pre">pyglet.glext_nv</span></tt> are
+downloaded from <a class="reference external" href="http://www.opengl.org">http://www.opengl.org</a> and <a class="reference external" href="http://developer.nvidia.com">http://developer.nvidia.com</a>,
+respectively.</p>
+<p>On Linux still, generate <tt class="docutils literal"><span class="pre">pyglet.gl.glx</span></tt>, <tt class="docutils literal"><span class="pre">pyglet.gl.glxext_abi</span></tt> and
+<tt class="docutils literal"><span class="pre">pyglet.gl.glxext_nv</span></tt>:</p>
+<div class="highlight-python"><div class="highlight"><pre>python tools/gengl.py glx glxext_abi glxext_nv
+</pre></div>
+</div>
+<p>The header file for <tt class="docutils literal"><span class="pre">pyglet.gl.glx</span></tt> is in <tt class="docutils literal"><span class="pre">/usr/include/GL</span></tt>, and
+is expected to depend on X11 header files from <tt class="docutils literal"><span class="pre">/usr/include/X11</span></tt>.
+<tt class="docutils literal"><span class="pre">glext_abi</span></tt> and <tt class="docutils literal"><span class="pre">glext_nv</span></tt> header files are downloaded from the above
+websites.</p>
+<p>On OS X, generate <tt class="docutils literal"><span class="pre">pyglet.gl.agl</span></tt>:</p>
+<div class="highlight-python"><div class="highlight"><pre>python tools/gengl.py agl
+</pre></div>
+</div>
+<p>Watch a movie while you wait &#8211; it uses virtually every header file on the
+system.  Expect to see one syntax error in <tt class="docutils literal"><span class="pre">PictUtils.h</span></tt> line 67, it is
+unimportant.</p>
+<p>On Windows XP, generate <tt class="docutils literal"><span class="pre">pyglet.gl.wgl</span></tt>, <tt class="docutils literal"><span class="pre">pyglet.gl.wglext_abi</span></tt> and
+<tt class="docutils literal"><span class="pre">pyglet.gl.wglext_nv</span></tt>:</p>
+<div class="highlight-python"><div class="highlight"><pre>python tools/gengl.py wgl wglext_abi wglext_nv
+</pre></div>
+</div>
+<p>You do not need to have a development environment installed on Windows.
+<tt class="docutils literal"><span class="pre">pyglet.gl.wgl</span></tt> is generated from <tt class="docutils literal"><span class="pre">tools/wgl.h</span></tt>, which is a hand-coded
+header file containing the prototypes and constants for WGL and its
+dependencies.  In a real development environment you would find these mostly
+in <tt class="docutils literal"><span class="pre">WinGDI.h</span></tt>, but wraptypes is not quite sophisticated enough to parse
+Windows system headers (see below for what needs implementing).  It is
+extremely unlikely this header will ever need to change (excepting a bug fix).</p>
+<p>The headers for <tt class="docutils literal"><span class="pre">pyglet.gl.wglext_abi</span></tt> and <tt class="docutils literal"><span class="pre">pyglet.gl.wglext_nv</span></tt> are
+downloaded from the same websites as for GL and GLX.</p>
+</div>
+<div class="section" id="generated-gl-wrappers">
+<h2>Generated GL wrappers<a class="headerlink" href="#generated-gl-wrappers" title="Permalink to this headline">¶</a></h2>
+<p>Each generated file contains a pair of markers <tt class="docutils literal"><span class="pre">#</span> <span class="pre">BEGIN</span> <span class="pre">GENERATED</span> <span class="pre">CONTENT</span></tt>
+and <tt class="docutils literal"><span class="pre">#</span> <span class="pre">END</span> <span class="pre">GENERATED</span> <span class="pre">CONTENT</span></tt> which are searched for when replacing the
+file.  If either marker is missing or corrupt, the file will not be modified.
+This allows for custom content around the generated content.  Only <tt class="docutils literal"><span class="pre">glx.py</span></tt>
+makes use of this, to include some additional enumerators that are not
+generated by default.</p>
+<p>If a generating process is interrupted (either you get sick of it, or it
+crashes), it will leave a partially-complete file written, which will not
+include both markers.  It is up to you to restore the file or otherwise
+reinsert the markers.</p>
+</div>
+<div class="section" id="generating-xlib-wrappers">
+<h2>Generating Xlib wrappers<a class="headerlink" href="#generating-xlib-wrappers" title="Permalink to this headline">¶</a></h2>
+<p>On Linux with the Xinerama extension installed (doesn&#8217;t have to be in use,
+just available), run:</p>
+<div class="highlight-python"><div class="highlight"><pre>python tools/genwrappers.py
+</pre></div>
+</div>
+<p>This generates <tt class="docutils literal"><span class="pre">pyglet.window.xlib.xlib</span></tt> and
+<tt class="docutils literal"><span class="pre">pyglet.window.xlib.xinerama</span></tt>.</p>
+<p>Note that this process, as well as the generated modules, depend on
+<tt class="docutils literal"><span class="pre">pyglet.gl.glx</span></tt>.  So, you should always run this <cite>after</cite> the above GL
+generation.</p>
+</div>
+</div>
+
+
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="wraptypes.html" class="btn btn-neutral float-right" title="wraptypes"/>Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="gl.html" class="btn btn-neutral" title="OpenGL Interface Implementation"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2006-2013, Alex Holkner.
+    </p>
+  </div>
+
+  <a href="https://github.com/snide/sphinx_rtd_theme">Sphinx theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'1.2alpha1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

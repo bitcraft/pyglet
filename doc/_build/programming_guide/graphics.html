@@ -1,0 +1,803 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Graphics &mdash; pyglet v1.2alpha1</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+  
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="top" title="pyglet v1.2alpha1" href="../index.html"/>
+        <link rel="up" title="pyglet Programming Guide" href="index.html"/>
+        <link rel="next" title="Windowing" href="windowing.html"/>
+        <link rel="prev" title="The OpenGL interface" href="gl.html"/> 
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-nav-search">
+        <a href="../index.html" class="fa fa-home"> pyglet</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        
+        
+            <ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Chapters</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html">Writing a pyglet application</a></li>
+<li class="toctree-l2"><a class="reference internal" href="context.html">Creating an OpenGL context</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gl.html">The OpenGL interface</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="">Graphics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="windowing.html">Windowing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="eventloop.html">The application event loop</a></li>
+<li class="toctree-l2"><a class="reference internal" href="events.html">The pyglet event framework</a></li>
+<li class="toctree-l2"><a class="reference internal" href="keyboard.html">Working with the keyboard</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mouse.html">Working with the mouse</a></li>
+<li class="toctree-l2"><a class="reference internal" href="input.html">Working with other input devices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="time.html">Keeping track of time</a></li>
+<li class="toctree-l2"><a class="reference internal" href="text.html">Displaying text</a></li>
+<li class="toctree-l2"><a class="reference internal" href="image.html">Images</a></li>
+<li class="toctree-l2"><a class="reference internal" href="media.html">Sound and video</a></li>
+<li class="toctree-l2"><a class="reference internal" href="resources.html">Application resources</a></li>
+<li class="toctree-l2"><a class="reference internal" href="debug.html">Debugging tools</a></li>
+<li class="toctree-l2"><a class="reference internal" href="features1.1.html">Appendix: Migrating to pyglet 1.1</a></li>
+</ul>
+</li>
+</ul>
+<ul class="simple">
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../internal/main.html">Importing pyglet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="advanced.html">Advanced topics</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="advanced.html#environment-settings">Environment settings</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../internal/gl.html">OpenGL Interface Implementation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../internal/gl.html#ctypes-linkage">ctypes linkage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../internal/gl.html#missing-extensions">Missing extensions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../internal/generated.html">ctypes Wrapper Generation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../internal/generated.html#generating-gl-wrappers">Generating GL wrappers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../internal/generated.html#generated-gl-wrappers">Generated GL wrappers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../internal/generated.html#generating-xlib-wrappers">Generating Xlib wrappers</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../internal/wraptypes.html">wraptypes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../internal/wraptypes.html#parser-modifications">Parser Modifications</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../internal/wraptypes.html#preprocessor">Preprocessor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../internal/wraptypes.html#cparser">CParser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../internal/wraptypes.html#ctypesparser">CtypesParser</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../internal/dist.html">Making a pyglet release</a></li>
+<li class="toctree-l1"><a class="reference internal" href="distribution.html">Distribution</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="distribution.html#self-contained-executables">Self-contained executables</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../internal/doc.html">Documentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../internal/doc.html#writing-documentation">Writing documentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../internal/doc.html#generation">Generation</a></li>
+</ul>
+</li>
+</ul>
+<ul class="simple">
+</ul>
+
+        
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../index.html">pyglet</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="index.html">pyglet Programming Guide</a> &raquo;</li>
+      
+    <li>Graphics</li>
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            
+  <div class="section" id="graphics">
+<h1>Graphics<a class="headerlink" href="#graphics" title="Permalink to this headline">¶</a></h1>
+<p>At the lowest level, pyglet uses OpenGL to draw in windows.  The OpenGL
+interface is exposed via the <cite>pyglet.gl</cite> module (see <cite>The OpenGL interface</cite>).</p>
+<p>However, using the OpenGL interface directly for drawing graphics is difficult
+and inefficient.  The <cite>pyglet.graphics</cite> module provides a simpler means for
+drawing graphics that uses vertex arrays and vertex buffer objects internally
+to deliver better performance.</p>
+<div class="contents local topic" id="contents">
+<ul class="simple">
+<li><a class="reference internal" href="#drawing-primitives" id="id2">Drawing primitives</a></li>
+<li><a class="reference internal" href="#vertex-attributes" id="id3">Vertex attributes</a></li>
+<li><a class="reference internal" href="#vertex-lists" id="id4">Vertex lists</a><ul>
+<li><a class="reference internal" href="#updating-vertex-data" id="id5">Updating vertex data</a></li>
+<li><a class="reference internal" href="#data-usage" id="id6">Data usage</a></li>
+<li><a class="reference internal" href="#indexed-vertex-lists" id="id7">Indexed vertex lists</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#batched-rendering" id="id8">Batched rendering</a><ul>
+<li><a class="reference internal" href="#setting-the-opengl-state" id="id9">Setting the OpenGL state</a></li>
+<li><a class="reference internal" href="#hierarchical-state" id="id10">Hierarchical state</a></li>
+<li><a class="reference internal" href="#sorting-vertex-lists" id="id11">Sorting vertex lists</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#batches-and-groups-in-other-modules" id="id12">Batches and groups in other modules</a></li>
+</ul>
+</div>
+<div class="section" id="drawing-primitives">
+<h2><a class="toc-backref" href="#id2">Drawing primitives</a><a class="headerlink" href="#drawing-primitives" title="Permalink to this headline">¶</a></h2>
+<p>The <cite>pyglet.graphics</cite> module draws the OpenGL primitive objects by a mode
+denoted by the constants</p>
+<ul class="simple">
+<li><tt class="docutils literal"><span class="pre">pyglet.gl.GL_POINTS</span></tt></li>
+<li><tt class="docutils literal"><span class="pre">pyglet.gl.GL_LINES</span></tt></li>
+<li><tt class="docutils literal"><span class="pre">pyglet.gl.GL_LINE_LOOP</span></tt></li>
+<li><tt class="docutils literal"><span class="pre">pyglet.gl.GL_LINE_STRIP</span></tt></li>
+<li><tt class="docutils literal"><span class="pre">pyglet.gl.GL_TRIANGLES</span></tt></li>
+<li><tt class="docutils literal"><span class="pre">pyglet.gl.GL_TRIANGLE_STRIP</span></tt></li>
+<li><tt class="docutils literal"><span class="pre">pyglet.gl.GL_TRIANGLE_FAN</span></tt></li>
+<li><tt class="docutils literal"><span class="pre">pyglet.gl.GL_QUADS</span></tt></li>
+<li><tt class="docutils literal"><span class="pre">pyglet.gl.GL_QUAD_STRIP</span></tt></li>
+<li><tt class="docutils literal"><span class="pre">pyglet.gl.GL_POLYGON</span></tt></li>
+</ul>
+<p>See the <a class="reference external" href="http://www.glprogramming.com/red/">OpenGL Programming Guide</a> for a description of each of mode.</p>
+<p>Each primitive is made up of one or more vertices.  Each vertex is specified
+with either 2, 3 or 4 components (for 2D, 3D, or non-homogeneous coordinates).
+The data type of each component can be either int or float.</p>
+<p>Use <cite>pyglet.graphics.draw</cite> to draw a primitive.  The following example draws
+two points at coordinates (10, 15) and (30, 35):</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">pyglet</span><span class="o">.</span><span class="n">graphics</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">pyglet</span><span class="o">.</span><span class="n">gl</span><span class="o">.</span><span class="n">GL_POINTS</span><span class="p">,</span>
+    <span class="p">(</span><span class="s">&#39;v2i&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">35</span><span class="p">))</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>The first and second arguments to the function give the number of vertices to
+draw and the primitive mode, respectively.  The third argument is a &#8220;data
+item&#8221;, and gives the actual vertex data.</p>
+<p>Because vertex data can be supplied in several forms, a &#8220;format string&#8221; is
+required.  In this case, the format string is <tt class="docutils literal"><span class="pre">&quot;v2i&quot;</span></tt>, meaning the vertex
+position data has two components (2D) and int type.</p>
+<p>The following example has the same effect as the previous one, but uses
+floating point data and 3 components per vertex:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">pyglet</span><span class="o">.</span><span class="n">graphics</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">pyglet</span><span class="o">.</span><span class="n">gl</span><span class="o">.</span><span class="n">GL_POINTS</span><span class="p">,</span>
+    <span class="p">(</span><span class="s">&#39;v3f&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mf">10.0</span><span class="p">,</span> <span class="mf">15.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">30.0</span><span class="p">,</span> <span class="mf">35.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">))</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>Vertices can also be drawn out of order and more than once by using the
+<cite>pyglet.graphics.draw_indexed</cite> function.  This requires a list of integers
+giving the indices into the vertex data.  The following example draws the same
+two points as above, but indexes the vertices (sequentially):</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">pyglet</span><span class="o">.</span><span class="n">graphics</span><span class="o">.</span><span class="n">draw_indexed</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">pyglet</span><span class="o">.</span><span class="n">gl</span><span class="o">.</span><span class="n">GL_POINTS</span><span class="p">,</span>
+    <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+    <span class="p">(</span><span class="s">&#39;v2i&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">35</span><span class="p">))</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>This second example is more typical; two adjacent triangles are drawn, and the
+shared vertices are reused with indexing:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">pyglet</span><span class="o">.</span><span class="n">graphics</span><span class="o">.</span><span class="n">draw_indexed</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="n">pyglet</span><span class="o">.</span><span class="n">gl</span><span class="o">.</span><span class="n">GL_TRIANGLES</span><span class="p">,</span>
+    <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span>
+    <span class="p">(</span><span class="s">&#39;v2i&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span>
+             <span class="mi">150</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span>
+             <span class="mi">150</span><span class="p">,</span> <span class="mi">150</span><span class="p">,</span>
+             <span class="mi">100</span><span class="p">,</span> <span class="mi">150</span><span class="p">))</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>Note that the first argument gives the number of vertices in the data, not the
+number of indices (which is implicit on the length of the index list given in
+the third argument).</p>
+</div>
+<div class="section" id="vertex-attributes">
+<h2><a class="toc-backref" href="#id3">Vertex attributes</a><a class="headerlink" href="#vertex-attributes" title="Permalink to this headline">¶</a></h2>
+<p>Besides the required vertex position, vertices can have several other numeric
+attributes.  Each is specified in the format string with a letter, the number
+of components and the data type.</p>
+<p>Each of the attributes is described in the table below with the set of valid
+format strings written as a regular expression (for example, <tt class="docutils literal"><span class="pre">&quot;v[234][if]&quot;</span></tt>
+means <tt class="docutils literal"><span class="pre">&quot;v2f&quot;</span></tt>, <tt class="docutils literal"><span class="pre">&quot;v3i&quot;</span></tt>, <tt class="docutils literal"><span class="pre">&quot;v4f&quot;</span></tt>, etc. are all valid formats).</p>
+<p>Some attributes have a &#8220;recommended&#8221; format string, which is the most efficient
+form for the video driver as it requires less conversion.</p>
+<blockquote>
+<div><table border="1" class="docutils">
+<colgroup>
+<col width="33%" />
+<col width="33%" />
+<col width="33%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Attribute</th>
+<th class="head">Formats</th>
+<th class="head">Recommended</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>Vertex position</td>
+<td><tt class="docutils literal"><span class="pre">&quot;v[234][sifd]&quot;</span></tt></td>
+<td><tt class="docutils literal"><span class="pre">&quot;v[234]f&quot;</span></tt></td>
+</tr>
+<tr class="row-odd"><td>Color</td>
+<td><tt class="docutils literal"><span class="pre">&quot;c[34][bBsSiIfd]&quot;</span></tt></td>
+<td><tt class="docutils literal"><span class="pre">&quot;c[34]B&quot;</span></tt></td>
+</tr>
+<tr class="row-even"><td>Edge flag</td>
+<td><tt class="docutils literal"><span class="pre">&quot;e1[bB]&quot;</span></tt></td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>Fog coordinate</td>
+<td><tt class="docutils literal"><span class="pre">&quot;f[1234][bBsSiIfd]&quot;</span></tt></td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>Normal</td>
+<td><tt class="docutils literal"><span class="pre">&quot;n3[bsifd]&quot;</span></tt></td>
+<td><tt class="docutils literal"><span class="pre">&quot;n3f&quot;</span></tt></td>
+</tr>
+<tr class="row-odd"><td>Secondary color</td>
+<td><tt class="docutils literal"><span class="pre">&quot;s[34][bBsSiIfd]&quot;</span></tt></td>
+<td><tt class="docutils literal"><span class="pre">&quot;s[34]B&quot;</span></tt></td>
+</tr>
+<tr class="row-even"><td>Texture coordinate</td>
+<td><tt class="docutils literal"><span class="pre">&quot;[0-31]?t[234][sifd]&quot;</span></tt></td>
+<td><tt class="docutils literal"><span class="pre">&quot;[0-31]?t[234]f&quot;</span></tt></td>
+</tr>
+<tr class="row-odd"><td>Generic attribute</td>
+<td><tt class="docutils literal"><span class="pre">&quot;[0-15]g(n)?[1234][bBsSiIfd]&quot;</span></tt></td>
+<td>&nbsp;</td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+<p>The possible data types that can be specified in the format string are
+described below.</p>
+<blockquote>
+<div><table border="1" class="docutils">
+<colgroup>
+<col width="33%" />
+<col width="33%" />
+<col width="33%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Format</th>
+<th class="head">Type</th>
+<th class="head">Python type</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><tt class="docutils literal"><span class="pre">&quot;b&quot;</span></tt></td>
+<td>Signed byte</td>
+<td>int</td>
+</tr>
+<tr class="row-odd"><td><tt class="docutils literal"><span class="pre">&quot;B&quot;</span></tt></td>
+<td>Unsigned byte</td>
+<td>int</td>
+</tr>
+<tr class="row-even"><td><tt class="docutils literal"><span class="pre">&quot;s&quot;</span></tt></td>
+<td>Signed short</td>
+<td>int</td>
+</tr>
+<tr class="row-odd"><td><tt class="docutils literal"><span class="pre">&quot;S&quot;</span></tt></td>
+<td>Unsigned short</td>
+<td>int</td>
+</tr>
+<tr class="row-even"><td><tt class="docutils literal"><span class="pre">&quot;i&quot;</span></tt></td>
+<td>Signed int</td>
+<td>int</td>
+</tr>
+<tr class="row-odd"><td><tt class="docutils literal"><span class="pre">&quot;I&quot;</span></tt></td>
+<td>Unsigned int</td>
+<td>int</td>
+</tr>
+<tr class="row-even"><td><tt class="docutils literal"><span class="pre">&quot;f&quot;</span></tt></td>
+<td>Single precision float</td>
+<td>float</td>
+</tr>
+<tr class="row-odd"><td><tt class="docutils literal"><span class="pre">&quot;d&quot;</span></tt></td>
+<td>Double precision float</td>
+<td>float</td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+<p>The following attributes are normalised to the range <tt class="docutils literal"><span class="pre">[0,</span> <span class="pre">1]</span></tt>.  The value is
+used as-is if the data type is floating-point.  If the data type is byte,
+short or int, the value is divided by the maximum value representable by that
+type.  For example, unsigned bytes are divided by 255 to get the normalised
+value.</p>
+<ul class="simple">
+<li>Color</li>
+<li>Secondary color</li>
+<li>Generic attributes with the <tt class="docutils literal"><span class="pre">&quot;n&quot;</span></tt> format given.</li>
+</ul>
+<p>Texture coordinate attributes may optionally be preceded by a texture unit
+number.  If unspecified, texture unit 0 (<tt class="docutils literal"><span class="pre">GL_TEXTURE0</span></tt>) is implied.  It is
+the application&#8217;s responsibility to ensure that the OpenGL version is adequate
+and that the specified texture unit is within the maximum allowed by the
+implementation.</p>
+<p>Up to 16 generic attributes can be specified per vertex, and can be used by
+shader programs for any purpose (they are ignored in the fixed-function
+pipeline).  For the other attributes, consult the OpenGL programming guide for
+details on their effects.</p>
+<p>When using the <cite>pyglet.graphics.draw</cite> and related functions, attribute data is
+specified alongside the vertex position data.  The following example
+reproduces the two points from the previous page, except that the first point
+is blue and the second green:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">pyglet</span><span class="o">.</span><span class="n">graphics</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">pyglet</span><span class="o">.</span><span class="n">gl</span><span class="o">.</span><span class="n">GL_POINTS</span><span class="p">,</span>
+    <span class="p">(</span><span class="s">&#39;v2i&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">35</span><span class="p">)),</span>
+    <span class="p">(</span><span class="s">&#39;c3B&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>It is an error to provide more than one set of data for any attribute, or to
+mismatch the size of the initial data with the number of vertices specified in
+the first argument.</p>
+</div>
+<div class="section" id="vertex-lists">
+<h2><a class="toc-backref" href="#id4">Vertex lists</a><a class="headerlink" href="#vertex-lists" title="Permalink to this headline">¶</a></h2>
+<p>There is a significant overhead in using <cite>pyglet.graphics.draw</cite> and
+<cite>pyglet.graphics.draw_indexed</cite> due to pyglet interpreting and formatting
+the vertex data for the video device.  Usually the data drawn in each frame
+(of an animation) is identical or very similar to the previous frame, so
+this overhead is unnecessarily repeated.</p>
+<p>A <cite>VertexList</cite> is a list of vertices and their attributes, stored in
+an efficient manner that&#8217;s suitable for direct upload to the video card.
+On newer video cards (supporting OpenGL 1.5 or later) the data is actually
+stored in video memory.</p>
+<p>Create a <cite>VertexList</cite> for a set of attributes and initial data with
+<cite>pyglet.graphics.vertex_list</cite>.  The following example creates a vertex
+list with the two coloured points used in the previous page:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">vertex_list</span> <span class="o">=</span> <span class="n">pyglet</span><span class="o">.</span><span class="n">graphics</span><span class="o">.</span><span class="n">vertex_list</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span>
+    <span class="p">(</span><span class="s">&#39;v2i&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">35</span><span class="p">)),</span>
+    <span class="p">(</span><span class="s">&#39;c3B&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>To draw the vertex list, call its <cite>VertexList.draw</cite> method:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">vertex_list</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">pyglet</span><span class="o">.</span><span class="n">gl</span><span class="o">.</span><span class="n">GL_POINTS</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Note that the primitive mode is given to the draw method, not the vertex list
+constructor.  Otherwise the <cite>vertex_list</cite> method takes the same arguments
+as <cite>pyglet.graphics.draw</cite>, including any number of vertex attributes.</p>
+<p>Because vertex lists can reside in video memory, it is necessary to call the
+<cite>delete</cite> method to release video resources if the vertex list isn&#8217;t going to
+be used any more (there&#8217;s no need to do this if you&#8217;re just exiting the
+process).</p>
+<div class="section" id="updating-vertex-data">
+<h3><a class="toc-backref" href="#id5">Updating vertex data</a><a class="headerlink" href="#updating-vertex-data" title="Permalink to this headline">¶</a></h3>
+<p>The data in a vertex list can be modified.  Each vertex attribute (including
+the vertex position) appears as an attribute on the <cite>VertexList</cite> object.  The
+attribute names are given in the following table.</p>
+<blockquote>
+<div><table border="1" class="docutils">
+<colgroup>
+<col width="50%" />
+<col width="50%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Vertex attribute</th>
+<th class="head">Object attribute</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>Vertex position</td>
+<td><tt class="docutils literal"><span class="pre">vertices</span></tt></td>
+</tr>
+<tr class="row-odd"><td>Color</td>
+<td><tt class="docutils literal"><span class="pre">colors</span></tt></td>
+</tr>
+<tr class="row-even"><td>Edge flag</td>
+<td><tt class="docutils literal"><span class="pre">edge_flags</span></tt></td>
+</tr>
+<tr class="row-odd"><td>Fog coordinate</td>
+<td><tt class="docutils literal"><span class="pre">fog_coords</span></tt></td>
+</tr>
+<tr class="row-even"><td>Normal</td>
+<td><tt class="docutils literal"><span class="pre">normals</span></tt></td>
+</tr>
+<tr class="row-odd"><td>Secondary color</td>
+<td><tt class="docutils literal"><span class="pre">secondary_colors</span></tt></td>
+</tr>
+<tr class="row-even"><td>Texture coordinate</td>
+<td><tt class="docutils literal"><span class="pre">tex_coords</span></tt> <a class="footnote-reference" href="#multitex" id="id1">[1]</a></td>
+</tr>
+<tr class="row-odd"><td>Generic attribute</td>
+<td><em>Inaccessible</em></td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+<p>In the following example, the vertex positions of the vertex list are updated
+by replacing the <tt class="docutils literal"><span class="pre">vertices</span></tt> attribute:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">vertex_list</span><span class="o">.</span><span class="n">vertices</span> <span class="o">=</span> <span class="p">[</span><span class="mi">20</span><span class="p">,</span> <span class="mi">25</span><span class="p">,</span> <span class="mi">40</span><span class="p">,</span> <span class="mi">45</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>The attributes can also be selectively updated in-place:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">vertex_list</span><span class="o">.</span><span class="n">vertices</span><span class="p">[:</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">30</span><span class="p">,</span> <span class="mi">35</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>Similarly, the color attribute of the vertex can be updated:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">vertex_list</span><span class="o">.</span><span class="n">colors</span><span class="p">[:</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">255</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>For large vertex lists, updating only the modified vertices can have a
+perfomance benefit, especially on newer graphics cards.</p>
+<p>Attempting to set the attribute list to a different size will cause an error
+(not necessarily immediately, either).  To resize the vertex list, call
+<cite>VertexList.resize</cite> with the new vertex count.  Be sure to fill in any
+newly uninitialised data after resizing the vertex list.</p>
+<p>Since vertex lists are mutable, you may not necessarily want to initialise
+them with any particular data.  You can specify just the format string in
+place of the <tt class="docutils literal"><span class="pre">(format,</span> <span class="pre">data)</span></tt> tuple in the data arguments <cite>vertex_list</cite>
+function.  The following example creates a vertex list of 1024 vertices with
+positional, color, texture coordinate and normal attributes:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">vertex_list</span> <span class="o">=</span> <span class="n">pyglet</span><span class="o">.</span><span class="n">graphics</span><span class="o">.</span><span class="n">vertex_list</span><span class="p">(</span><span class="mi">1024</span><span class="p">,</span> <span class="s">&#39;v3f&#39;</span><span class="p">,</span> <span class="s">&#39;c4B&#39;</span><span class="p">,</span> <span class="s">&#39;t2f&#39;</span><span class="p">,</span> <span class="s">&#39;n3f&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="data-usage">
+<h3><a class="toc-backref" href="#id6">Data usage</a><a class="headerlink" href="#data-usage" title="Permalink to this headline">¶</a></h3>
+<p>By default, pyglet assumes vertex data will be updated less often than it is
+drawn, but more often than just during initialisation.  You can override
+this assumption for each attribute by affixing a usage specification
+onto the end of the format string, detailed in the following table:</p>
+<blockquote>
+<div><table border="1" class="docutils">
+<colgroup>
+<col width="50%" />
+<col width="50%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Usage</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><tt class="docutils literal"><span class="pre">&quot;/static&quot;</span></tt></td>
+<td>Data is never or rarely modified after initialisation</td>
+</tr>
+<tr class="row-odd"><td><tt class="docutils literal"><span class="pre">&quot;/dynamic&quot;</span></tt></td>
+<td>Data is occasionally modified (default)</td>
+</tr>
+<tr class="row-even"><td><tt class="docutils literal"><span class="pre">&quot;/stream&quot;</span></tt></td>
+<td>Data is updated every frame</td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+<p>In the following example a vertex list is created in which the positional data
+is expected to change every frame, but the color data is expected to remain
+relatively constant:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">vertex_list</span> <span class="o">=</span> <span class="n">pyglet</span><span class="o">.</span><span class="n">graphics</span><span class="o">.</span><span class="n">vertex_list</span><span class="p">(</span><span class="mi">1024</span><span class="p">,</span> <span class="s">&#39;v3f/stream&#39;</span><span class="p">,</span> <span class="s">&#39;c4B/static&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The usage specification affects how pyglet lays out vertex data in memory,
+whether or not it&#8217;s stored on the video card, and is used as a hint to OpenGL.
+Specifying a usage does not affect what operations are possible with a vertex
+list (a <tt class="docutils literal"><span class="pre">static</span></tt> attribute can still be modified), and may only have
+performance benefits on some hardware.</p>
+</div>
+<div class="section" id="indexed-vertex-lists">
+<h3><a class="toc-backref" href="#id7">Indexed vertex lists</a><a class="headerlink" href="#indexed-vertex-lists" title="Permalink to this headline">¶</a></h3>
+<p><cite>IndexedVertexList</cite> performs the same role as <cite>VertexList</cite>, but for indexed
+vertices.  Use <cite>pyglet.graphics.vertex_list_indexed</cite> to construct an indexed
+vertex list, and update the <cite>IndexedVertexList.indices</cite> sequence to change the
+indices.</p>
+<table class="docutils footnote" frame="void" id="multitex" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id1">[1]</a></td><td>Only texture coordinates for texture unit 0 are accessible
+through this attribute.</td></tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="section" id="batched-rendering">
+<h2><a class="toc-backref" href="#id8">Batched rendering</a><a class="headerlink" href="#batched-rendering" title="Permalink to this headline">¶</a></h2>
+<p>For optimal OpenGL performance, you should render as many vertex lists as
+possible in a single <tt class="docutils literal"><span class="pre">draw</span></tt> call.  Internally, pyglet uses <cite>VertexDomain</cite>
+and <cite>IndexedVertexDomain</cite> to keep vertex lists that share the same attribute
+formats in adjacent areas of memory.  The entire domain of vertex lists can
+then be drawn at once, without calling <cite>VertexList.draw</cite> on each individual
+list.</p>
+<p>It is quite difficult and tedious to write an application that manages vertex
+domains itself, though.  In addition to maintaining a vertex domain for each
+set of attribute formats, domains must also be separated by primitive mode and
+required OpenGL state.</p>
+<p>The <cite>Batch</cite> class implements this functionality, grouping related vertex lists
+together and sorting by OpenGL state automatically.  A batch is created with
+no arguments:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">batch</span> <span class="o">=</span> <span class="n">pyglet</span><span class="o">.</span><span class="n">graphics</span><span class="o">.</span><span class="n">Batch</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Vertex lists can now be created with the <cite>Batch.add</cite> and <cite>Batch.add_indexed</cite>
+methods instead of <cite>pyglet.graphics.vertex_list</cite> and
+<cite>pyglet.graphics.vertex_list_indexed</cite> functions.  Unlike the module functions,
+these methods accept a <tt class="docutils literal"><span class="pre">mode</span></tt> parameter (the primitive mode) and a <tt class="docutils literal"><span class="pre">group</span></tt>
+parameter (described below).</p>
+<p>The two coloured points from previous pages can be added to a batch as a
+single vertex list with:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">vertex_list</span> <span class="o">=</span> <span class="n">batch</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">pyglet</span><span class="o">.</span><span class="n">gl</span><span class="o">.</span><span class="n">GL_POINTS</span><span class="p">,</span> <span class="bp">None</span><span class="p">,</span>
+    <span class="p">(</span><span class="s">&#39;v2i&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">35</span><span class="p">)),</span>
+    <span class="p">(</span><span class="s">&#39;c3B&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>The resulting <cite>vertex_list</cite> can be modified as described in the previous
+section.  However, instead of calling <cite>VertexList.draw</cite> to draw it, call
+<cite>Batch.draw</cite> to draw all vertex lists contained in the batch at once:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">batch</span><span class="o">.</span><span class="n">draw</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>For batches containing many vertex lists this gives a significant performance
+improvement over drawing individual vertex lists.</p>
+<p>To remove a vertex list from a batch, call <cite>VertexList.delete</cite>.</p>
+<div class="section" id="setting-the-opengl-state">
+<h3><a class="toc-backref" href="#id9">Setting the OpenGL state</a><a class="headerlink" href="#setting-the-opengl-state" title="Permalink to this headline">¶</a></h3>
+<p>In order to achieve many effects in OpenGL one or more global state parameters
+must be set.  For example, to enable and bind a texture requires:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">pyglet.gl</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="n">glEnable</span><span class="p">(</span><span class="n">texture</span><span class="o">.</span><span class="n">target</span><span class="p">)</span>
+<span class="n">glBindTexture</span><span class="p">(</span><span class="n">texture</span><span class="o">.</span><span class="n">target</span><span class="p">,</span> <span class="n">texture</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>before drawing vertex lists, and then:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">glDisable</span><span class="p">(</span><span class="n">texture</span><span class="o">.</span><span class="n">target</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>afterwards to avoid interfering with later drawing commands.</p>
+<p>With a <cite>Group</cite> these state changes can be encapsulated and associated with the
+vertex lists they affect.  Subclass <cite>Group</cite> and override the <cite>Group.set_state</cite>
+and <cite>Group.unset_state</cite> methods to perform the required state changes:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">class</span> <span class="nc">CustomGroup</span><span class="p">(</span><span class="n">pyglet</span><span class="o">.</span><span class="n">graphics</span><span class="o">.</span><span class="n">Group</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">set_state</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">glEnable</span><span class="p">(</span><span class="n">texture</span><span class="o">.</span><span class="n">target</span><span class="p">)</span>
+        <span class="n">glBindTexture</span><span class="p">(</span><span class="n">texture</span><span class="o">.</span><span class="n">target</span><span class="p">,</span> <span class="n">texture</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">unset_state</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">glDisable</span><span class="p">(</span><span class="n">texture</span><span class="o">.</span><span class="n">target</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>An instance of this group can now be attached to vertex lists in the batch:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">custom_group</span> <span class="o">=</span> <span class="n">CustomGroup</span><span class="p">()</span>
+<span class="n">vertex_list</span> <span class="o">=</span> <span class="n">batch</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">pyglet</span><span class="o">.</span><span class="n">gl</span><span class="o">.</span><span class="n">GL_POINTS</span><span class="p">,</span> <span class="n">custom_group</span><span class="p">,</span>
+    <span class="p">(</span><span class="s">&#39;v2i&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">35</span><span class="p">)),</span>
+    <span class="p">(</span><span class="s">&#39;c3B&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>The <cite>Batch</cite> ensures that the appropriate <tt class="docutils literal"><span class="pre">set_state</span></tt> and <tt class="docutils literal"><span class="pre">unset_state</span></tt>
+methods are called before and after the vertex lists that use them.</p>
+</div>
+<div class="section" id="hierarchical-state">
+<h3><a class="toc-backref" href="#id10">Hierarchical state</a><a class="headerlink" href="#hierarchical-state" title="Permalink to this headline">¶</a></h3>
+<p>Groups have a <cite>parent</cite> attribute that allows them to be implicitly organised
+in a tree structure.  If groups <strong>B</strong> and <strong>C</strong> have parent <strong>A</strong>, then the
+order of <tt class="docutils literal"><span class="pre">set_state</span></tt> and <tt class="docutils literal"><span class="pre">unset_state</span></tt> calls for vertex lists in a batch
+will be:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">A</span><span class="o">.</span><span class="n">set_state</span><span class="p">()</span>
+<span class="c"># Draw A vertices</span>
+<span class="n">B</span><span class="o">.</span><span class="n">set_state</span><span class="p">()</span>
+<span class="c"># Draw B vertices</span>
+<span class="n">B</span><span class="o">.</span><span class="n">unset_state</span><span class="p">()</span>
+<span class="n">C</span><span class="o">.</span><span class="n">set_state</span><span class="p">()</span>
+<span class="c"># Draw C vertices</span>
+<span class="n">C</span><span class="o">.</span><span class="n">unset_state</span><span class="p">()</span>
+<span class="n">A</span><span class="o">.</span><span class="n">unset_state</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>This is useful to group state changes into as few calls as possible.  For
+example, if you have a number of vertex lists that all need texturing enabled,
+but have different bound textures, you could enable and disable texturing in
+the parent group and bind each texture in the child groups.  The following
+example demonstrates this:</p>
+<div class="highlight-python"><div class="highlight"><pre>class TextureEnableGroup(pyglet.graphics.Group):
+    def set_state(self):
+        glEnable(GL_TEXTURE_2D)
+
+    def unset_state(self):
+        glDisable(GL_TEXTURE_2D)
+
+texture_enable_group = TextureEnableGroup()
+
+class TextureBindGroup(pyglet.graphics.Group):
+    def __init__(self, texture):
+        super().__init__(parent=texture_enable_group)
+        assert texture.target = GL_TEXTURE_2D
+        self.texture = texture
+
+    def set_state(self):
+        glBindTexture(GL_TEXTURE_2D, self.texture.id)
+
+    # No unset_state method required.
+
+    def __eq__(self, other):
+        return (self.__class__ is other.__class__ and
+                self.texture.id == other.texture.id and
+                self.texture.target == other.texture.target and
+                self.parent == other.parent)
+
+    def __hash__(self):
+        return hash((self.texture.id, self.texture.target))
+
+batch.add(4, GL_QUADS, TextureBindGroup(texture1), &#39;v2f&#39;, &#39;t2f&#39;)
+batch.add(4, GL_QUADS, TextureBindGroup(texture2), &#39;v2f&#39;, &#39;t2f&#39;)
+batch.add(4, GL_QUADS, TextureBindGroup(texture1), &#39;v2f&#39;, &#39;t2f&#39;)
+</pre></div>
+</div>
+<p>Note the use of an <tt class="docutils literal"><span class="pre">__eq__</span></tt> method on the group to allow <cite>Batch</cite> to merge
+the two <tt class="docutils literal"><span class="pre">TextureBindGroup</span></tt> identical instances.</p>
+</div>
+<div class="section" id="sorting-vertex-lists">
+<h3><a class="toc-backref" href="#id11">Sorting vertex lists</a><a class="headerlink" href="#sorting-vertex-lists" title="Permalink to this headline">¶</a></h3>
+<p><cite>VertexDomain</cite> does not attempt to keep vertex lists in any particular order.
+So, any vertex lists sharing the same primitive mode, attribute formats and
+group will be drawn in an arbitrary order.  However, <cite>Batch</cite> will sort <cite>Group</cite>
+objects sharing the same parent by their <tt class="docutils literal"><span class="pre">__cmp__</span></tt> method.  This allows
+groups to be ordered.</p>
+<p>The <cite>OrderedGroup</cite> class is a convenience group that does not set any OpenGL
+state, but is parameterised by an integer giving its draw order.  In the
+following example a number of vertex lists are grouped into a &#8220;background&#8221;
+group that is drawn before the vertex lists in the &#8220;foreground&#8221; group:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">background</span> <span class="o">=</span> <span class="n">pyglet</span><span class="o">.</span><span class="n">graphics</span><span class="o">.</span><span class="n">OrderedGroup</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">foreground</span> <span class="o">=</span> <span class="n">pyglet</span><span class="o">.</span><span class="n">graphics</span><span class="o">.</span><span class="n">OrderedGroup</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="n">batch</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="n">GL_QUADS</span><span class="p">,</span> <span class="n">foreground</span><span class="p">,</span> <span class="s">&#39;v2f&#39;</span><span class="p">)</span>
+<span class="n">batch</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="n">GL_QUADS</span><span class="p">,</span> <span class="n">background</span><span class="p">,</span> <span class="s">&#39;v2f&#39;</span><span class="p">)</span>
+<span class="n">batch</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="n">GL_QUADS</span><span class="p">,</span> <span class="n">foreground</span><span class="p">,</span> <span class="s">&#39;v2f&#39;</span><span class="p">)</span>
+<span class="n">batch</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="n">GL_QUADS</span><span class="p">,</span> <span class="n">background</span><span class="p">,</span> <span class="s">&#39;v2f&#39;</span><span class="p">,</span> <span class="s">&#39;c4B&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>By combining hierarchical groups with ordered groups it is possible to
+describe an entire scene within a single <cite>Batch</cite>, which then renders it as
+efficiently as possible.</p>
+</div>
+</div>
+<div class="section" id="batches-and-groups-in-other-modules">
+<h2><a class="toc-backref" href="#id12">Batches and groups in other modules</a><a class="headerlink" href="#batches-and-groups-in-other-modules" title="Permalink to this headline">¶</a></h2>
+<p>The <cite>Sprite</cite>, <cite>Label</cite> and <cite>TextLayout</cite> classes all accept <tt class="docutils literal"><span class="pre">batch</span></tt> and
+<tt class="docutils literal"><span class="pre">group</span></tt> parameters in their constructors.  This allows you to add any of
+these higher-level pyglet drawables into arbitrary places in your rendering
+code.</p>
+<p>For example, multiple sprites can be grouped into a single batch and then
+drawn at once, instead of calling <cite>Sprite.draw</cite> on each one individually:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">batch</span> <span class="o">=</span> <span class="n">pyglet</span><span class="o">.</span><span class="n">graphics</span><span class="o">.</span><span class="n">Batch</span><span class="p">()</span>
+<span class="n">sprites</span> <span class="o">=</span> <span class="p">[</span><span class="n">pyglet</span><span class="o">.</span><span class="n">sprite</span><span class="o">.</span><span class="n">Sprite</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">batch</span><span class="o">=</span><span class="n">batch</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">100</span><span class="p">)]</span>
+
+<span class="n">batch</span><span class="o">.</span><span class="n">draw</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>The <tt class="docutils literal"><span class="pre">group</span></tt> parameter can be used to set the drawing order (and hence which
+objects overlap others) within a single batch, as described  on the previous
+page.</p>
+<p>In general you should batch all drawing objects into as few batches as
+possible, and use groups to manage the draw order and other OpenGL state
+changes for optimal performance.   If you are creating your own drawable
+classes, consider adding <tt class="docutils literal"><span class="pre">batch</span></tt> and <tt class="docutils literal"><span class="pre">group</span></tt> parameters in a similar way.</p>
+</div>
+</div>
+
+
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="windowing.html" class="btn btn-neutral float-right" title="Windowing"/>Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="gl.html" class="btn btn-neutral" title="The OpenGL interface"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2006-2013, Alex Holkner.
+    </p>
+  </div>
+
+  <a href="https://github.com/snide/sphinx_rtd_theme">Sphinx theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'1.2alpha1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

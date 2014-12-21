@@ -1,0 +1,358 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Working with other input devices &mdash; pyglet v1.2alpha1</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+  
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="top" title="pyglet v1.2alpha1" href="../index.html"/>
+        <link rel="up" title="pyglet Programming Guide" href="index.html"/>
+        <link rel="next" title="Keeping track of time" href="time.html"/>
+        <link rel="prev" title="Working with the mouse" href="mouse.html"/> 
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-nav-search">
+        <a href="../index.html" class="fa fa-home"> pyglet</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        
+        
+            <ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Chapters</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html">Writing a pyglet application</a></li>
+<li class="toctree-l2"><a class="reference internal" href="context.html">Creating an OpenGL context</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gl.html">The OpenGL interface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graphics.html">Graphics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="windowing.html">Windowing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="eventloop.html">The application event loop</a></li>
+<li class="toctree-l2"><a class="reference internal" href="events.html">The pyglet event framework</a></li>
+<li class="toctree-l2"><a class="reference internal" href="keyboard.html">Working with the keyboard</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mouse.html">Working with the mouse</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="">Working with other input devices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="time.html">Keeping track of time</a></li>
+<li class="toctree-l2"><a class="reference internal" href="text.html">Displaying text</a></li>
+<li class="toctree-l2"><a class="reference internal" href="image.html">Images</a></li>
+<li class="toctree-l2"><a class="reference internal" href="media.html">Sound and video</a></li>
+<li class="toctree-l2"><a class="reference internal" href="resources.html">Application resources</a></li>
+<li class="toctree-l2"><a class="reference internal" href="debug.html">Debugging tools</a></li>
+<li class="toctree-l2"><a class="reference internal" href="features1.1.html">Appendix: Migrating to pyglet 1.1</a></li>
+</ul>
+</li>
+</ul>
+<ul class="simple">
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../internal/main.html">Importing pyglet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="advanced.html">Advanced topics</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="advanced.html#environment-settings">Environment settings</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../internal/gl.html">OpenGL Interface Implementation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../internal/gl.html#ctypes-linkage">ctypes linkage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../internal/gl.html#missing-extensions">Missing extensions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../internal/generated.html">ctypes Wrapper Generation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../internal/generated.html#generating-gl-wrappers">Generating GL wrappers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../internal/generated.html#generated-gl-wrappers">Generated GL wrappers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../internal/generated.html#generating-xlib-wrappers">Generating Xlib wrappers</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../internal/wraptypes.html">wraptypes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../internal/wraptypes.html#parser-modifications">Parser Modifications</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../internal/wraptypes.html#preprocessor">Preprocessor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../internal/wraptypes.html#cparser">CParser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../internal/wraptypes.html#ctypesparser">CtypesParser</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../internal/dist.html">Making a pyglet release</a></li>
+<li class="toctree-l1"><a class="reference internal" href="distribution.html">Distribution</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="distribution.html#self-contained-executables">Self-contained executables</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../internal/doc.html">Documentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../internal/doc.html#writing-documentation">Writing documentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../internal/doc.html#generation">Generation</a></li>
+</ul>
+</li>
+</ul>
+<ul class="simple">
+</ul>
+
+        
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../index.html">pyglet</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="index.html">pyglet Programming Guide</a> &raquo;</li>
+      
+    <li>Working with other input devices</li>
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            
+  <div class="section" id="working-with-other-input-devices">
+<h1>Working with other input devices<a class="headerlink" href="#working-with-other-input-devices" title="Permalink to this headline">¶</a></h1>
+<p>Pyglet&#8217;s <cite>input</cite> module allows you to accept input from any USB human
+interface device (HID).  High level interfaces are provided for
+working with joysticks and with the Apple Remote.</p>
+<div class="contents local topic" id="contents">
+<ul class="simple">
+<li><a class="reference internal" href="#using-joysticks" id="id1">Using joysticks</a></li>
+<li><a class="reference internal" href="#using-the-apple-remote" id="id2">Using the Apple Remote</a></li>
+</ul>
+</div>
+<div class="section" id="using-joysticks">
+<h2><a class="toc-backref" href="#id1">Using joysticks</a><a class="headerlink" href="#using-joysticks" title="Permalink to this headline">¶</a></h2>
+<p>Before using a joystick, you must find it and open it.  To get a list
+of all joystick devices currently connected to your computer, call
+<cite>pyglet.input.get_joysticks</cite>:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">joysticks</span> <span class="o">=</span> <span class="n">pyglet</span><span class="o">.</span><span class="n">input</span><span class="o">.</span><span class="n">get_joysticks</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Then choose a joystick from the list and call <cite>Joystick.open</cite> to open
+the device:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">if</span> <span class="n">joysticks</span><span class="p">:</span>
+    <span class="n">joystick</span> <span class="o">=</span> <span class="n">joysticks</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">joystick</span><span class="o">.</span><span class="n">open</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>You may immediately begin querying the state of the joystick by
+looking at its attributes.  The current position of the joystick is
+recorded in its &#8216;x&#8217; and &#8216;y&#8217; attributes, both of which are normalized
+to values within the range of -1 to 1.  For the x-axis, <cite>x</cite> = -1 means
+the joystick is pushed all the way to the left and <cite>x</cite> = 1 means the
+joystick is pushed to the right.  For the y-axis, a value of <cite>y</cite> = -1
+means that the joystick is pushed up and a value of <cite>y</cite> = 1 means that
+the joystick is pushed down.</p>
+<p>If your joystick has two analog controllers, the position of the
+second controller is typically given by <cite>z</cite> and <cite>rz</cite>, where <cite>z</cite> is the
+horizontal axis position and <cite>rz</cite> is the vertical axis position.</p>
+<p>The state of the joystick buttons is contained in the <cite>buttons</cite>
+attribute as a list of boolean values.  A True value indicates that
+the corresponding button is being pressed.  While buttons may be
+labeled A, B, X, or Y on the physical joystick, they are simply
+referred to by their index when accessing the <cite>buttons</cite> list.  There
+is no way to know which button index corresponds to which physical
+button on the device without simply testing the particular joystick.
+So it is a good idea to let users change button assignments.</p>
+<p>Each open joystick dispatches events when the joystick changes state.
+For buttons, there is the <cite>on_joybutton_press</cite> event which is sent
+whenever any of the joystick&#8217;s buttons are pressed:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">on_joybutton_press</span><span class="p">(</span><span class="n">joystick</span><span class="p">,</span> <span class="n">button</span><span class="p">):</span>
+    <span class="k">pass</span>
+</pre></div>
+</div>
+<p>and the <cite>on_joybutton_release</cite> event which is sent whenever any of the
+joystick&#8217;s buttons are released:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">on_joybutton_release</span><span class="p">(</span><span class="n">joystick</span><span class="p">,</span> <span class="n">button</span><span class="p">):</span>
+    <span class="k">pass</span>
+</pre></div>
+</div>
+<p>The <cite>joystick</cite> parameter is the <cite>Joystick</cite> instance whose buttons
+changed state (useful if you have multiple joysticks connected).
+The <cite>button</cite> parameter signifies which button changed and is simply an
+integer value, the index of the corresponding button in the <cite>buttons</cite>
+list.</p>
+<p>For most games, it is probably best to examine the current position of
+the joystick directly by using the <cite>x</cite> and <cite>y</cite> attributes.  However if
+you want to receive notifications whenever these values change you
+should handle the <cite>on_joyaxis_motion event</cite>:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">on_joyaxis_motion</span><span class="p">(</span><span class="n">joystick</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+    <span class="k">pass</span>
+</pre></div>
+</div>
+<p>The <cite>joystick</cite> parameter again tells you which joystick device
+changed.  The <cite>axis</cite> parameter is string such as &#8220;x&#8221;, &#8220;y&#8221;, or &#8220;rx&#8221;
+telling you which axis changed value.  And <cite>value</cite> gives the current
+normalized value of the axis, ranging between -1 and 1.</p>
+<p>If the joystick has a hat switch, you may examine its current value by
+looking at the <cite>hat_x</cite> and <cite>hat_y</cite> attributes.  For both, the values
+are either -1, 0, or 1.  Note that <cite>hat_y</cite> will output 1 in the up
+position and -1 in the down position, which is the opposite of the
+y-axis control.</p>
+<p>To be notified when the hat switch changes value, handle the
+<cite>on_joyhat_motion</cite> event:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">on_joyhat_motion</span><span class="p">(</span><span class="n">joystick</span><span class="p">,</span> <span class="n">hat_x</span><span class="p">,</span> <span class="n">hat_y</span><span class="p">):</span>
+    <span class="k">pass</span>
+</pre></div>
+</div>
+<p>The <cite>hat_x</cite> and <cite>hat_y</cite> parameters give the same values as the
+joystick&#8217;s <cite>hat_x</cite> and <cite>hat_y</cite> attributes.</p>
+<p>A good way to use the joystick event handlers might be to define them
+within a controller class and then call:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">joystick</span><span class="o">.</span><span class="n">push_handlers</span><span class="p">(</span><span class="n">my_controller</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="using-the-apple-remote">
+<h2><a class="toc-backref" href="#id2">Using the Apple Remote</a><a class="headerlink" href="#using-the-apple-remote" title="Permalink to this headline">¶</a></h2>
+<p>The Apple Remote is a small infrared remote originally distributed
+with the iMac.  The remote has six buttons, which are accessed with
+the names <cite>left, `right</cite>, <cite>up</cite>, <cite>down</cite>, <cite>menu</cite>, and <cite>select</cite>.
+Additionally when certain buttons are held down, they act as virtual
+buttons.  These are named <cite>left_hold</cite>, &#8216;right_hold`, <cite>menu_hold</cite>, and
+<cite>select_hold</cite>.</p>
+<p>To use the remote, first call <cite>get_apple_remote</cite>:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">remote</span> <span class="o">=</span> <span class="n">pyglet</span><span class="o">.</span><span class="n">input</span><span class="o">.</span><span class="n">get_apple_remote</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Then open it:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">if</span> <span class="n">remote</span><span class="p">:</span>
+    <span class="n">remote</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">window</span><span class="p">,</span> <span class="n">exclusive</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The remote is opened in exclusive mode so that while we are using the
+remote in our program, pressing the buttons does not activate Front
+Row, or change the volume, etc. on the computer.</p>
+<p>The following event handlers tell you when a button on the remote has
+been either pressed or released:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">on_button_press</span><span class="p">(</span><span class="n">button</span><span class="p">):</span>
+    <span class="k">pass</span>
+
+<span class="k">def</span> <span class="nf">on_button_release</span><span class="p">(</span><span class="n">button</span><span class="p">):</span>
+    <span class="k">pass</span>
+</pre></div>
+</div>
+<p>The <cite>button</cite> parameter indicates which button changed and is a string
+equal to one of the ten button names defined above: &#8220;up&#8221;, &#8220;down&#8221;,
+&#8220;left&#8221;, &#8220;left_hold&#8221;, &#8220;right&#8221;,  &#8220;right_hold&#8221;, &#8220;select&#8221;, &#8220;select_hold&#8221;,
+&#8220;menu&#8221;, or &#8220;menu_hold&#8221;.</p>
+<p>To use the remote, you may define code for the event handlers in
+some controller class and then call:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">remote</span><span class="o">.</span><span class="n">push_handlers</span><span class="p">(</span><span class="n">my_controller</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="time.html" class="btn btn-neutral float-right" title="Keeping track of time"/>Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="mouse.html" class="btn btn-neutral" title="Working with the mouse"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2006-2013, Alex Holkner.
+    </p>
+  </div>
+
+  <a href="https://github.com/snide/sphinx_rtd_theme">Sphinx theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'1.2alpha1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

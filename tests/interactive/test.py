@@ -1,38 +1,6 @@
 """Test framework for pyglet.  Reads details of components and capabilities
 from a requirements document, runs the appropriate unit tests.
 
-How to Run the Tests
---------------------
-::
-
-    python tests/test.py top app graphics clock resource # these all run automatically
-    python tests/test.py font media text
-    python tests/test.py image
-    python tests/test.py window
-
-Because the tests are interactive, they can take quite a while to complete. The
-'window' section in particular takes a long time. It can be frustrating to get
-almost through the tests and then something gets messed up, so we suggest you
-run the tests in sections as listed above. If you are curious, the sections are
-defined in tests/plan.txt.
-
-Here are the different sections and how long they take.
-
-    =========== ===========
-    Section     Time to Run
-    =========== ===========
-    top         automatic
-    app         automatic
-    graphics    automatic
-    clock       automatic
-    resource    automatic
-    font        1 minute
-    media       1 minute
-    text        1 minute
-    image       5 minutes
-    window      10 minutes
-    =========== ===========
-
 
 Overview
 --------

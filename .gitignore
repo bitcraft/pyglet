@@ -1,7 +1,4 @@
-syntax: glob
-*.pyc
-*.pyo
-_build
+.gitignore
 pyglet.*.log
 *.orig
 .DS_Store
@@ -9,4 +6,38 @@ doc/api
 doc/internal/build.rst
 doc/internal/blacklist.rst
 website/dist
-build
+*.py[cod]
+
+# C extensions
+*.so
+
+# Packages
+*.egg
+*.egg-info
+dist
+eggs
+parts
+bin
+var
+develop-eggs
+sdist
+.installed.cfg
+lib
+lib64
+__pycache__
+
+# Installer logs
+pip-log.txt
+
+# Unit test / coverage reports
+.coverage
+.tox
+nosetests.xml
+
+# Translations
+*.mo
+
+# Mr Developer
+.mr.developer.cfg
+.project
+.pydevproject

@@ -1,0 +1,233 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Distribution &mdash; pyglet v1.2alpha1</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+  
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="top" title="pyglet v1.2alpha1" href="../index.html"/>
+        <link rel="next" title="Documentation" href="../internal/doc.html"/>
+        <link rel="prev" title="Making a pyglet release" href="../internal/dist.html"/> 
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-nav-search">
+        <a href="../index.html" class="fa fa-home"> pyglet</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        
+        
+            <ul>
+<li class="toctree-l1"><a class="reference internal" href="index.html">Chapters</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html">Writing a pyglet application</a></li>
+<li class="toctree-l2"><a class="reference internal" href="context.html">Creating an OpenGL context</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gl.html">The OpenGL interface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graphics.html">Graphics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="windowing.html">Windowing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="eventloop.html">The application event loop</a></li>
+<li class="toctree-l2"><a class="reference internal" href="events.html">The pyglet event framework</a></li>
+<li class="toctree-l2"><a class="reference internal" href="keyboard.html">Working with the keyboard</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mouse.html">Working with the mouse</a></li>
+<li class="toctree-l2"><a class="reference internal" href="input.html">Working with other input devices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="time.html">Keeping track of time</a></li>
+<li class="toctree-l2"><a class="reference internal" href="text.html">Displaying text</a></li>
+<li class="toctree-l2"><a class="reference internal" href="image.html">Images</a></li>
+<li class="toctree-l2"><a class="reference internal" href="media.html">Sound and video</a></li>
+<li class="toctree-l2"><a class="reference internal" href="resources.html">Application resources</a></li>
+<li class="toctree-l2"><a class="reference internal" href="debug.html">Debugging tools</a></li>
+<li class="toctree-l2"><a class="reference internal" href="features1.1.html">Appendix: Migrating to pyglet 1.1</a></li>
+</ul>
+</li>
+</ul>
+<ul class="simple">
+</ul>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../internal/main.html">Importing pyglet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="advanced.html">Advanced topics</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="advanced.html#environment-settings">Environment settings</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../internal/gl.html">OpenGL Interface Implementation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../internal/gl.html#ctypes-linkage">ctypes linkage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../internal/gl.html#missing-extensions">Missing extensions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../internal/generated.html">ctypes Wrapper Generation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../internal/generated.html#generating-gl-wrappers">Generating GL wrappers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../internal/generated.html#generated-gl-wrappers">Generated GL wrappers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../internal/generated.html#generating-xlib-wrappers">Generating Xlib wrappers</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../internal/wraptypes.html">wraptypes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../internal/wraptypes.html#parser-modifications">Parser Modifications</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../internal/wraptypes.html#preprocessor">Preprocessor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../internal/wraptypes.html#cparser">CParser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../internal/wraptypes.html#ctypesparser">CtypesParser</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../internal/dist.html">Making a pyglet release</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="">Distribution</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#self-contained-executables">Self-contained executables</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../internal/doc.html">Documentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../internal/doc.html#writing-documentation">Writing documentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../internal/doc.html#generation">Generation</a></li>
+</ul>
+</li>
+</ul>
+<ul class="simple">
+</ul>
+
+        
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../index.html">pyglet</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../index.html">Docs</a> &raquo;</li>
+      
+    <li>Distribution</li>
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            
+  <div class="section" id="distribution">
+<h1>Distribution<a class="headerlink" href="#distribution" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="self-contained-executables">
+<h2>Self-contained executables<a class="headerlink" href="#self-contained-executables" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="creating-icons">
+<h3>Creating icons<a class="headerlink" href="#creating-icons" title="Permalink to this headline">¶</a></h3>
+<p>Mac OS X requires several different icon images combined into a single
+<tt class="docutils literal"><span class="pre">.icns</span></tt> file.  Use <em>Icon Composer</em> to create this file (this is installed in
+<tt class="docutils literal"><span class="pre">/Developer/Applications/Utilities</span></tt> with the Developer Tools.</p>
+</div>
+</div>
+</div>
+
+
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../internal/doc.html" class="btn btn-neutral float-right" title="Documentation"/>Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="../internal/dist.html" class="btn btn-neutral" title="Making a pyglet release"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2006-2013, Alex Holkner.
+    </p>
+  </div>
+
+  <a href="https://github.com/snide/sphinx_rtd_theme">Sphinx theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'1.2alpha1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

@@ -1,0 +1,924 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Displaying text &mdash; pyglet v1.2alpha1</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+  
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="top" title="pyglet v1.2alpha1" href="../index.html"/>
+        <link rel="up" title="pyglet Programming Guide" href="index.html"/>
+        <link rel="next" title="Images" href="image.html"/>
+        <link rel="prev" title="Keeping track of time" href="time.html"/> 
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-nav-search">
+        <a href="../index.html" class="fa fa-home"> pyglet</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        
+        
+            <ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Chapters</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html">Writing a pyglet application</a></li>
+<li class="toctree-l2"><a class="reference internal" href="context.html">Creating an OpenGL context</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gl.html">The OpenGL interface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graphics.html">Graphics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="windowing.html">Windowing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="eventloop.html">The application event loop</a></li>
+<li class="toctree-l2"><a class="reference internal" href="events.html">The pyglet event framework</a></li>
+<li class="toctree-l2"><a class="reference internal" href="keyboard.html">Working with the keyboard</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mouse.html">Working with the mouse</a></li>
+<li class="toctree-l2"><a class="reference internal" href="input.html">Working with other input devices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="time.html">Keeping track of time</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="">Displaying text</a></li>
+<li class="toctree-l2"><a class="reference internal" href="image.html">Images</a></li>
+<li class="toctree-l2"><a class="reference internal" href="media.html">Sound and video</a></li>
+<li class="toctree-l2"><a class="reference internal" href="resources.html">Application resources</a></li>
+<li class="toctree-l2"><a class="reference internal" href="debug.html">Debugging tools</a></li>
+<li class="toctree-l2"><a class="reference internal" href="features1.1.html">Appendix: Migrating to pyglet 1.1</a></li>
+</ul>
+</li>
+</ul>
+<ul class="simple">
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../internal/main.html">Importing pyglet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="advanced.html">Advanced topics</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="advanced.html#environment-settings">Environment settings</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../internal/gl.html">OpenGL Interface Implementation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../internal/gl.html#ctypes-linkage">ctypes linkage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../internal/gl.html#missing-extensions">Missing extensions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../internal/generated.html">ctypes Wrapper Generation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../internal/generated.html#generating-gl-wrappers">Generating GL wrappers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../internal/generated.html#generated-gl-wrappers">Generated GL wrappers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../internal/generated.html#generating-xlib-wrappers">Generating Xlib wrappers</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../internal/wraptypes.html">wraptypes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../internal/wraptypes.html#parser-modifications">Parser Modifications</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../internal/wraptypes.html#preprocessor">Preprocessor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../internal/wraptypes.html#cparser">CParser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../internal/wraptypes.html#ctypesparser">CtypesParser</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../internal/dist.html">Making a pyglet release</a></li>
+<li class="toctree-l1"><a class="reference internal" href="distribution.html">Distribution</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="distribution.html#self-contained-executables">Self-contained executables</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../internal/doc.html">Documentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../internal/doc.html#writing-documentation">Writing documentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../internal/doc.html#generation">Generation</a></li>
+</ul>
+</li>
+</ul>
+<ul class="simple">
+</ul>
+
+        
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../index.html">pyglet</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="index.html">pyglet Programming Guide</a> &raquo;</li>
+      
+    <li>Displaying text</li>
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            
+  <div class="section" id="displaying-text">
+<h1>Displaying text<a class="headerlink" href="#displaying-text" title="Permalink to this headline">¶</a></h1>
+<p>pyglet provides the <cite>font</cite> module for rendering high-quality antialiased
+Unicode glyphs efficiently.  Any installed font on the operating system is seen
+by pyglet, or you can supply your own font with your application.</p>
+<p>Notice that not all font formats are supported, see <a class="reference internal" href="#supported-font-formats">Supported font formats</a></p>
+<p>Text rendering is performed with the <cite>text</cite> module, which can display
+word-wrapped formatted text.  There is also support for interactive editing of
+text on-screen with a caret.</p>
+<div class="contents local topic" id="contents">
+<ul class="simple">
+<li><a class="reference internal" href="#simple-text-rendering" id="id2">Simple text rendering</a></li>
+<li><a class="reference internal" href="#the-document-layout-model" id="id3">The document/layout model</a><ul>
+<li><a class="reference internal" href="#documents" id="id4">Documents</a></li>
+<li><a class="reference internal" href="#layouts" id="id5">Layouts</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#formatted-text" id="id6">Formatted text</a><ul>
+<li><a class="reference internal" href="#character-styles" id="id7">Character styles</a></li>
+<li><a class="reference internal" href="#paragraph-styles" id="id8">Paragraph styles</a><ul>
+<li><a class="reference internal" href="#tabs" id="id9">Tabs</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#attributed-text" id="id10">Attributed text</a></li>
+<li><a class="reference internal" href="#html" id="id11">HTML</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#custom-elements" id="id12">Custom elements</a></li>
+<li><a class="reference internal" href="#user-editable-text" id="id13">User-editable text</a></li>
+<li><a class="reference internal" href="#loading-system-fonts" id="id14">Loading system fonts</a></li>
+<li><a class="reference internal" href="#font-sizes" id="id15">Font sizes</a><ul>
+<li><a class="reference internal" href="#font-resolution" id="id16">Font resolution</a></li>
+<li><a class="reference internal" href="#determining-font-size" id="id17">Determining font size</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#loading-custom-fonts" id="id18">Loading custom fonts</a><ul>
+<li><a class="reference internal" href="#supported-font-formats" id="id19">Supported font formats</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#opengl-font-considerations" id="id20">OpenGL font considerations</a><ul>
+<li><a class="reference internal" href="#context-affinity" id="id21">Context affinity</a></li>
+<li><a class="reference internal" href="#blend-state" id="id22">Blend state</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="simple-text-rendering">
+<h2><a class="toc-backref" href="#id2">Simple text rendering</a><a class="headerlink" href="#simple-text-rendering" title="Permalink to this headline">¶</a></h2>
+<p>The following complete example creates a window that displays &#8220;Hello, World&#8221;
+centered vertically and horizontally:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">window</span> <span class="o">=</span> <span class="n">pyglet</span><span class="o">.</span><span class="n">window</span><span class="o">.</span><span class="n">Window</span><span class="p">()</span>
+<span class="n">label</span> <span class="o">=</span> <span class="n">pyglet</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span><span class="s">&#39;Hello, world&#39;</span><span class="p">,</span>
+                          <span class="n">font_name</span><span class="o">=</span><span class="s">&#39;Times New Roman&#39;</span><span class="p">,</span>
+                          <span class="n">font_size</span><span class="o">=</span><span class="mi">36</span><span class="p">,</span>
+                          <span class="n">x</span><span class="o">=</span><span class="n">window</span><span class="o">.</span><span class="n">width</span><span class="o">//</span><span class="mi">2</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">window</span><span class="o">.</span><span class="n">height</span><span class="o">//</span><span class="mi">2</span><span class="p">,</span>
+                          <span class="n">anchor_x</span><span class="o">=</span><span class="s">&#39;center&#39;</span><span class="p">,</span> <span class="n">anchor_y</span><span class="o">=</span><span class="s">&#39;center&#39;</span><span class="p">)</span>
+
+<span class="nd">@window.event</span>
+<span class="k">def</span> <span class="nf">on_draw</span><span class="p">():</span>
+    <span class="n">window</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+    <span class="n">label</span><span class="o">.</span><span class="n">draw</span><span class="p">()</span>
+
+<span class="n">pyglet</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>The example demonstrates the most common uses of text rendering:</p>
+<ul class="simple">
+<li>The font name and size are specified directly in the constructor.
+Additional parameters exist for setting the bold and italic styles and the
+color of the text.</li>
+<li>The position of the text is given by the <tt class="docutils literal"><span class="pre">x</span></tt> and <tt class="docutils literal"><span class="pre">y</span></tt> coordinates.  The
+meaning of these coordinates is given by the <tt class="docutils literal"><span class="pre">anchor_x</span></tt> and <tt class="docutils literal"><span class="pre">anchor_y</span></tt>
+parameters.</li>
+<li>The actual text is drawn with the <cite>Label.draw</cite> method.  Labels can also be
+added to a graphics batch; see <cite>Graphics</cite> for details.</li>
+</ul>
+<p>The <cite>HTMLLabel</cite> class is used similarly, but accepts an HTML formatted string
+instead of parameters describing the style.  This allows the label to display
+text with mixed style:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">label</span> <span class="o">=</span> <span class="n">pyglet</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">HTMLLabel</span><span class="p">(</span>
+    <span class="s">&#39;&lt;font face=&quot;Times New Roman&quot; size=&quot;4&quot;&gt;Hello, &lt;i&gt;world&lt;/i&gt;&lt;/font&gt;&#39;</span><span class="p">,</span>
+    <span class="n">x</span><span class="o">=</span><span class="n">window</span><span class="o">.</span><span class="n">width</span><span class="o">//</span><span class="mi">2</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">window</span><span class="o">.</span><span class="n">height</span><span class="o">//</span><span class="mi">2</span><span class="p">,</span>
+    <span class="n">anchor_x</span><span class="o">=</span><span class="s">&#39;center&#39;</span><span class="p">,</span> <span class="n">anchor_y</span><span class="o">=</span><span class="s">&#39;center&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>See <cite>Formatted text</cite> for details on the subset of HTML that is supported.</p>
+</div>
+<div class="section" id="the-document-layout-model">
+<h2><a class="toc-backref" href="#id3">The document/layout model</a><a class="headerlink" href="#the-document-layout-model" title="Permalink to this headline">¶</a></h2>
+<p>The <cite>Label</cite> class demonstrated above presents a simplified interface to
+pyglet&#8217;s complete text rendering capabilities.  The underlying <cite>TextLayout</cite>
+and <cite>AbstractDocument</cite> classes provide a &#8220;model/view&#8221; interface to all of
+pyglet&#8217;s text features.</p>
+<blockquote>
+<div><img src="../_images/text_classes.svg" /></div></blockquote>
+<div class="section" id="documents">
+<h3><a class="toc-backref" href="#id4">Documents</a><a class="headerlink" href="#documents" title="Permalink to this headline">¶</a></h3>
+<p>A <cite>document</cite> is the &#8220;model&#8221; part of the architecture, and describes the
+content and style of the text to be displayed.  There are two concrete
+document classes: <cite>UnformattedDocument</cite> and <cite>FormattedDocument</cite>.
+<cite>UnformattedDocument</cite> models a document containing text in just one style,
+whereas <cite>FormattedDocument</cite> allows the style to change within the text.</p>
+<p>An empty, unstyled document can be created by constructing either of the
+classes directly.  Usually you will want to initialise the document with some
+text, however.  The <cite>decode_text</cite>, <cite>decode_attributed</cite> and <cite>decode_html</cite>
+functions return a document given a source string.  For <cite>decode_text</cite>, this is
+simply a plain text string, and the return value is an <cite>UnformattedDocument</cite>:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">document</span> <span class="o">=</span> <span class="n">pyglet</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">decode_text</span><span class="p">(</span><span class="s">&#39;Hello, world.&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><cite>decode_attributed</cite> and <cite>decode_html</cite> are described in detail in the next
+section.</p>
+<p>The text of a document can be modified directly as a property on the object:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">document</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="s">&#39;Goodbye, cruel world.&#39;</span>
+</pre></div>
+</div>
+<p>However, if small changes are being made to the document it can be more
+efficient (when coupled with an appropriate layout; see below) to use the
+<cite>remove_text</cite> and <cite>insert_text</cite> methods instead.</p>
+</div>
+<div class="section" id="layouts">
+<h3><a class="toc-backref" href="#id5">Layouts</a><a class="headerlink" href="#layouts" title="Permalink to this headline">¶</a></h3>
+<p>The actual layout and rendering of a document is performed by the <cite>TextLayout</cite>
+classes.  This split exists to reduce the complexity of the code, and to allow
+a single document to be displayed in multiple layouts simultaneously (in other
+words, many layouts can display one document).</p>
+<p>Each of the <cite>TextLayout</cite> classes perform layout in the same way, but represent
+a trade-off in efficiency of update against efficiency of drawing and memory
+usage.</p>
+<p>The base <cite>TextLayout</cite> class uses little memory, and shares its graphics
+group with other <cite>TextLayout</cite> instances in the same batch (see <cite>Batched
+rendering</cite>).  When the text or style of the document is modified, or the
+layout constraints change (for example, the width of the layout changes), the
+entire text layout is recalculated.  This is a potentially expensive
+operation, especially for long documents.  This makes <cite>TextLayout</cite> suitable
+for relatively short or unchanging documents.</p>
+<p><cite>ScrollableTextLayout</cite> is a small extension to <cite>TextLayout</cite> that clips the
+text to a specified view rectangle, and allows text to be scrolled within that
+rectangle without performing the layout calculuation again.  Because of this
+clipping rectangle the graphics group cannot be shared with other text
+layouts, so for ideal performance <cite>ScrollableTextLayout</cite> should be used only
+if this behaviour is required.</p>
+<p><cite>IncrementalTextLayout</cite> uses a more sophisticated layout algorithm that
+performs less work for small changes to documents.  For example, if a document
+is being edited by the user, only the immediately affected lines of text are
+recalculated when a character is typed or deleted.  <cite>IncrementalTextLayout</cite>
+also performs view rectangle culling, reducing the amount of layout and
+rendering required when the document is larger than the view.
+<cite>IncrementalTextLayout</cite> should be used for large documents or documents that
+change rapidly.</p>
+<p>All the layout classes can be constructed given a document and display
+dimensions:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">layout</span> <span class="o">=</span> <span class="n">pyglet</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">TextLayout</span><span class="p">(</span><span class="n">document</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Additional arguments to the constructor allow the specification of a graphics
+batch and group (recommended if many layouts are to be rendered), and the
+optional <cite>multiline</cite> and <cite>wrap_lines</cite> flags.</p>
+<dl class="docutils">
+<dt><cite>multiline</cite></dt>
+<dd>To honor newlines in the document you will need to set this to <tt class="docutils literal"><span class="pre">True</span></tt>. If
+you do not then newlines will be rendered as plain spaces.</dd>
+<dt><cite>wrap_lines</cite></dt>
+<dd>If you expect that your document lines will be wider than the display width
+then pyglet can automatically wrap them to fit the width by setting this
+option to <tt class="docutils literal"><span class="pre">True</span></tt>.</dd>
+</dl>
+<p>Like labels, layouts are positioned through their <cite>x</cite>, <cite>y</cite>, <cite>anchor_x</cite> and
+<cite>anchor_y</cite> properties.  Note that unlike <cite>AbstractImage</cite>, the <cite>anchor</cite>
+properties accept a string such as <tt class="docutils literal"><span class="pre">&quot;bottom&quot;</span></tt> or <tt class="docutils literal"><span class="pre">&quot;center&quot;</span></tt> instead of a
+numeric displacement.</p>
+</div>
+</div>
+<div class="section" id="formatted-text">
+<h2><a class="toc-backref" href="#id6">Formatted text</a><a class="headerlink" href="#formatted-text" title="Permalink to this headline">¶</a></h2>
+<p>The <cite>FormattedDocument</cite> class maintains style information for individual
+characters in the text, rather than a single style for the whole document.
+Styles can be accessed and modified by name, for example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="c"># Get the font name used at character index 0</span>
+<span class="n">font_name</span> <span class="o">=</span> <span class="n">document</span><span class="o">.</span><span class="n">get_style</span><span class="p">(</span><span class="s">&#39;font_name&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+<span class="c"># Set the font name and size for the first 5 characters</span>
+<span class="n">document</span><span class="o">.</span><span class="n">set_style</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="nb">dict</span><span class="p">(</span><span class="n">font_name</span><span class="o">=</span><span class="s">&#39;Arial&#39;</span><span class="p">,</span> <span class="n">font_size</span><span class="o">=</span><span class="mi">12</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>Internally, character styles are run-length encoded over the document text; so
+longer documents with few style changes do not use excessive memory.</p>
+<p>From the document&#8217;s point of view, there are no predefined style names: it
+simply maps names and character ranges to arbitrary Python values.  It is the
+<cite>TextLayout</cite> classes that interpret this style information; for example, by
+selecting a different font based on the <tt class="docutils literal"><span class="pre">font_name</span></tt> style.  Unrecognised
+style names are ignored by the layout &#8211; you can use this knowledge to store
+additional data alongside the document text (for example, a URL behind a
+hyperlink).</p>
+<div class="section" id="character-styles">
+<h3><a class="toc-backref" href="#id7">Character styles</a><a class="headerlink" href="#character-styles" title="Permalink to this headline">¶</a></h3>
+<p>The following character styles are recognised by all <cite>TextLayout</cite> classes.</p>
+<p>Where an attribute is marked &#8220;as a distance&#8221; the value is assumed to be
+in pixels if given as an int or float, otherwise a string of the form
+<tt class="docutils literal"><span class="pre">&quot;0u&quot;</span></tt> is required, where <tt class="docutils literal"><span class="pre">0</span></tt> is the distance and <tt class="docutils literal"><span class="pre">u</span></tt> is the unit; one
+of <tt class="docutils literal"><span class="pre">&quot;px&quot;</span></tt> (pixels), <tt class="docutils literal"><span class="pre">&quot;pt&quot;</span></tt> (points), <tt class="docutils literal"><span class="pre">&quot;pc&quot;</span></tt> (picas), <tt class="docutils literal"><span class="pre">&quot;cm&quot;</span></tt>
+(centimeters), <tt class="docutils literal"><span class="pre">&quot;mm&quot;</span></tt> (millimeters) or <tt class="docutils literal"><span class="pre">&quot;in&quot;</span></tt> (inches).  For example,
+<tt class="docutils literal"><span class="pre">&quot;14pt&quot;</span></tt> is the distance covering 14 points, which at the default DPI of 96
+is 18 pixels.</p>
+<dl class="docutils">
+<dt><tt class="docutils literal"><span class="pre">font_name</span></tt></dt>
+<dd>Font family name, as given to <cite>pyglet.font.load</cite>.</dd>
+<dt><tt class="docutils literal"><span class="pre">font_size</span></tt></dt>
+<dd>Font size, in points.</dd>
+<dt><tt class="docutils literal"><span class="pre">bold</span></tt></dt>
+<dd>Boolean.</dd>
+<dt><tt class="docutils literal"><span class="pre">italic</span></tt></dt>
+<dd>Boolean.</dd>
+<dt><tt class="docutils literal"><span class="pre">underline</span></tt></dt>
+<dd>4-tuple of ints in range (0, 255) giving RGBA underline color, or None
+(default) for no underline.</dd>
+<dt><tt class="docutils literal"><span class="pre">kerning</span></tt></dt>
+<dd>Additional space to insert between glyphs, as a distance.  Defaults to 0.</dd>
+<dt><tt class="docutils literal"><span class="pre">baseline</span></tt></dt>
+<dd>Offset of glyph baseline from line baseline, as a distance.  Positive
+values give a superscript, negative values give a subscript.  Defaults to
+0.</dd>
+<dt><tt class="docutils literal"><span class="pre">color</span></tt></dt>
+<dd>4-tuple of ints in range (0, 255) giving RGBA text color</dd>
+<dt><tt class="docutils literal"><span class="pre">background_color</span></tt></dt>
+<dd>4-tuple of ints in range (0, 255) giving RGBA text background color; or
+<tt class="docutils literal"><span class="pre">None</span></tt> for no background fill.</dd>
+</dl>
+</div>
+<div class="section" id="paragraph-styles">
+<h3><a class="toc-backref" href="#id8">Paragraph styles</a><a class="headerlink" href="#paragraph-styles" title="Permalink to this headline">¶</a></h3>
+<p>Although <cite>FormattedDocument</cite> does not distinguish between character- and
+paragraph-level styles, <cite>TextLayout</cite> interprets the following styles only at
+the paragraph level.  You should take care to set these styles for complete
+paragraphs only, for example, by using <cite>FormattedDocument.set_paragraph_style</cite>.</p>
+<p>These styles are ignored for layouts without the <tt class="docutils literal"><span class="pre">multiline</span></tt> flag set.</p>
+<dl class="docutils">
+<dt><tt class="docutils literal"><span class="pre">align</span></tt></dt>
+<dd><tt class="docutils literal"><span class="pre">&quot;left&quot;</span></tt> (default), <tt class="docutils literal"><span class="pre">&quot;center&quot;</span></tt> or <tt class="docutils literal"><span class="pre">&quot;right&quot;</span></tt>.</dd>
+<dt><tt class="docutils literal"><span class="pre">indent</span></tt></dt>
+<dd>Additional horizontal space to insert before the first glyph of the
+first line of a paragraph, as a distance.</dd>
+<dt><tt class="docutils literal"><span class="pre">leading</span></tt></dt>
+<dd>Additional space to insert between consecutive lines within a paragraph,
+as a distance.  Defaults to 0.</dd>
+<dt><tt class="docutils literal"><span class="pre">line_spacing</span></tt></dt>
+<dd>Distance between consecutive baselines in a paragraph, as a distance.
+Defaults to <tt class="docutils literal"><span class="pre">None</span></tt>, which automatically calculates the tightest line
+spacing for each line based on the maximum font ascent and descent.</dd>
+<dt><tt class="docutils literal"><span class="pre">margin_left</span></tt></dt>
+<dd>Left paragraph margin, as a distance.</dd>
+<dt><tt class="docutils literal"><span class="pre">margin_right</span></tt></dt>
+<dd>Right paragraph margin, as a distance.</dd>
+<dt><tt class="docutils literal"><span class="pre">margin_top</span></tt></dt>
+<dd>Margin above paragraph, as a distance.</dd>
+<dt><tt class="docutils literal"><span class="pre">margin_bottom</span></tt></dt>
+<dd>Margin below paragraph, as a distance.  Adjacent margins do not collapse.</dd>
+<dt><tt class="docutils literal"><span class="pre">tab_stops</span></tt></dt>
+<dd>List of horizontal tab stops, as distances, measured from the left edge of
+the text layout.  Defaults to the empty list.  When the tab stops
+are exhausted, they implicitly continue at 50 pixel intervals.</dd>
+<dt><tt class="docutils literal"><span class="pre">wrap</span></tt></dt>
+<dd>Boolean.  If True (the default), text wraps within the width of the layout.</dd>
+</dl>
+<p>For the purposes of these attributes, paragraphs are split by the newline
+character (U+0010) or the paragraph break character (U+2029).  Line breaks
+within a paragraph can be forced with character U+2028.</p>
+<div class="section" id="tabs">
+<h4><a class="toc-backref" href="#id9">Tabs</a><a class="headerlink" href="#tabs" title="Permalink to this headline">¶</a></h4>
+<p>A tab character in pyglet text is interpreted as &#8216;move to the next tab stop&#8217;.
+Tab stops are specified in pixels, not in some font unit; by default
+there is a tab stop every 50 pixels and because of that a tab can look too
+small for big fonts or too big for small fonts.</p>
+<p>Additionally, when rendering text with tabs using a <cite>monospace</cite> font, character boxes
+may not align vertically.</p>
+<p>To avoid these visualization issues the simpler solution is to convert the tabs to
+spaces before sending a string to a pyglet text-related class.</p>
+</div>
+</div>
+<div class="section" id="attributed-text">
+<h3><a class="toc-backref" href="#id10">Attributed text</a><a class="headerlink" href="#attributed-text" title="Permalink to this headline">¶</a></h3>
+<p>pyglet provides two formats for decoding formatted documents from plain text.
+These are useful for loading preprepared documents such as help screens.  At
+this time there is no facility for saving (encoding) formatted documents.</p>
+<p>The <em>attributed text</em> format is an encoding specific to pyglet that can
+exactly describe any <cite>FormattedDocument</cite>.  You must use this encoding to
+access all of the features of pyglet text layout.  For a more accessible, yet
+less featureful encoding, see the <cite>HTML</cite> encoding, described below.</p>
+<p>The following example shows a simple attributed text encoded document:</p>
+<div class="plain highlight-python"><div class="highlight"><pre>Chapter 1
+
+My father&#39;s family name being Pirrip, and my Christian name Philip,
+my infant tongue could make of both names nothing longer or more
+explicit than Pip.  So, I called myself Pip, and came to be called
+Pip.
+
+I give Pirrip as my father&#39;s family name, on the authority of his
+tombstone and my sister - Mrs. Joe Gargery, who married the
+blacksmith.  As I never saw my father or my mother, and never saw
+any likeness of either of them (for their days were long before the
+days of photographs), my first fancies regarding what they were
+like, were unreasonably derived from their tombstones.
+</pre></div>
+</div>
+<p>Newlines are ignored, unless two are made in succession, indicating a
+paragraph break.  Line breaks can be forced with the <tt class="docutils literal"><span class="pre">\\</span></tt> sequence:</p>
+<div class="plain highlight-python"><div class="highlight"><pre>This is the way the world ends \\
+This is the way the world ends \\
+This is the way the world ends \\
+Not with a bang but a whimper.
+</pre></div>
+</div>
+<p>Line breaks are also forced when the text is indented with one or more spaces
+or tabs, which is useful for typesetting code:</p>
+<div class="plain highlight-python"><div class="highlight"><pre>The following paragraph has hard line breaks for every line of code:
+
+    import pyglet
+
+    window = pyglet.window.Window()
+    pyglet.app.run()
+</pre></div>
+</div>
+<p>Text can be styled using a attribute tag:</p>
+<div class="plain highlight-python"><div class="highlight"><pre>This sentence makes a {bold True}bold{bold False} statement.
+</pre></div>
+</div>
+<p>The attribute tag consists of the attribute name (in this example, <tt class="docutils literal"><span class="pre">bold</span></tt>)
+followed by a Python bool, int, float, string, tuple or list.</p>
+<p>Unlike most structured documents such as HTML, attributed text has no concept
+of the &#8220;end&#8221; of a style; styles merely change within the document.  This
+corresponds exactly to the representation used by <cite>FormattedDocument</cite>
+internally.</p>
+<p>Some more examples follow:</p>
+<div class="plain highlight-python"><div class="highlight"><pre>{font_name &#39;Times New Roman&#39;}{font_size 28}Hello{font_size 12},
+{color (255, 0, 0, 255)}world{color (0, 0, 0, 255)}!
+</pre></div>
+</div>
+<p>(This example uses 28pt Times New Roman for the word &#8220;Hello&#8221;, and 12pt
+red text for the word &#8220;world&#8221;).</p>
+<p>Paragraph styles can be set by prefixing the style name with a period (.).
+This ensures the style range exactly encompasses the paragraph:</p>
+<div class="plain highlight-python"><div class="highlight"><pre>{.margin_left &quot;12px&quot;}This is a block quote, as the margin is inset.
+
+{.margin_left &quot;24px&quot;}This paragraph is inset yet again.
+</pre></div>
+</div>
+<p>Attributed text can be loaded as a Unicode string.  In addition, any character
+can be inserted given its Unicode code point in numeric form, either in
+decimal:</p>
+<div class="plain highlight-python"><div class="highlight"><pre>This text is Copyright {#169}.
+</pre></div>
+</div>
+<p>or hexadecimal:</p>
+<div class="plain highlight-python"><div class="highlight"><pre>This text is Copyright {#xa9}.
+</pre></div>
+</div>
+<p>The characters <tt class="docutils literal"><span class="pre">{</span></tt> and <tt class="docutils literal"><span class="pre">}</span></tt> can be escaped by duplicating them:</p>
+<div class="plain highlight-python"><div class="highlight"><pre>Attributed text uses many &quot;{{&quot; and &quot;}}&quot; characters.
+</pre></div>
+</div>
+<p>Use the <tt class="docutils literal"><span class="pre">decode_attributed</span></tt> function to decode attributed text into a
+<cite>FormattedDocument</cite>:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">document</span> <span class="o">=</span> <span class="n">pyglet</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">decode_attributed</span><span class="p">(</span><span class="s">&#39;Hello, {bold True}world&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="html">
+<h3><a class="toc-backref" href="#id11">HTML</a><a class="headerlink" href="#html" title="Permalink to this headline">¶</a></h3>
+<p>While attributed text gives access to all of the features of
+<cite>FormattedDocument</cite> and <cite>TextLayout</cite>, it is quite verbose and difficult
+produce text in.  For convenience, pyglet provides an HTML 4.01 decoder that
+can translate a small, commonly used subset of HTML into a
+<cite>FormattedDocument</cite>.</p>
+<p>Note that the decoder does not preserve the structure of the HTML document &#8211;
+all notion of element hierarchy is lost in the translation, and only the
+visible style changes are preserved.</p>
+<p>The following example uses <cite>decode_html</cite> to create a <cite>FormattedDocument</cite> from
+a string of HTML:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">document</span> <span class="o">=</span> <span class="n">pyglet</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">decode_html</span><span class="p">(</span><span class="s">&#39;Hello, &lt;b&gt;world&lt;/b&gt;&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The following elements are supported:</p>
+<div class="plain highlight-python"><div class="highlight"><pre>B BLOCKQUOTE BR CENTER CODE DD DIR DL EM FONT H1 H2 H3 H4 H5 H6 I IMG KBD
+LI MENU OL P PRE Q SAMP STRONG SUB SUP TT U UL VAR
+</pre></div>
+</div>
+<p>The <tt class="docutils literal"><span class="pre">style</span></tt> attribute is not supported, so font sizes must be given as HTML
+logical sizes in the range 1 to 7, rather than as point sizes.  The
+corresponding font sizes, and some other stylesheet parameters, can be
+modified by subclassing <cite>HTMLDecoder</cite>.</p>
+</div>
+</div>
+<div class="section" id="custom-elements">
+<h2><a class="toc-backref" href="#id12">Custom elements</a><a class="headerlink" href="#custom-elements" title="Permalink to this headline">¶</a></h2>
+<p>Graphics and other visual elements can be inserted inline into a document
+using <cite>AbstractDocument.insert_element</cite>.  For example, inline elements are
+used to render HTML images included with the <tt class="docutils literal"><span class="pre">IMG</span></tt> tag.  There is currently
+no support for floating or absolutely-positioned elements.</p>
+<p>Elements must subclass <cite>InlineElement</cite> and override the <cite>place</cite> and <cite>remove</cite>
+methods.  These methods are called by <cite>TextLayout</cite> when the element becomes
+or ceases to be visible.  For <cite>TextLayout</cite> and <cite>ScrollableTextLayout</cite>, this is
+when the element is added or removed from the document; but for
+<cite>IncrementalTextLayout</cite> the methods are also called as the element scrolls in
+and out of the viewport.</p>
+<p>The constructor of <cite>InlineElement</cite> gives the width and height (separated into
+the ascent above the baseline, and descent below the baseline) of the element.</p>
+<p>Typically an <cite>InlineElement</cite> subclass will add graphics primitives to the
+layout&#8217;s graphics batch; though applications may choose to simply record the
+position of the element and render it separately.</p>
+<p>The position of the element in the document text is marked with a NUL
+character (U+0000) placeholder.  This has the effect that inserting an element
+into a document increases the length of the document text by one.  Elements
+can also be styled as if they were ordinary character text, though the layout
+ignores any such style attributes.</p>
+</div>
+<div class="section" id="user-editable-text">
+<h2><a class="toc-backref" href="#id13">User-editable text</a><a class="headerlink" href="#user-editable-text" title="Permalink to this headline">¶</a></h2>
+<p>While pyglet does not come with any complete GUI widgets for applications to
+use, it does implement many of the features required to implement interactive
+text editing.  These can be used as a basis for a more complete GUI system, or
+to present a simple text entry field, as demonstrated in the
+<tt class="docutils literal"><span class="pre">examples/text_input.py</span></tt> example.</p>
+<p><cite>IncrementalTextLayout</cite> should always be used for text that can be edited by
+the user.  This class maintains information about the placement of glyphs on
+screen, and so can map window coordinates to a document position and
+vice-versa.  These methods are <cite>get_position_from_point</cite>,
+<cite>get_point_from_position</cite>, <cite>get_line_from_point</cite>, <cite>get_point_from_line</cite>,
+<cite>get_line_from_position</cite>, <cite>get_position_from_line</cite>, <cite>get_position_on_line</cite> and
+<cite>get_line_count</cite>.</p>
+<p>The viewable rectangle of the document can be adjusted using a document
+position instead of a scrollbar using the <cite>ensure_line_visible</cite> and
+<cite>ensure_x_visible</cite> methods.</p>
+<p><cite>IncrementalTextLayout</cite> can display a current text selection by temporarily
+overriding the foreground and background colour of the selected text.  The
+<cite>selection_start</cite> and <cite>selection_end</cite> properties give the range of the
+selection, and <cite>selection_color</cite> and <cite>selection_background_color</cite> the colors
+to use (defaulting to white on blue).</p>
+<p>The <cite>Caret</cite> class implements an insertion caret (cursor) for
+<cite>IncrementalTextLayout</cite>.  This includes displaying the blinking caret at the
+correct location, and handling keyboard, text and mouse events.  The behaviour
+in response to the events is very similar to the system GUIs on Windows, Mac
+OS X and GTK.  Using <cite>Caret</cite> frees you from using the <cite>IncrementalTextLayout</cite>
+methods described above directly.</p>
+<p>The following example creates a document, a layout and a caret and attaches
+the caret to the window to listen for events:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">pyglet</span>
+
+<span class="n">window</span> <span class="o">=</span> <span class="n">pyglet</span><span class="o">.</span><span class="n">window</span><span class="o">.</span><span class="n">Window</span><span class="p">()</span>
+<span class="n">document</span> <span class="o">=</span> <span class="n">pyglet</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">document</span><span class="o">.</span><span class="n">FormattedDocument</span><span class="p">()</span>
+<span class="n">layout</span> <span class="o">=</span> <span class="n">pyglet</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">IncrementalTextLayout</span><span class="p">(</span><span class="n">document</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">)</span>
+<span class="n">caret</span> <span class="o">=</span> <span class="n">pyglet</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">caret</span><span class="o">.</span><span class="n">Caret</span><span class="p">(</span><span class="n">layout</span><span class="p">)</span>
+<span class="n">window</span><span class="o">.</span><span class="n">push_handlers</span><span class="p">(</span><span class="n">caret</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>When the layout is drawn, the caret will also be drawn, so this example is
+nearly complete enough to display the user input.  However, it is suitable for
+use when only one editable text layout is to be in the window.  If multiple
+text widgets are to be shown, some mechanism is needed to dispatch events to
+the widget that has keyboard focus.  An example of how to do this is given in
+the <cite>examples/text_input.py</cite> example program.</p>
+</div>
+<div class="section" id="loading-system-fonts">
+<h2><a class="toc-backref" href="#id14">Loading system fonts</a><a class="headerlink" href="#loading-system-fonts" title="Permalink to this headline">¶</a></h2>
+<p>The layout classes automatically load fonts as required.  You can also
+explicitly load fonts to implement your own layout algorithms.</p>
+<p>To load a font you must know its family name.  This is the name displayed in
+the font dialog of any application.  For example, all operating systems
+include the <em>Times New Roman</em> font.  You must also specify the font size to
+load, in points:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="c"># Load &quot;Times New Roman&quot; at 16pt</span>
+<span class="n">times</span> <span class="o">=</span> <span class="n">pyglet</span><span class="o">.</span><span class="n">font</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s">&#39;Times New Roman&#39;</span><span class="p">,</span> <span class="mi">16</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Bold and italic variants of the font can specified with keyword parameters:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">times_bold</span> <span class="o">=</span> <span class="n">pyglet</span><span class="o">.</span><span class="n">font</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s">&#39;Times New Roman&#39;</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="n">bold</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="n">times_italic</span> <span class="o">=</span> <span class="n">pyglet</span><span class="o">.</span><span class="n">font</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s">&#39;Times New Roman&#39;</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="n">italic</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="n">times_bold_italic</span> <span class="o">=</span> <span class="n">pyglet</span><span class="o">.</span><span class="n">font</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s">&#39;Times New Roman&#39;</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span>
+                                     <span class="n">bold</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">italic</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>For maximum compatibility on all platforms, you can specify a list of font
+names to load, in order of preference.  For example, many users will have
+installed the Microsoft Web Fonts pack, which includes <cite>Verdana</cite>, but this
+cannot be guaranteed, so you might specify <cite>Arial</cite> or <cite>Helvetica</cite> as
+suitable alternatives:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">sans_serif</span> <span class="o">=</span> <span class="n">pyglet</span><span class="o">.</span><span class="n">font</span><span class="o">.</span><span class="n">load</span><span class="p">((</span><span class="s">&#39;Verdana&#39;</span><span class="p">,</span> <span class="s">&#39;Helvetica&#39;</span><span class="p">,</span> <span class="s">&#39;Arial&#39;</span><span class="p">),</span> <span class="mi">16</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Also you can check for the availability of a font using <cite>have_font</cite>:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="c"># Will return True</span>
+<span class="n">pyglet</span><span class="o">.</span><span class="n">font</span><span class="o">.</span><span class="n">have_font</span><span class="p">(</span><span class="s">&#39;Times New Roman&#39;</span><span class="p">)</span>
+
+<span class="c"># Will return False</span>
+<span class="n">pyglet</span><span class="o">.</span><span class="n">font</span><span class="o">.</span><span class="n">have_font</span><span class="p">(</span><span class="s">&#39;missing-font-name&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>If you do not particularly care which font is used, and just need to display
+some readable text, you can specify <cite>None</cite> as the family name, which will load
+a default sans-serif font (Helvetica on Mac OS X, Arial on Windows XP):</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">sans_serif</span> <span class="o">=</span> <span class="n">pyglet</span><span class="o">.</span><span class="n">font</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="mi">16</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="font-sizes">
+<h2><a class="toc-backref" href="#id15">Font sizes</a><a class="headerlink" href="#font-sizes" title="Permalink to this headline">¶</a></h2>
+<p>When loading a font you must specify the font size it is to be rendered at, in
+points.  Points are a somewhat historical but conventional unit used in both
+display and print media.  There are various conflicting definitions for the
+actual length of a point, but pyglet uses the PostScript definition: 1 point =
+1/72 inches.</p>
+<div class="section" id="font-resolution">
+<h3><a class="toc-backref" href="#id16">Font resolution</a><a class="headerlink" href="#font-resolution" title="Permalink to this headline">¶</a></h3>
+<p>The actual rendered size of the font on screen depends on the display
+resolution. pyglet uses a default DPI of 96 on all operating systems.  Most
+Mac OS X applications use a DPI of 72, so the font sizes will not match up on
+that operating system.  However, application developers can be assured that
+font sizes remain consistent in pyglet across platforms.</p>
+<p>The DPI can be specified directly in the <cite>pyglet.font.load</cite> function, and as
+an argument to the <cite>TextLayout</cite> constructor.</p>
+</div>
+<div class="section" id="determining-font-size">
+<h3><a class="toc-backref" href="#id17">Determining font size</a><a class="headerlink" href="#determining-font-size" title="Permalink to this headline">¶</a></h3>
+<p>Once a font is loaded at a particular size, you can query its pixel size with
+the attributes:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">Font</span><span class="o">.</span><span class="n">ascent</span>
+<span class="n">Font</span><span class="o">.</span><span class="n">descent</span>
+</pre></div>
+</div>
+<p>These measurements are shown in the diagram below.</p>
+<div class="figure">
+<img src="../_images/font_metrics.svg" /><p class="caption">Font metrics.  Note that the descent is usually negative as it descends
+below the baseline.</p>
+</div>
+<p>You can calculate the distance between successive lines of text as:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">ascent</span> <span class="o">-</span> <span class="n">descent</span> <span class="o">+</span> <span class="n">leading</span>
+</pre></div>
+</div>
+<p>where <cite>leading</cite> is the number of pixels to insert between each line of text.</p>
+</div>
+</div>
+<div class="section" id="loading-custom-fonts">
+<h2><a class="toc-backref" href="#id18">Loading custom fonts</a><a class="headerlink" href="#loading-custom-fonts" title="Permalink to this headline">¶</a></h2>
+<p>You can supply a font with your application if it&#8217;s not commonly installed on
+the target platform.  You should ensure you have a license to distribute the
+font &#8211; the terms are often specified within the font file itself, and can be
+viewed with your operating system&#8217;s font viewer.</p>
+<p>Loading a custom font must be performed in two steps:</p>
+<ol class="arabic simple">
+<li>Let pyglet know about the additional font or font files.</li>
+<li>Load the font by its family name.</li>
+</ol>
+<p>For example, let&#8217;s say you have the <em>Action Man</em> font in a file called
+<tt class="docutils literal"><span class="pre">action_man.ttf</span></tt>.  The following code will load an instance of that font:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">pyglet</span><span class="o">.</span><span class="n">font</span><span class="o">.</span><span class="n">add_file</span><span class="p">(</span><span class="s">&#39;action_man.ttf&#39;</span><span class="p">)</span>
+<span class="n">action_man</span> <span class="o">=</span> <span class="n">pyglet</span><span class="o">.</span><span class="n">font</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s">&#39;Action Man&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Similarly, once the font file has been added, the font name can be specified
+as a style on a label or layout:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">label</span> <span class="o">=</span> <span class="n">pyglet</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span><span class="s">&#39;Hello&#39;</span><span class="p">,</span> <span class="n">font_name</span><span class="o">=</span><span class="s">&#39;Action Man&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Fonts are often distributed in separate files for each variant.  <em>Action Man
+Bold</em> would probably be distributed as a separate file called
+<tt class="docutils literal"><span class="pre">action_man_bold.ttf</span></tt>; you need to let pyglet know about this as well:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">font</span><span class="o">.</span><span class="n">add_file</span><span class="p">(</span><span class="s">&#39;action_man_bold.ttf&#39;</span><span class="p">)</span>
+<span class="n">action_man_bold</span> <span class="o">=</span> <span class="n">font</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s">&#39;Action Man&#39;</span><span class="p">,</span> <span class="n">bold</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Note that even when you know the filename of the font you want to load, you
+must specify the font&#8217;s family name to <cite>pyglet.font.load</cite>.</p>
+<p>You need not have the file on disk to add it to pyglet; you can specify any
+file-like object supporting the <cite>read</cite> method.  This can be useful for
+extracting fonts from a resource archive or over a network.</p>
+<p>If the custom font is distributed with your application, consider using the
+<cite>Application resources</cite>.</p>
+<div class="section" id="supported-font-formats">
+<h3><a class="toc-backref" href="#id19">Supported font formats</a><a class="headerlink" href="#supported-font-formats" title="Permalink to this headline">¶</a></h3>
+<p>pyglet can load any font file that the operating system natively supports,
+but not all formats all fully supported.</p>
+<p>The list of supported formats is shown in the table below.</p>
+<blockquote>
+<div><table border="1" class="docutils">
+<colgroup>
+<col width="25%" />
+<col width="25%" />
+<col width="25%" />
+<col width="25%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Font Format</th>
+<th class="head">Windows XP</th>
+<th class="head">Mac OS X</th>
+<th class="head">Linux (FreeType)</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>TrueType (.ttf)</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr class="row-odd"><td>PostScript Type 1 (.pfm, .pfb)</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr class="row-even"><td>Windows Bitmap (.fnt)</td>
+<td>X</td>
+<td>&nbsp;</td>
+<td>X</td>
+</tr>
+<tr class="row-odd"><td>Mac OS X Data Fork Font (.dfont)</td>
+<td>&nbsp;</td>
+<td>X</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>OpenType (.otf) <a class="footnote-reference" href="#opentype" id="id1">[1]</a></td>
+<td>&nbsp;</td>
+<td>X</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>X11 font formats PCF, BDF, SFONT</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>X</td>
+</tr>
+<tr class="row-even"><td>Bitstream PFR (.pfr)</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>X</td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+<table class="docutils footnote" frame="void" id="opentype" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id1">[1]</a></td><td>All OpenType fonts are backward compatible with TrueType, so
+while the advanced OpenType features can only be rendered with
+Mac OS X, the files can be used on any platform.  pyglet
+does not currently make use of the additional kerning and
+ligature information within OpenType fonts.
+In Windows a few will use the variant DEVICE_FONTTYPE and may
+render bad, by example inconsolata.otf, from
+<a class="reference external" href="http://levien.com/type/myfonts/inconsolata.html">http://levien.com/type/myfonts/inconsolata.html</a></td></tr>
+</tbody>
+</table>
+<p>Some of the fonts found in internet may miss information for some operating
+systems, others may have been written with work in progress tools not fully
+compliant with standards. Using the font with text editors or fonts viewers
+can help to determine if the font is broken.</p>
+</div>
+</div>
+<div class="section" id="opengl-font-considerations">
+<h2><a class="toc-backref" href="#id20">OpenGL font considerations</a><a class="headerlink" href="#opengl-font-considerations" title="Permalink to this headline">¶</a></h2>
+<p>Text in pyglet is drawn using textured quads.  Each font maintains a set of
+one or more textures, into which glyphs are uploaded as they are needed.  For
+most applications this detail is transparent and unimportant, however some of
+the details of these glyph textures are described below for advanced users.</p>
+<div class="section" id="context-affinity">
+<h3><a class="toc-backref" href="#id21">Context affinity</a><a class="headerlink" href="#context-affinity" title="Permalink to this headline">¶</a></h3>
+<p>When a font is loaded, it immediately creates a texture in the current
+context&#8217;s object space.  Subsequent textures may need to be created if there
+is not enough room on the first texture for all the glyphs.  This is done when
+the glyph is first requested.</p>
+<p>pyglet always assumes that the object space that was active when the font was
+loaded is the active one when any texture operations are performed.  Normally
+this assumption is valid, as pyglet shares object spaces between all contexts
+by default.  There are a few situations in which this will not be the case,
+though:</p>
+<ul class="simple">
+<li>When explicitly setting the context share during context creation.</li>
+<li>When multiple display devices are being used which cannot support a shared
+context object space.</li>
+</ul>
+<p>In any of these cases, you will need to reload the font for each object space
+that it&#8217;s needed in.  pyglet keeps a cache of fonts, but does so
+per-object-space, so it knows when it can reuse an existing font instance or
+if it needs to load it and create new textures.  You will also need to ensure
+that an appropriate context is active when any glyphs may need to be added.</p>
+</div>
+<div class="section" id="blend-state">
+<h3><a class="toc-backref" href="#id22">Blend state</a><a class="headerlink" href="#blend-state" title="Permalink to this headline">¶</a></h3>
+<p>The glyph textures have an internal format of <tt class="docutils literal"><span class="pre">GL_ALPHA</span></tt>, which provides
+a simple way to recolour and blend antialiased text by changing the
+vertex colors.  pyglet makes very few assumptions about the OpenGL state, and
+will not alter it besides changing the currently bound texture.</p>
+<p>The following blend state is used for drawing font glyphs:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">pyglet.gl</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="n">glBlendFunc</span><span class="p">(</span><span class="n">GL_SRC_ALPHA</span><span class="p">,</span> <span class="n">GL_ONE_MINUS_SRC_ALPHA</span><span class="p">)</span>
+<span class="n">glEnable</span><span class="p">(</span><span class="n">GL_BLEND</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>All glyph textures use the <tt class="docutils literal"><span class="pre">GL_TEXTURE_2D</span></tt> target, so you should ensure that
+a higher priority target such as <tt class="docutils literal"><span class="pre">GL_TEXTURE_3D</span></tt> is not enabled before
+trying to render text.</p>
+</div>
+</div>
+</div>
+
+
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="image.html" class="btn btn-neutral float-right" title="Images"/>Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="time.html" class="btn btn-neutral" title="Keeping track of time"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2006-2013, Alex Holkner.
+    </p>
+  </div>
+
+  <a href="https://github.com/snide/sphinx_rtd_theme">Sphinx theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'1.2alpha1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

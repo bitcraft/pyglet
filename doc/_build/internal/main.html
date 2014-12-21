@@ -1,0 +1,315 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Importing pyglet &mdash; pyglet v1.2alpha1</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+  
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="top" title="pyglet v1.2alpha1" href="../index.html"/>
+        <link rel="next" title="Advanced topics" href="../programming_guide/advanced.html"/>
+        <link rel="prev" title="Appendix: Migrating to pyglet 1.1" href="../programming_guide/features1.1.html"/> 
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-nav-search">
+        <a href="../index.html" class="fa fa-home"> pyglet</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        
+        
+            <ul>
+<li class="toctree-l1"><a class="reference internal" href="../programming_guide/index.html">Chapters</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../programming_guide/installation.html">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_guide/quickstart.html">Writing a pyglet application</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_guide/context.html">Creating an OpenGL context</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_guide/gl.html">The OpenGL interface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_guide/graphics.html">Graphics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_guide/windowing.html">Windowing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_guide/eventloop.html">The application event loop</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_guide/events.html">The pyglet event framework</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_guide/keyboard.html">Working with the keyboard</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_guide/mouse.html">Working with the mouse</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_guide/input.html">Working with other input devices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_guide/time.html">Keeping track of time</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_guide/text.html">Displaying text</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_guide/image.html">Images</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_guide/media.html">Sound and video</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_guide/resources.html">Application resources</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_guide/debug.html">Debugging tools</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_guide/features1.1.html">Appendix: Migrating to pyglet 1.1</a></li>
+</ul>
+</li>
+</ul>
+<ul class="simple">
+</ul>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="">Importing pyglet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../programming_guide/advanced.html">Advanced topics</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../programming_guide/advanced.html#environment-settings">Environment settings</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="gl.html">OpenGL Interface Implementation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="gl.html#ctypes-linkage">ctypes linkage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gl.html#missing-extensions">Missing extensions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="generated.html">ctypes Wrapper Generation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="generated.html#generating-gl-wrappers">Generating GL wrappers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generated.html#generated-gl-wrappers">Generated GL wrappers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generated.html#generating-xlib-wrappers">Generating Xlib wrappers</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="wraptypes.html">wraptypes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="wraptypes.html#parser-modifications">Parser Modifications</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wraptypes.html#preprocessor">Preprocessor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wraptypes.html#cparser">CParser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wraptypes.html#ctypesparser">CtypesParser</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="dist.html">Making a pyglet release</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../programming_guide/distribution.html">Distribution</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../programming_guide/distribution.html#self-contained-executables">Self-contained executables</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="doc.html">Documentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="doc.html#writing-documentation">Writing documentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="doc.html#generation">Generation</a></li>
+</ul>
+</li>
+</ul>
+<ul class="simple">
+</ul>
+
+        
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../index.html">pyglet</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../index.html">Docs</a> &raquo;</li>
+      
+    <li>Importing pyglet</li>
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            
+  <div class="section" id="module-pyglet">
+<span id="importing-pyglet"></span><h1>Importing pyglet<a class="headerlink" href="#module-pyglet" title="Permalink to this headline">¶</a></h1>
+<p>pyglet is a cross-platform games and multimedia package.</p>
+<p>Detailed documentation is available at <a class="reference external" href="http://www.pyglet.org">http://www.pyglet.org</a></p>
+<dl class="data">
+<dt id="pyglet.options">
+<tt class="descname">options</tt><em class="property"> = {'xlib_fullscreen_override_redirect': False, 'debug_win32': False, 'xsync': True, 'debug_x11': False, 'debug_graphics_batch': False, 'debug_media': False, 'debug_trace_flush': True, 'debug_gl': True, 'darwin_cocoa': False, 'debug_trace': False, 'search_local_libs': True, 'debug_gl_trace': False, 'font': ('gdiplus', 'win32'), 'debug_texture': False, 'graphics_vbo': True, 'debug_trace_args': False, 'audio': ('directsound', 'pulse', 'openal', 'silent'), 'debug_trace_depth': 1, 'debug_gl_trace_args': False, 'vsync': None, 'debug_font': False, 'shadow_window': True, 'debug_lib': False}</em><a class="headerlink" href="#pyglet.options" title="Permalink to this definition">¶</a></dt>
+<dd><p>Global dict of pyglet options.  To change an option from its default, you
+must import <tt class="docutils literal"><span class="pre">pyglet</span></tt> before any sub-packages.  For example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">pyglet</span>
+<span class="n">pyglet</span><span class="o">.</span><span class="n">options</span><span class="p">[</span><span class="s">&#39;debug_gl&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">False</span>
+</pre></div>
+</div>
+<p>The default options can be overridden from the OS environment.  The
+corresponding environment variable for each option key is prefaced by
+<tt class="docutils literal"><span class="pre">PYGLET_</span></tt>.  For example, in Bash you can set the <tt class="docutils literal"><span class="pre">debug_gl</span></tt> option with:</p>
+<div class="highlight-python"><div class="highlight"><pre>PYGLET_DEBUG_GL=True; export PYGLET_DEBUG_GL
+</pre></div>
+</div>
+<p>For options requiring a tuple of values, separate each value with a comma.</p>
+<p>The non-development options are:</p>
+<dl class="docutils">
+<dt>audio</dt>
+<dd><p class="first">A sequence of the names of audio modules to attempt to load, in
+order of preference.  Valid driver names are:</p>
+<ul class="last simple">
+<li>directsound, the Windows DirectSound audio module (Windows only)</li>
+<li>pulse, the PulseAudio module (Linux only)</li>
+<li>openal, the OpenAL audio module</li>
+<li>silent, no audio</li>
+</ul>
+</dd>
+<dt>debug_lib</dt>
+<dd>If True, prints the path of each dynamic library loaded.</dd>
+<dt>debug_gl</dt>
+<dd>If True, all calls to OpenGL functions are checked afterwards for
+errors using <tt class="docutils literal"><span class="pre">glGetError</span></tt>.  This will severely impact performance,
+but provides useful exceptions at the point of failure.  By default,
+this option is enabled if <tt class="docutils literal"><span class="pre">__debug__</span></tt> is (i.e., if Python was not run
+with the -O option).  It is disabled by default when pyglet is &#8220;frozen&#8221;
+within a py2exe or py2app library archive.</dd>
+<dt>shadow_window</dt>
+<dd><p class="first">By default, pyglet creates a hidden window with a GL context when
+pyglet.gl is imported.  This allows resources to be loaded before
+the application window is created, and permits GL objects to be
+shared between windows even after they&#8217;ve been closed.  You can
+disable the creation of the shadow window by setting this option to
+False.</p>
+<p>Some OpenGL driver implementations may not support shared OpenGL
+contexts and may require disabling the shadow window (and all resources
+must be loaded after the window using them was created).  Recommended
+for advanced developers only.</p>
+<p class="last"><strong>Since:</strong> pyglet 1.1</p>
+</dd>
+<dt>vsync</dt>
+<dd>If set, the <cite>pyglet.window.Window.vsync</cite> property is ignored, and
+this option overrides it (to either force vsync on or off).  If unset,
+or set to None, the <cite>pyglet.window.Window.vsync</cite> property behaves
+as documented.</dd>
+<dt>xsync</dt>
+<dd><p class="first">If set (the default), pyglet will attempt to synchronise the drawing of
+double-buffered windows to the border updates of the X11 window
+manager.  This improves the appearance of the window during resize
+operations.  This option only affects double-buffered windows on
+X11 servers supporting the Xsync extension with a window manager
+that implements the _NET_WM_SYNC_REQUEST protocol.</p>
+<p class="last"><strong>Since:</strong> pyglet 1.1</p>
+</dd>
+<dt>search_local_libs</dt>
+<dd><p class="first">If False, pyglet won&#8217;t try to search for libraries in the script
+directory and its <cite>lib</cite> subdirectory. This is useful to load a local
+library instead of the system installed version. This option is set
+to True by default.</p>
+<p class="last"><strong>Since:</strong> pyglet 1.2</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="data">
+<dt id="pyglet.version">
+<tt class="descname">version</tt><em class="property"> = '1.2alpha1'</em><a class="headerlink" href="#pyglet.version" title="Permalink to this definition">¶</a></dt>
+<dd><p>The release version of this pyglet installation.</p>
+<p>Valid only if pyglet was installed from a source or binary distribution
+(i.e. not in a checked-out copy from SVN).</p>
+<p>Use setuptools if you need to check for a specific release version, e.g.:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pyglet</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pkg_resources</span> <span class="kn">import</span> <span class="n">parse_version</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">parse_version</span><span class="p">(</span><span class="n">pyglet</span><span class="o">.</span><span class="n">version</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="n">parse_version</span><span class="p">(</span><span class="s">&#39;1.1&#39;</span><span class="p">)</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+
+
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../programming_guide/advanced.html" class="btn btn-neutral float-right" title="Advanced topics"/>Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="../programming_guide/features1.1.html" class="btn btn-neutral" title="Appendix: Migrating to pyglet 1.1"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2006-2013, Alex Holkner.
+    </p>
+  </div>
+
+  <a href="https://github.com/snide/sphinx_rtd_theme">Sphinx theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'1.2alpha1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

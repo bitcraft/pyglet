@@ -1,0 +1,466 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>The pyglet event framework &mdash; pyglet v1.2alpha1</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+  
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="top" title="pyglet v1.2alpha1" href="../index.html"/>
+        <link rel="up" title="pyglet Programming Guide" href="index.html"/>
+        <link rel="next" title="Working with the keyboard" href="keyboard.html"/>
+        <link rel="prev" title="The application event loop" href="eventloop.html"/> 
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-nav-search">
+        <a href="../index.html" class="fa fa-home"> pyglet</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        
+        
+            <ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Chapters</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html">Writing a pyglet application</a></li>
+<li class="toctree-l2"><a class="reference internal" href="context.html">Creating an OpenGL context</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gl.html">The OpenGL interface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graphics.html">Graphics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="windowing.html">Windowing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="eventloop.html">The application event loop</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="">The pyglet event framework</a></li>
+<li class="toctree-l2"><a class="reference internal" href="keyboard.html">Working with the keyboard</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mouse.html">Working with the mouse</a></li>
+<li class="toctree-l2"><a class="reference internal" href="input.html">Working with other input devices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="time.html">Keeping track of time</a></li>
+<li class="toctree-l2"><a class="reference internal" href="text.html">Displaying text</a></li>
+<li class="toctree-l2"><a class="reference internal" href="image.html">Images</a></li>
+<li class="toctree-l2"><a class="reference internal" href="media.html">Sound and video</a></li>
+<li class="toctree-l2"><a class="reference internal" href="resources.html">Application resources</a></li>
+<li class="toctree-l2"><a class="reference internal" href="debug.html">Debugging tools</a></li>
+<li class="toctree-l2"><a class="reference internal" href="features1.1.html">Appendix: Migrating to pyglet 1.1</a></li>
+</ul>
+</li>
+</ul>
+<ul class="simple">
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../internal/main.html">Importing pyglet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="advanced.html">Advanced topics</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="advanced.html#environment-settings">Environment settings</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../internal/gl.html">OpenGL Interface Implementation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../internal/gl.html#ctypes-linkage">ctypes linkage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../internal/gl.html#missing-extensions">Missing extensions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../internal/generated.html">ctypes Wrapper Generation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../internal/generated.html#generating-gl-wrappers">Generating GL wrappers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../internal/generated.html#generated-gl-wrappers">Generated GL wrappers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../internal/generated.html#generating-xlib-wrappers">Generating Xlib wrappers</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../internal/wraptypes.html">wraptypes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../internal/wraptypes.html#parser-modifications">Parser Modifications</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../internal/wraptypes.html#preprocessor">Preprocessor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../internal/wraptypes.html#cparser">CParser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../internal/wraptypes.html#ctypesparser">CtypesParser</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../internal/dist.html">Making a pyglet release</a></li>
+<li class="toctree-l1"><a class="reference internal" href="distribution.html">Distribution</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="distribution.html#self-contained-executables">Self-contained executables</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../internal/doc.html">Documentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../internal/doc.html#writing-documentation">Writing documentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../internal/doc.html#generation">Generation</a></li>
+</ul>
+</li>
+</ul>
+<ul class="simple">
+</ul>
+
+        
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../index.html">pyglet</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="index.html">pyglet Programming Guide</a> &raquo;</li>
+      
+    <li>The pyglet event framework</li>
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            
+  <div class="section" id="the-pyglet-event-framework">
+<h1>The pyglet event framework<a class="headerlink" href="#the-pyglet-event-framework" title="Permalink to this headline">¶</a></h1>
+<p>The <cite>pyglet.window</cite>, <cite>pyglet.media</cite>, <cite>pyglet.app</cite> and <cite>pyglet.text</cite> modules
+make use of a consistent event pattern, which provides several ways to attach
+event handlers to objects.  You can also reuse this pattern in your own
+classes easily.</p>
+<p>Throughout this documentation, an &#8220;event dispatcher&#8221; is an object that has
+events it needs to notify other objects about, and an &#8220;event handler&#8221; is some
+code that can be attached to a dispatcher.</p>
+<div class="contents local topic" id="contents">
+<ul class="simple">
+<li><a class="reference internal" href="#setting-event-handlers" id="id1">Setting event handlers</a></li>
+<li><a class="reference internal" href="#stacking-event-handlers" id="id2">Stacking event handlers</a></li>
+<li><a class="reference internal" href="#creating-your-own-event-dispatcher" id="id3">Creating your own event dispatcher</a><ul>
+<li><a class="reference internal" href="#implementing-the-observer-pattern" id="id4">Implementing the Observer pattern</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="setting-event-handlers">
+<h2><a class="toc-backref" href="#id1">Setting event handlers</a><a class="headerlink" href="#setting-event-handlers" title="Permalink to this headline">¶</a></h2>
+<p>An event handler is simply a function with a formal parameter list
+corresponding to the event type.  For example, the <cite>Window.on_resize</cite> event
+has the parameters <tt class="docutils literal"><span class="pre">(width,</span> <span class="pre">height)</span></tt>, so an event handler for this event
+could be:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">on_resize</span><span class="p">(</span><span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">):</span>
+    <span class="k">pass</span>
+</pre></div>
+</div>
+<p>The <cite>Window</cite> class subclasses <cite>EventDispatcher</cite>, which enables it to have
+event handlers attached to it.  The simplest way to attach an event handler is
+to set the corresponding attribute on the object:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">window</span> <span class="o">=</span> <span class="n">pyglet</span><span class="o">.</span><span class="n">window</span><span class="o">.</span><span class="n">Window</span><span class="p">()</span>
+
+<span class="k">def</span> <span class="nf">on_resize</span><span class="p">(</span><span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">):</span>
+    <span class="k">pass</span>
+<span class="n">window</span><span class="o">.</span><span class="n">on_resize</span> <span class="o">=</span> <span class="n">on_resize</span>
+</pre></div>
+</div>
+<p>While this technique is straight-forward, it requires you to write the name of
+the event three times for the one function, which can get tiresome.  pyglet
+provides a shortcut using the <cite>event</cite> decorator:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">window</span> <span class="o">=</span> <span class="n">window</span><span class="o">.</span><span class="n">Window</span><span class="p">()</span>
+
+<span class="nd">@window.event</span>
+<span class="k">def</span> <span class="nf">on_resize</span><span class="p">(</span><span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">):</span>
+    <span class="k">pass</span>
+</pre></div>
+</div>
+<p>This is not entirely equivalent to setting the event handler directly on the
+object.  If the object already had an event handler, using <tt class="docutils literal"><span class="pre">&#64;event</span></tt> will add
+the handler to the object, rather than replacing it.  The next section
+describes this functionality in detail.</p>
+<p>As shown in <cite>Subclassing Window</cite>, you can also attach event handlers by
+subclassing the event dispatcher and adding the event handler as a method:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">class</span> <span class="nc">MyWindow</span><span class="p">(</span><span class="n">pyglet</span><span class="o">.</span><span class="n">window</span><span class="o">.</span><span class="n">Window</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">on_resize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">):</span>
+        <span class="k">pass</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="stacking-event-handlers">
+<h2><a class="toc-backref" href="#id2">Stacking event handlers</a><a class="headerlink" href="#stacking-event-handlers" title="Permalink to this headline">¶</a></h2>
+<p>It is often convenient to attach more than one event handler for an event.
+<cite>EventDispatcher</cite> allows you to stack event handlers upon one another, rather
+than replacing them outright.  The event will propogate from the top of the
+stack to the bottom, but can be stopped by any handler along the way.</p>
+<p>To push an event handler onto the stack, use the <cite>push_handlers</cite> method:</p>
+<div class="highlight-python"><div class="highlight"><pre>def on_key_press(symbol, modifiers):
+    if symbol == key.SPACE
+        fire_laser()
+
+window.push_handlers(on_key_press)
+</pre></div>
+</div>
+<p>As a convenience, the <tt class="docutils literal"><span class="pre">&#64;event</span></tt> decorator can be used as an alternative to
+<cite>push_handlers</cite>:</p>
+<div class="highlight-python"><div class="highlight"><pre>@window.event
+def on_key_press(symbol, modifiers):
+    if symbol == key.SPACE
+        fire_laser()
+</pre></div>
+</div>
+<p>One use for pushing handlers instead of setting them is to handle different
+parameterisations of events in different functions.  In the above example, if
+the spacebar is pressed, the laser will be fired.  After the event handler
+returns control is passed to the next handler on the stack, which on a
+<cite>Window</cite> is a function that checks for the ESC key and sets the <tt class="docutils literal"><span class="pre">has_exit</span></tt>
+attribute if it is pressed.  By pushing the event handler instead of setting
+it, the application keeps the default behaviour while adding additional
+functionality.</p>
+<p>You can prevent the remaining event handlers in the stack from receiving the
+event by returning a true value.  The following event handler, when pushed
+onto the window, will prevent the escape key from exiting the program:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">on_key_press</span><span class="p">(</span><span class="n">symbol</span><span class="p">,</span> <span class="n">modifiers</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">symbol</span> <span class="o">==</span> <span class="n">key</span><span class="o">.</span><span class="n">ESCAPE</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">True</span>
+
+<span class="n">window</span><span class="o">.</span><span class="n">push_handlers</span><span class="p">(</span><span class="n">on_key_press</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>You can push more than one event handler at a time, which is especially useful
+when coupled with the <tt class="docutils literal"><span class="pre">pop_handlers</span></tt> function.  In the following example,
+when the game starts some additional event handlers are pushed onto the stack.
+When the game ends (perhaps returning to some menu screen) the handlers are
+popped off in one go:</p>
+<div class="highlight-python"><div class="highlight"><pre>def start_game():
+    def on_key_press(symbol, modifiers):
+        print &#39;Key pressed in game&#39;
+        return True
+
+    def on_mouse_press(x, y, button, modifiers):
+        print &#39;Mouse button pressed in game&#39;
+        return True
+
+    window.push_handlers(on_key_press, on_mouse_press)
+
+def end_game():
+    window.pop_handlers()
+</pre></div>
+</div>
+<p>Note that you do not specify which handlers to pop off the stack &#8211; the entire
+top &#8220;level&#8221; (consisting of all handlers specified in a single call to
+<cite>push_handlers</cite>) is popped.</p>
+<p>You can apply the same pattern in an object-oriented fashion by grouping
+related event handlers in a single class.  In the following example, a
+<tt class="docutils literal"><span class="pre">GameEventHandler</span></tt> class is defined.  An instance of that class can be
+pushed on and popped off of a window:</p>
+<div class="highlight-python"><div class="highlight"><pre>class GameEventHandler:
+    def on_key_press(self, symbol, modifiers):
+        print &#39;Key pressed in game&#39;
+        return True
+
+    def on_mouse_press(self, x, y, button, modifiers):
+        print &#39;Mouse button pressed in game&#39;
+        return True
+
+game_handlers = GameEventHandler()
+
+def start_game()
+    window.push_handlers(game_handlers)
+
+def stop_game()
+    window.pop_handlers()
+</pre></div>
+</div>
+</div>
+<div class="section" id="creating-your-own-event-dispatcher">
+<h2><a class="toc-backref" href="#id3">Creating your own event dispatcher</a><a class="headerlink" href="#creating-your-own-event-dispatcher" title="Permalink to this headline">¶</a></h2>
+<p>pyglet provides only the <cite>Window</cite> and <cite>Player</cite> event dispatchers, but
+exposes a public interface for creating and dispatching your own events.</p>
+<p>The steps for creating an event dispatcher are:</p>
+<ol class="arabic simple">
+<li>Subclass <cite>EventDispatcher</cite></li>
+<li>Call the <cite>register_event_type</cite> class method on your subclass for each
+event your subclass will recognise.</li>
+<li>Call <cite>dispatch_event</cite> to create and dispatch an event as needed.</li>
+</ol>
+<p>In the following example, a hypothetical GUI widget provides several events:</p>
+<div class="highlight-python"><div class="highlight"><pre>class ClankingWidget(pyglet.event.EventDispatcher):
+    def clank(self):
+        self.dispatch_event(&#39;on_clank&#39;)
+
+    def click(self, clicks):
+        self.dispatch_event(&#39;on_clicked&#39;, clicks)
+
+    def on_clank(self):
+        print &#39;Default clank handler.&#39;
+
+ClankingWidget.register_event_type(&#39;on_clank&#39;)
+ClankingWidget.register_event_type(&#39;on_clicked&#39;)
+</pre></div>
+</div>
+<p>Event handlers can then be attached as described in the preceding sections:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">widget</span> <span class="o">=</span> <span class="n">ClankingWidget</span><span class="p">()</span>
+
+<span class="nd">@widget.event</span>
+<span class="k">def</span> <span class="nf">on_clank</span><span class="p">():</span>
+    <span class="k">pass</span>
+
+<span class="nd">@widget.event</span>
+<span class="k">def</span> <span class="nf">on_clicked</span><span class="p">(</span><span class="n">clicks</span><span class="p">):</span>
+    <span class="k">pass</span>
+
+<span class="k">def</span> <span class="nf">override_on_clicked</span><span class="p">(</span><span class="n">clicks</span><span class="p">):</span>
+    <span class="k">pass</span>
+
+<span class="n">widget</span><span class="o">.</span><span class="n">push_handlers</span><span class="p">(</span><span class="n">on_clicked</span><span class="o">=</span><span class="n">override_on_clicked</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The <cite>EventDispatcher</cite> takes care of propogating the event to all attached
+handlers or ignoring it if there are no handlers for that event.</p>
+<p>There is zero instance overhead on objects that have no event handlers
+attached (the event stack is created only when required).  This makes
+<cite>EventDispatcher</cite> suitable for use even on light-weight objects that may not
+always have handlers.  For example, <cite>Player</cite> is an <cite>EventDispatcher</cite>
+even though potentially hundreds of these objects may be created and destroyed
+each second, and most will not need an event handler.</p>
+<div class="section" id="implementing-the-observer-pattern">
+<h3><a class="toc-backref" href="#id4">Implementing the Observer pattern</a><a class="headerlink" href="#implementing-the-observer-pattern" title="Permalink to this headline">¶</a></h3>
+<p>The <a class="reference external" href="Gamma,etal.,`DesignPatterns`Addison-Wesley1994">Observer design pattern</a>, also known as Publisher/Subscriber, is a
+simple way to decouple software components.  It is used extensively in many
+large software projects; for example, Java&#8217;s AWT and Swing GUI toolkits and the
+Python <tt class="docutils literal"><span class="pre">logging</span></tt> module; and is fundamental to any Model-View-Controller
+architecture.</p>
+<p><cite>EventDispatcher</cite> can be used to easily add observerable components to your
+application.  The following example recreates the <cite>ClockTimer</cite> example from
+<cite>Design Patterns</cite> (pages 300-301), though without needing the bulky
+<tt class="docutils literal"><span class="pre">Attach</span></tt>, <tt class="docutils literal"><span class="pre">Detach</span></tt> and <tt class="docutils literal"><span class="pre">Notify</span></tt> methods:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="c"># The subject</span>
+<span class="k">class</span> <span class="nc">ClockTimer</span><span class="p">(</span><span class="n">pyglet</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">EventDispatcher</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">tick</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dispatch_event</span><span class="p">(</span><span class="s">&#39;on_update&#39;</span><span class="p">)</span>
+<span class="n">ClockTimer</span><span class="o">.</span><span class="n">register_event_type</span><span class="p">(</span><span class="s">&#39;on_update&#39;</span><span class="p">)</span>
+
+<span class="c"># Abstract observer class</span>
+<span class="k">class</span> <span class="nc">Observer</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">subject</span><span class="p">):</span>
+        <span class="n">subject</span><span class="o">.</span><span class="n">push_handlers</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+<span class="c"># Concrete observer</span>
+<span class="k">class</span> <span class="nc">DigitalClock</span><span class="p">(</span><span class="n">Observer</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">on_update</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span>
+
+<span class="c"># Concrete observer</span>
+<span class="k">class</span> <span class="nc">AnalogClock</span><span class="p">(</span><span class="n">Observer</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">on_update</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span>
+
+<span class="n">timer</span> <span class="o">=</span> <span class="n">ClockTimer</span><span class="p">()</span>
+<span class="n">digital_clock</span> <span class="o">=</span> <span class="n">DigitalClock</span><span class="p">(</span><span class="n">timer</span><span class="p">)</span>
+<span class="n">analog_clock</span> <span class="o">=</span> <span class="n">AnalogClock</span><span class="p">(</span><span class="n">timer</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The two clock objects will be notified whenever the timer is &#8220;ticked&#8221;, though
+neither the timer nor the clocks needed prior knowledge of the other.  During
+object construction any relationships between subjects and observers can be
+created.</p>
+</div>
+</div>
+</div>
+
+
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="keyboard.html" class="btn btn-neutral float-right" title="Working with the keyboard"/>Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="eventloop.html" class="btn btn-neutral" title="The application event loop"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2006-2013, Alex Holkner.
+    </p>
+  </div>
+
+  <a href="https://github.com/snide/sphinx_rtd_theme">Sphinx theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'1.2alpha1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

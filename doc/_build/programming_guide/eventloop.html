@@ -1,0 +1,338 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>The application event loop &mdash; pyglet v1.2alpha1</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+  
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="top" title="pyglet v1.2alpha1" href="../index.html"/>
+        <link rel="up" title="pyglet Programming Guide" href="index.html"/>
+        <link rel="next" title="The pyglet event framework" href="events.html"/>
+        <link rel="prev" title="Windowing" href="windowing.html"/> 
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-nav-search">
+        <a href="../index.html" class="fa fa-home"> pyglet</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        
+        
+            <ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Chapters</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html">Writing a pyglet application</a></li>
+<li class="toctree-l2"><a class="reference internal" href="context.html">Creating an OpenGL context</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gl.html">The OpenGL interface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graphics.html">Graphics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="windowing.html">Windowing</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="">The application event loop</a></li>
+<li class="toctree-l2"><a class="reference internal" href="events.html">The pyglet event framework</a></li>
+<li class="toctree-l2"><a class="reference internal" href="keyboard.html">Working with the keyboard</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mouse.html">Working with the mouse</a></li>
+<li class="toctree-l2"><a class="reference internal" href="input.html">Working with other input devices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="time.html">Keeping track of time</a></li>
+<li class="toctree-l2"><a class="reference internal" href="text.html">Displaying text</a></li>
+<li class="toctree-l2"><a class="reference internal" href="image.html">Images</a></li>
+<li class="toctree-l2"><a class="reference internal" href="media.html">Sound and video</a></li>
+<li class="toctree-l2"><a class="reference internal" href="resources.html">Application resources</a></li>
+<li class="toctree-l2"><a class="reference internal" href="debug.html">Debugging tools</a></li>
+<li class="toctree-l2"><a class="reference internal" href="features1.1.html">Appendix: Migrating to pyglet 1.1</a></li>
+</ul>
+</li>
+</ul>
+<ul class="simple">
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../internal/main.html">Importing pyglet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="advanced.html">Advanced topics</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="advanced.html#environment-settings">Environment settings</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../internal/gl.html">OpenGL Interface Implementation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../internal/gl.html#ctypes-linkage">ctypes linkage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../internal/gl.html#missing-extensions">Missing extensions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../internal/generated.html">ctypes Wrapper Generation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../internal/generated.html#generating-gl-wrappers">Generating GL wrappers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../internal/generated.html#generated-gl-wrappers">Generated GL wrappers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../internal/generated.html#generating-xlib-wrappers">Generating Xlib wrappers</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../internal/wraptypes.html">wraptypes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../internal/wraptypes.html#parser-modifications">Parser Modifications</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../internal/wraptypes.html#preprocessor">Preprocessor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../internal/wraptypes.html#cparser">CParser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../internal/wraptypes.html#ctypesparser">CtypesParser</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../internal/dist.html">Making a pyglet release</a></li>
+<li class="toctree-l1"><a class="reference internal" href="distribution.html">Distribution</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="distribution.html#self-contained-executables">Self-contained executables</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../internal/doc.html">Documentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../internal/doc.html#writing-documentation">Writing documentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../internal/doc.html#generation">Generation</a></li>
+</ul>
+</li>
+</ul>
+<ul class="simple">
+</ul>
+
+        
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../index.html">pyglet</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="index.html">pyglet Programming Guide</a> &raquo;</li>
+      
+    <li>The application event loop</li>
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            
+  <div class="section" id="the-application-event-loop">
+<h1>The application event loop<a class="headerlink" href="#the-application-event-loop" title="Permalink to this headline">¶</a></h1>
+<p>In order to let pyglet process operating system events such as mouse and
+keyboard events, applications need to enter an application event loop.  The
+event loop continuously checks for new events, dispatches those events, and
+updates the contents of all open windows.</p>
+<p>pyglet provides an application event loop that is tuned for performance and
+low power usage on Windows, Linux and Mac OS X.  Most applications need only
+call:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">pyglet</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>to enter the event loop after creating their initial set of windows and
+attaching event handlers.  The <cite>run</cite> function does not return until all open
+windows have been closed, or until <tt class="docutils literal"><span class="pre">pyglet.app.exit()</span></tt> is called.</p>
+<p>The pyglet application event loop dispatches window events (such as for mouse
+and keyboard input) as they occur and dispatches the <cite>on_draw</cite> event to
+each window after every iteration through the loop.</p>
+<p>To have additional code run periodically or every iteration through the loop,
+schedule functions on the clock (see <cite>Scheduling functions for future
+execution</cite>).  pyglet ensures that the loop iterates only as often as necessary
+to fulfil all scheduled functions and user input.</p>
+<div class="section" id="customising-the-event-loop">
+<h2>Customising the event loop<a class="headerlink" href="#customising-the-event-loop" title="Permalink to this headline">¶</a></h2>
+<p>The pyglet event loop is encapsulated in the <cite>EventLoop</cite> class, which provides
+several hooks that can be overridden for customising its behaviour.  This is
+recommended only for advanced users &#8211; typical applications and games are
+unlikely to require this functionality.</p>
+<p>To use the <cite>EventLoop</cite> class directly, instantiate it and call <cite>run</cite>:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">pyglet</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">EventLoop</span><span class="p">()</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Only one <cite>EventLoop</cite> can be running at a time; when the <cite>run</cite> method is called
+the module variable <cite>pyglet.app.event_loop</cite> is set to the running instance.
+Other pyglet modules such as <cite>pyglet.window</cite> depend on this.</p>
+<div class="section" id="event-loop-events">
+<h3>Event loop events<a class="headerlink" href="#event-loop-events" title="Permalink to this headline">¶</a></h3>
+<p>You can listen for several events on the event loop instance.  The most useful
+of these is <cite>on_window_close</cite>, which is dispatched whenever a window is
+closed.  The default handler for this event exits the event loop if there are
+no more windows.  The following example overrides this behaviour to exit the
+application whenever any window is closed:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">event_loop</span> <span class="o">=</span> <span class="n">pyglet</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">EventLoop</span><span class="p">()</span>
+
+<span class="nd">@event_loop.event</span>
+<span class="k">def</span> <span class="nf">on_window_close</span><span class="p">(</span><span class="n">window</span><span class="p">):</span>
+    <span class="n">event_loop</span><span class="o">.</span><span class="n">exit</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">pyglet</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">EVENT_HANDLED</span>
+
+<span class="n">event_loop</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="overriding-the-default-idle-policy">
+<h3>Overriding the default idle policy<a class="headerlink" href="#overriding-the-default-idle-policy" title="Permalink to this headline">¶</a></h3>
+<p>The <cite>EventLoop.idle</cite> method is called every iteration of the event loop.  It
+is responsible for calling scheduled clock functions, redrawing windows, and
+deciding how idle the application is.  You can override this method if you
+have specific requirements for tuning the performance of your application;
+especially if it uses many windows.</p>
+<p>The default implementation has the following algorithm:</p>
+<ol class="arabic simple">
+<li>Call <cite>clock.tick</cite> with <tt class="docutils literal"><span class="pre">poll=True</span></tt> to call any scheduled functions.</li>
+<li>Dispatch the <cite>on_draw</cite> event and call <cite>flip</cite> on every open window.</li>
+<li>Return the value of <cite>clock.get_sleep_time</cite>.</li>
+</ol>
+<p>The return value of the method is the number of seconds until the event loop
+needs to iterate again (unless there is an earlier user-input event); or
+<tt class="docutils literal"><span class="pre">None</span></tt> if the loop can wait for input indefinitely.</p>
+<p>Note that this default policy causes every window to be redrawn during every
+user event &#8211; if you have more knowledge about which events have an effect on
+which windows you can improve on the performance of this method.</p>
+</div>
+</div>
+<div class="section" id="dispatching-events-manually">
+<h2>Dispatching events manually<a class="headerlink" href="#dispatching-events-manually" title="Permalink to this headline">¶</a></h2>
+<p>Earlier versions of pyglet and certain other windowing toolkits such as PyGame
+and SDL require the application developer to write their own event loop.
+This &#8220;manual&#8221; event loop is usually just an inconvenience compared to
+<cite>pyglet.app.run</cite>, but can be necessary in some situations when combining
+pyglet with other toolkits.</p>
+<p>A simple event loop usually has the following form:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+    <span class="n">pyglet</span><span class="o">.</span><span class="n">clock</span><span class="o">.</span><span class="n">tick</span><span class="p">()</span>
+
+    <span class="k">for</span> <span class="n">window</span> <span class="ow">in</span> <span class="n">pyglet</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">windows</span><span class="p">:</span>
+        <span class="n">window</span><span class="o">.</span><span class="n">switch_to</span><span class="p">()</span>
+        <span class="n">window</span><span class="o">.</span><span class="n">dispatch_events</span><span class="p">()</span>
+        <span class="n">window</span><span class="o">.</span><span class="n">dispatch_event</span><span class="p">(</span><span class="s">&#39;on_draw&#39;</span><span class="p">)</span>
+        <span class="n">window</span><span class="o">.</span><span class="n">flip</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>The <cite>dispatch_events</cite> method checks the window&#8217;s operating system event queue
+for user input and dispatches any events found.  The method does not wait for
+input &#8211; if ther are no events pending, control is returned to the program
+immediately.</p>
+<p>The call to <cite>pyglet.clock.tick()</cite> is required for ensuring scheduled functions
+are called, including the internal data pump functions for playing sounds and
+video.</p>
+<p>Developers are strongly discouraged from writing pyglet applications with
+event loops like this:</p>
+<ul class="simple">
+<li>The <cite>EventLoop</cite> class provides plenty of hooks for most toolkits to be
+integrated without needing to resort to a manual event loop.</li>
+<li>Because <cite>EventLoop</cite> is tuned for specific operating systems, it is more
+responsive to user events, and continues calling clock functions while
+windows are being resized, and (on Mac OS X) the menu bar is being tracked.</li>
+<li>It is difficult to write a manual event loop that does not consume
+100% CPU while still remaining responsive to user input.</li>
+</ul>
+<p>The capability for writing manual event loops remains for legacy support and
+extreme circumstances.</p>
+</div>
+</div>
+
+
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="events.html" class="btn btn-neutral float-right" title="The pyglet event framework"/>Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="windowing.html" class="btn btn-neutral" title="Windowing"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2006-2013, Alex Holkner.
+    </p>
+  </div>
+
+  <a href="https://github.com/snide/sphinx_rtd_theme">Sphinx theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'1.2alpha1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

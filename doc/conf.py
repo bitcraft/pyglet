@@ -16,7 +16,7 @@ document_modules = ["pyglet", "tests"]
 # Patched extensions base path.
 sys.path.insert(0, os.path.abspath('.'))
 
-from ext.sphinx_mod import find_all_modules, write_build, write_blacklist
+# from ext.sphinx_mod import find_all_modules, write_build, write_blacklist
 
 # import the pyglet package.
 sys.path.insert(0, os.path.abspath('..'))
@@ -137,15 +137,15 @@ def skip_member(member, obj):
 sys.skip_member = skip_member
 
 # find modules
-sys.all_submodules = find_all_modules(document_modules, skip_modules)
+# sys.all_submodules = find_all_modules(document_modules, skip_modules)
 
 # Write dynamic rst text files
-write_blacklist(skip_modules["pyglet"], "blacklist.rst")
-
-now = datetime.datetime.fromtimestamp(time.time())
-data = (("Date", now.strftime("%Y/%m/%d %H:%M:%S")),
-        ("pyglet version", pyglet.version))
-write_build(data, 'build.rst')
+# write_blacklist(skip_modules["pyglet"], "blacklist.rst")
+#
+# now = datetime.datetime.fromtimestamp(time.time())
+# data = (("Date", now.strftime("%Y/%m/%d %H:%M:%S")),
+#         ("pyglet version", pyglet.version))
+# write_build(data, 'build.rst')
 
 
 # -- SPHINX STANDARD OPTIONS ---------------------------------------------
@@ -167,9 +167,6 @@ needs_sphinx = '1.1'
 # Add any Sphinx extension module names here, as strings. They can be extensions
 # coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
 extensions = ['sphinx.ext.autodoc',
-              'ext.sphinx_mod',
-              'ext.docstrings',
-              'ext.autosummary',
               'sphinx.ext.inheritance_diagram',
               'sphinx.ext.todo']
 
@@ -239,15 +236,18 @@ modindex_common_prefix = ['pyglet.']
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
-html_theme = 'pyglet'
+
+import sphinx_rtd_theme
+html_theme = "sphinx_rtd_theme"
+html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
 # documentation.
-#html_theme_options = dict()
+# html_theme_options = dict()
 
 # Add any paths that contain custom themes here, relative to this directory.
-html_theme_path = ["ext/theme"]
+# html_theme_path = ["ext/theme"]
 
 # The name for this set of Sphinx documents.  If None, it defaults to
 # "<project> v<release> documentation".

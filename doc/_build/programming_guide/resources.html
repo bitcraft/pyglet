@@ -1,0 +1,457 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Application resources &mdash; pyglet v1.2alpha1</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+  
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="top" title="pyglet v1.2alpha1" href="../index.html"/>
+        <link rel="up" title="pyglet Programming Guide" href="index.html"/>
+        <link rel="next" title="Debugging tools" href="debug.html"/>
+        <link rel="prev" title="Sound and video" href="media.html"/> 
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-nav-search">
+        <a href="../index.html" class="fa fa-home"> pyglet</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        
+        
+            <ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Chapters</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html">Writing a pyglet application</a></li>
+<li class="toctree-l2"><a class="reference internal" href="context.html">Creating an OpenGL context</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gl.html">The OpenGL interface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graphics.html">Graphics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="windowing.html">Windowing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="eventloop.html">The application event loop</a></li>
+<li class="toctree-l2"><a class="reference internal" href="events.html">The pyglet event framework</a></li>
+<li class="toctree-l2"><a class="reference internal" href="keyboard.html">Working with the keyboard</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mouse.html">Working with the mouse</a></li>
+<li class="toctree-l2"><a class="reference internal" href="input.html">Working with other input devices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="time.html">Keeping track of time</a></li>
+<li class="toctree-l2"><a class="reference internal" href="text.html">Displaying text</a></li>
+<li class="toctree-l2"><a class="reference internal" href="image.html">Images</a></li>
+<li class="toctree-l2"><a class="reference internal" href="media.html">Sound and video</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="">Application resources</a></li>
+<li class="toctree-l2"><a class="reference internal" href="debug.html">Debugging tools</a></li>
+<li class="toctree-l2"><a class="reference internal" href="features1.1.html">Appendix: Migrating to pyglet 1.1</a></li>
+</ul>
+</li>
+</ul>
+<ul class="simple">
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../internal/main.html">Importing pyglet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="advanced.html">Advanced topics</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="advanced.html#environment-settings">Environment settings</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../internal/gl.html">OpenGL Interface Implementation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../internal/gl.html#ctypes-linkage">ctypes linkage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../internal/gl.html#missing-extensions">Missing extensions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../internal/generated.html">ctypes Wrapper Generation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../internal/generated.html#generating-gl-wrappers">Generating GL wrappers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../internal/generated.html#generated-gl-wrappers">Generated GL wrappers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../internal/generated.html#generating-xlib-wrappers">Generating Xlib wrappers</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../internal/wraptypes.html">wraptypes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../internal/wraptypes.html#parser-modifications">Parser Modifications</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../internal/wraptypes.html#preprocessor">Preprocessor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../internal/wraptypes.html#cparser">CParser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../internal/wraptypes.html#ctypesparser">CtypesParser</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../internal/dist.html">Making a pyglet release</a></li>
+<li class="toctree-l1"><a class="reference internal" href="distribution.html">Distribution</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="distribution.html#self-contained-executables">Self-contained executables</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../internal/doc.html">Documentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../internal/doc.html#writing-documentation">Writing documentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../internal/doc.html#generation">Generation</a></li>
+</ul>
+</li>
+</ul>
+<ul class="simple">
+</ul>
+
+        
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../index.html">pyglet</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="index.html">pyglet Programming Guide</a> &raquo;</li>
+      
+    <li>Application resources</li>
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            
+  <div class="section" id="application-resources">
+<h1>Application resources<a class="headerlink" href="#application-resources" title="Permalink to this headline">¶</a></h1>
+<p>Previous sections in this guide have described how to load images, media and
+text documents using pyglet.  Applications also usually have the need to load
+other data files: for example, level descriptions in a game, internationalised
+strings, and so on.</p>
+<p>Programmers are often tempted to load, for example, an image required by their
+application with:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">image</span> <span class="o">=</span> <span class="n">pyglet</span><span class="o">.</span><span class="n">image</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s">&#39;logo.png&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This code assumes <tt class="docutils literal"><span class="pre">logo.png</span></tt> is in the current working directory.
+Unfortunately the working directory is not necessarily the same as the
+directory containing the application script files.</p>
+<ul class="simple">
+<li>Applications started from the command line can start from an arbitrary
+working directory.</li>
+<li>Applications bundled into an egg, Mac OS X package or Windows executable
+may have their resources inside a ZIP file.</li>
+<li>The application might need to change the working directory in order to
+work with the user&#8217;s files.</li>
+</ul>
+<p>A common workaround for this is to construct a path relative to the script
+file instead of the working directory:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">os</span>
+
+<span class="n">script_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">__file__</span><span class="p">)</span>
+<span class="n">path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">script_dir</span><span class="p">,</span> <span class="s">&#39;logo.png&#39;</span><span class="p">)</span>
+<span class="n">image</span> <span class="o">=</span> <span class="n">pyglet</span><span class="o">.</span><span class="n">image</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This, besides being tedious to write, still does not work for resources within
+ZIP files, and can be troublesome in projects that span multiple packages.</p>
+<p>The <cite>pyglet.resource</cite> module solves this problem elegantly:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">image</span> <span class="o">=</span> <span class="n">pyglet</span><span class="o">.</span><span class="n">resource</span><span class="o">.</span><span class="n">image</span><span class="p">(</span><span class="s">&#39;logo.png&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The following sections describe exactly how the resources are located, and how
+the behaviour can be customised.</p>
+<div class="section" id="loading-resources">
+<h2>Loading resources<a class="headerlink" href="#loading-resources" title="Permalink to this headline">¶</a></h2>
+<p>Use the <cite>pyglet.resource</cite> module when files shipped with the application need
+to be loaded.  For example, instead of writing:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">data_file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s">&#39;file.txt&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>use:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">data_file</span> <span class="o">=</span> <span class="n">pyglet</span><span class="o">.</span><span class="n">resource</span><span class="o">.</span><span class="n">file</span><span class="p">(</span><span class="s">&#39;file.txt&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>There are also convenience functions for loading media files for pyglet.  The
+following table shows the equivalent resource functions for the standard file
+functions.</p>
+<blockquote>
+<div><table border="1" class="docutils">
+<colgroup>
+<col width="33%" />
+<col width="33%" />
+<col width="33%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">File function</th>
+<th class="head">Resource function</th>
+<th class="head">Type</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><tt class="docutils literal"><span class="pre">open</span></tt></td>
+<td><cite>pyglet.resource.file</cite></td>
+<td>File-like object</td>
+</tr>
+<tr class="row-odd"><td><cite>pyglet.image.load</cite></td>
+<td><cite>pyglet.resource.image</cite></td>
+<td><cite>Texture</cite> or <cite>TextureRegion</cite></td>
+</tr>
+<tr class="row-even"><td><cite>pyglet.image.load</cite></td>
+<td><cite>pyglet.resource.texture</cite></td>
+<td><cite>Texture</cite></td>
+</tr>
+<tr class="row-odd"><td><cite>pyglet.image.load_animation</cite></td>
+<td><cite>pyglet.resource.animation</cite></td>
+<td><cite>Animation</cite></td>
+</tr>
+<tr class="row-even"><td><cite>pyglet.media.load</cite></td>
+<td><cite>pyglet.resource.media</cite></td>
+<td><cite>Source</cite></td>
+</tr>
+<tr class="row-odd"><td><div class="first last line-block">
+<div class="line"><cite>pyglet.text.load</cite></div>
+<div class="line">mimetype = <tt class="docutils literal"><span class="pre">text/plain</span></tt></div>
+</div>
+</td>
+<td><cite>pyglet.resource.text</cite></td>
+<td><cite>UnformattedDocument</cite></td>
+</tr>
+<tr class="row-even"><td><div class="first last line-block">
+<div class="line"><cite>pyglet.text.load</cite></div>
+<div class="line">mimetype = <tt class="docutils literal"><span class="pre">text/html</span></tt></div>
+</div>
+</td>
+<td><cite>pyglet.resource.html</cite></td>
+<td><cite>FormattedDocument</cite></td>
+</tr>
+<tr class="row-odd"><td><div class="first last line-block">
+<div class="line"><cite>pyglet.text.load</cite></div>
+<div class="line">mimetype = <tt class="docutils literal"><span class="pre">text/vnd.pyglet-attributed</span></tt></div>
+</div>
+</td>
+<td><cite>pyglet.resource.attributed</cite></td>
+<td><cite>FormattedDocument</cite></td>
+</tr>
+<tr class="row-even"><td><cite>pyglet.font.add_file</cite></td>
+<td><cite>pyglet.resource.add_font</cite></td>
+<td><tt class="docutils literal"><span class="pre">None</span></tt></td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+<p><cite>pyglet.resource.texture</cite> is for loading stand-alone textures, and would be
+required when using the texture for a 3D model.</p>
+<p><cite>pyglet.resource.image</cite> is optimised for loading sprite-like images that can
+have their texture coordinates adjusted.  The resource module attempts to pack
+small images into larger textures (called an atlas) for efficient rendering
+(which is why the return type of this function can be <cite>TextureRegion</cite>).</p>
+<div class="section" id="resource-locations">
+<h3>Resource locations<a class="headerlink" href="#resource-locations" title="Permalink to this headline">¶</a></h3>
+<p>Some resource files reference other files by name.  For example, an HTML
+document can contain <tt class="docutils literal"><span class="pre">&lt;img</span> <span class="pre">src=&quot;image.png&quot;</span> <span class="pre">/&gt;</span></tt> elements.  In this case your
+application needs to locate <tt class="docutils literal"><span class="pre">image.png</span></tt> relative to the original HTML file.</p>
+<p>Use <cite>pyglet.resource.location</cite> to get a <cite>Location</cite> object describing the
+location of an application resource.  This location might be a file system
+directory or a directory within a ZIP file.  The <cite>Location</cite> object can
+directly open files by name, so your application does not need to distinguish
+between these cases.</p>
+<p>In the following example, a <tt class="docutils literal"><span class="pre">thumbnails.txt</span></tt> file is assumed to contain a
+list of image filenames (one per line), which are then loaded assuming the
+image files are located in the same directory as the <tt class="docutils literal"><span class="pre">thumbnails.txt</span></tt> file:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">thumbnails_file</span> <span class="o">=</span> <span class="n">pyglet</span><span class="o">.</span><span class="n">resource</span><span class="o">.</span><span class="n">file</span><span class="p">(</span><span class="s">&#39;thumbnails.txt&#39;</span><span class="p">,</span> <span class="s">&#39;rt&#39;</span><span class="p">)</span>
+<span class="n">thumbnails_location</span> <span class="o">=</span> <span class="n">pyglet</span><span class="o">.</span><span class="n">resource</span><span class="o">.</span><span class="n">location</span><span class="p">(</span><span class="s">&#39;thumbnails.txt&#39;</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">thumbnails_file</span><span class="p">:</span>
+    <span class="n">filename</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+    <span class="n">image_file</span> <span class="o">=</span> <span class="n">thumbnails_location</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+    <span class="n">image</span> <span class="o">=</span> <span class="n">pyglet</span><span class="o">.</span><span class="n">image</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="nb">file</span><span class="o">=</span><span class="n">image_file</span><span class="p">)</span>
+    <span class="c"># Do something with `image`...</span>
+</pre></div>
+</div>
+<p>This code correctly ignores other images with the same filename that might
+appear elsewhere on the resource path.</p>
+</div>
+</div>
+<div class="section" id="specifying-the-resource-path">
+<h2>Specifying the resource path<a class="headerlink" href="#specifying-the-resource-path" title="Permalink to this headline">¶</a></h2>
+<p>By default, only the script home directory is searched (the directory
+containing the <tt class="docutils literal"><span class="pre">__main__</span></tt> module).  You can set <cite>pyglet.resource.path</cite> to a
+list of locations to search in order.  This list is indexed, so after
+modifying it you will need to call <cite>pyglet.resource.reindex</cite>.</p>
+<p>Each item in the path list is either a path relative to the script home, or
+the name of a Python module preceded with an ampersand (<tt class="docutils literal"><span class="pre">&#64;</span></tt>).  For example,
+if you would like to package all your resources in a <tt class="docutils literal"><span class="pre">res</span></tt> directory:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">pyglet</span><span class="o">.</span><span class="n">resource</span><span class="o">.</span><span class="n">path</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;res&#39;</span><span class="p">]</span>
+<span class="n">pyglet</span><span class="o">.</span><span class="n">resource</span><span class="o">.</span><span class="n">reindex</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Items on the path are not searched recursively, so if your resource directory
+itself has subdirectories, these need to be specified explicitly:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">pyglet</span><span class="o">.</span><span class="n">resource</span><span class="o">.</span><span class="n">path</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;res&#39;</span><span class="p">,</span> <span class="s">&#39;res/images&#39;</span><span class="p">,</span> <span class="s">&#39;res/sounds&#39;</span><span class="p">,</span> <span class="s">&#39;res/fonts&#39;</span><span class="p">]</span>
+<span class="n">pyglet</span><span class="o">.</span><span class="n">resource</span><span class="o">.</span><span class="n">reindex</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>The entries in the resource path always use forward slash characters as path
+separators even when the operating systems using a different character.</p>
+<p>Specifying module names makes it easy to group code with its resources.  The
+following example uses the directory containing the hypothetical
+<tt class="docutils literal"><span class="pre">gui.skins.default</span></tt> for resources:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">pyglet</span><span class="o">.</span><span class="n">resource</span><span class="o">.</span><span class="n">path</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;@gui.skins.default&#39;</span><span class="p">,</span> <span class="s">&#39;.&#39;</span><span class="p">]</span>
+<span class="n">pyglet</span><span class="o">.</span><span class="n">resource</span><span class="o">.</span><span class="n">reindex</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="multiple-loaders">
+<h2>Multiple loaders<a class="headerlink" href="#multiple-loaders" title="Permalink to this headline">¶</a></h2>
+<p>A <cite>Loader</cite> encapsulates a complete resource path and cache.  This lets your
+application cleanly separate resource loading of different modules.  Loaders
+are constructed for a given search path, and exposes the same methods as the
+global <cite>pyglet.resource</cite> module functions.</p>
+<p>For example, if a module needs to load its own graphics but does not want to
+interfere with the rest of the application&#8217;s resource loading, it would create
+its own <cite>Loader</cite> with a local search path:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">loader</span> <span class="o">=</span> <span class="n">pyglet</span><span class="o">.</span><span class="n">resource</span><span class="o">.</span><span class="n">Loader</span><span class="p">([</span><span class="s">&#39;@&#39;</span> <span class="o">+</span> <span class="n">__name__</span><span class="p">])</span>
+<span class="n">image</span> <span class="o">=</span> <span class="n">loader</span><span class="o">.</span><span class="n">image</span><span class="p">(</span><span class="s">&#39;logo.png&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This is particularly suitable for &#8220;plugin&#8221; modules.</p>
+<p>You can also use a <cite>Loader</cite> instance to load a set of resources relative to
+some user-specified document directory.  The following example creates a
+loader for a directory specified on the command line:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">sys</span>
+<span class="n">home</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+<span class="n">loader</span> <span class="o">=</span> <span class="n">pyglet</span><span class="o">.</span><span class="n">resource</span><span class="o">.</span><span class="n">Loader</span><span class="p">(</span><span class="n">script_home</span><span class="o">=</span><span class="p">[</span><span class="n">home</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>This is the only way that absolute directories and resources not bundled with
+an application should be used with <cite>pyglet.resource</cite>.</p>
+</div>
+<div class="section" id="saving-user-preferences">
+<h2>Saving user preferences<a class="headerlink" href="#saving-user-preferences" title="Permalink to this headline">¶</a></h2>
+<p>Because Python applications can be distributed in several ways, including
+within ZIP files, it is usually not feasible to save user preferences, high
+score lists, and so on within the application directory (or worse, the working
+directory).</p>
+<p>The <cite>pyglet.resource.get_settings_path</cite> function returns a directory suitable
+for writing arbitrary user-centric data.  The directory used follows the
+operating system&#8217;s convention:</p>
+<ul class="simple">
+<li><tt class="docutils literal"><span class="pre">~/.config/ApplicationName/</span></tt> on Linux (depends on <cite>XDG_CONFIG_HOME</cite> environment variable).</li>
+<li><tt class="docutils literal"><span class="pre">$HOME\Application</span> <span class="pre">Settings\ApplicationName</span></tt> on Windows</li>
+<li><tt class="docutils literal"><span class="pre">~/Library/Application</span> <span class="pre">Support/ApplicationName</span></tt> on Mac OS X</li>
+</ul>
+<p>The returned directory name is not guaranteed to exist &#8211; it is the
+application&#8217;s responsibility to create it.  The following example opens a high
+score list file for a game called &#8220;SuperGame&#8221; into the settings directory:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">os</span>
+
+<span class="nb">dir</span> <span class="o">=</span> <span class="n">pyglet</span><span class="o">.</span><span class="n">resource</span><span class="o">.</span><span class="n">get_settings_path</span><span class="p">(</span><span class="s">&#39;SuperGame&#39;</span><span class="p">)</span>
+<span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="nb">dir</span><span class="p">):</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="nb">dir</span><span class="p">)</span>
+<span class="n">filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">dir</span><span class="p">,</span> <span class="s">&#39;highscores.txt&#39;</span><span class="p">)</span>
+<span class="nb">file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s">&#39;wt&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="debug.html" class="btn btn-neutral float-right" title="Debugging tools"/>Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="media.html" class="btn btn-neutral" title="Sound and video"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2006-2013, Alex Holkner.
+    </p>
+  </div>
+
+  <a href="https://github.com/snide/sphinx_rtd_theme">Sphinx theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'1.2alpha1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

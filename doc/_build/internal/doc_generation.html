@@ -1,0 +1,287 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Pyglet documentation system &mdash; pyglet v1.2alpha1</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+  
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="top" title="pyglet v1.2alpha1" href="../index.html"/>
+        <link rel="up" title="Documentation" href="doc.html"/>
+        <link rel="prev" title="Documentation" href="doc.html"/> 
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-nav-search">
+        <a href="../index.html" class="fa fa-home"> pyglet</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        
+        
+            <ul>
+<li class="toctree-l1"><a class="reference internal" href="../programming_guide/index.html">Chapters</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../programming_guide/installation.html">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_guide/quickstart.html">Writing a pyglet application</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_guide/context.html">Creating an OpenGL context</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_guide/gl.html">The OpenGL interface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_guide/graphics.html">Graphics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_guide/windowing.html">Windowing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_guide/eventloop.html">The application event loop</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_guide/events.html">The pyglet event framework</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_guide/keyboard.html">Working with the keyboard</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_guide/mouse.html">Working with the mouse</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_guide/input.html">Working with other input devices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_guide/time.html">Keeping track of time</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_guide/text.html">Displaying text</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_guide/image.html">Images</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_guide/media.html">Sound and video</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_guide/resources.html">Application resources</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_guide/debug.html">Debugging tools</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_guide/features1.1.html">Appendix: Migrating to pyglet 1.1</a></li>
+</ul>
+</li>
+</ul>
+<ul class="simple">
+</ul>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="main.html">Importing pyglet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../programming_guide/advanced.html">Advanced topics</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../programming_guide/advanced.html#environment-settings">Environment settings</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="gl.html">OpenGL Interface Implementation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="gl.html#ctypes-linkage">ctypes linkage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gl.html#missing-extensions">Missing extensions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="generated.html">ctypes Wrapper Generation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="generated.html#generating-gl-wrappers">Generating GL wrappers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generated.html#generated-gl-wrappers">Generated GL wrappers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generated.html#generating-xlib-wrappers">Generating Xlib wrappers</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="wraptypes.html">wraptypes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="wraptypes.html#parser-modifications">Parser Modifications</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wraptypes.html#preprocessor">Preprocessor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wraptypes.html#cparser">CParser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wraptypes.html#ctypesparser">CtypesParser</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="dist.html">Making a pyglet release</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../programming_guide/distribution.html">Distribution</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../programming_guide/distribution.html#self-contained-executables">Self-contained executables</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="doc.html">Documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="doc.html#writing-documentation">Writing documentation</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="doc.html#generation">Generation</a></li>
+</ul>
+</li>
+</ul>
+<ul class="simple">
+</ul>
+
+        
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../index.html">pyglet</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="doc.html">Documentation</a> &raquo;</li>
+      
+    <li>Pyglet documentation system</li>
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            
+  <div class="section" id="pyglet-documentation-system">
+<h1>Pyglet documentation system<a class="headerlink" href="#pyglet-documentation-system" title="Permalink to this headline">¶</a></h1>
+<p>The documentation build configuration file is <tt class="docutils literal"><span class="pre">pyglet/doc/conf.py</span></tt>.</p>
+<p>It is a <tt class="docutils literal"><span class="pre">sphinx</span></tt> standard configuration file, but adds some requirements of <tt class="docutils literal"><span class="pre">pyglet</span></tt> package.</p>
+<p>All the modifications to <tt class="docutils literal"><span class="pre">sphinx</span></tt> patching are in the <tt class="docutils literal"><span class="pre">ext</span></tt> folder.</p>
+<ul class="simple">
+<li>Separate Events from regular methods.</li>
+<li><tt class="docutils literal"><span class="pre">autosummary</span></tt> extension: Adds the hidden property and the capability to skip some modules and members</li>
+</ul>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The patching requires a standard <tt class="docutils literal"><span class="pre">sphinx</span></tt> version 1.1.3</p>
+</div>
+<div class="section" id="api-templates">
+<h2>API Templates<a class="headerlink" href="#api-templates" title="Permalink to this headline">¶</a></h2>
+<p>All the <tt class="docutils literal"><span class="pre">*.rst</span></tt> files in the <tt class="docutils literal"><span class="pre">_template</span></tt> folder configure the layout of the API documentation.</p>
+<p>The entry point is <tt class="docutils literal"><span class="pre">_template/package.rst</span></tt>.</p>
+</div>
+<div class="section" id="html-theme">
+<h2>HTML Theme<a class="headerlink" href="#html-theme" title="Permalink to this headline">¶</a></h2>
+<p>The custom sphinx theme is in the <tt class="docutils literal"><span class="pre">ext/theme</span></tt> folder.</p>
+</div>
+<div class="section" id="rest-files">
+<h2>ReST files<a class="headerlink" href="#rest-files" title="Permalink to this headline">¶</a></h2>
+<p>The literature is a set of <tt class="docutils literal"><span class="pre">*.txt</span></tt> files.</p>
+<p>The entry point is <tt class="docutils literal"><span class="pre">index.txt</span></tt>.</p>
+<p>The <tt class="docutils literal"><span class="pre">autosummary</span></tt> directive at <tt class="docutils literal"><span class="pre">index.txt</span></tt> directive
+is mandatory, it generates all the API documentation files.</p>
+</div>
+<div class="section" id="omisions">
+<h2>Omisions<a class="headerlink" href="#omisions" title="Permalink to this headline">¶</a></h2>
+<p>Some things can not be imported when documenting, or are not to be documented,</p>
+<div class="section" id="skipped-members">
+<h3>Skipped members<a class="headerlink" href="#skipped-members" title="Permalink to this headline">¶</a></h3>
+<p>The <tt class="docutils literal"><span class="pre">skip_member</span></tt> function in <tt class="docutils literal"><span class="pre">conf.py</span></tt> contains rules to
+prevent certain members to appear in the documentation</p>
+<p>Due to the large number of members that were listed when generating,
+a modification in  <tt class="docutils literal"><span class="pre">autosummary</span></tt> prevents all members that are not
+defined in the current module to appear in the member lists.</p>
+<p>This means that if a module imports members like this:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">pyglet.gl</span> <span class="kn">import</span> <span class="o">*</span>
+</pre></div>
+</div>
+<p>That members are not listed in the module documentation.</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p>There is one exception to the rule, for clarity sake:</p>
+<ul class="last simple">
+<li>If a member is defined in <tt class="docutils literal"><span class="pre">module.base</span></tt>, and imported by <tt class="docutils literal"><span class="pre">module</span></tt>, it does appear in the <tt class="docutils literal"><span class="pre">module</span></tt> page lists.</li>
+</ul>
+</div>
+</div>
+<div class="section" id="skipped-modules">
+<h3>Skipped modules<a class="headerlink" href="#skipped-modules" title="Permalink to this headline">¶</a></h3>
+<p>Some modules in <tt class="docutils literal"><span class="pre">pyglet</span></tt> can not be imported when documenting,
+so a black list in <tt class="docutils literal"><span class="pre">conf.py</span></tt> contains all the modules that are
+not to be documented:</p>
+</div>
+</div>
+<div class="section" id="known-bugs">
+<h2>Known bugs<a class="headerlink" href="#known-bugs" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>The Window class attributes are not documented because they are defined at BaseWindow class.</li>
+</ul>
+</div>
+</div>
+
+
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="doc.html" class="btn btn-neutral" title="Documentation"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2006-2013, Alex Holkner.
+    </p>
+  </div>
+
+  <a href="https://github.com/snide/sphinx_rtd_theme">Sphinx theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'1.2alpha1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

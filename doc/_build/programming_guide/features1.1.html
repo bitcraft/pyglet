@@ -1,0 +1,488 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Appendix: Migrating to pyglet 1.1 &mdash; pyglet v1.2alpha1</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+  
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="top" title="pyglet v1.2alpha1" href="../index.html"/>
+        <link rel="up" title="pyglet Programming Guide" href="index.html"/>
+        <link rel="next" title="Importing pyglet" href="../internal/main.html"/>
+        <link rel="prev" title="Debugging tools" href="debug.html"/> 
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-nav-search">
+        <a href="../index.html" class="fa fa-home"> pyglet</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        
+        
+            <ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Chapters</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html">Writing a pyglet application</a></li>
+<li class="toctree-l2"><a class="reference internal" href="context.html">Creating an OpenGL context</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gl.html">The OpenGL interface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graphics.html">Graphics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="windowing.html">Windowing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="eventloop.html">The application event loop</a></li>
+<li class="toctree-l2"><a class="reference internal" href="events.html">The pyglet event framework</a></li>
+<li class="toctree-l2"><a class="reference internal" href="keyboard.html">Working with the keyboard</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mouse.html">Working with the mouse</a></li>
+<li class="toctree-l2"><a class="reference internal" href="input.html">Working with other input devices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="time.html">Keeping track of time</a></li>
+<li class="toctree-l2"><a class="reference internal" href="text.html">Displaying text</a></li>
+<li class="toctree-l2"><a class="reference internal" href="image.html">Images</a></li>
+<li class="toctree-l2"><a class="reference internal" href="media.html">Sound and video</a></li>
+<li class="toctree-l2"><a class="reference internal" href="resources.html">Application resources</a></li>
+<li class="toctree-l2"><a class="reference internal" href="debug.html">Debugging tools</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="">Appendix: Migrating to pyglet 1.1</a></li>
+</ul>
+</li>
+</ul>
+<ul class="simple">
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../internal/main.html">Importing pyglet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="advanced.html">Advanced topics</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="advanced.html#environment-settings">Environment settings</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../internal/gl.html">OpenGL Interface Implementation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../internal/gl.html#ctypes-linkage">ctypes linkage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../internal/gl.html#missing-extensions">Missing extensions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../internal/generated.html">ctypes Wrapper Generation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../internal/generated.html#generating-gl-wrappers">Generating GL wrappers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../internal/generated.html#generated-gl-wrappers">Generated GL wrappers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../internal/generated.html#generating-xlib-wrappers">Generating Xlib wrappers</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../internal/wraptypes.html">wraptypes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../internal/wraptypes.html#parser-modifications">Parser Modifications</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../internal/wraptypes.html#preprocessor">Preprocessor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../internal/wraptypes.html#cparser">CParser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../internal/wraptypes.html#ctypesparser">CtypesParser</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../internal/dist.html">Making a pyglet release</a></li>
+<li class="toctree-l1"><a class="reference internal" href="distribution.html">Distribution</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="distribution.html#self-contained-executables">Self-contained executables</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../internal/doc.html">Documentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../internal/doc.html#writing-documentation">Writing documentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../internal/doc.html#generation">Generation</a></li>
+</ul>
+</li>
+</ul>
+<ul class="simple">
+</ul>
+
+        
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../index.html">pyglet</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="index.html">pyglet Programming Guide</a> &raquo;</li>
+      
+    <li>Appendix: Migrating to pyglet 1.1</li>
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            
+  <div class="section" id="appendix-migrating-to-pyglet-1-1">
+<h1>Appendix: Migrating to pyglet 1.1<a class="headerlink" href="#appendix-migrating-to-pyglet-1-1" title="Permalink to this headline">¶</a></h1>
+<p>pyglet 1.1 introduces new features for rendering high performance graphics and
+text, is more convenient to use, and integrates better with the operating
+system.  Some of the existing interfaces have also been redesigned slightly to
+conform with standard Python practice or to fix design flaws.</p>
+<div class="contents local topic" id="contents">
+<ul class="simple">
+<li><a class="reference internal" href="#compatibility-and-deprecation" id="id1">Compatibility and deprecation</a></li>
+<li><a class="reference internal" href="#deprecated-methods" id="id2">Deprecated methods</a></li>
+<li><a class="reference internal" href="#new-features-replacing-standard-practice" id="id3">New features replacing standard practice</a><ul>
+<li><a class="reference internal" href="#importing-pyglet" id="id4">Importing pyglet</a></li>
+<li><a class="reference internal" href="#application-event-loop" id="id5">Application event loop</a></li>
+<li><a class="reference internal" href="#loading-resources" id="id6">Loading resources</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#new-graphics-features" id="id7">New graphics features</a></li>
+<li><a class="reference internal" href="#new-text-features" id="id8">New text features</a></li>
+<li><a class="reference internal" href="#other-new-features" id="id9">Other new features</a></li>
+</ul>
+</div>
+<div class="section" id="compatibility-and-deprecation">
+<h2><a class="toc-backref" href="#id1">Compatibility and deprecation</a><a class="headerlink" href="#compatibility-and-deprecation" title="Permalink to this headline">¶</a></h2>
+<p>pyglet 1.1 is backward compatible with pyglet 1.0.  Any application that uses
+only public and documented methods of pyglet 1.0 will continue to work
+unchanged in pyglet 1.1.  If you encounter an issue where this is not the
+case, please consider it a bug in pyglet and file an issue report.</p>
+<p>Some methods have been marked <em>deprecated</em> in pyglet 1.1.  These methods
+continue to work, but have been superceded by newer methods that are either
+more efficient or have a better design.  The API reference has a complete list
+of deprecated methods; the main changes are described in the next section.</p>
+<ul class="simple">
+<li>Continue to use deprecated methods if your application needs to work with
+pyglet 1.0 as well as pyglet 1.1.</li>
+<li>New applications should not use deprecated methods.</li>
+</ul>
+<p>Deprecated methods will continue to be supported in all minor revisions of
+pyglet 1.x.  A pyglet 2.0 release will no longer support these methods.</p>
+</div>
+<div class="section" id="deprecated-methods">
+<h2><a class="toc-backref" href="#id2">Deprecated methods</a><a class="headerlink" href="#deprecated-methods" title="Permalink to this headline">¶</a></h2>
+<p>The following minor changes have been made for design or efficiency reasons.
+Applications which no longer need to support pyglet 1.0 should make the
+appropriate changes to ensure the deprecated methods are not called.</p>
+<p>The <tt class="docutils literal"><span class="pre">dispatch_events</span></tt> method on <cite>Player</cite> and the equivalent function on the
+<cite>pyglet.media</cite> module should no longer be called.  In pyglet 1.1, media
+objects schedule an update function on <cite>pyglet.clock</cite> at an appropriate
+interval.  New applications using media are required to call
+<cite>pyglet.clock.tick</cite> periodically.</p>
+<p>The <cite>AbstractImage</cite> properties <tt class="docutils literal"><span class="pre">texture</span></tt>, <tt class="docutils literal"><span class="pre">image_data</span></tt>, and so on have
+been replaced with equivalent methods <tt class="docutils literal"><span class="pre">get_texture</span></tt>, <tt class="docutils literal"><span class="pre">get_image_data</span></tt>,
+etc.</p>
+<p>The <cite>ImageData</cite> properties <cite>data</cite>, <cite>format</cite> and <cite>pitch</cite>, which together were
+used to extract pixel data from an image, have been replaced with a single
+function <tt class="docutils literal"><span class="pre">get_data</span></tt>.  The <cite>format</cite> and <cite>pitch</cite> properties should now be used
+only to determine the current format and pitch of the image.</p>
+<p>The <cite>get_current_context</cite> function has been replaced with a global variable,
+<cite>current_context</cite>, for efficiency.</p>
+</div>
+<div class="section" id="new-features-replacing-standard-practice">
+<h2><a class="toc-backref" href="#id3">New features replacing standard practice</a><a class="headerlink" href="#new-features-replacing-standard-practice" title="Permalink to this headline">¶</a></h2>
+<p>pyglet 1.1 introduces new features that make it easier to program with, so the
+standard practice as followed in many of the pyglet example programs has
+changed.</p>
+<div class="section" id="importing-pyglet">
+<h3><a class="toc-backref" href="#id4">Importing pyglet</a><a class="headerlink" href="#importing-pyglet" title="Permalink to this headline">¶</a></h3>
+<p>In pyglet 1.0, it was necessary to explicitly import each submodule required
+by the application; for example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">pyglet</span> <span class="kn">import</span> <span class="n">font</span>
+<span class="kn">from</span> <span class="nn">pyglet</span> <span class="kn">import</span> <span class="n">image</span>
+<span class="kn">from</span> <span class="nn">pyglet</span> <span class="kn">import</span> <span class="n">window</span>
+</pre></div>
+</div>
+<p>pyglet now lazily loads submodules on demand, so an application can get away
+with importing just <cite>pyglet</cite>.  This is especially handy for modules that are
+typically only used once in an application, and frees up the names <tt class="docutils literal"><span class="pre">font</span></tt>,
+<tt class="docutils literal"><span class="pre">image</span></tt>, <tt class="docutils literal"><span class="pre">window</span></tt> and so on for the application developer.  For example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">window</span> <span class="o">=</span> <span class="n">pyglet</span><span class="o">.</span><span class="n">window</span><span class="o">.</span><span class="n">Window</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="application-event-loop">
+<h3><a class="toc-backref" href="#id5">Application event loop</a><a class="headerlink" href="#application-event-loop" title="Permalink to this headline">¶</a></h3>
+<p>Every application using pyglet 1.0 provides its own event loop, such as:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">while</span> <span class="ow">not</span> <span class="n">window</span><span class="o">.</span><span class="n">has_exit</span><span class="p">:</span>
+    <span class="n">dt</span> <span class="o">=</span> <span class="n">clock</span><span class="o">.</span><span class="n">tick</span><span class="p">()</span>
+    <span class="n">update</span><span class="p">(</span><span class="n">dt</span><span class="p">)</span>
+
+    <span class="n">window</span><span class="o">.</span><span class="n">dispatch_events</span><span class="p">()</span>
+    <span class="n">window</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+    <span class="n">draw</span><span class="p">()</span>
+    <span class="n">window</span><span class="o">.</span><span class="n">flip</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Besides being somewhat repetitious to type, this type of event loop is
+difficult to extend with more windows, and exausts all available system
+resources, even if the application is not doing anything.</p>
+<p>The new <cite>pyglet.app</cite> module provides an application event loop that is
+less demanding of the CPU yet more responsive to user events.  A complete
+application that opens an empty window can be written with:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">window</span> <span class="o">=</span> <span class="n">pyglet</span><span class="o">.</span><span class="n">window</span><span class="o">.</span><span class="n">Window</span><span class="p">()</span>
+
+<span class="nd">@window.event</span>
+<span class="k">def</span> <span class="nf">on_draw</span><span class="p">():</span>
+    <span class="n">window</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+
+<span class="n">pyglet</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Note the new <cite>on_draw</cite> event, which makes it easy to specify different drawing
+functions for each window.  The <cite>pyglet.app</cite> event loop takes care of
+dispatching events, ticking the clock, calling the draw function and flipping
+the window buffer.</p>
+<p>Update functions can be scheduled on the clock.  To have an update function be
+called as often as possible, use <cite>clock.schedule</cite> (this effectively
+degenerates into the older <cite>dispatch_events</cite> practice of thrashing the CPU):</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="n">dt</span><span class="p">):</span>
+    <span class="k">pass</span>
+<span class="n">clock</span><span class="o">.</span><span class="n">schedule</span><span class="p">(</span><span class="n">update</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Usually applications can update at a less frequent interval.  For example, a
+game that is designed to run at 60Hz can use <cite>clock.schedule_interval</cite>:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="n">dt</span><span class="p">):</span>
+    <span class="k">pass</span>
+<span class="n">clock</span><span class="o">.</span><span class="n">schedule_interval</span><span class="p">(</span><span class="n">update</span><span class="p">,</span> <span class="mi">1</span><span class="o">/</span><span class="mf">60.0</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This also removes the need for <cite>clock.set_fps_limit</cite>.</p>
+<p>Besides the advantages already listed, windows managed by the event loop
+will not block while being resized or moved; and the menu bar on OS X can be
+interacted with without blocking the application.</p>
+<p><strong>It is highly recommended that all applications use the event loop.</strong>  The
+loop can be extended if you need to add additional hooks or integrate with
+another package.  Applications continuing to use <cite>Window.dispatch_events</cite>
+gain no advantage, but suffer from poorer response, increased CPU usage and
+artifacts during window resizing and moving.</p>
+<p>See <cite>The application event loop</cite> for more details.</p>
+</div>
+<div class="section" id="loading-resources">
+<h3><a class="toc-backref" href="#id6">Loading resources</a><a class="headerlink" href="#loading-resources" title="Permalink to this headline">¶</a></h3>
+<p>Locating resources such as images, sound and video files, data files and fonts
+is difficult to do correctly across all platforms, considering the effects of
+a changing working directory and various distribution packages such as
+setuptools, py2exe and py2app.</p>
+<p>The new <cite>pyglet.resource</cite> module implements the correct logic for all these
+cases, making it simple to load resources that belong to a specific module or
+the application as a whole.  A resource path can be set that is indexed once,
+and can include filesystem directories, Python module paths and ZIP files.</p>
+<p>For example, suppose your application ships with a <tt class="docutils literal"><span class="pre">logo.png</span></tt> that needs to
+be loaded on startup.  In pyglet 1.0 you might have written:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">os.path</span>
+<span class="kn">from</span> <span class="nn">pyglet</span> <span class="kn">import</span> <span class="n">image</span>
+
+<span class="n">script_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">__file__</span><span class="p">)</span>
+<span class="n">logo_filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">script_dir</span><span class="p">,</span> <span class="s">&#39;logo.png&#39;</span><span class="p">)</span>
+<span class="n">logo</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">logo_filename</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>In pyglet 1.1, you can write:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">logo</span> <span class="o">=</span> <span class="n">pyglet</span><span class="o">.</span><span class="n">resource</span><span class="o">.</span><span class="n">image</span><span class="p">(</span><span class="s">&#39;logo.png&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>And will actually work in more scenarios (such as within a setuptools egg
+file, py2exe and py2app).</p>
+<p>The resource module efficiently packs multiple small images into larger
+textures, so there is less need for artists to create sprite sheets themselves
+for efficient rendering.  Images and textures are also cached automatically.</p>
+<p>See <cite>Application resources</cite> for more details.</p>
+</div>
+</div>
+<div class="section" id="new-graphics-features">
+<h2><a class="toc-backref" href="#id7">New graphics features</a><a class="headerlink" href="#new-graphics-features" title="Permalink to this headline">¶</a></h2>
+<p>The <cite>pyglet.graphics</cite> module is a low-level abstraction of OpenGL vertex
+arrays and buffer objects.  It is intended for use by developers who are
+already very familiar with OpenGL and are after the best performance possible.
+pyglet uses this module internally to implement its new sprite module and the
+new text rendering module.  The <cite>Graphics</cite> chapter describes this module in
+detail.</p>
+<p>The <cite>pyglet.sprite</cite> module provide a fast, easy way to display 2D graphics on
+screen.  Sprites can be moved, rotated, scaled and made translucent.  Using
+the <em>batch</em> features of the new graphics API, multiple sprites can be drawn in
+one go very quickly.  See <cite>Sprites</cite> for details.</p>
+<p>The <cite>pyglet.image.load_animation</cite> function can load animated GIF images.
+These are returned as an <cite>Animation</cite>, which exposes the individual image
+frames and timings.  Animations can also be played directly on a sprite in
+place of an image.  The <cite>Animations</cite> chapter describes how to use them.</p>
+<p>The <cite>pyglet.image.atlas</cite> module packs multiple images into larger textures for
+efficient rendering.  The <cite>pyglet.resource</cite> module uses this module for small
+images automatically, but you can use it directly even if you&#8217;re not making
+use of <cite>pyglet.resource</cite>.  See <cite>Texture bins and atlases</cite> for details.</p>
+<p>Images now have <tt class="docutils literal"><span class="pre">anchor_x</span></tt> and <tt class="docutils literal"><span class="pre">anchor_y</span></tt> attributes, which specify a
+point from which the image should be drawn.  The sprite module also uses the
+anchor point as the center of rotation.</p>
+<p>Textures have a <cite>get_transform</cite> method for retrieving a <cite>TextureRegion</cite> that
+refers to the same texture data in video memory, but with optional horizontal
+or vertical flipping, or 90-degree rotation.</p>
+</div>
+<div class="section" id="new-text-features">
+<h2><a class="toc-backref" href="#id8">New text features</a><a class="headerlink" href="#new-text-features" title="Permalink to this headline">¶</a></h2>
+<p>The <cite>pyglet.text</cite> module can render formatted text efficiently.  A new class
+<cite>Label</cite> supercedes the old <cite>pyglet.font.Text</cite> class (which is now actually
+implemented in terms of <cite>Label</cite>).  The &#8220;Hello, World&#8221; application can now be
+written:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">window</span> <span class="o">=</span> <span class="n">pyglet</span><span class="o">.</span><span class="n">window</span><span class="o">.</span><span class="n">Window</span><span class="p">()</span>
+<span class="n">label</span> <span class="o">=</span> <span class="n">pyglet</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span><span class="s">&#39;Hello, world&#39;</span><span class="p">,</span>
+                          <span class="n">font_name</span><span class="o">=</span><span class="s">&#39;Times New Roman&#39;</span><span class="p">,</span>
+                          <span class="n">font_size</span><span class="o">=</span><span class="mi">36</span><span class="p">,</span>
+                          <span class="n">x</span><span class="o">=</span><span class="n">window</span><span class="o">.</span><span class="n">width</span><span class="o">//</span><span class="mi">2</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">window</span><span class="o">.</span><span class="n">height</span><span class="o">//</span><span class="mi">2</span><span class="p">,</span>
+                          <span class="n">halign</span><span class="o">=</span><span class="s">&#39;center&#39;</span><span class="p">,</span> <span class="n">valign</span><span class="o">=</span><span class="s">&#39;center&#39;</span><span class="p">)</span>
+
+<span class="nd">@window.event</span>
+<span class="k">def</span> <span class="nf">on_draw</span><span class="p">():</span>
+    <span class="n">window</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+    <span class="n">label</span><span class="o">.</span><span class="n">draw</span><span class="p">()</span>
+
+<span class="n">pyglet</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>You can also display multiple fonts and styles within one label, with
+<cite>HTMLLabel</cite>:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">label</span> <span class="o">=</span> <span class="n">pyglet</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">HTMLLabel</span><span class="p">(</span><span class="s">&#39;&lt;b&gt;Hello&lt;/b&gt;, &lt;font color=red&gt;world!&lt;/font&gt;&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>More advanced uses of the new text module permit applications to efficiently
+display large, scrolling, formatted documents (for example, HTML files with
+embedded images), and to allow the user to interactively edit text as in a
+WYSIWYG text editor.</p>
+</div>
+<div class="section" id="other-new-features">
+<h2><a class="toc-backref" href="#id9">Other new features</a><a class="headerlink" href="#other-new-features" title="Permalink to this headline">¶</a></h2>
+<p><cite>EventDispatcher</cite> now has a <cite>remove_handlers</cite> method which provides finer
+control over the event stack than <cite>pop_handlers</cite>.</p>
+<p>The <tt class="docutils literal"><span class="pre">&#64;event</span></tt> decorator has been fixed so that it no longer overrides
+existing event handlers on the object, which fixes the common problem of
+handling the <cite>on_resize</cite> event.  For example, the following now works without
+any surprises (in pyglet 1.0 this would override the default handler, which
+sets up a default, necessary viewport and projection):</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="nd">@window.event</span>
+<span class="k">def</span> <span class="nf">on_resize</span><span class="p">(</span><span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">):</span>
+    <span class="k">pass</span>
+</pre></div>
+</div>
+<p>A variant of <cite>clock.schedule_interval</cite>, <cite>clock.schedule_interval_soft</cite> has
+been added.  This is for functions that need to be called periodically at a
+given interval, but do not need to schedule the period immediately.    Soft
+interval scheduling is used by the <cite>pyglet.media</cite> module to distribute the
+work of decoding video and audio data over time, rather than stalling the CPU
+periodically.  Games could use soft interval scheduling to spread the
+regular computational requirements of multiple agents out over time.</p>
+<p>In pyglet 1.0, <cite>font.load</cite> attempted to match the font resolution (DPI) with
+the operating system&#8217;s typical behaviour.  For example, on Linux and Mac OS X
+the default DPI was typically set at 72, and on Windows at 96.  While this
+would be useful for writing a word processor, it adds a burden on the
+application developer to ensure their fonts work at arbitrary resolutions.  In
+pyglet 1.1 the default DPI is set at 96 across all platforms.  It can still be
+overridden explicitly by the application if desired.</p>
+<p>Video sources in <cite>pyglet.media</cite> can now be stepped through frame-by-frame:
+individual image frames can be extracted without needing to play back the
+video in realtime.</p>
+<p>For a complete list of new features and bug fixes, see the <tt class="docutils literal"><span class="pre">CHANGELOG</span></tt>
+distributed with the source distribution.</p>
+</div>
+</div>
+
+
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../internal/main.html" class="btn btn-neutral float-right" title="Importing pyglet"/>Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="debug.html" class="btn btn-neutral" title="Debugging tools"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2006-2013, Alex Holkner.
+    </p>
+  </div>
+
+  <a href="https://github.com/snide/sphinx_rtd_theme">Sphinx theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'1.2alpha1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

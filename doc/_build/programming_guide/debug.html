@@ -1,0 +1,382 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Debugging tools &mdash; pyglet v1.2alpha1</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+  
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="top" title="pyglet v1.2alpha1" href="../index.html"/>
+        <link rel="up" title="pyglet Programming Guide" href="index.html"/>
+        <link rel="next" title="Appendix: Migrating to pyglet 1.1" href="features1.1.html"/>
+        <link rel="prev" title="Application resources" href="resources.html"/> 
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-nav-search">
+        <a href="../index.html" class="fa fa-home"> pyglet</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        
+        
+            <ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Chapters</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html">Writing a pyglet application</a></li>
+<li class="toctree-l2"><a class="reference internal" href="context.html">Creating an OpenGL context</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gl.html">The OpenGL interface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graphics.html">Graphics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="windowing.html">Windowing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="eventloop.html">The application event loop</a></li>
+<li class="toctree-l2"><a class="reference internal" href="events.html">The pyglet event framework</a></li>
+<li class="toctree-l2"><a class="reference internal" href="keyboard.html">Working with the keyboard</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mouse.html">Working with the mouse</a></li>
+<li class="toctree-l2"><a class="reference internal" href="input.html">Working with other input devices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="time.html">Keeping track of time</a></li>
+<li class="toctree-l2"><a class="reference internal" href="text.html">Displaying text</a></li>
+<li class="toctree-l2"><a class="reference internal" href="image.html">Images</a></li>
+<li class="toctree-l2"><a class="reference internal" href="media.html">Sound and video</a></li>
+<li class="toctree-l2"><a class="reference internal" href="resources.html">Application resources</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="">Debugging tools</a></li>
+<li class="toctree-l2"><a class="reference internal" href="features1.1.html">Appendix: Migrating to pyglet 1.1</a></li>
+</ul>
+</li>
+</ul>
+<ul class="simple">
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../internal/main.html">Importing pyglet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="advanced.html">Advanced topics</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="advanced.html#environment-settings">Environment settings</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../internal/gl.html">OpenGL Interface Implementation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../internal/gl.html#ctypes-linkage">ctypes linkage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../internal/gl.html#missing-extensions">Missing extensions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../internal/generated.html">ctypes Wrapper Generation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../internal/generated.html#generating-gl-wrappers">Generating GL wrappers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../internal/generated.html#generated-gl-wrappers">Generated GL wrappers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../internal/generated.html#generating-xlib-wrappers">Generating Xlib wrappers</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../internal/wraptypes.html">wraptypes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../internal/wraptypes.html#parser-modifications">Parser Modifications</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../internal/wraptypes.html#preprocessor">Preprocessor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../internal/wraptypes.html#cparser">CParser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../internal/wraptypes.html#ctypesparser">CtypesParser</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../internal/dist.html">Making a pyglet release</a></li>
+<li class="toctree-l1"><a class="reference internal" href="distribution.html">Distribution</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="distribution.html#self-contained-executables">Self-contained executables</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../internal/doc.html">Documentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../internal/doc.html#writing-documentation">Writing documentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../internal/doc.html#generation">Generation</a></li>
+</ul>
+</li>
+</ul>
+<ul class="simple">
+</ul>
+
+        
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../index.html">pyglet</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="index.html">pyglet Programming Guide</a> &raquo;</li>
+      
+    <li>Debugging tools</li>
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            
+  <div class="section" id="debugging-tools">
+<h1>Debugging tools<a class="headerlink" href="#debugging-tools" title="Permalink to this headline">¶</a></h1>
+<p>pyglet includes a number of debug paths that can be enabled during or before
+application startup.  These were primarily developed to aid in debugging
+pyglet itself, however some of them may also prove useful for understanding
+and debugging pyglet applications.</p>
+<p>Each debug option is a key in the <cite>pyglet.options</cite> dictionary.  Options can be
+set directly on the dictionary before any other modules are imported:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">pyglet</span>
+<span class="n">pyglet</span><span class="o">.</span><span class="n">options</span><span class="p">[</span><span class="s">&#39;debug_gl&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">False</span>
+</pre></div>
+</div>
+<p>They can also be set with environment variables before pyglet is imported.
+The corresponding environment variable for each option is the string
+<tt class="docutils literal"><span class="pre">PYGLET_</span></tt> prefixed to the uppercase option key.  For example, the
+environment variable for <tt class="docutils literal"><span class="pre">debug_gl</span></tt> is <tt class="docutils literal"><span class="pre">PYGLET_DEBUG_GL</span></tt>.  Boolean options
+are set or unset with <tt class="docutils literal"><span class="pre">1</span></tt> and <tt class="docutils literal"><span class="pre">0</span></tt> values.</p>
+<p>A summary of the debug environment variables appears in the table below.</p>
+<blockquote>
+<div><table border="1" class="docutils">
+<colgroup>
+<col width="33%" />
+<col width="33%" />
+<col width="33%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Option</th>
+<th class="head">Environment variable</th>
+<th class="head">Type</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><tt class="docutils literal"><span class="pre">debug_font</span></tt></td>
+<td><tt class="docutils literal"><span class="pre">PYGLET_DEBUG_FONT</span></tt></td>
+<td>bool</td>
+</tr>
+<tr class="row-odd"><td><tt class="docutils literal"><span class="pre">debug_gl</span></tt></td>
+<td><tt class="docutils literal"><span class="pre">PYGLET_DEBUG_GL</span></tt></td>
+<td>bool</td>
+</tr>
+<tr class="row-even"><td><tt class="docutils literal"><span class="pre">debug_gl_trace</span></tt></td>
+<td><tt class="docutils literal"><span class="pre">PYGLET_DEBUG_GL_TRACE</span></tt></td>
+<td>bool</td>
+</tr>
+<tr class="row-odd"><td><tt class="docutils literal"><span class="pre">debug_gl_trace_args</span></tt></td>
+<td><tt class="docutils literal"><span class="pre">PYGLET_DEBUG_GL_TRACE_ARGS</span></tt></td>
+<td>bool</td>
+</tr>
+<tr class="row-even"><td><tt class="docutils literal"><span class="pre">debug_graphics_batch</span></tt></td>
+<td><tt class="docutils literal"><span class="pre">PYGLET_DEBUG_GRAPHICS_BATCH</span></tt></td>
+<td>bool</td>
+</tr>
+<tr class="row-odd"><td><tt class="docutils literal"><span class="pre">debug_lib</span></tt></td>
+<td><tt class="docutils literal"><span class="pre">PYGLET_DEBUG_LIB</span></tt></td>
+<td>bool</td>
+</tr>
+<tr class="row-even"><td><tt class="docutils literal"><span class="pre">debug_media</span></tt></td>
+<td><tt class="docutils literal"><span class="pre">PYGLET_DEBUG_MEDIA</span></tt></td>
+<td>bool</td>
+</tr>
+<tr class="row-odd"><td><tt class="docutils literal"><span class="pre">debug_trace</span></tt></td>
+<td><tt class="docutils literal"><span class="pre">PYGLET_DEBUG_TRACE</span></tt></td>
+<td>bool</td>
+</tr>
+<tr class="row-even"><td><tt class="docutils literal"><span class="pre">debug_trace_args</span></tt></td>
+<td><tt class="docutils literal"><span class="pre">PYGLET_DEBUG_TRACE_ARGS</span></tt></td>
+<td>bool</td>
+</tr>
+<tr class="row-odd"><td><tt class="docutils literal"><span class="pre">debug_trace_depth</span></tt></td>
+<td><tt class="docutils literal"><span class="pre">PYGLET_DEBUG_TRACE_DEPTH</span></tt></td>
+<td>int</td>
+</tr>
+<tr class="row-even"><td><tt class="docutils literal"><span class="pre">debug_win32</span></tt></td>
+<td><tt class="docutils literal"><span class="pre">PYGLET_DEBUG_WIN32</span></tt></td>
+<td>bool</td>
+</tr>
+<tr class="row-odd"><td><tt class="docutils literal"><span class="pre">debug_x11</span></tt></td>
+<td><tt class="docutils literal"><span class="pre">PYGLET_DEBUG_X11</span></tt></td>
+<td>bool</td>
+</tr>
+<tr class="row-even"><td><tt class="docutils literal"><span class="pre">graphics_vbo</span></tt></td>
+<td><tt class="docutils literal"><span class="pre">PYGLET_GRAPHICS_VBO</span></tt></td>
+<td>bool</td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+<p>The <tt class="docutils literal"><span class="pre">debug_media</span></tt> and <tt class="docutils literal"><span class="pre">debug_font</span></tt> options are used to debug the
+<tt class="docutils literal"><span class="pre">pyglet.media</span></tt> and <tt class="docutils literal"><span class="pre">pyglet.font</span></tt> modules, respectively.  Their behaviour
+is platform-dependent and useful only for pyglet developers.</p>
+<p>The remaining debug options are detailed below.</p>
+<div class="section" id="debugging-opengl">
+<h2>Debugging OpenGL<a class="headerlink" href="#debugging-opengl" title="Permalink to this headline">¶</a></h2>
+<p>The <tt class="docutils literal"><span class="pre">graphics_vbo</span></tt> option enables the use of vertex buffer objects in
+<cite>pyglet.graphics</cite> (instead, only vertex arrays).  This is useful when
+debugging the <tt class="docutils literal"><span class="pre">graphics</span></tt> module as well as isolating code for determining if
+a video driver is faulty.</p>
+<p>The <tt class="docutils literal"><span class="pre">debug_graphics_batch</span></tt> option causes all <cite>Batch</cite> objects to dump their
+rendering tree to standard output before drawing, after any change (so two
+drawings of the same tree will only dump once).  This is useful to debug
+applications making use of <cite>Group</cite> and <cite>Batch</cite> rendering.</p>
+<div class="section" id="error-checking">
+<h3>Error checking<a class="headerlink" href="#error-checking" title="Permalink to this headline">¶</a></h3>
+<p>The <tt class="docutils literal"><span class="pre">debug_gl</span></tt> option intercepts most OpenGL calls and calls <tt class="docutils literal"><span class="pre">glGetError</span></tt>
+afterwards (it only does this where such a call would be legal).  If an error
+is reported, an exception is raised immediately.</p>
+<p>This option is enabled by default unless the <tt class="docutils literal"><span class="pre">-O</span></tt> flag (optimisation) is
+given to Python, or the script is running from within a py2exe or py2app
+package.</p>
+</div>
+<div class="section" id="tracing">
+<h3>Tracing<a class="headerlink" href="#tracing" title="Permalink to this headline">¶</a></h3>
+<p>The <tt class="docutils literal"><span class="pre">debug_gl_trace</span></tt> option causes all OpenGL functions called to be dumped
+to standard out.  When combined with <tt class="docutils literal"><span class="pre">debug_gl_trace_args</span></tt>, the arguments
+given to each function are also printed (they are abbreviated if necessary to
+avoid dumping large amounts of buffer data).</p>
+</div>
+</div>
+<div class="section" id="tracing-execution">
+<h2>Tracing execution<a class="headerlink" href="#tracing-execution" title="Permalink to this headline">¶</a></h2>
+<p>The <tt class="docutils literal"><span class="pre">debug_trace</span></tt> option enables Python-wide function tracing.  This causes
+every function call to be printed to standard out.  Due to the large number of
+function calls required just to initialise pyglet, it is recommended to
+redirect standard output to a file when using this option.</p>
+<p>The <tt class="docutils literal"><span class="pre">debug_trace_args</span></tt> option additionally prints the arguments to each
+function call.</p>
+<p>When <tt class="docutils literal"><span class="pre">debug_trace_depth</span></tt> is greater than 1 the caller(s) of each function
+(and their arguments, if <tt class="docutils literal"><span class="pre">debug_trace_args</span></tt> is set) are also printed.  Each
+caller is indented beneath the callee.  The default depth is 1, specifying
+that no callers are printed.</p>
+</div>
+<div class="section" id="platform-specific-debugging">
+<h2>Platform-specific debugging<a class="headerlink" href="#platform-specific-debugging" title="Permalink to this headline">¶</a></h2>
+<p>The <tt class="docutils literal"><span class="pre">debug_lib</span></tt> option causes the path of each loaded library to be printed
+to standard out.  This is performed by the undocumented <tt class="docutils literal"><span class="pre">pyglet.lib</span></tt> module,
+which on Linux and Mac OS X must sometimes follow complex procedures to find
+the correct library.  On Windows not all libraries are loaded via this module,
+so they will not be printed (however, loading Windows DLLs is sufficiently
+simple that there is little need for this information).</p>
+<div class="section" id="linux">
+<h3>Linux<a class="headerlink" href="#linux" title="Permalink to this headline">¶</a></h3>
+<p>X11 errors are caught by pyglet and suppressed, as there are plenty of X
+servers in the wild that generate errors that can be safely ignored.
+The <tt class="docutils literal"><span class="pre">debug_x11</span></tt> option causes these errors to be dumped to standard out,
+along with a traceback of the Python stack (this may or may not correspond to
+the error, depending on whether or not it was reported asynchronously).</p>
+</div>
+<div class="section" id="windows">
+<h3>Windows<a class="headerlink" href="#windows" title="Permalink to this headline">¶</a></h3>
+<p>The <tt class="docutils literal"><span class="pre">debug_win32</span></tt> option causes all library calls into <tt class="docutils literal"><span class="pre">user32.dll</span></tt>,
+<tt class="docutils literal"><span class="pre">kernel32.dll</span></tt> and <tt class="docutils literal"><span class="pre">gdi32.dll</span></tt> to be intercepted.  Before each library
+call <tt class="docutils literal"><span class="pre">SetLastError(0)</span></tt> is called, and afterwards <tt class="docutils literal"><span class="pre">GetLastError()</span></tt> is
+called.  Any errors discovered are written to a file named
+<tt class="docutils literal"><span class="pre">debug_win32.log</span></tt>.  Note that an error is only valid if the function called
+returned an error code, but the interception function does not check this.</p>
+</div>
+</div>
+</div>
+
+
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="features1.1.html" class="btn btn-neutral float-right" title="Appendix: Migrating to pyglet 1.1"/>Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="resources.html" class="btn btn-neutral" title="Application resources"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2006-2013, Alex Holkner.
+    </p>
+  </div>
+
+  <a href="https://github.com/snide/sphinx_rtd_theme">Sphinx theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'1.2alpha1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

@@ -1,0 +1,627 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Creating an OpenGL context &mdash; pyglet v1.2alpha1</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+  
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="top" title="pyglet v1.2alpha1" href="../index.html"/>
+        <link rel="up" title="pyglet Programming Guide" href="index.html"/>
+        <link rel="next" title="The OpenGL interface" href="gl.html"/>
+        <link rel="prev" title="Writing a pyglet application" href="quickstart.html"/> 
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-nav-search">
+        <a href="../index.html" class="fa fa-home"> pyglet</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        
+        
+            <ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Chapters</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html">Writing a pyglet application</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="">Creating an OpenGL context</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gl.html">The OpenGL interface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graphics.html">Graphics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="windowing.html">Windowing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="eventloop.html">The application event loop</a></li>
+<li class="toctree-l2"><a class="reference internal" href="events.html">The pyglet event framework</a></li>
+<li class="toctree-l2"><a class="reference internal" href="keyboard.html">Working with the keyboard</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mouse.html">Working with the mouse</a></li>
+<li class="toctree-l2"><a class="reference internal" href="input.html">Working with other input devices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="time.html">Keeping track of time</a></li>
+<li class="toctree-l2"><a class="reference internal" href="text.html">Displaying text</a></li>
+<li class="toctree-l2"><a class="reference internal" href="image.html">Images</a></li>
+<li class="toctree-l2"><a class="reference internal" href="media.html">Sound and video</a></li>
+<li class="toctree-l2"><a class="reference internal" href="resources.html">Application resources</a></li>
+<li class="toctree-l2"><a class="reference internal" href="debug.html">Debugging tools</a></li>
+<li class="toctree-l2"><a class="reference internal" href="features1.1.html">Appendix: Migrating to pyglet 1.1</a></li>
+</ul>
+</li>
+</ul>
+<ul class="simple">
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../internal/main.html">Importing pyglet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="advanced.html">Advanced topics</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="advanced.html#environment-settings">Environment settings</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../internal/gl.html">OpenGL Interface Implementation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../internal/gl.html#ctypes-linkage">ctypes linkage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../internal/gl.html#missing-extensions">Missing extensions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../internal/generated.html">ctypes Wrapper Generation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../internal/generated.html#generating-gl-wrappers">Generating GL wrappers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../internal/generated.html#generated-gl-wrappers">Generated GL wrappers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../internal/generated.html#generating-xlib-wrappers">Generating Xlib wrappers</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../internal/wraptypes.html">wraptypes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../internal/wraptypes.html#parser-modifications">Parser Modifications</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../internal/wraptypes.html#preprocessor">Preprocessor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../internal/wraptypes.html#cparser">CParser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../internal/wraptypes.html#ctypesparser">CtypesParser</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../internal/dist.html">Making a pyglet release</a></li>
+<li class="toctree-l1"><a class="reference internal" href="distribution.html">Distribution</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="distribution.html#self-contained-executables">Self-contained executables</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../internal/doc.html">Documentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../internal/doc.html#writing-documentation">Writing documentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../internal/doc.html#generation">Generation</a></li>
+</ul>
+</li>
+</ul>
+<ul class="simple">
+</ul>
+
+        
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../index.html">pyglet</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="index.html">pyglet Programming Guide</a> &raquo;</li>
+      
+    <li>Creating an OpenGL context</li>
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            
+  <div class="section" id="creating-an-opengl-context">
+<h1>Creating an OpenGL context<a class="headerlink" href="#creating-an-opengl-context" title="Permalink to this headline">¶</a></h1>
+<p>This section describes how to configure an OpenGL context.  For most
+applications the information described here is far too low-level to be of any
+concern, however more advanced applications can take advantage of the complete
+control pyglet provides.</p>
+<div class="contents local topic" id="contents">
+<ul class="simple">
+<li><a class="reference internal" href="#displays-screens-configs-and-contexts" id="id2">Displays, screens, configs and contexts</a><ul>
+<li><a class="reference internal" href="#contexts-and-configs" id="id3">Contexts and configs</a></li>
+<li><a class="reference internal" href="#displays" id="id4">Displays</a></li>
+<li><a class="reference internal" href="#screens" id="id5">Screens</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#opengl-configuration-options" id="id6">OpenGL configuration options</a><ul>
+<li><a class="reference internal" href="#the-default-configuration" id="id7">The default configuration</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#simple-context-configuration" id="id8">Simple context configuration</a></li>
+<li><a class="reference internal" href="#selecting-the-best-configuration" id="id9">Selecting the best configuration</a></li>
+<li><a class="reference internal" href="#sharing-objects-between-contexts" id="id10">Sharing objects between contexts</a></li>
+</ul>
+</div>
+<div class="section" id="displays-screens-configs-and-contexts">
+<h2><a class="toc-backref" href="#id2">Displays, screens, configs and contexts</a><a class="headerlink" href="#displays-screens-configs-and-contexts" title="Permalink to this headline">¶</a></h2>
+<div class="figure">
+<img src="../_images/context_flow.svg" /><p class="caption">Flow of construction, from the singleton Platform to a newly
+created Window with its Context.</p>
+</div>
+<div class="section" id="contexts-and-configs">
+<h3><a class="toc-backref" href="#id3">Contexts and configs</a><a class="headerlink" href="#contexts-and-configs" title="Permalink to this headline">¶</a></h3>
+<p>When you draw on a window in pyglet, you are drawing to an OpenGL context.
+Every window has its own context, which is created when the window is created.
+You can access the window&#8217;s context via its
+<tt class="xref py py-attr docutils literal"><span class="pre">context</span></tt> attribute.</p>
+<p>The context is created from an OpenGL configuration (or &#8220;config&#8221;), which
+describes various properties of the context such as what color format to use,
+how many buffers are available, and so on.  You can access the config
+that was used to create a context via the context&#8217;s
+<tt class="xref py py-attr docutils literal"><span class="pre">config</span></tt> attribute.</p>
+<p>For example, here we create a window using the default config and examine some
+of its properties:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pyglet</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">window</span> <span class="o">=</span> <span class="n">pyglet</span><span class="o">.</span><span class="n">window</span><span class="o">.</span><span class="n">Window</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">context</span> <span class="o">=</span> <span class="n">window</span><span class="o">.</span><span class="n">context</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">config</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">config</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">config</span><span class="o">.</span><span class="n">double_buffer</span>
+<span class="go">c_int(1)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">config</span><span class="o">.</span><span class="n">stereo</span>
+<span class="go">c_int(0)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">config</span><span class="o">.</span><span class="n">sample_buffers</span>
+<span class="go">c_int(0)</span>
+</pre></div>
+</div>
+<p>Note that the values of the config&#8217;s attributes are all ctypes instances.
+This is because the config was not specified by pyglet.  Rather, it has been
+selected by pyglet from a list of configs supported by the system.  You can
+make no guarantee that a given config is valid on a system unless it was
+provided to you by the system.</p>
+<p>pyglet simplifies the process of selecting one of the system&#8217;s configs by
+allowing you to create a &#8220;template&#8221; config which specifies only the values you
+are interested in.  See <cite>Simple context configuration</cite> for details.</p>
+</div>
+<div class="section" id="displays">
+<span id="guide-displays"></span><h3><a class="toc-backref" href="#id4">Displays</a><a class="headerlink" href="#displays" title="Permalink to this headline">¶</a></h3>
+<p>The system may actually support several different sets of configs, depending
+on which display device is being used.  For example, a computer with two video
+cards would have not support the same configs on each card.  Another example
+is using X11 remotely: the display device will support different
+configurations than the local driver.  Even a single video card on the local
+computer may support different configs for the two monitors plugged in.</p>
+<p>In pyglet, a <tt class="xref py py-class docutils literal"><span class="pre">Display</span></tt> is a collection of &#8220;screens&#8221; attached to a single display device.  On Linux, the display device corresponds
+to the X11 display
+being used.  On Windows and Mac OS X, there is only one display (as these
+operating systems present multiple video cards as a single virtual device).</p>
+<p>There is a singleton class <tt class="xref py py-class docutils literal"><span class="pre">Platform</span></tt> which provides
+access to the display(s);
+this represents the computer on which your application is running.  It is
+usually sufficient to use the default display:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">platform</span> <span class="o">=</span> <span class="n">pyglet</span><span class="o">.</span><span class="n">window</span><span class="o">.</span><span class="n">get_platform</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">display</span> <span class="o">=</span> <span class="n">platform</span><span class="o">.</span><span class="n">get_default_display</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>On X11, you can specify the display string to use, for example to use a
+remotely connected display.  The display string is in the same format as used
+by the <tt class="docutils literal"><span class="pre">DISPLAY</span></tt> environment variable:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">display</span> <span class="o">=</span> <span class="n">platform</span><span class="o">.</span><span class="n">get_display</span><span class="p">(</span><span class="s">&#39;remote:1.0&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>You use the same string to specify a separate X11 screen <a class="footnote-reference" href="#display" id="id1">[1]</a>:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">display</span> <span class="o">=</span> <span class="n">platform</span><span class="o">.</span><span class="n">get_display</span><span class="p">(</span><span class="s">&#39;:0.1&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="screens">
+<span id="guide-screens"></span><h3><a class="toc-backref" href="#id5">Screens</a><a class="headerlink" href="#screens" title="Permalink to this headline">¶</a></h3>
+<p>Once you have obtained a display, you can enumerate the screens that are
+connected.  A screen is the physical display medium connected to the display
+device; for example a computer monitor, TV or projector.  Most computers will
+have a single screen, however dual-head workstations and laptops connected to
+a projector are common cases where more than one screen will be present.</p>
+<p>In the following example the screens of a dual-head workstation are listed:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">screen</span> <span class="ow">in</span> <span class="n">display</span><span class="o">.</span><span class="n">get_screens</span><span class="p">():</span>
+<span class="gp">... </span>    <span class="k">print</span> <span class="n">screen</span>
+<span class="gp">...</span>
+<span class="go">XlibScreen(screen=0, x=1280, y=0, width=1280, height=1024, xinerama=1)</span>
+<span class="go">XlibScreen(screen=0, x=0, y=0, width=1280, height=1024, xinerama=1)</span>
+</pre></div>
+</div>
+<p>Because this workstation is running Linux, the returned screens are
+<tt class="docutils literal"><span class="pre">XlibScreen</span></tt>, a subclass of <tt class="xref py py-class docutils literal"><span class="pre">Screen</span></tt>.  The <tt class="docutils literal"><span class="pre">screen</span></tt>
+and <tt class="docutils literal"><span class="pre">xinerama</span></tt> attributes are specific to Linux, but the
+<tt class="xref py py-attr docutils literal"><span class="pre">x</span></tt>, <tt class="xref py py-attr docutils literal"><span class="pre">y</span></tt>,
+<tt class="xref py py-attr docutils literal"><span class="pre">width</span></tt> and <tt class="xref py py-attr docutils literal"><span class="pre">height</span></tt> attributes are present on all screens, and describe the screen&#8217;s geometry, as
+shown below.</p>
+<div class="figure">
+<img src="../_images/screens.svg" /><p class="caption">Example arrangement of screens and their reported geometry.  Note that the
+primary display (marked &#8220;1&#8221;) is positioned on the right, according to this
+particular user&#8217;s preference.</p>
+</div>
+<p>There is always a &#8220;default&#8221; screen, which is the first screen returned by
+<tt class="xref py py-meth docutils literal"><span class="pre">get_screens()</span></tt>.  Depending on the operating system,
+the default screen is usually the one that contains the taskbar (on Windows) or
+menu bar (on OS X).
+You can access this screen directly using
+<tt class="xref py py-meth docutils literal"><span class="pre">get_default_screen()</span></tt>.</p>
+<table class="docutils footnote" frame="void" id="display" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id1">[1]</a></td><td>Assuming Xinerama is not being used to combine the screens.  If
+Xinerama is enabled, use screen 0 in the display string, and
+select a screen in the same manner as for Windows and Mac OS X.</td></tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="section" id="opengl-configuration-options">
+<span id="guide-glconfig"></span><h2><a class="toc-backref" href="#id6">OpenGL configuration options</a><a class="headerlink" href="#opengl-configuration-options" title="Permalink to this headline">¶</a></h2>
+<p>When configuring or selecting a <tt class="xref py py-class docutils literal"><span class="pre">Config</span></tt>, you do so based on
+the properties of that config.  pyglet supports a fixed subset of the options
+provided by AGL, GLX, WGL and their extensions.  In particular, these
+constraints are placed on all OpenGL configs:</p>
+<ul class="simple">
+<li>Buffers are always component (RGB or RGBA) color, never palette indexed.</li>
+<li>The &#8220;level&#8221; of a buffer is always 0 (this parameter is largely unsupported
+by modern OpenGL drivers anyway).</li>
+<li>There is no way to set the transparent color of a buffer (again, this
+GLX-specific option is not well supported).</li>
+<li>There is no support for pbuffers (equivalent functionality can be achieved
+much more simply and efficiently using framebuffer objects).</li>
+</ul>
+<p>The visible portion of the buffer, sometimes called the color buffer, is
+configured with the following attributes:</p>
+<blockquote>
+<div><dl class="docutils">
+<dt><tt class="docutils literal"><span class="pre">buffer_size</span></tt></dt>
+<dd><p class="first">Number of bits per sample.  Common values are 24 and 32, which each
+dedicate 8 bits per color component.  A buffer size of 16 is also
+possible, which usually corresponds to 5, 6, and 5 bits of red, green
+and blue, respectively.</p>
+<p class="last">Usually there is no need to set this property, as the device driver
+will select a buffer size compatible with the current display mode
+by default.</p>
+</dd>
+<dt><tt class="docutils literal"><span class="pre">red_size</span></tt>, <tt class="docutils literal"><span class="pre">blue_size</span></tt>, <tt class="docutils literal"><span class="pre">green_size</span></tt>, <tt class="docutils literal"><span class="pre">alpha_size</span></tt></dt>
+<dd><p class="first">These each give the number of bits dedicated to their respective color
+component.  You should avoid setting any of the red, green or blue
+sizes, as these are determined by the driver based on the
+<tt class="docutils literal"><span class="pre">buffer_size</span></tt> property.</p>
+<p class="last">If you require an alpha channel in your color buffer (for example, if
+you are compositing in multiple passes) you should specify
+<tt class="docutils literal"><span class="pre">alpha_size=8</span></tt> to ensure that this channel is created.</p>
+</dd>
+<dt><tt class="docutils literal"><span class="pre">sample_buffers</span></tt> and <tt class="docutils literal"><span class="pre">samples</span></tt></dt>
+<dd><p class="first">Configures the buffer for multisampling, in which more than one color
+sample is used to determine the color of each pixel, leading to a
+higher quality, antialiased image.</p>
+<p>Enable multisampling by setting <tt class="docutils literal"><span class="pre">sample_buffers=1</span></tt>, then give the
+number of samples per pixel to use in <tt class="docutils literal"><span class="pre">samples</span></tt>.  For example,
+<tt class="docutils literal"><span class="pre">samples=2</span></tt> is the fastest, lowest-quality multisample
+configuration.  A higher-quality buffer (with a compromise in
+performance) is possible with <tt class="docutils literal"><span class="pre">samples=4</span></tt>.</p>
+<p class="last">Not all video hardware supports multisampling; you may need to make
+this a user-selectable option, or be prepared to automatically
+downgrade the configuration if the requested one is not available.</p>
+</dd>
+<dt><tt class="docutils literal"><span class="pre">stereo</span></tt></dt>
+<dd>Creates separate left and right buffers, for use with stereo hardware.
+Only specialised video hardware such as stereoscopic glasses will
+support this option.  When used, you will need to manually render to
+each buffer, for example using <cite>glDrawBuffers</cite>.</dd>
+<dt><tt class="docutils literal"><span class="pre">double_buffer</span></tt></dt>
+<dd><p class="first">Create separate front and back buffers.  Without double-buffering,
+drawing commands are immediately visible on the screen, and the user
+will notice a visible flicker as the image is redrawn in front of
+them.</p>
+<p class="last">It is recommended to set <tt class="docutils literal"><span class="pre">double_buffer=True</span></tt>, which creates a
+separate hidden buffer to which drawing is performed.  When the
+<cite>Window.flip</cite> is called, the buffers are swapped,
+making the new drawing visible virtually instantaneously.</p>
+</dd>
+</dl>
+</div></blockquote>
+<p>In addition to the color buffer, several other buffers can optionally be
+created based on the values of these properties:</p>
+<blockquote>
+<div><dl class="docutils">
+<dt><tt class="docutils literal"><span class="pre">depth_size</span></tt></dt>
+<dd>A depth buffer is usually required for 3D rendering.  The typical
+depth size is 24 bits.  Specify <tt class="docutils literal"><span class="pre">0</span></tt> if you do not require a depth
+buffer.</dd>
+<dt><tt class="docutils literal"><span class="pre">stencil_size</span></tt></dt>
+<dd>The stencil buffer is required for masking the other buffers and
+implementing certain volumetric shadowing algorithms.  The typical
+stencil size is 8 bits; or specify <tt class="docutils literal"><span class="pre">0</span></tt> if you do not require it.</dd>
+<dt><tt class="docutils literal"><span class="pre">accum_red_size</span></tt>, <tt class="docutils literal"><span class="pre">accum_blue_size</span></tt>, <tt class="docutils literal"><span class="pre">accum_green_size</span></tt>, <tt class="docutils literal"><span class="pre">accum_alpha_size</span></tt></dt>
+<dd><p class="first">The accumulation buffer can be used for simple antialiasing,
+depth-of-field, motion blur and other compositing operations.  Its use
+nowadays is being superceded by the use of floating-point textures,
+however it is still a practical solution for implementing these
+effects on older hardware.</p>
+<p class="last">If you require an accumulation buffer, specify <tt class="docutils literal"><span class="pre">8</span></tt> for each
+of these attributes (the alpha component is optional, of course).</p>
+</dd>
+<dt><tt class="docutils literal"><span class="pre">aux_buffers</span></tt></dt>
+<dd><p class="first">Each auxilliary buffer is configured the same as the colour buffer.
+Up to four auxilliary buffers can typically be created.  Specify <tt class="docutils literal"><span class="pre">0</span></tt>
+if you do not require any auxilliary buffers.</p>
+<p class="last">Like the accumulation buffer, auxilliary buffers are used less often
+nowadays as more efficient techniques such as render-to-texture are
+available.  They are almost universally available on older hardware,
+though, where the newer techniques are not possible.</p>
+</dd>
+</dl>
+</div></blockquote>
+<div class="section" id="the-default-configuration">
+<h3><a class="toc-backref" href="#id7">The default configuration</a><a class="headerlink" href="#the-default-configuration" title="Permalink to this headline">¶</a></h3>
+<p>If you create a <tt class="xref py py-class docutils literal"><span class="pre">Window</span></tt> without specifying the context
+or config, pyglet will use a template config with the following properties:</p>
+<blockquote>
+<div><table border="1" class="docutils">
+<colgroup>
+<col width="50%" />
+<col width="50%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Attribute</th>
+<th class="head">Value</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>double_buffer</td>
+<td>True</td>
+</tr>
+<tr class="row-odd"><td>depth_size</td>
+<td>24</td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+</div>
+</div>
+<div class="section" id="simple-context-configuration">
+<h2><a class="toc-backref" href="#id8">Simple context configuration</a><a class="headerlink" href="#simple-context-configuration" title="Permalink to this headline">¶</a></h2>
+<p>A context can only be created from a config that was provided by the system.
+Enumerating and comparing the attributes of all the possible configs is
+a complicated process, so pyglet provides a simpler interface based on
+&#8220;template&#8221; configs.</p>
+<p>To get the config with the attributes you need, construct a
+<tt class="xref py py-class docutils literal"><span class="pre">Config</span></tt> and set only the attributes you are interested in.
+You can then supply this config to the <tt class="xref py py-class docutils literal"><span class="pre">Window</span></tt>
+constructor to create the context.</p>
+<p>For example, to create a window with an alpha channel:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">config</span> <span class="o">=</span> <span class="n">pyglet</span><span class="o">.</span><span class="n">gl</span><span class="o">.</span><span class="n">Config</span><span class="p">(</span><span class="n">alpha_size</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
+<span class="n">window</span> <span class="o">=</span> <span class="n">pyglet</span><span class="o">.</span><span class="n">window</span><span class="o">.</span><span class="n">Window</span><span class="p">(</span><span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>It is sometimes necessary to create the context yourself, rather than letting
+the <tt class="xref py py-class docutils literal"><span class="pre">Window</span></tt> constructor do this for you.  In this case
+use <tt class="xref py py-meth docutils literal"><span class="pre">get_best_config()</span></tt> to obtain a &#8220;complete&#8221;
+config, which you can then use to create the context:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">platform</span> <span class="o">=</span> <span class="n">pyglet</span><span class="o">.</span><span class="n">window</span><span class="o">.</span><span class="n">get_platform</span><span class="p">()</span>
+<span class="n">display</span> <span class="o">=</span> <span class="n">platform</span><span class="o">.</span><span class="n">get_default_display</span><span class="p">()</span>
+<span class="n">screen</span> <span class="o">=</span> <span class="n">display</span><span class="o">.</span><span class="n">get_default_screen</span><span class="p">()</span>
+
+<span class="n">template</span> <span class="o">=</span> <span class="n">pyglet</span><span class="o">.</span><span class="n">gl</span><span class="o">.</span><span class="n">Config</span><span class="p">(</span><span class="n">alpha_size</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
+<span class="n">config</span> <span class="o">=</span> <span class="n">screen</span><span class="o">.</span><span class="n">get_best_config</span><span class="p">(</span><span class="n">template</span><span class="p">)</span>
+<span class="n">context</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">create_context</span><span class="p">(</span><span class="bp">None</span><span class="p">)</span>
+<span class="n">window</span> <span class="o">=</span> <span class="n">pyglet</span><span class="o">.</span><span class="n">window</span><span class="o">.</span><span class="n">Window</span><span class="p">(</span><span class="n">context</span><span class="o">=</span><span class="n">context</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Note that you cannot create a context directly from a template (any
+<tt class="xref py py-class docutils literal"><span class="pre">Config</span></tt> you constructed yourself).  The
+<tt class="xref py py-class docutils literal"><span class="pre">Window</span></tt> constructor performs a similar process to the
+above to create the context if a template config is given.</p>
+<p>Not all configs will be possible on all machines.  The call to
+<tt class="xref py py-meth docutils literal"><span class="pre">get_best_config()</span></tt> will raise
+<tt class="xref py py-class docutils literal"><span class="pre">NoSuchConfigException</span></tt> if the hardware does not
+support the requested attributes.  It will never return a config that does not
+meet or exceed the attributes you specify in the template.</p>
+<p>You can use this to support newer hardware features where available, but also
+accept a lesser config if necessary.  For example, the following code creates
+a window with multisampling if possible, otherwise leaves multisampling off:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">template</span> <span class="o">=</span> <span class="n">gl</span><span class="o">.</span><span class="n">Config</span><span class="p">(</span><span class="n">sample_buffers</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">samples</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="n">config</span> <span class="o">=</span> <span class="n">screen</span><span class="o">.</span><span class="n">get_best_config</span><span class="p">(</span><span class="n">template</span><span class="p">)</span>
+<span class="k">except</span> <span class="n">pyglet</span><span class="o">.</span><span class="n">window</span><span class="o">.</span><span class="n">NoSuchConfigException</span><span class="p">:</span>
+    <span class="n">template</span> <span class="o">=</span> <span class="n">gl</span><span class="o">.</span><span class="n">Config</span><span class="p">()</span>
+    <span class="n">config</span> <span class="o">=</span> <span class="n">screen</span><span class="o">.</span><span class="n">get_best_config</span><span class="p">(</span><span class="n">template</span><span class="p">)</span>
+<span class="n">window</span> <span class="o">=</span> <span class="n">pyglet</span><span class="o">.</span><span class="n">window</span><span class="o">.</span><span class="n">Window</span><span class="p">(</span><span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="selecting-the-best-configuration">
+<h2><a class="toc-backref" href="#id9">Selecting the best configuration</a><a class="headerlink" href="#selecting-the-best-configuration" title="Permalink to this headline">¶</a></h2>
+<p>Allowing pyglet to select the best configuration based on a template is
+sufficient for most applications, however some complex programs may want to
+specify their own algorithm for selecting a set of OpenGL attributes.</p>
+<p>You can enumerate a screen&#8217;s configs using the
+<tt class="xref py py-meth docutils literal"><span class="pre">get_matching_configs()</span></tt> method. You must supply a
+template as a minimum specification, but you can supply an &#8220;empty&#8221; template
+(one with no attributes set) to get a list of all configurations supported by
+the screen.</p>
+<p>In the following example, all configurations with either an auxilliary buffer
+or an accumulation buffer are printed:</p>
+<div class="highlight-python"><div class="highlight"><pre>platform = pyglet.window.get_platform()
+display = platform.get_default_display()
+screen = display.get_default_screen()
+
+for config in screen.get_matching_configs(gl.Config()):
+    if config.aux_buffers or config.accum_red_size:
+        print config
+</pre></div>
+</div>
+<p>As well as supporting more complex configuration selection algorithms,
+enumeration allows you to efficiently find the maximum value of an attribute
+(for example, the maximum samples per pixel), or present a list of possible
+configurations to the user.</p>
+</div>
+<div class="section" id="sharing-objects-between-contexts">
+<h2><a class="toc-backref" href="#id10">Sharing objects between contexts</a><a class="headerlink" href="#sharing-objects-between-contexts" title="Permalink to this headline">¶</a></h2>
+<p>Every window in pyglet has its own OpenGL context.  Each context has its own
+OpenGL state, including the matrix stacks and current flags.  However,
+contexts can optionally share their objects with one or more other contexts.
+Shareable objects include:</p>
+<ul class="simple">
+<li>Textures</li>
+<li>Display lists</li>
+<li>Shader programs</li>
+<li>Vertex and pixel buffer objects</li>
+<li>Framebuffer objects</li>
+</ul>
+<p>There are two reasons for sharing objects.  The first is to allow objects to
+be stored on the video card only once, even if used by more than one window.
+For example, you could have one window showing the actual game, with other
+&#8220;debug&#8221; windows showing the various objects as they are manipulated.  Or, a
+set of widget textures required for a GUI could be shared between all the
+windows in an application.</p>
+<p>The second reason is to avoid having to recreate the objects when a context
+needs to be recreated.  For example, if the user wishes to turn on
+multisampling, it is necessary to recreate the context.  Rather than destroy
+the old one and lose all the objects already created, you can</p>
+<ol class="arabic simple">
+<li>Create the new context, sharing object space with the old context, then</li>
+<li>Destroy the old context.  The new context retains all the old objects.</li>
+</ol>
+<p>pyglet defines an <tt class="xref py py-class docutils literal"><span class="pre">ObjectSpace</span></tt>: a representation of a
+collection of objects used by one or more contexts.  Each context has a single
+object space, accessible via its <tt class="xref py py-attr docutils literal"><span class="pre">object_space</span></tt>
+attribute.</p>
+<p>By default, all contexts share the same object space as long as at least one
+context using it is &#8220;alive&#8221;.  If all the contexts sharing an object space are
+lost or destroyed, the object space will be destroyed also.  This is why it is
+necessary to follow the steps outlined above for retaining objects when a
+context is recreated.</p>
+<p>pyglet creates a hidden &#8220;shadow&#8221; context as soon as <tt class="xref py py-mod docutils literal"><span class="pre">pyglet.gl</span></tt> is
+imported. By default, all windows will share object space with this shadow
+context, so the above steps are generally not needed. The shadow context also
+allows objects such as textures to be loaded before a window is created (see
+<tt class="docutils literal"><span class="pre">shadow_window</span></tt> in <a class="reference internal" href="../internal/main.html#pyglet.options" title="pyglet.options"><tt class="xref py py-data docutils literal"><span class="pre">pyglet.options</span></tt></a> for further details).</p>
+<p>When you create a <tt class="xref py py-class docutils literal"><span class="pre">Context</span></tt>, you tell pyglet which other
+context it will obtain an object space from.  By default (when using the
+<tt class="xref py py-class docutils literal"><span class="pre">Window</span></tt> constructor
+to create the context) the most recently created context will be used.  You
+can specify another context, or specify no context (to create a new object
+space) in the <tt class="xref py py-class docutils literal"><span class="pre">Context</span></tt> constructor.</p>
+<p>It can be useful to keep track of which object space an object was created in.
+For example, when you load a font, pyglet caches the textures used and reuses
+them; but only if the font is being loaded on the same object space.  The
+easiest way to do this is to set your own attributes on the <cite>ObjectSpace</cite>
+object.</p>
+<p>In the following example, an attribute is set on the object space indicating
+that game objects have been loaded.  This way, if the context is recreated,
+you can check for this attribute to determine if you need to load them again:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">context</span> <span class="o">=</span> <span class="n">pyglet</span><span class="o">.</span><span class="n">gl</span><span class="o">.</span><span class="n">get_current_context</span><span class="p">()</span>
+<span class="n">object_space</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">object_space</span>
+<span class="n">object_space</span><span class="o">.</span><span class="n">my_game_objects_loaded</span> <span class="o">=</span> <span class="bp">True</span>
+</pre></div>
+</div>
+<p>Avoid using attribute names on <tt class="xref py py-class docutils literal"><span class="pre">ObjectSpace</span></tt> that begin with
+<tt class="docutils literal"><span class="pre">&quot;pyglet&quot;</span></tt>,they may conflict with an internal module.</p>
+</div>
+</div>
+
+
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="gl.html" class="btn btn-neutral float-right" title="The OpenGL interface"/>Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="quickstart.html" class="btn btn-neutral" title="Writing a pyglet application"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2006-2013, Alex Holkner.
+    </p>
+  </div>
+
+  <a href="https://github.com/snide/sphinx_rtd_theme">Sphinx theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'1.2alpha1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

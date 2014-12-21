@@ -1,0 +1,671 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Sound and video &mdash; pyglet v1.2alpha1</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+  
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="top" title="pyglet v1.2alpha1" href="../index.html"/>
+        <link rel="up" title="pyglet Programming Guide" href="index.html"/>
+        <link rel="next" title="Application resources" href="resources.html"/>
+        <link rel="prev" title="Images" href="image.html"/> 
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-nav-search">
+        <a href="../index.html" class="fa fa-home"> pyglet</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        
+        
+            <ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Chapters</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html">Writing a pyglet application</a></li>
+<li class="toctree-l2"><a class="reference internal" href="context.html">Creating an OpenGL context</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gl.html">The OpenGL interface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graphics.html">Graphics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="windowing.html">Windowing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="eventloop.html">The application event loop</a></li>
+<li class="toctree-l2"><a class="reference internal" href="events.html">The pyglet event framework</a></li>
+<li class="toctree-l2"><a class="reference internal" href="keyboard.html">Working with the keyboard</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mouse.html">Working with the mouse</a></li>
+<li class="toctree-l2"><a class="reference internal" href="input.html">Working with other input devices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="time.html">Keeping track of time</a></li>
+<li class="toctree-l2"><a class="reference internal" href="text.html">Displaying text</a></li>
+<li class="toctree-l2"><a class="reference internal" href="image.html">Images</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="">Sound and video</a></li>
+<li class="toctree-l2"><a class="reference internal" href="resources.html">Application resources</a></li>
+<li class="toctree-l2"><a class="reference internal" href="debug.html">Debugging tools</a></li>
+<li class="toctree-l2"><a class="reference internal" href="features1.1.html">Appendix: Migrating to pyglet 1.1</a></li>
+</ul>
+</li>
+</ul>
+<ul class="simple">
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../internal/main.html">Importing pyglet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="advanced.html">Advanced topics</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="advanced.html#environment-settings">Environment settings</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../internal/gl.html">OpenGL Interface Implementation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../internal/gl.html#ctypes-linkage">ctypes linkage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../internal/gl.html#missing-extensions">Missing extensions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../internal/generated.html">ctypes Wrapper Generation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../internal/generated.html#generating-gl-wrappers">Generating GL wrappers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../internal/generated.html#generated-gl-wrappers">Generated GL wrappers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../internal/generated.html#generating-xlib-wrappers">Generating Xlib wrappers</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../internal/wraptypes.html">wraptypes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../internal/wraptypes.html#parser-modifications">Parser Modifications</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../internal/wraptypes.html#preprocessor">Preprocessor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../internal/wraptypes.html#cparser">CParser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../internal/wraptypes.html#ctypesparser">CtypesParser</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../internal/dist.html">Making a pyglet release</a></li>
+<li class="toctree-l1"><a class="reference internal" href="distribution.html">Distribution</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="distribution.html#self-contained-executables">Self-contained executables</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../internal/doc.html">Documentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../internal/doc.html#writing-documentation">Writing documentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../internal/doc.html#generation">Generation</a></li>
+</ul>
+</li>
+</ul>
+<ul class="simple">
+</ul>
+
+        
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../index.html">pyglet</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="index.html">pyglet Programming Guide</a> &raquo;</li>
+      
+    <li>Sound and video</li>
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            
+  <div class="section" id="sound-and-video">
+<h1>Sound and video<a class="headerlink" href="#sound-and-video" title="Permalink to this headline">¶</a></h1>
+<p>pyglet can play many audio and video formats.  Audio is played back with
+either OpenAL, DirectSound or Pulseaudio, permitting hardware-accelerated
+mixing and surround-sound 3D positioning.  Video is played into OpenGL
+textures, and so can be easily be manipulated in real-time by applications
+and incorporated into 3D environments.</p>
+<p>Decoding of compressed audio and video is provided by <a class="reference external" href="http://code.google.com/p/avbin">AVbin</a>, an optional
+component available for Linux, Windows and Mac OS X.  AVbin is installed
+alongside pyglet by default if the Windows or Mac OS X installation is used.
+If pyglet was installed from source, AVbin can be installed separately.</p>
+<p>If AVbin is not present, pyglet will fall back to reading uncompressed WAV
+files only.  This may be sufficient for many applications that require only a
+small number of short sounds, in which case those applications need not
+distribute AVbin.</p>
+<div class="contents local topic" id="contents">
+<ul class="simple">
+<li><a class="reference internal" href="#audio-drivers" id="id4">Audio drivers</a><ul>
+<li><a class="reference internal" href="#directsound" id="id5">DirectSound</a></li>
+<li><a class="reference internal" href="#openal" id="id6">OpenAL</a></li>
+<li><a class="reference internal" href="#pulse" id="id7">Pulse</a></li>
+<li><a class="reference internal" href="#linux-issues" id="id8">Linux Issues</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#supported-media-types" id="id9">Supported media types</a></li>
+<li><a class="reference internal" href="#loading-media" id="id10">Loading media</a></li>
+<li><a class="reference internal" href="#simple-audio-playback" id="id11">Simple audio playback</a></li>
+<li><a class="reference internal" href="#controlling-playback" id="id12">Controlling playback</a></li>
+<li><a class="reference internal" href="#incorporating-video" id="id13">Incorporating video</a></li>
+<li><a class="reference internal" href="#positional-audio" id="id14">Positional audio</a></li>
+</ul>
+</div>
+<div class="section" id="audio-drivers">
+<h2><a class="toc-backref" href="#id4">Audio drivers</a><a class="headerlink" href="#audio-drivers" title="Permalink to this headline">¶</a></h2>
+<p>pyglet can use OpenAL, DirectSound or Pulseaudio to play back audio.  Only one
+of these drivers can be used in an application, and this must be selected
+before the <cite>pyglet.media</cite> module is loaded.  The available drivers depend on
+your operating system:</p>
+<blockquote>
+<div><table border="1" class="docutils">
+<colgroup>
+<col width="33%" />
+<col width="33%" />
+<col width="33%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Windows</th>
+<th class="head">Mac OS X</th>
+<th class="head">Linux</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>OpenAL <a class="footnote-reference" href="#openalf" id="id1">[1]</a></td>
+<td>OpenAL</td>
+<td>OpenAL <a class="footnote-reference" href="#openalf" id="id2">[1]</a></td>
+</tr>
+<tr class="row-odd"><td>DirectSound</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>Pulseaudio</td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+<p>The audio driver can be set through the <tt class="docutils literal"><span class="pre">audio</span></tt> key of the <cite>pyglet.options</cite>
+dictionary.  For example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">pyglet</span><span class="o">.</span><span class="n">options</span><span class="p">[</span><span class="s">&#39;audio&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="s">&#39;openal&#39;</span><span class="p">,</span> <span class="s">&#39;silent&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This tells pyglet to use the OpenAL driver if it is available, and to
+ignore all audio output if it is not.  The <tt class="docutils literal"><span class="pre">audio</span></tt> option can be a list of
+any of these strings, giving the preference order for each driver:</p>
+<blockquote>
+<div><table border="1" class="docutils">
+<colgroup>
+<col width="50%" />
+<col width="50%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">String</th>
+<th class="head">Audio driver</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><tt class="docutils literal"><span class="pre">openal</span></tt></td>
+<td>OpenAL</td>
+</tr>
+<tr class="row-odd"><td><tt class="docutils literal"><span class="pre">directsound</span></tt></td>
+<td>DirectSound</td>
+</tr>
+<tr class="row-even"><td><tt class="docutils literal"><span class="pre">pulse</span></tt></td>
+<td>Pulseaudio</td>
+</tr>
+<tr class="row-odd"><td><tt class="docutils literal"><span class="pre">silent</span></tt></td>
+<td>No audio output</td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+<p>You must set the <tt class="docutils literal"><span class="pre">audio</span></tt> option before importing <cite>pyglet.media</cite>.  You can
+alternatively set it through an environment variable; see
+<cite>Environment settings</cite>.</p>
+<p>The following sections describe the requirements and limitations of each audio
+driver.</p>
+<div class="section" id="directsound">
+<h3><a class="toc-backref" href="#id5">DirectSound</a><a class="headerlink" href="#directsound" title="Permalink to this headline">¶</a></h3>
+<p>DirectSound is available only on Windows, and is installed by default on
+Windows XP and later.  pyglet uses only DirectX 7 features.  On Windows Vista
+DirectSound does not support hardware audio mixing or surround sound.</p>
+</div>
+<div class="section" id="openal">
+<h3><a class="toc-backref" href="#id6">OpenAL</a><a class="headerlink" href="#openal" title="Permalink to this headline">¶</a></h3>
+<p>OpenAL is included with Mac OS X.  Windows users can download a generic driver
+from <a class="reference external" href="http://www.openal.org/downloads.html">openal.org</a>, or from their sound device&#8217;s manufacturer.  Linux users can
+use the reference implementation also provided by Creative.  For example,
+Ubuntu users can <tt class="docutils literal"><span class="pre">apt-get</span> <span class="pre">openal</span></tt>.  ALUT is not required.  pyglet makes use
+of OpenAL 1.1 features if available, but will also work with OpenAL 1.0.</p>
+<p>Due to a long-standing bug in the reference implementation of OpenAL, stereo
+audio is downmixed to mono on Linux.  This does not affect Windows or Mac OS X
+users.</p>
+</div>
+<div class="section" id="pulse">
+<h3><a class="toc-backref" href="#id7">Pulse</a><a class="headerlink" href="#pulse" title="Permalink to this headline">¶</a></h3>
+<p>Pulseaudio has become the standard Linux audio implementation over the past
+few years, and is installed by default with most modern Linux distributions.</p>
+</div>
+<div class="section" id="linux-issues">
+<h3><a class="toc-backref" href="#id8">Linux Issues</a><a class="headerlink" href="#linux-issues" title="Permalink to this headline">¶</a></h3>
+<p>Linux users have the option of choosing between OpenAL and Pulse for audio
+output.  Unfortunately OpenAL has severe limitations that are outside the
+scope of pyglet&#8217;s control.</p>
+<p>If your application can manage without stereo playback, you should use the
+OpenAL driver (assuming your users have it installed). You can do this with:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">pyglet</span><span class="o">.</span><span class="n">options</span><span class="p">[</span><span class="s">&#39;audio&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="s">&#39;openal&#39;</span><span class="p">,</span> <span class="s">&#39;pulse&#39;</span><span class="p">,</span> <span class="s">&#39;silent&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>If your application needs stereo playback, consider using the Pulse driver
+in preference to the OpenAL driver (this is the default).</p>
+<table class="docutils footnote" frame="void" id="openalf" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label">[1]</td><td><em>(<a class="fn-backref" href="#id1">1</a>, <a class="fn-backref" href="#id2">2</a>)</em> OpenAL is not installed by default on Windows, nor in many Linux
+distributions.  It can be downloaded separately from your audio device
+manufacturer or <a class="reference external" href="http://www.openal.org/downloads.html">openal.org</a></td></tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="section" id="supported-media-types">
+<h2><a class="toc-backref" href="#id9">Supported media types</a><a class="headerlink" href="#supported-media-types" title="Permalink to this headline">¶</a></h2>
+<p>If AVbin is not installed, only uncompressed RIFF/WAV files encoded with
+linear PCM can be read.</p>
+<p>With AVbin, many common and less-common formats are supported.  Due to the
+large number of combinations of audio and video codecs, options, and container
+formats, it is difficult to provide a complete yet useful list.  Some of the
+supported audio formats are:</p>
+<ul class="simple">
+<li>AU</li>
+<li>MP2</li>
+<li>MP3</li>
+<li>OGG/Vorbis</li>
+<li>WAV</li>
+<li>WMA</li>
+</ul>
+<p>Some of the supported video formats are:</p>
+<ul class="simple">
+<li>AVI</li>
+<li>DivX</li>
+<li>H.263</li>
+<li>H.264</li>
+<li>MPEG</li>
+<li>MPEG-2</li>
+<li>OGG/Theora</li>
+<li>Xvid</li>
+<li>WMV</li>
+</ul>
+<p>For a complete list, see the AVbin sources.  Otherwise, it is probably simpler
+to simply try playing back your target file with the <tt class="docutils literal"><span class="pre">media_player.py</span></tt>
+example.</p>
+<p>New versions of AVbin as they are released may support additional formats, or
+fix errors in the current implementation.  AVbin is completely future- and
+backward-compatible, so no change to pyglet is needed to use a newer version
+of AVbin &#8211; just install it in place of the old version.</p>
+</div>
+<div class="section" id="loading-media">
+<h2><a class="toc-backref" href="#id10">Loading media</a><a class="headerlink" href="#loading-media" title="Permalink to this headline">¶</a></h2>
+<p>Audio and video files are loaded in the same way, using the
+<cite>pyglet.media.load</cite> function, providing a filename:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">source</span> <span class="o">=</span> <span class="n">pyglet</span><span class="o">.</span><span class="n">media</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s">&#39;explosion.wav&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>If the media file is bundled with the application, consider using the resource
+module (see <cite>Application resources</cite>).</p>
+<p>The result of loading a media file is a <cite>Source</cite> object.  This object provides
+useful information about the type of media encoded in the file, and serves as
+an opaque object used for playing back the file (described in the next
+section).</p>
+<p>The <cite>load</cite> function will raise a <cite>MediaException</cite> if the format is unknown.
+<cite>IOError</cite> may also be raised if the file could not be read from disk.  Future
+versions of pyglet will also support reading from arbitrary file-like objects,
+however a valid filename must currently be given.</p>
+<p>The length of the media file is given by the <cite>duration</cite> property, which
+returns the media&#8217;s length in seconds.</p>
+<p>Audio metadata is provided in the source&#8217;s <cite>audio_format</cite> attribute, which is
+<cite>None</cite> for silent videos.  This metadata is not generally useful to
+applications.  See the <cite>AudioFormat</cite> class documentation for details.</p>
+<p>Video metadata is provided in the source&#8217;s <cite>video_format</cite> attribute, which is
+<cite>None</cite> for audio files.  It is recommended that this attribute is checked
+before attempting play back a video file &#8211; if a movie file has a readable
+audio track but unknown video format it will appear as an audio file.</p>
+<p>You can use the video metadata, described in a <cite>VideoFormat</cite> object, to set up
+display of the video before beginning playback.  The attributes are as
+follows:</p>
+<blockquote>
+<div><table border="1" class="docutils">
+<colgroup>
+<col width="50%" />
+<col width="50%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Attribute</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><tt class="docutils literal"><span class="pre">width</span></tt>, <tt class="docutils literal"><span class="pre">height</span></tt></td>
+<td>Width and height of the video image, in pixels.</td>
+</tr>
+<tr class="row-odd"><td><tt class="docutils literal"><span class="pre">sample_aspect</span></tt></td>
+<td>The aspect ratio of each video pixel.</td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+<p>You must take care to apply the sample aspect ratio to the video image size
+for display purposes.  The following code determines the display size for a
+given video format:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">get_video_size</span><span class="p">(</span><span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">sample_aspect</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">sample_aspect</span> <span class="o">&gt;</span> <span class="mf">1.</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">width</span> <span class="o">*</span> <span class="n">sample_aspect</span><span class="p">,</span> <span class="n">height</span>
+    <span class="k">elif</span> <span class="n">sample_aspect</span> <span class="o">&lt;</span> <span class="mf">1.</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">width</span><span class="p">,</span> <span class="n">height</span> <span class="o">/</span> <span class="n">sample_aspect</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">width</span><span class="p">,</span> <span class="n">height</span>
+</pre></div>
+</div>
+<p>Media files are not normally read entirely from disk; instead, they are
+streamed into the decoder, and then into the audio buffers and video memory
+only when needed.  This reduces the startup time of loading a file and reduces
+the memory requirements of the application.</p>
+<p>However, there are times when it is desirable to completely decode an audio
+file in memory first.  For example, a sound that will be played many times
+(such as a bullet or explosion) should only be decoded once.  You can instruct
+pyglet to completely decode an audio file into memory at load time:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">explosion</span> <span class="o">=</span> <span class="n">pyglet</span><span class="o">.</span><span class="n">media</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s">&#39;explosion.wav&#39;</span><span class="p">,</span> <span class="n">streaming</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The resulting source is an instance of <cite>StaticSource</cite>, which provides the same
+interface as a streaming source.  You can also construct a <cite>StaticSource</cite>
+directly from an already-loaded <cite>Source</cite>:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">explosion</span> <span class="o">=</span> <span class="n">pyglet</span><span class="o">.</span><span class="n">media</span><span class="o">.</span><span class="n">StaticSource</span><span class="p">(</span><span class="n">pyglet</span><span class="o">.</span><span class="n">media</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s">&#39;explosion.wav&#39;</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="simple-audio-playback">
+<h2><a class="toc-backref" href="#id11">Simple audio playback</a><a class="headerlink" href="#simple-audio-playback" title="Permalink to this headline">¶</a></h2>
+<p>Many applications, especially games, need to play sounds in their entirety
+without needing to keep track of them.  For example, a sound needs to be
+played when the player&#8217;s space ship explodes, but this sound never needs to
+have its volume adjusted, or be rewound, or interrupted.</p>
+<p>pyglet provides a simple interface for this kind of use-case.  Call the <cite>play</cite>
+method of any <cite>Source</cite> to play it immediately and completely:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">explosion</span> <span class="o">=</span> <span class="n">pyglet</span><span class="o">.</span><span class="n">media</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s">&#39;explosion.wav&#39;</span><span class="p">,</span> <span class="n">streaming</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+<span class="n">explosion</span><span class="o">.</span><span class="n">play</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>You can call <cite>play</cite> on any <cite>Source</cite>, not just <cite>StaticSource</cite>.</p>
+<p>The return value of <cite>Source.play</cite> is a <cite>ManagedPlayer</cite>, which can either be
+discarded, or retained to maintain control over the sound&#8217;s playback.</p>
+</div>
+<div class="section" id="controlling-playback">
+<h2><a class="toc-backref" href="#id12">Controlling playback</a><a class="headerlink" href="#controlling-playback" title="Permalink to this headline">¶</a></h2>
+<p>You can implement many functions common to a media player using the <cite>Player</cite>
+class.  Use of this class is also necessary for video playback.  There are no
+parameters to its construction:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">player</span> <span class="o">=</span> <span class="n">pyglet</span><span class="o">.</span><span class="n">media</span><span class="o">.</span><span class="n">Player</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>A player will play any source that is &#8220;queued&#8221; on it.  Any number of sources
+can be queued on a single player, but once queued, a source can never be
+dequeued (until it is removed automatically once complete).  The main use of
+this queuing mechanism is to facilitate &#8220;gapless&#8221; transitions between playback
+of media files.</p>
+<p>A <cite>StreamingSource</cite> can only ever be queued on one player, and only once on
+that player.  <cite>StaticSource</cite> objects can be queued any number of times on any
+number of players.  Recall that a <cite>StaticSource</cite> can be created by passing
+<tt class="docutils literal"><span class="pre">streaming=False</span></tt> to the <cite>load</cite> method.</p>
+<p>In the following example, two sounds are queued onto a player:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">player</span><span class="o">.</span><span class="n">queue</span><span class="p">(</span><span class="n">source1</span><span class="p">)</span>
+<span class="n">player</span><span class="o">.</span><span class="n">queue</span><span class="p">(</span><span class="n">source2</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Playback begins with the player&#8217;s <cite>play</cite> method is called:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">player</span><span class="o">.</span><span class="n">play</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Standard controls for controlling playback are provided by these methods:</p>
+<blockquote>
+<div><table border="1" class="docutils">
+<colgroup>
+<col width="50%" />
+<col width="50%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Method</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><cite>play</cite></td>
+<td>Begin or resume playback of the current source.</td>
+</tr>
+<tr class="row-odd"><td><cite>pause</cite></td>
+<td>Pause playback of the current source.</td>
+</tr>
+<tr class="row-even"><td><cite>next_source</cite></td>
+<td>Dequeue the current source and move to the next one immediately.
+<cite>next</cite> can also be used but it is deprecated because of
+incompatibilities with Python 3.</td>
+</tr>
+<tr class="row-odd"><td><cite>seek</cite></td>
+<td>Seek to a specific time within the current source.</td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+<p>Note that there is no <cite>stop</cite> method.  If you do not need to resume playback,
+simply pause playback and discard the player and source objects.  Using the
+<cite>next_source</cite> method does not guarantee gapless playback.</p>
+<p>There are several properties that describe the player&#8217;s current state:</p>
+<blockquote>
+<div><table border="1" class="docutils">
+<colgroup>
+<col width="50%" />
+<col width="50%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Property</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><cite>time</cite></td>
+<td>The current playback position within the current source, in
+seconds.  This is read-only (but see the <cite>seek</cite> method).</td>
+</tr>
+<tr class="row-odd"><td><cite>playing</cite></td>
+<td>True if the player is currently playing, False if there are no
+sources queued or the player is paused.  This is read-only (but
+see the <cite>pause</cite> and <cite>play</cite> methods).</td>
+</tr>
+<tr class="row-even"><td><cite>source</cite></td>
+<td>A reference to the current source being played.  This is
+read-only (but see the <cite>queue</cite> method).</td>
+</tr>
+<tr class="row-odd"><td><cite>volume</cite></td>
+<td>The audio level, expressed as a float from 0 (mute) to 1 (normal
+volume).  This can be set at any time.</td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+<p>When a player reaches the end of the current source, by default it will move
+immediately to the next queued source.  If there are no more sources, playback
+stops until another is queued.  There are several other possible behaviours,
+specified by setting the <cite>eos_action</cite> attribute on the player:</p>
+<blockquote>
+<div><table border="1" class="docutils">
+<colgroup>
+<col width="50%" />
+<col width="50%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head"><tt class="docutils literal"><span class="pre">eos_action</span></tt></th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><cite>EOS_NEXT</cite></td>
+<td>The default action: playback continues at the next source.</td>
+</tr>
+<tr class="row-odd"><td><cite>EOS_PAUSE</cite></td>
+<td>Playback pauses at the end of the source, which remains the
+current source for this player.</td>
+</tr>
+<tr class="row-even"><td><cite>EOS_LOOP</cite></td>
+<td>Playback continues immediately at the beginning of the current
+source.</td>
+</tr>
+<tr class="row-odd"><td><cite>EOS_STOP</cite></td>
+<td>Valid only for <cite>ManagedPlayer</cite>, for which it is default: the
+player is discarded when the current source finishes.</td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+<p>You can change a player&#8217;s <cite>eos_action</cite> at any time, but be aware that unless
+sufficient time is given for the future data to be decoded and buffered there
+may be a stutter or gap in playback.  If <cite>eos_action</cite> is set well in advance
+of the end of the source (say, several seconds), there will be no disruption.</p>
+</div>
+<div class="section" id="incorporating-video">
+<h2><a class="toc-backref" href="#id13">Incorporating video</a><a class="headerlink" href="#incorporating-video" title="Permalink to this headline">¶</a></h2>
+<p>When a <cite>Player</cite> is playing back a source with video, use the <cite>get_texture</cite>
+method to obtain the video frame image.  This can be used to display
+the current video image syncronised with the audio track, for example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="nd">@window.event</span>
+<span class="k">def</span> <span class="nf">on_draw</span><span class="p">():</span>
+    <span class="n">player</span><span class="o">.</span><span class="n">get_texture</span><span class="p">()</span><span class="o">.</span><span class="n">blit</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The texture is an instance of <cite>pyglet.image.Texture</cite>, with an internal format
+of either <tt class="docutils literal"><span class="pre">GL_TEXTURE_2D</span></tt> or <tt class="docutils literal"><span class="pre">GL_TEXTURE_RECTANGLE_ARB</span></tt>.  While the
+texture will typically be created only once and subsequentally updated each
+frame, you should make no such assumption in your application &#8211; future
+versions of pyglet may use multiple texture objects.</p>
+</div>
+<div class="section" id="positional-audio">
+<h2><a class="toc-backref" href="#id14">Positional audio</a><a class="headerlink" href="#positional-audio" title="Permalink to this headline">¶</a></h2>
+<p>pyglet uses OpenAL for audio playback, which includes many features for
+positioning sound within a 3D space.  This is particularly effective with a
+surround-sound setup, but is also applicable to stereo systems.</p>
+<p>A <cite>Player</cite> in pyglet has an associated position in 3D space &#8211;
+that is, it is equivalent to an OpenAL &#8220;source&#8221;.  The properties for setting
+these parameters are described in more detail in the API documentation; see
+for example <cite>Player.position</cite> and <cite>Player.pitch</cite>.</p>
+<p>The OpenAL &#8220;listener&#8221; object is provided by the <cite>pyglet.media.listener</cite>
+singleton, an instance of <cite>Listener</cite>.  This provides similar properties such
+as <cite>Listener.position</cite>, <cite>Listener.forward_orientation</cite> and
+<cite>Listener.up_orientation</cite> that describe the position of the user in 3D space.</p>
+<p>Note that only mono sounds can be positioned.  Stereo sounds will play back as
+normal, and only their volume and pitch properties will affect the sound.</p>
+</div>
+</div>
+
+
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="resources.html" class="btn btn-neutral float-right" title="Application resources"/>Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="image.html" class="btn btn-neutral" title="Images"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2006-2013, Alex Holkner.
+    </p>
+  </div>
+
+  <a href="https://github.com/snide/sphinx_rtd_theme">Sphinx theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'1.2alpha1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

@@ -1,0 +1,490 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>wraptypes &mdash; pyglet v1.2alpha1</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+  
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="top" title="pyglet v1.2alpha1" href="../index.html"/>
+        <link rel="next" title="Making a pyglet release" href="dist.html"/>
+        <link rel="prev" title="ctypes Wrapper Generation" href="generated.html"/> 
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-nav-search">
+        <a href="../index.html" class="fa fa-home"> pyglet</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        
+        
+            <ul>
+<li class="toctree-l1"><a class="reference internal" href="../programming_guide/index.html">Chapters</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../programming_guide/installation.html">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_guide/quickstart.html">Writing a pyglet application</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_guide/context.html">Creating an OpenGL context</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_guide/gl.html">The OpenGL interface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_guide/graphics.html">Graphics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_guide/windowing.html">Windowing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_guide/eventloop.html">The application event loop</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_guide/events.html">The pyglet event framework</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_guide/keyboard.html">Working with the keyboard</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_guide/mouse.html">Working with the mouse</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_guide/input.html">Working with other input devices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_guide/time.html">Keeping track of time</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_guide/text.html">Displaying text</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_guide/image.html">Images</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_guide/media.html">Sound and video</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_guide/resources.html">Application resources</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_guide/debug.html">Debugging tools</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_guide/features1.1.html">Appendix: Migrating to pyglet 1.1</a></li>
+</ul>
+</li>
+</ul>
+<ul class="simple">
+</ul>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="main.html">Importing pyglet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../programming_guide/advanced.html">Advanced topics</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../programming_guide/advanced.html#environment-settings">Environment settings</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="gl.html">OpenGL Interface Implementation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="gl.html#ctypes-linkage">ctypes linkage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gl.html#missing-extensions">Missing extensions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="generated.html">ctypes Wrapper Generation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="generated.html#generating-gl-wrappers">Generating GL wrappers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generated.html#generated-gl-wrappers">Generated GL wrappers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generated.html#generating-xlib-wrappers">Generating Xlib wrappers</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="">wraptypes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#parser-modifications">Parser Modifications</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#preprocessor">Preprocessor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#cparser">CParser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#ctypesparser">CtypesParser</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="dist.html">Making a pyglet release</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../programming_guide/distribution.html">Distribution</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../programming_guide/distribution.html#self-contained-executables">Self-contained executables</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="doc.html">Documentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="doc.html#writing-documentation">Writing documentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="doc.html#generation">Generation</a></li>
+</ul>
+</li>
+</ul>
+<ul class="simple">
+</ul>
+
+        
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../index.html">pyglet</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../index.html">Docs</a> &raquo;</li>
+      
+    <li>wraptypes</li>
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            
+  <div class="section" id="wraptypes">
+<h1>wraptypes<a class="headerlink" href="#wraptypes" title="Permalink to this headline">¶</a></h1>
+<p>wraptypes is a general utility for creating ctypes wrappers from C header
+files.  The front-end is <tt class="docutils literal"><span class="pre">tools/wraptypes/wrap.py</span></tt>, for usage:</p>
+<div class="highlight-python"><div class="highlight"><pre>python tools/wraptypes/wrap.py -h
+</pre></div>
+</div>
+<p>There are three components to wraptypes:</p>
+<dl class="docutils">
+<dt>preprocessor.py</dt>
+<dd>Interprets preprocessor declarations and converts the source header files
+into a list of tokens.</dd>
+<dt>cparser.py</dt>
+<dd>Parses the preprocessed tokens for type and function declarations and
+calls <tt class="docutils literal"><span class="pre">handle_</span></tt> methods on the class CParser in a similar manner to a
+SAX parser.</dd>
+<dt>ctypesparser.py</dt>
+<dd>Interprets C declarations and types from CParser and creates corresponding
+ctypes declarations, calling <tt class="docutils literal"><span class="pre">handle_</span></tt> methods on the class
+CtypesParser.</dd>
+</dl>
+<p>The front-end <tt class="docutils literal"><span class="pre">wrap.py</span></tt> provides a simple subclass of <tt class="docutils literal"><span class="pre">CtypesParser</span></tt>,
+<tt class="docutils literal"><span class="pre">CtypesWrapper</span></tt>, which writes the ctypes declarations found to a file in a
+format that can be imported as a module.</p>
+<div class="section" id="parser-modifications">
+<h2>Parser Modifications<a class="headerlink" href="#parser-modifications" title="Permalink to this headline">¶</a></h2>
+<p>The parsers are built upon a modified version of <a class="reference external" href="http://www.dabeaz.com/ply/">PLY</a>, a Python implementation
+of lex and yacc.  The modified source is included in the <tt class="docutils literal"><span class="pre">wraptypes</span></tt>
+directory.  The modifications are:</p>
+<ul class="simple">
+<li>Grammar is abstracted out of Parser, so multiple grammars can easily be
+defined in the same module.</li>
+<li>Tokens and symbols keep track of their filename as well as line number.</li>
+<li>Lexer state can be pushed onto a stack.</li>
+</ul>
+<p>The first time the parsers are run (or after they are modified), PLY creates
+<tt class="docutils literal"><span class="pre">pptab.py</span></tt> and <tt class="docutils literal"><span class="pre">parsetab.py</span></tt> in the current directory.  These are
+the generated state machines, which can take a few seconds to generate.
+The file <tt class="docutils literal"><span class="pre">parser.out</span></tt> is created if debugging is enabled, and contains the
+parser description (of the last parser that was generated), which is essential
+for debugging.</p>
+</div>
+<div class="section" id="preprocessor">
+<h2>Preprocessor<a class="headerlink" href="#preprocessor" title="Permalink to this headline">¶</a></h2>
+<p>The grammar and parser are defined in <tt class="docutils literal"><span class="pre">preprocessor.py</span></tt>.</p>
+<p>There is only one lexer state.  Each token has a type which is a string (e.g.
+<tt class="docutils literal"><span class="pre">'CHARACTER_CONSTANT'</span></tt>) and a value.  Token values, when read directly from
+the source file are only ever strings.  When tokens are written to the output
+list they sometimes have tuple values (for example, a <tt class="docutils literal"><span class="pre">PP_DEFINE</span></tt> token on
+output).</p>
+<p>Two lexer classes are defined: <tt class="docutils literal"><span class="pre">PreprocessorLexer</span></tt>, which reads a stack of
+files (actually strings) as input, and <tt class="docutils literal"><span class="pre">TokenListLexer</span></tt>, which reads from a
+list of already-parsed tokens (used for parsing expressions).</p>
+<p>The preprocessing entry-point is the <tt class="docutils literal"><span class="pre">PreprocessorParser</span></tt> class.  This
+creates a <tt class="docutils literal"><span class="pre">PreprocessorLexer</span></tt> and its grammar during construction.  The
+system include path includes the GCC search path by default but can be
+modified by altering the <tt class="docutils literal"><span class="pre">include_path</span></tt> and <tt class="docutils literal"><span class="pre">framework_path</span></tt> lists.  The
+<tt class="docutils literal"><span class="pre">system_headers</span></tt> dict allows header files to be implied on the search path
+that don&#8217;t exist.  For example, by setting:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">system_headers</span><span class="p">[</span><span class="s">&#39;stdlib.h&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&quot;&quot;&quot;#ifndef STDLIB_H</span>
+<span class="s">#define STDLIB_H</span>
+
+<span class="s">/* ... */</span>
+<span class="s">#endif</span>
+<span class="s">&quot;&quot;&quot;</span>
+</pre></div>
+</div>
+<p>you can insert your own custom header in place of the one on the filesystem.
+This is useful when parsing headers from network locations.</p>
+<p>Parsing begins when <tt class="docutils literal"><span class="pre">parse</span></tt> is called.  Specify one or both of a filename
+and a string of data.  If <tt class="docutils literal"><span class="pre">debug</span></tt> kwarg is True, syntax errors dump the
+parser state instead of just the line number where they occurred.</p>
+<p>The production rules specify the actions; these are implemented in
+<tt class="docutils literal"><span class="pre">PreprocessorGrammar</span></tt>.  The actions call methods on <tt class="docutils literal"><span class="pre">PreprocessorParser</span></tt>,
+such as:</p>
+<ul class="simple">
+<li><tt class="docutils literal"><span class="pre">include(self,</span> <span class="pre">header)</span></tt>, to push another file onto the lexer.</li>
+<li><tt class="docutils literal"><span class="pre">include_system(self,</span> <span class="pre">header)</span></tt>, to search the system path for a file to
+push onto the lexer</li>
+<li><tt class="docutils literal"><span class="pre">error(self,</span> <span class="pre">message,</span> <span class="pre">filename,</span> <span class="pre">line)</span></tt>, to signal a parse error.  Not
+all syntax errors get this far, due to limitations in the parser.  A parse
+error at EOF will just print to stderr.</li>
+<li><tt class="docutils literal"><span class="pre">write(self,</span> <span class="pre">tokens)</span></tt>, to write tokens to the output list.  This is
+the default action when no preprocessing declaratives are being parsed.</li>
+</ul>
+<p>The parser has a stack of <tt class="docutils literal"><span class="pre">ExecutionState</span></tt>, which specifies whether the
+current tokens being parsed are ignored or not (tokens are ignored in an
+<tt class="docutils literal"><span class="pre">#if</span></tt> that evaluates to 0).  This is a little more complicated than just a
+boolean flag:  the parser must also ignore #elif conditions that can have no
+effect.  The <tt class="docutils literal"><span class="pre">enable_declaratives</span></tt> and <tt class="docutils literal"><span class="pre">enable_elif_conditionals</span></tt> return
+True if the top-most <tt class="docutils literal"><span class="pre">ExecutionState</span></tt> allows declaratives and <tt class="docutils literal"><span class="pre">#elif</span></tt>
+conditionals to be parsed, respecitively.  The execution state stack is
+modified with the <tt class="docutils literal"><span class="pre">condition_*</span></tt> methods.</p>
+<p><tt class="docutils literal"><span class="pre">PreprocessorParser</span></tt> has a <tt class="docutils literal"><span class="pre">PreprocessorNamespace</span></tt> which keeps track of
+the currently defined macros.  You can create and specify your own namespace,
+or use one that is created by default.  The default namespace includes GCC
+platform macros needed for parsing system headers, and some of the STDC
+macros.</p>
+<p>Macros are expanded when tokens are written to the output list, and when
+conditional expressions are parsed.
+<tt class="docutils literal"><span class="pre">PreprocessorNamespace.apply_macros(tokens)</span></tt> takes care of this, replacing
+function parameters, variable arguments, macro objects and (mostly) avoiding
+infinite recursion.  It does not yet handle the <tt class="docutils literal"><span class="pre">#</span></tt> and <tt class="docutils literal"><span class="pre">##</span></tt> operators,
+which are needed to parse the Windows system headers.</p>
+<p>The process for evaluating a conditional (<tt class="docutils literal"><span class="pre">#if</span></tt> or <tt class="docutils literal"><span class="pre">#elif</span></tt>) is:</p>
+<ol class="arabic simple">
+<li>Tokens between <tt class="docutils literal"><span class="pre">PP_IF</span></tt> or <tt class="docutils literal"><span class="pre">PP_ELIF</span></tt> and <tt class="docutils literal"><span class="pre">NEWLINE</span></tt> are expanded
+by <tt class="docutils literal"><span class="pre">apply_macros</span></tt>.</li>
+<li>The resulting list of tokens is used to construct a <tt class="docutils literal"><span class="pre">TokenListLexer</span></tt>.</li>
+<li>This lexer is used as input to a <tt class="docutils literal"><span class="pre">ConstantExpressionParser</span></tt>.  This parser
+uses the <tt class="docutils literal"><span class="pre">ConstantExpressionGrammar</span></tt>, which builds up an AST of
+<tt class="docutils literal"><span class="pre">ExpressionNode</span></tt> objects.</li>
+<li><tt class="docutils literal"><span class="pre">parse</span></tt> is called on the <tt class="docutils literal"><span class="pre">ConstantExpressionParser</span></tt>, which returns the
+resulting top-level <tt class="docutils literal"><span class="pre">ExpressionNode</span></tt>, or <tt class="docutils literal"><span class="pre">None</span></tt> if there was a syntax
+error.</li>
+<li>The <tt class="docutils literal"><span class="pre">evaluate</span></tt> method of the <tt class="docutils literal"><span class="pre">ExpressionNode</span></tt> is called with the
+preprocessor&#8217;s namespace as the evaluation context.  This allows the
+expression nodes to resolve <tt class="docutils literal"><span class="pre">defined</span></tt> operators.</li>
+<li>The result of <tt class="docutils literal"><span class="pre">evaluate</span></tt> is always an int; non-zero values are treated as
+True.</li>
+</ol>
+<p>Because pyglet requires special knowledge of the preprocessor declaratives
+that were encountered in the source, these are encoded as pseudo-tokens within
+the output token list.  For example, after a <tt class="docutils literal"><span class="pre">#ifndef</span></tt> is evaluated, it
+is written to the token list as a <tt class="docutils literal"><span class="pre">PP_IFNDEF</span></tt> token.</p>
+<p><tt class="docutils literal"><span class="pre">#define</span></tt> is handled specially.  After applying it to the namespace, it is
+parsed as an expression immediately.  This is allowed (and often expected) to
+fail.  If it does not fail, a <tt class="docutils literal"><span class="pre">PP_DEFINE_CONSTANT</span></tt> token is created, and the
+value is the result of evaluatin the expression.  Otherwise, a <tt class="docutils literal"><span class="pre">PP_DEFINE</span></tt>
+token is created, and the value is the string concatenation of the tokens
+defined.  Special handling of parseable expressions makes it simple to later
+parse constants defined as, for example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="c">#define RED_SHIFT 8</span>
+<span class="c">#define RED_MASK (0x0f &lt;&lt; RED_SHIFT)</span>
+</pre></div>
+</div>
+<p>The preprocessor can be tested/debugged by running <tt class="docutils literal"><span class="pre">preprocessor.py</span></tt>
+stand-alone with a header file as the sole argument.  The resulting token list
+will be written to stdout.</p>
+</div>
+<div class="section" id="cparser">
+<h2>CParser<a class="headerlink" href="#cparser" title="Permalink to this headline">¶</a></h2>
+<p>The lexer for <tt class="docutils literal"><span class="pre">CParser</span></tt>, <tt class="docutils literal"><span class="pre">CLexer</span></tt>, takes as input a list of tokens output
+from the preprocessor.  The special preprocessor tokens such as <tt class="docutils literal"><span class="pre">PP_DEFINE</span></tt>
+are intercepted here and handled immediately; hence they can appear anywhere
+in the source header file without causing problems with the parser.  At this
+point <tt class="docutils literal"><span class="pre">IDENTIFIER</span></tt> tokens which are found to be the name of a defined type
+(the set of defined types is updated continuously during parsing) are
+converted to <tt class="docutils literal"><span class="pre">TYPE_NAME</span></tt> tokens.</p>
+<p>The entry-point to parsing C source is the <tt class="docutils literal"><span class="pre">CParser</span></tt> class.  This creates a
+preprocessor in its constructor, and defines some default types such as
+<tt class="docutils literal"><span class="pre">wchar_t</span></tt> and <tt class="docutils literal"><span class="pre">__int64_t</span></tt>.  These can be disabled with kwargs.</p>
+<p>Preprocessing can be quite time-consuming, especially on OS X where thousands
+of <tt class="docutils literal"><span class="pre">#include</span></tt> declaratives are processed when Carbon is parsed.  To minimise
+the time required to parse similar (or the same, while debugging) header
+files, the token list from preprocessing is cached and reused where possible.</p>
+<p>This is handled by <tt class="docutils literal"><span class="pre">CPreprocessorParser</span></tt>, which overrides <tt class="docutils literal"><span class="pre">push_file</span></tt> to
+check with <tt class="docutils literal"><span class="pre">CParser</span></tt> if the desired file is cached.  The cache is checked
+against the file&#8217;s modification timestamp as well as a &#8220;memento&#8221; that
+describes the currently defined tokens.  This is intended to avoid using a
+cached file that would otherwise be parsed differently due to the defined
+macros.  It is by no means perfect; for example, it won&#8217;t pick up on a macro
+that has been defined differently.  It seems to work well enough for the
+header files pyglet requires.</p>
+<p>The header cache is saved and loaded automatically in the working directory
+as <tt class="docutils literal"><span class="pre">.header.cache</span></tt>.  The cache should be deleted if you make changes to the
+preprocessor, or are experiencing cache errors (these are usually accompanied
+by a &#8220;what-the?&#8221; exclamation from the user).</p>
+<p>The actions in the grammar construct parts of a &#8220;C object model&#8221; and call
+methods on <tt class="docutils literal"><span class="pre">CParser</span></tt>.  The C object model is not at all complete, containing
+only what pyglet (and any other ctypes-wrapping application) requires.  The
+classes in the object model are:</p>
+<dl class="docutils">
+<dt>Declaration</dt>
+<dd>A single declaration occuring outside of a function body.  This includes
+type declarations, function declarations and variable declarations.  The
+attributes are <tt class="docutils literal"><span class="pre">declarator</span></tt> (see below), <tt class="docutils literal"><span class="pre">type</span></tt> (a Type object) and
+<tt class="docutils literal"><span class="pre">storage</span></tt> (for example, &#8216;typedef&#8217;, &#8216;const&#8217;, &#8216;static&#8217;, &#8216;extern&#8217;, etc).</dd>
+<dt>Declarator</dt>
+<dd>A declarator is a thing being declared.  Declarators have an
+<tt class="docutils literal"><span class="pre">identifier</span></tt> (the name of it, None if the declarator is abstract, as in
+some function parameter declarations), an optional <tt class="docutils literal"><span class="pre">initializer</span></tt>
+(currently ignored), an optional linked-list of <tt class="docutils literal"><span class="pre">array</span></tt> (giving the
+dimensions of the array) and an optional list of <tt class="docutils literal"><span class="pre">parameters</span></tt> (if the
+declarator is a function).</dd>
+<dt>Pointer</dt>
+<dd>This is a type of declarator that is dereferenced via <tt class="docutils literal"><span class="pre">pointer</span></tt> to
+another declarator.</dd>
+<dt>Array</dt>
+<dd>Array has size (an int, its dimension, or None if unsized) and a pointer
+<tt class="docutils literal"><span class="pre">array</span></tt> to the next array dimension, if any.</dd>
+<dt>Parameter</dt>
+<dd>A function parameter consisting of a <tt class="docutils literal"><span class="pre">type</span></tt> (Type object), <tt class="docutils literal"><span class="pre">storage</span></tt>
+and <tt class="docutils literal"><span class="pre">declarator</span></tt>.</dd>
+<dt>Type</dt>
+<dd>Type has a list of <tt class="docutils literal"><span class="pre">qualifiers</span></tt> (e.g. &#8216;const&#8217;, &#8216;volatile&#8217;, etc) and
+<tt class="docutils literal"><span class="pre">specifiers</span></tt> (the meaty bit).</dd>
+<dt>TypeSpecifier</dt>
+<dd>A base TypeSpecifier is just a string, such as <tt class="docutils literal"><span class="pre">'int'</span></tt> or <tt class="docutils literal"><span class="pre">'Foo'</span></tt> or
+<tt class="docutils literal"><span class="pre">'unsigned'</span></tt>.  Note that types can have multiple TypeSpecifiers; not
+all combinations are valid.</dd>
+<dt>StructTypeSpecifier</dt>
+<dd>This is the specifier for a struct or union (if <tt class="docutils literal"><span class="pre">is_union</span></tt> is True)
+type.  <tt class="docutils literal"><span class="pre">tag</span></tt> gives the optional <tt class="docutils literal"><span class="pre">foo</span></tt> in <tt class="docutils literal"><span class="pre">struct</span> <span class="pre">foo</span></tt> and
+<tt class="docutils literal"><span class="pre">declarations</span></tt> is the meat (an empty list for an opaque or unspecified
+struct).</dd>
+<dt>EnumSpecifier</dt>
+<dd>This is the specifier for an enum type.  <tt class="docutils literal"><span class="pre">tag</span></tt> gives the optional
+<tt class="docutils literal"><span class="pre">foo</span></tt> in <tt class="docutils literal"><span class="pre">enum</span> <span class="pre">foo</span></tt> and <tt class="docutils literal"><span class="pre">enumerators</span></tt> is the list of Enumerator
+objects (an empty list for an unspecified enum).</dd>
+<dt>Enumerator</dt>
+<dd>Enumerators exist only within EnumSpecifier.  Contains <tt class="docutils literal"><span class="pre">name</span></tt> and
+<tt class="docutils literal"><span class="pre">expression</span></tt>, an ExpressionNode object.</dd>
+</dl>
+<p>The <tt class="docutils literal"><span class="pre">ExpressionNode</span></tt> object hierarchy is similar to that used in the
+preprocessor, but more fully-featured, and using a different
+<tt class="docutils literal"><span class="pre">EvaluationContext</span></tt> which can evaluate identifiers and the <tt class="docutils literal"><span class="pre">sizeof</span></tt>
+operator (currently it actually just returns 0 for both).</p>
+<p>Methods are called on CParser as declarations and preprocessor declaratives
+are parsed.  The are mostly self explanatory.  For example:</p>
+<dl class="docutils">
+<dt>handle_ifndef(self, name, filename, lineno)</dt>
+<dd>An <tt class="docutils literal"><span class="pre">#ifndef</span></tt> was encountered testing the macro <tt class="docutils literal"><span class="pre">name</span></tt> in file
+<tt class="docutils literal"><span class="pre">filename</span></tt> at line <tt class="docutils literal"><span class="pre">lineno</span></tt>.</dd>
+<dt>handle_declaration(self, declaration, filename, lineno)</dt>
+<dd><tt class="docutils literal"><span class="pre">declaration</span></tt> is an instance of Declaration.</dd>
+</dl>
+<p>These methods should be overridden by a subclass to provide functionality.
+The <tt class="docutils literal"><span class="pre">DebugCParser</span></tt> does this and prints out the arguments to each
+<tt class="docutils literal"><span class="pre">handle_</span></tt> method.</p>
+<p>The <tt class="docutils literal"><span class="pre">CParser</span></tt> can be tested in isolation by running it stand-alone with the
+filename of a header as the sole argument.  A <tt class="docutils literal"><span class="pre">DebugCParser</span></tt> will be
+constructed and used to parse the header.</p>
+</div>
+<div class="section" id="ctypesparser">
+<h2>CtypesParser<a class="headerlink" href="#ctypesparser" title="Permalink to this headline">¶</a></h2>
+<p><tt class="docutils literal"><span class="pre">CtypesParser</span></tt> is implemented in <tt class="docutils literal"><span class="pre">ctypesparser.py</span></tt>.  It is a subclass of
+<tt class="docutils literal"><span class="pre">CParser</span></tt> and implements the <tt class="docutils literal"><span class="pre">handle_</span></tt> methods to provide a more
+ctypes-friendly interpretation of the declarations.</p>
+<p>To use, subclass and override the methods:</p>
+<dl class="docutils">
+<dt>handle_ctypes_constant(self, name, value, filename, lineno)</dt>
+<dd>An integer or float constant (in a <tt class="docutils literal"><span class="pre">#define</span></tt>).</dd>
+<dt>handle_ctypes_type_definition(self, name, ctype, filename, lineno)</dt>
+<dd>A <tt class="docutils literal"><span class="pre">typedef</span></tt> declaration.  See below for type of <tt class="docutils literal"><span class="pre">ctype</span></tt>.</dd>
+<dt>handle_ctypes_function(self, name, restype, argtypes, filename, lineno)</dt>
+<dd>A function declaration with the given return type and argument list.</dd>
+<dt>handle_ctypes_variable(self, name, ctype, filename, lineno)</dt>
+<dd>Any other non-<tt class="docutils literal"><span class="pre">static</span></tt> declaration.</dd>
+</dl>
+<p>Types are represented by instances of <tt class="docutils literal"><span class="pre">CtypesType</span></tt>.  This is more easily
+manipulated than a &#8220;real&#8221; ctypes type.  There are subclasses for
+<tt class="docutils literal"><span class="pre">CtypesPointer</span></tt>, <tt class="docutils literal"><span class="pre">CtypesArray</span></tt>, <tt class="docutils literal"><span class="pre">CtypesFunction</span></tt>, and so on; see the
+module for details.</p>
+<p>Each <tt class="docutils literal"><span class="pre">CtypesType</span></tt> class implements the <tt class="docutils literal"><span class="pre">visit</span></tt> method, which can be used,
+Visitor pattern style, to traverse the type hierarchy.  Call the <tt class="docutils literal"><span class="pre">visit</span></tt>
+method of any type with an implementation of <tt class="docutils literal"><span class="pre">CtypesTypeVisitor</span></tt>: all
+pointers, array bases, function parameters and return types are traversed
+automatically (struct members are not, however).</p>
+<p>This is useful when writing the contents of a struct or enum.  Before writing
+a type declaration for a struct type (which would consist only of the struct&#8217;s
+tag), <tt class="docutils literal"><span class="pre">visit</span></tt> the type and handle the <tt class="docutils literal"><span class="pre">visit_struct</span></tt> method on the visitor
+to print out the struct&#8217;s members first.  Similarly for enums.</p>
+<p><tt class="docutils literal"><span class="pre">ctypesparser.py</span></tt> can not be run stand-alone.  <tt class="docutils literal"><span class="pre">wrap.py</span></tt> provides a
+straight-forward implementation that writes a module of ctypes wrappers.  It
+can filter the output based on the originating filename.  See the module
+docstring for usage and extension details.</p>
+</div>
+</div>
+
+
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="dist.html" class="btn btn-neutral float-right" title="Making a pyglet release"/>Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="generated.html" class="btn btn-neutral" title="ctypes Wrapper Generation"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2006-2013, Alex Holkner.
+    </p>
+  </div>
+
+  <a href="https://github.com/snide/sphinx_rtd_theme">Sphinx theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'1.2alpha1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

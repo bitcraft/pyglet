@@ -1,0 +1,428 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Writing a pyglet application &mdash; pyglet v1.2alpha1</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+  
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="top" title="pyglet v1.2alpha1" href="../index.html"/>
+        <link rel="up" title="pyglet Programming Guide" href="index.html"/>
+        <link rel="next" title="Creating an OpenGL context" href="context.html"/>
+        <link rel="prev" title="Installation" href="installation.html"/> 
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-nav-search">
+        <a href="../index.html" class="fa fa-home"> pyglet</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        
+        
+            <ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Chapters</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="">Writing a pyglet application</a></li>
+<li class="toctree-l2"><a class="reference internal" href="context.html">Creating an OpenGL context</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gl.html">The OpenGL interface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graphics.html">Graphics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="windowing.html">Windowing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="eventloop.html">The application event loop</a></li>
+<li class="toctree-l2"><a class="reference internal" href="events.html">The pyglet event framework</a></li>
+<li class="toctree-l2"><a class="reference internal" href="keyboard.html">Working with the keyboard</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mouse.html">Working with the mouse</a></li>
+<li class="toctree-l2"><a class="reference internal" href="input.html">Working with other input devices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="time.html">Keeping track of time</a></li>
+<li class="toctree-l2"><a class="reference internal" href="text.html">Displaying text</a></li>
+<li class="toctree-l2"><a class="reference internal" href="image.html">Images</a></li>
+<li class="toctree-l2"><a class="reference internal" href="media.html">Sound and video</a></li>
+<li class="toctree-l2"><a class="reference internal" href="resources.html">Application resources</a></li>
+<li class="toctree-l2"><a class="reference internal" href="debug.html">Debugging tools</a></li>
+<li class="toctree-l2"><a class="reference internal" href="features1.1.html">Appendix: Migrating to pyglet 1.1</a></li>
+</ul>
+</li>
+</ul>
+<ul class="simple">
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../internal/main.html">Importing pyglet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="advanced.html">Advanced topics</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="advanced.html#environment-settings">Environment settings</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../internal/gl.html">OpenGL Interface Implementation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../internal/gl.html#ctypes-linkage">ctypes linkage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../internal/gl.html#missing-extensions">Missing extensions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../internal/generated.html">ctypes Wrapper Generation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../internal/generated.html#generating-gl-wrappers">Generating GL wrappers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../internal/generated.html#generated-gl-wrappers">Generated GL wrappers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../internal/generated.html#generating-xlib-wrappers">Generating Xlib wrappers</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../internal/wraptypes.html">wraptypes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../internal/wraptypes.html#parser-modifications">Parser Modifications</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../internal/wraptypes.html#preprocessor">Preprocessor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../internal/wraptypes.html#cparser">CParser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../internal/wraptypes.html#ctypesparser">CtypesParser</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../internal/dist.html">Making a pyglet release</a></li>
+<li class="toctree-l1"><a class="reference internal" href="distribution.html">Distribution</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="distribution.html#self-contained-executables">Self-contained executables</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../internal/doc.html">Documentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../internal/doc.html#writing-documentation">Writing documentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../internal/doc.html#generation">Generation</a></li>
+</ul>
+</li>
+</ul>
+<ul class="simple">
+</ul>
+
+        
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../index.html">pyglet</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="index.html">pyglet Programming Guide</a> &raquo;</li>
+      
+    <li>Writing a pyglet application</li>
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            
+  <div class="section" id="writing-a-pyglet-application">
+<h1>Writing a pyglet application<a class="headerlink" href="#writing-a-pyglet-application" title="Permalink to this headline">¶</a></h1>
+<p>Getting started with a new library or framework can be daunting, especially
+when presented with a large amount of reference material to read.  This
+chapter gives a very quick introduction to pyglet without covering any of the
+details.</p>
+<div class="contents local topic" id="contents">
+<ul class="simple">
+<li><a class="reference internal" href="#hello-world" id="id2">Hello, World</a></li>
+<li><a class="reference internal" href="#image-viewer" id="id3">Image viewer</a></li>
+<li><a class="reference internal" href="#handling-mouse-and-keyboard-events" id="id4">Handling mouse and keyboard events</a></li>
+<li><a class="reference internal" href="#playing-sounds-and-music" id="id5">Playing sounds and music</a></li>
+<li><a class="reference internal" href="#where-to-next" id="id6">Where to next?</a></li>
+</ul>
+</div>
+<div class="section" id="hello-world">
+<h2><a class="toc-backref" href="#id2">Hello, World</a><a class="headerlink" href="#hello-world" title="Permalink to this headline">¶</a></h2>
+<p>We&#8217;ll begin with the requisite &#8220;Hello, World&#8221; introduction.  This program will
+open a window with some text in it and wait to be closed.  You can find the
+entire program in the <cite>examples/programming_guide/hello_world.py</cite> file.</p>
+<p>Begin by importing the <a class="reference internal" href="../internal/main.html#module-pyglet" title="pyglet"><tt class="xref py py-mod docutils literal"><span class="pre">pyglet</span></tt></a> package:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">pyglet</span>
+</pre></div>
+</div>
+<p>Create a <tt class="xref py py-class docutils literal"><span class="pre">pyglet.window.Window</span></tt> by calling its default constructor.  The
+window will be visible as soon as it&#8217;s created, and will have reasonable default
+values for all its parameters:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">window</span> <span class="o">=</span> <span class="n">pyglet</span><span class="o">.</span><span class="n">window</span><span class="o">.</span><span class="n">Window</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>To display the text, we&#8217;ll create a <tt class="xref py py-class docutils literal"><span class="pre">Label</span></tt>. Keyword
+arguments are used to set the font, position and anchorage of the label:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">label</span> <span class="o">=</span> <span class="n">pyglet</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span><span class="s">&#39;Hello, world&#39;</span><span class="p">,</span>
+                          <span class="n">font_name</span><span class="o">=</span><span class="s">&#39;Times New Roman&#39;</span><span class="p">,</span>
+                          <span class="n">font_size</span><span class="o">=</span><span class="mi">36</span><span class="p">,</span>
+                          <span class="n">x</span><span class="o">=</span><span class="n">window</span><span class="o">.</span><span class="n">width</span><span class="o">//</span><span class="mi">2</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">window</span><span class="o">.</span><span class="n">height</span><span class="o">//</span><span class="mi">2</span><span class="p">,</span>
+                          <span class="n">anchor_x</span><span class="o">=</span><span class="s">&#39;center&#39;</span><span class="p">,</span> <span class="n">anchor_y</span><span class="o">=</span><span class="s">&#39;center&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>An <tt class="xref py py-meth docutils literal"><span class="pre">on_draw()</span></tt> event is dispatched to the window to
+give it a chance to redraw its contents.  pyglet provides several ways to attach
+event handlers to objects; a simple way is to use a decorator:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="nd">@window.event</span>
+<span class="k">def</span> <span class="nf">on_draw</span><span class="p">():</span>
+    <span class="n">window</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+    <span class="n">label</span><span class="o">.</span><span class="n">draw</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Within the <tt class="xref py py-meth docutils literal"><span class="pre">on_draw()</span></tt> handler the window is cleared to
+the default background color (black), and the label is drawn.</p>
+<p>Finally, call:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">pyglet</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>To let pyglet respond to application events such as the mouse and keyboard.
+Your event handlers will now be called as required, and the
+<tt class="xref py py-func docutils literal"><span class="pre">run()</span></tt> method will return only when all application windows have
+been closed.</p>
+<p>Note that earlier versions of pyglet required the application developer to
+write their own event-handling runloop.  This is still possible, but
+discouraged; see <cite>The application event loop</cite> for details.</p>
+</div>
+<div class="section" id="image-viewer">
+<h2><a class="toc-backref" href="#id3">Image viewer</a><a class="headerlink" href="#image-viewer" title="Permalink to this headline">¶</a></h2>
+<p>Most games will need to load and display images on the screen.  In this
+example we&#8217;ll load an image from the application&#8217;s directory and display it
+within the window:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">pyglet</span>
+
+<span class="n">window</span> <span class="o">=</span> <span class="n">pyglet</span><span class="o">.</span><span class="n">window</span><span class="o">.</span><span class="n">Window</span><span class="p">()</span>
+<span class="n">image</span> <span class="o">=</span> <span class="n">pyglet</span><span class="o">.</span><span class="n">resource</span><span class="o">.</span><span class="n">image</span><span class="p">(</span><span class="s">&#39;kitten.jpg&#39;</span><span class="p">)</span>
+
+<span class="nd">@window.event</span>
+<span class="k">def</span> <span class="nf">on_draw</span><span class="p">():</span>
+    <span class="n">window</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+    <span class="n">image</span><span class="o">.</span><span class="n">blit</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+<span class="n">pyglet</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>We used the <tt class="xref py py-func docutils literal"><span class="pre">image()</span></tt> function to load the image, which
+automatically locates the file relative to the source file (rather than the
+working directory).  To load an image not bundled with the application (for
+example, specified on the command line, you would use
+<tt class="xref py py-func docutils literal"><span class="pre">pyglet.image.load()</span></tt>).</p>
+<p>The <tt class="xref py py-meth docutils literal"><span class="pre">blit()</span></tt> method draws the image.  The
+arguments <tt class="docutils literal"><span class="pre">(0,</span> <span class="pre">0)</span></tt> tell pyglet to draw the image at pixel coordinates 0,
+0 in the window (the lower-left corner).</p>
+<p>The complete code for this example is located in
+<cite>examples/programming_guide/image_viewer.py</cite>.</p>
+</div>
+<div class="section" id="handling-mouse-and-keyboard-events">
+<h2><a class="toc-backref" href="#id4">Handling mouse and keyboard events</a><a class="headerlink" href="#handling-mouse-and-keyboard-events" title="Permalink to this headline">¶</a></h2>
+<p>So far the only event used is the <tt class="xref py py-meth docutils literal"><span class="pre">on_draw()</span></tt>
+event.  To react to keyboard and mouse events, it&#8217;s necessary to write and
+attach event handlers for these events as well:</p>
+<div class="highlight-python"><div class="highlight"><pre>import pyglet
+
+window = pyglet.window.Window()
+
+@window.event
+def on_key_press(symbol, modifiers):
+    print &#39;A key was pressed&#39;
+
+@window.event
+def on_draw():
+    window.clear()
+
+pyglet.app.run()
+</pre></div>
+</div>
+<p>Keyboard events have two parameters: the virtual key <cite>symbol</cite> that was
+pressed, and a bitwise combination of any <cite>modifiers</cite> that are present (for
+example, the <tt class="docutils literal"><span class="pre">CTRL</span></tt> and <tt class="docutils literal"><span class="pre">SHIFT</span></tt> keys).</p>
+<p>The key symbols are defined in <tt class="xref py py-mod docutils literal"><span class="pre">pyglet.window.key</span></tt>:</p>
+<div class="highlight-python"><div class="highlight"><pre>from pyglet.window import key
+
+@window.event
+def on_key_press(symbol, modifiers):
+    if symbol == key.A:
+        print &#39;The &quot;A&quot; key was pressed.&#39;
+    elif symbol == key.LEFT:
+        print &#39;The left arrow key was pressed.&#39;
+    elif symbol == key.ENTER:
+        print &#39;The enter key was pressed.&#39;
+</pre></div>
+</div>
+<p>See the <tt class="xref py py-mod docutils literal"><span class="pre">pyglet.window.key</span></tt> documentation for a complete list of key
+symbols.</p>
+<p>Mouse events are handled in a similar way:</p>
+<div class="highlight-python"><div class="highlight"><pre>from pyglet.window import mouse
+
+@window.event
+def on_mouse_press(x, y, button, modifiers):
+    if button == mouse.LEFT:
+        print &#39;The left mouse button was pressed.&#39;
+</pre></div>
+</div>
+<p>The <tt class="docutils literal"><span class="pre">x</span></tt> and <tt class="docutils literal"><span class="pre">y</span></tt> parameters give the position of the mouse when the button
+was pressed, relative to the lower-left corner of the window.</p>
+<p>There are more than 20 event types that you can handle on a window.  The
+easiest way to find the event name and parameters you need is to add the
+following line to your program:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">window</span><span class="o">.</span><span class="n">push_handlers</span><span class="p">(</span><span class="n">pyglet</span><span class="o">.</span><span class="n">window</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">WindowEventLogger</span><span class="p">())</span>
+</pre></div>
+</div>
+<p>This will cause all events received on the window to be printed to the
+console.</p>
+<p>An example program using keyboard and mouse events is in
+<cite>examples/programming_guide/events.py</cite></p>
+</div>
+<div class="section" id="playing-sounds-and-music">
+<h2><a class="toc-backref" href="#id5">Playing sounds and music</a><a class="headerlink" href="#playing-sounds-and-music" title="Permalink to this headline">¶</a></h2>
+<p>pyglet makes it easy to play and mix multiple sounds together in your game.
+The following example plays an MP3 file <a class="footnote-reference" href="#mp3" id="id1">[1]</a>:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">pyglet</span>
+
+<span class="n">music</span> <span class="o">=</span> <span class="n">pyglet</span><span class="o">.</span><span class="n">resource</span><span class="o">.</span><span class="n">media</span><span class="p">(</span><span class="s">&#39;music.mp3&#39;</span><span class="p">)</span>
+<span class="n">music</span><span class="o">.</span><span class="n">play</span><span class="p">()</span>
+
+<span class="n">pyglet</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>As with the image loading example presented earlier,
+<tt class="xref py py-func docutils literal"><span class="pre">media()</span></tt> locates the sound file in the application&#8217;s
+directory (not the working directory).  If you know the actual filesystem path
+(either relative or absolute), use <tt class="xref py py-func docutils literal"><span class="pre">load()</span></tt>.</p>
+<p>Short sounds, such as a gunfire shot used in a game, should be decoded in
+memory before they are used, so that they play more immediately and incur less
+of a CPU performance penalty.  Specify <tt class="docutils literal"><span class="pre">streaming=False</span></tt> in this case:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">sound</span> <span class="o">=</span> <span class="n">pyglet</span><span class="o">.</span><span class="n">resource</span><span class="o">.</span><span class="n">media</span><span class="p">(</span><span class="s">&#39;shot.wav&#39;</span><span class="p">,</span> <span class="n">streaming</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+<span class="n">sound</span><span class="o">.</span><span class="n">play</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>The <cite>examples/media_player.py</cite> example demonstrates playback of streaming
+audio and video using pyglet.  The <cite>examples/noisy/noisy.py</cite> example
+demonstrates playing many short audio samples simultaneously, as in a game.</p>
+<table class="docutils footnote" frame="void" id="mp3" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id1">[1]</a></td><td>MP3 and other compressed audio formats require AVbin to be installed
+(this is the default for the Windows and Mac OS X installers).
+Uncompressed WAV files can be played without AVbin.</td></tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="where-to-next">
+<h2><a class="toc-backref" href="#id6">Where to next?</a><a class="headerlink" href="#where-to-next" title="Permalink to this headline">¶</a></h2>
+<p>The examples presented in this chapter should have given you enough
+information to get started writing simple arcade and point-and-click-based
+games.</p>
+<p>The remainder of this programming guide goes into quite technical detail
+regarding some of pyglet&#8217;s features.  While getting started, it&#8217;s recommended
+that you skim the beginning of each chapter but not attempt to read through
+the entire guide from start to finish.</p>
+<p>To write 3D applications or achieve optimal performance in your 2D
+applications you&#8217;ll need to work with OpenGL directly.  The canonical
+references for OpenGL are <a class="reference external" href="http://opengl.org/documentation/books/#the_opengl_programming_guide_the_official_guide_to_learning_opengl_version">The OpenGL Programming Guide</a> and
+<a class="reference external" href="http://opengl.org/documentation/books/#the_opengl_shading_language_2nd_edition">The OpenGL Shading Language</a>.</p>
+<p>There are numerous examples of pyglet applications in the <tt class="docutils literal"><span class="pre">examples/</span></tt>
+directory of the documentation and source distributions.  Keep checking
+<a class="reference external" href="http://www.pyglet.org/">http://www.pyglet.org/</a> for more examples and tutorials as they are written.</p>
+</div>
+</div>
+
+
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="context.html" class="btn btn-neutral float-right" title="Creating an OpenGL context"/>Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="installation.html" class="btn btn-neutral" title="Installation"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2006-2013, Alex Holkner.
+    </p>
+  </div>
+
+  <a href="https://github.com/snide/sphinx_rtd_theme">Sphinx theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'1.2alpha1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

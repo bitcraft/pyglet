@@ -1,0 +1,271 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>OpenGL Interface Implementation &mdash; pyglet v1.2alpha1</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+  
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="top" title="pyglet v1.2alpha1" href="../index.html"/>
+        <link rel="next" title="ctypes Wrapper Generation" href="generated.html"/>
+        <link rel="prev" title="Advanced topics" href="../programming_guide/advanced.html"/> 
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-nav-search">
+        <a href="../index.html" class="fa fa-home"> pyglet</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        
+        
+            <ul>
+<li class="toctree-l1"><a class="reference internal" href="../programming_guide/index.html">Chapters</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../programming_guide/installation.html">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_guide/quickstart.html">Writing a pyglet application</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_guide/context.html">Creating an OpenGL context</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_guide/gl.html">The OpenGL interface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_guide/graphics.html">Graphics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_guide/windowing.html">Windowing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_guide/eventloop.html">The application event loop</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_guide/events.html">The pyglet event framework</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_guide/keyboard.html">Working with the keyboard</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_guide/mouse.html">Working with the mouse</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_guide/input.html">Working with other input devices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_guide/time.html">Keeping track of time</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_guide/text.html">Displaying text</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_guide/image.html">Images</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_guide/media.html">Sound and video</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_guide/resources.html">Application resources</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_guide/debug.html">Debugging tools</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_guide/features1.1.html">Appendix: Migrating to pyglet 1.1</a></li>
+</ul>
+</li>
+</ul>
+<ul class="simple">
+</ul>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="main.html">Importing pyglet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../programming_guide/advanced.html">Advanced topics</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../programming_guide/advanced.html#environment-settings">Environment settings</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="">OpenGL Interface Implementation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#ctypes-linkage">ctypes linkage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#missing-extensions">Missing extensions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="generated.html">ctypes Wrapper Generation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="generated.html#generating-gl-wrappers">Generating GL wrappers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generated.html#generated-gl-wrappers">Generated GL wrappers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generated.html#generating-xlib-wrappers">Generating Xlib wrappers</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="wraptypes.html">wraptypes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="wraptypes.html#parser-modifications">Parser Modifications</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wraptypes.html#preprocessor">Preprocessor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wraptypes.html#cparser">CParser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wraptypes.html#ctypesparser">CtypesParser</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="dist.html">Making a pyglet release</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../programming_guide/distribution.html">Distribution</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../programming_guide/distribution.html#self-contained-executables">Self-contained executables</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="doc.html">Documentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="doc.html#writing-documentation">Writing documentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="doc.html#generation">Generation</a></li>
+</ul>
+</li>
+</ul>
+<ul class="simple">
+</ul>
+
+        
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../index.html">pyglet</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../index.html">Docs</a> &raquo;</li>
+      
+    <li>OpenGL Interface Implementation</li>
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            
+  <div class="section" id="opengl-interface-implementation">
+<h1>OpenGL Interface Implementation<a class="headerlink" href="#opengl-interface-implementation" title="Permalink to this headline">¶</a></h1>
+<p>See <cite>OpenGL Interface</cite> for details on the publically-visible modules.</p>
+<p>See <cite>ctypes Wrapper Generation</cite> for details on some of these modules are
+generated.</p>
+<div class="section" id="ctypes-linkage">
+<h2>ctypes linkage<a class="headerlink" href="#ctypes-linkage" title="Permalink to this headline">¶</a></h2>
+<p>Most functions link to libGL.so (Linux), opengl32.dll (Windows) or
+OpenGL.framework (OS X).  <tt class="docutils literal"><span class="pre">pyglet.gl.lib</span></tt> provides some helper types then
+imports linker functions for the appropriate platform: one of
+<tt class="docutils literal"><span class="pre">pyglet.gl.lib_agl</span></tt>, <tt class="docutils literal"><span class="pre">pyglet.gl.lib_glx</span></tt>, <tt class="docutils literal"><span class="pre">pyglet.gl.lib_wgl</span></tt>.</p>
+<p>On any platform, the following steps are taken to link each function during
+import:</p>
+<ol class="arabic">
+<li><p class="first">Look in the appropriate library (e.g. libGL.so, libGLU.so, opengl32.dll,
+etc.) using <tt class="docutils literal"><span class="pre">cdll</span></tt> or <tt class="docutils literal"><span class="pre">windll</span></tt>.</p>
+</li>
+<li><p class="first">If not found, call <tt class="docutils literal"><span class="pre">wglGetProcAddress</span></tt> or <tt class="docutils literal"><span class="pre">glxGetProcAddress</span></tt> to try to
+resolve the function&#8217;s address dynamically.  On OS X, skip this step.</p>
+</li>
+<li><p class="first">On Windows, this will fail if the context hasn&#8217;t been created yet.  Create
+and return a proxy object <tt class="docutils literal"><span class="pre">WGLFunctionProxy</span></tt> which will try the same
+resolution again when the object is <tt class="docutils literal"><span class="pre">__call__</span></tt>&#8216;d.</p>
+<p>The proxy object caches its result so that subsequent calls have only a
+single extra function-call overhead.</p>
+</li>
+<li><p class="first">If the function is still not found (either during import or proxy call),
+the function is replaced with <tt class="docutils literal"><span class="pre">MissingFunction</span></tt> (defined in
+<tt class="docutils literal"><span class="pre">pyglet.gl.lib</span></tt>), which raises an exception.  The exception message
+details the name of the function, and optionally the name of the extension
+it requires and any alternative functions that can be used.</p>
+<p>The extension required is currently guessed by <tt class="docutils literal"><span class="pre">gengl.py</span></tt> based on nearby
+<tt class="docutils literal"><span class="pre">#ifndef</span></tt> declarations, it is occasionally wrong.</p>
+<p>The suggestion list is not currently used, but is intended to be
+implemented such that calling, for example, <tt class="docutils literal"><span class="pre">glCreateShader</span></tt> on an
+older driver suggests <tt class="docutils literal"><span class="pre">glCreateShaderObjectARB</span></tt>, etc.</p>
+</li>
+</ol>
+<p>To access the linking function, import <tt class="docutils literal"><span class="pre">pyglet.gl.lib</span></tt> and use one of
+<tt class="docutils literal"><span class="pre">link_AGL</span></tt>, <tt class="docutils literal"><span class="pre">link_GLX</span></tt>, <tt class="docutils literal"><span class="pre">link_WGL</span></tt>, <tt class="docutils literal"><span class="pre">link_GL</span></tt> or <tt class="docutils literal"><span class="pre">link_GLU</span></tt>.  This
+is what the generated modules do.</p>
+</div>
+<div class="section" id="missing-extensions">
+<h2>Missing extensions<a class="headerlink" href="#missing-extensions" title="Permalink to this headline">¶</a></h2>
+<p>The latest <tt class="docutils literal"><span class="pre">glext.h</span></tt> on opengl.org and nvidia does not include some recent
+extensions listed on the registry.  These must be hand coded into
+<tt class="docutils literal"><span class="pre">pyglet.gl.glext_missing</span></tt>.  They should be removed when <tt class="docutils literal"><span class="pre">glext.h</span></tt> is
+updated.</p>
+</div>
+</div>
+
+
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="generated.html" class="btn btn-neutral float-right" title="ctypes Wrapper Generation"/>Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="../programming_guide/advanced.html" class="btn btn-neutral" title="Advanced topics"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2006-2013, Alex Holkner.
+    </p>
+  </div>
+
+  <a href="https://github.com/snide/sphinx_rtd_theme">Sphinx theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'1.2alpha1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>
