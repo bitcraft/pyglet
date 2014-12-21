@@ -58,9 +58,6 @@ application's responsibility to keep track of the regions returned by the
 :since: pyglet 1.1
 """
 
-__docformat__ = 'restructuredtext'
-__version__ = '$Id: $'
-
 import pyglet
 
 

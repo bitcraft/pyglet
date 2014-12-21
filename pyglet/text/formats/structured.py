@@ -35,9 +35,6 @@
 """Base class for structured (hierarchical) document formats.
 """
 
-__docformat__ = 'restructuredtext'
-__version__ = '$Id: $'
-
 import re
 import pyglet
 from pyglet.gl import *

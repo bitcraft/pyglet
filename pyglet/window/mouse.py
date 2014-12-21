@@ -31,12 +31,8 @@
 # ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 # ----------------------------------------------------------------------------
-
 """Mouse constants and utilities for pyglet.window.
 """
-
-__docformat__ = 'restructuredtext'
-__version__ = '$Id$'
 
 
 def buttons_string(buttons):

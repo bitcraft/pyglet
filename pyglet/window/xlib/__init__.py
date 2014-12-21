@@ -31,10 +31,6 @@
 # ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 # ----------------------------------------------------------------------------
-
-__docformat__ = 'restructuredtext'
-__version__ = '$Id$'
-
 from ctypes import *
 import unicodedata
 import warnings
@@ -42,8 +38,8 @@ import warnings
 import pyglet
 from pyglet.window import WindowException, NoSuchDisplayException, \
     MouseCursorException, MouseCursor, \
-    DefaultMouseCursor, ImageMouseCursor, BaseWindow, _PlatformEventHandler, \
-    _ViewEventHandler
+    DefaultMouseCursor, ImageMouseCursor, BaseWindow, PlatformEventHandler, \
+    ViewEventHandler
 from pyglet.window import key
 from pyglet.window import mouse
 from pyglet.event import EventDispatcher
@@ -116,8 +112,7 @@ class XlibMouseCursor(MouseCursor):
         self.cursor = cursor
 
 # Platform event data is single item, so use platform event handler directly.
-XlibEventHandler = _PlatformEventHandler
-ViewEventHandler = _ViewEventHandler
+XlibEventHandler = PlatformEventHandler
 
 
 class XlibWindow(BaseWindow):

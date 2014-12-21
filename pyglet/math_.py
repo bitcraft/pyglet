@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-#
 # euclid graphics maths module
 #
 # Copyright (c) 2006 Alex Holkner
@@ -24,10 +22,6 @@
 Documentation and tests are included in the file "euclid.txt", or online
 at http://code.google.com/p/pyeuclid
 """
-
-__docformat__ = 'restructuredtext'
-__version__ = '$Id: euclid.py 37 2011-08-21 22:24:05Z elfnor@gmail.com $'
-
 import math
 import operator
 import types

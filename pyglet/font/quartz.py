@@ -35,9 +35,6 @@
 """
 """
 
-__docformat__ = 'restructuredtext'
-__version__ = '$Id: $'
-
 # TODO Tiger and later: need to set kWindowApplicationScaledAttribute for DPI
 # independence?
 

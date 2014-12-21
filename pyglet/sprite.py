@@ -94,10 +94,6 @@ sprites within batches.
 
 :since: pyglet 1.1
 """
-
-__docformat__ = 'restructuredtext'
-__version__ = '$Id$'
-
 import math
 
 from pyglet.gl import *

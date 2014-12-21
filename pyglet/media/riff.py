@@ -35,9 +35,6 @@
 """Simple Python-only RIFF reader, supports uncompressed WAV files.
 """
 
-__docformat__ = 'restructuredtext'
-__version__ = '$Id$'
-
 # RIFF reference:
 # http://www.saettler.com/RIFFMCI/riffmci.html
 #
@@ -232,16 +229,16 @@ class WaveSource(StreamingSource):
         self._offset = 0
         self._file.seek(self._start_offset)
 
-    def get_audio_data(self, bytes):
-        bytes = min(bytes, self._max_offset - self._offset)
-        if not bytes:
+    def get_audio_data(self, bytes_):
+        bytes_ = min(bytes_, self._max_offset - self._offset)
+        if not bytes_:
             return None
 
-        data = self._file.read(bytes)
+        data = self._file.read(bytes_)
         self._offset += len(data)
 
         timestamp = float(self._offset) / self.audio_format.bytes_per_second
-        duration = float(bytes) / self.audio_format.bytes_per_second
+        duration = float(bytes_) / self.audio_format.bytes_per_second
 
         return AudioData(data, len(data), timestamp, duration, list())
 

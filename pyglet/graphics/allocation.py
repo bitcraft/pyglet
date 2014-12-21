@@ -47,9 +47,6 @@ The allocator maintains references to free space only; it is the caller's
 responsibility to maintain the allocated regions.
 """
 
-__docformat__ = 'restructuredtext'
-__version__ = '$Id: $'
-
 # Common cases:
 # -regions will be the same size (instances of same object, e.g. sprites)
 # -regions will not usually be resized (only exception is text)

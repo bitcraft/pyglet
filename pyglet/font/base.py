@@ -39,9 +39,6 @@ in `pyglet.font` to obtain platform-specific instances.  You can use these
 classes as a documented interface to the concrete classes.
 """
 
-__docformat__ = 'restructuredtext'
-__version__ = '$Id$'
-
 import unicodedata
 
 from pyglet.gl import *

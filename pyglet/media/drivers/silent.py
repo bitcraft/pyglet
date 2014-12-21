@@ -1,11 +1,3 @@
-#!/usr/bin/env python
-
-"""
-"""
-
-__docformat__ = 'restructuredtext'
-__version__ = '$Id$'
-
 import time
 
 from pyglet.media import AbstractAudioPlayer, AbstractAudioDriver, \

@@ -1,6 +1,3 @@
-#!/usr/bin/python
-# $Id: $
-
 """Fork a child process and inform it of mode changes to each screen.  The
 child waits until the parent process dies, and then connects to each X server
 with a mode change and restores the mode.

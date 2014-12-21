@@ -37,9 +37,6 @@
 See `Window` for a description of the window event types.
 """
 
-__docformat__ = 'restructuredtext'
-__version__ = '$Id$'
-
 import sys
 
 from pyglet.window import key
@@ -75,11 +72,13 @@ class WindowEventLogger:
 
     def on_key_press(self, symbol, modifiers):
         print('on_key_press(symbol=%s, modifiers=%s)' % (
-            key.symbol_string(symbol), key.modifiers_string(modifiers)), file=self.file)
+            key.symbol_string(symbol), key.modifiers_string(modifiers)),
+            file=self.file)
 
     def on_key_release(self, symbol, modifiers):
         print('on_key_release(symbol=%s, modifiers=%s)' % (
-            key.symbol_string(symbol), key.modifiers_string(modifiers)), file=self.file)
+            key.symbol_string(symbol), key.modifiers_string(modifiers)),
+            file=self.file)
 
     def on_text(self, text):
         print('on_text(text=%r)' % text, file=self.file)
@@ -99,18 +98,20 @@ class WindowEventLogger:
     def on_mouse_drag(self, x, y, dx, dy, buttons, modifiers):
         print('on_mouse_drag(x=%d, y=%d, dx=%d, dy=%d, '
               'buttons=%s, modifiers=%s)' % (
-                  x, y, dx, dy,
-                  mouse.buttons_string(buttons), key.modifiers_string(modifiers)), file=self.file)
+                  x, y, dx, dy, mouse.buttons_string(buttons),
+                  key.modifiers_string(modifiers)), file=self.file)
 
     def on_mouse_press(self, x, y, button, modifiers):
         print('on_mouse_press(x=%d, y=%d, button=%r, '
-              'modifiers=%s)' % (x, y,
-                                 mouse.buttons_string(button), key.modifiers_string(modifiers)), file=self.file)
+              'modifiers=%s)' % (
+                  x, y, mouse.buttons_string(button),
+                  key.modifiers_string(modifiers)), file=self.file)
 
     def on_mouse_release(self, x, y, button, modifiers):
         print('on_mouse_release(x=%d, y=%d, button=%r, '
-              'modifiers=%s)' % (x, y,
-                                 mouse.buttons_string(button), key.modifiers_string(modifiers)), file=self.file)
+              'modifiers=%s)' % (
+                  x, y, mouse.buttons_string(button),
+                  key.modifiers_string(modifiers)), file=self.file)
 
     def on_mouse_scroll(self, x, y, dx, dy):
         print('on_mouse_scroll(x=%f, y=%f, dx=%f, dy=%f)' % (

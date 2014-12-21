@@ -39,10 +39,6 @@ Intended usage is to create a file for bug reports, e.g.::
     python -m pyglet.info > info.txt
 
 """
-
-__docformat__ = 'restructuredtext'
-__version__ = '$Id: $'
-
 _first_heading = True
 
 

@@ -153,9 +153,6 @@ document; they will be ignored by the built-in text classes.
 :since: pyglet 1.1
 """
 
-__docformat__ = 'restructuredtext'
-__version__ = '$Id: $'
-
 import re
 import sys
 

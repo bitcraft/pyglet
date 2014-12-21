@@ -76,12 +76,9 @@ no control list is available; instead, calling `Tablet.open` returns a
 :since: pyglet 1.2
 """
 
-__docformat__ = 'restructuredtext'
-__version__ = '$Id: $'
-
-from .base import Device, Control, RelativeAxis, AbsoluteAxis, Button,\
-    Joystick, AppleRemote, Tablet
-from .base import DeviceException, DeviceOpenException, DeviceExclusiveException
+from .base import (Device, Control, RelativeAxis, AbsoluteAxis, Button,
+                   Joystick, AppleRemote, Tablet, DeviceException,
+                   DeviceOpenException, DeviceExclusiveException)
 
 
 def get_apple_remote(display=None):
@@ -158,13 +155,14 @@ if compat_platform.startswith('linux'):
     from .evdev import get_joysticks
 
     def get_devices(display=None):
-        return (evdev_get_devices(display) +
-                xinput_get_devices(display))
+        return evdev_get_devices(display) + xinput_get_devices(display)
+
 elif compat_platform in ('cygwin', 'win32'):
     from .directinput import get_devices, get_joysticks
     try:
         from .wintab import get_tablets
-    except:
+    except ImportError:
         pass
+
 elif compat_platform == 'darwin':
     from .darwin_hid import get_devices, get_joysticks, get_apple_remote

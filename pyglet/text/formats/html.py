@@ -48,9 +48,6 @@ oddly if edited.
 No CSS styling is supported.
 """
 
-__docformat__ = 'restructuredtext'
-__version__ = '$Id: $'
-
 import html.parser
 import html.entities
 import re

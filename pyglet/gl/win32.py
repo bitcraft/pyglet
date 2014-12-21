@@ -1,6 +1,3 @@
-#!/usr/bin/python
-# $Id:$
-
 from pyglet.canvas.win32 import Win32Canvas
 from .base import Config, CanvasConfig, Context
 

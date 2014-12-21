@@ -36,9 +36,6 @@
 implementation.
 """
 
-__docformat__ = 'restructuredtext'
-__version__ = '$Id: glx_info.py 615 2007-02-07 13:17:05Z Alex.Holkner $'
-
 from ctypes import *
 import warnings
 

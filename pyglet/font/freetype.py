@@ -35,9 +35,6 @@
 """
 """
 
-__docformat__ = 'restructuredtext'
-__version__ = '$Id$'
-
 import ctypes
 from ctypes import *
 from warnings import warn

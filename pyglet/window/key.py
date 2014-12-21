@@ -60,9 +60,6 @@ Usage::
 
 """
 
-__docformat__ = 'restructuredtext'
-__version__ = '$Id$'
-
 
 class KeyStateHandler(dict):
 
@@ -208,7 +205,7 @@ TAB = 0xff09
 LINEFEED = 0xff0a
 CLEAR = 0xff0b
 RETURN = 0xff0d
-ENTER = 0xff0d      # synonym
+ENTER = 0xff0d      # alias for RETURN
 PAUSE = 0xff13
 SCROLLLOCK = 0xff14
 SYSREQ = 0xff15
@@ -340,11 +337,11 @@ LOPTION = 0xffef
 ROPTION = 0xfff0
 
 # Latin-1
-SPACE = 0x020
+SPACE = 0x020  # TODO: figure out why this name is declared 2x and deal with it
 EXCLAMATION = 0x021
 DOUBLEQUOTE = 0x022
 HASH = 0x023
-POUND = 0x023  # synonym
+POUND = 0x023  # alias for POUND
 DOLLAR = 0x024
 PERCENT = 0x025
 AMPERSAND = 0x026

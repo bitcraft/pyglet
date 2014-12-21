@@ -37,9 +37,6 @@
 http://www.w3.org/Graphics/GIF/spec-gif89a.txt
 """
 
-__docformat__ = 'restructuredtext'
-__version__ = '$Id$'
-
 import struct
 
 from pyglet.image.codecs import ImageDecodeException

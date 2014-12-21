@@ -35,9 +35,6 @@
 """Encoder and decoder for PNG files, using PyPNG (pypng.py).
 """
 
-__docformat__ = 'restructuredtext'
-__version__ = '$Id: $'
-
 import array
 
 from pyglet.gl import *

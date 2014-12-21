@@ -39,9 +39,6 @@ Generated with:
 .. Hacked to fix ALCvoid argtypes.
 """
 
-__docformat__ = 'restructuredtext'
-__version__ = '$Id$'
-
 import ctypes
 from ctypes import *
 import sys

@@ -1,6 +1,3 @@
-#!/usr/bin/python
-# $Id:$
-
 import ctypes
 
 lib = ctypes.windll.wintab32

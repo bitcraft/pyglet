@@ -41,6 +41,7 @@ import math
 
 
 class ProceduralSource(Source):
+    """Generate audio data"""
 
     def __init__(self, duration, sample_rate=44800, sample_size=16):
         self._duration = float(duration)
@@ -57,23 +58,23 @@ class ProceduralSource(Source):
         if self._bytes_per_sample == 2:
             self._max_offset &= 0xfffffffe
 
-    def _get_audio_data(self, bytes):
-        bytes = min(bytes, self._max_offset - self._offset)
-        if bytes <= 0:
+    def _get_audio_data(self, bytes_):
+        bytes_ = min(bytes_, self._max_offset - self._offset)
+        if bytes_ <= 0:
             return None
 
         timestamp = float(self._offset) / self._bytes_per_second
-        duration = float(bytes) / self._bytes_per_second
-        data = self._generate_data(bytes, self._offset)
-        self._offset += bytes
+        duration = float(bytes_) / self._bytes_per_second
+        data = self._generate_data(bytes_, self._offset)
+        self._offset += bytes_
 
         return AudioData(data,
-                         bytes,
+                         bytes_,
                          timestamp,
                          duration,
                          list())
 
-    def _generate_data(self, bytes, offset):
+    def _generate_data(self, bytes_, offset):
         """Generate `bytes` bytes of data.
 
         Return data as ctypes array or string.
@@ -93,17 +94,17 @@ class ProceduralSource(Source):
 
 class Silence(ProceduralSource):
 
-    def _generate_data(self, bytes, offset):
+    def _generate_data(self, bytes_, offset):
         if self._bytes_per_sample == 1:
-            return '\127' * bytes
+            return '\127' * bytes_
         else:
-            return '\0' * bytes
+            return '\0' * bytes_
 
 
 class WhiteNoise(ProceduralSource):
 
-    def _generate_data(self, bytes, offset):
-        return os.urandom(bytes)
+    def _generate_data(self, bytes_, offset):
+        return os.urandom(bytes_)
 
 
 class Sine(ProceduralSource):
@@ -112,16 +113,16 @@ class Sine(ProceduralSource):
         super().__init__(duration, **kwargs)
         self.frequency = frequency
 
-    def _generate_data(self, bytes, offset):
+    def _generate_data(self, bytes_, offset):
         if self._bytes_per_sample == 1:
             start = offset
-            samples = bytes
+            samples = bytes_
             bias = 127
             amplitude = 127
             data = (ctypes.c_ubyte * samples)()
         else:
             start = offset >> 1
-            samples = bytes >> 1
+            samples = bytes_ >> 1
             bias = 0
             amplitude = 32767
             data = (ctypes.c_short * samples)()
@@ -137,16 +138,16 @@ class Saw(ProceduralSource):
         super().__init__(duration, **kwargs)
         self.frequency = frequency
 
-    def _generate_data(self, bytes, offset):
+    def _generate_data(self, bytes_, offset):
         # TODO: TODO consider offset
         if self._bytes_per_sample == 1:
-            samples = bytes
+            samples = bytes_
             value = 127
             max = 255
             min = 0
             data = (ctypes.c_ubyte * samples)()
         else:
-            samples = bytes >> 1
+            samples = bytes_ >> 1
             value = 0
             max = 32767
             min = -32768
@@ -170,15 +171,15 @@ class Square(ProceduralSource):
         super().__init__(duration, **kwargs)
         self.frequency = frequency
 
-    def _generate_data(self, bytes, offset):
+    def _generate_data(self, bytes_, offset):
         # TODO: TODO consider offset
         if self._bytes_per_sample == 1:
-            samples = bytes
+            samples = bytes_
             value = 0
             amplitude = 255
             data = (ctypes.c_ubyte * samples)()
         else:
-            samples = bytes >> 1
+            samples = bytes_ >> 1
             value = -32768
             amplitude = 65535
             data = (ctypes.c_short * samples)()

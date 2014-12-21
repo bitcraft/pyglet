@@ -91,9 +91,6 @@ The information modules are provided for convenience, and are documented
 below.
 """
 
-__docformat__ = 'restructuredtext'
-__version__ = '$Id$'
-
 from pyglet.gl.lib import GLException
 from pyglet.gl.gl import *
 from pyglet.gl.glu import *

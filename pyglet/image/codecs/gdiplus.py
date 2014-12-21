@@ -35,9 +35,6 @@
 """
 """
 
-__docformat__ = 'restructuredtext'
-__version__ = '$Id: pil.py 163 2006-11-13 04:15:46Z Alex.Holkner $'
-
 from ctypes import *
 
 from pyglet.com import IUnknown

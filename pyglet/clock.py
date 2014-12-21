@@ -102,10 +102,6 @@ Multiple and derived clocks potentially allow you to separate "game-time" and
 "wall-time", or to synchronise your clock to an audio or video stream instead
 of the system clock.
 """
-
-__docformat__ = 'restructuredtext'
-__version__ = '$Id$'
-
 import time
 import ctypes
 

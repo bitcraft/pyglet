@@ -1,19 +1,6 @@
-#!/usr/bin/env python
-
-"""
-"""
-
-__docformat__ = 'restructuredtext'
-__version__ = '$Id: $'
-
 from pyglet.gl.base import Config, CanvasConfig, Context
-
-from pyglet.gl import ContextException
-from pyglet.gl import gl
-from pyglet.gl import agl
-
+from pyglet.gl import gl, agl, ContextException
 from pyglet.canvas.cocoa import CocoaCanvas
-
 from pyglet.libs.darwin.cocoapy import *
 
 NSOpenGLPixelFormat = ObjCClass('NSOpenGLPixelFormat')

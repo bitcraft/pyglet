@@ -35,9 +35,6 @@
 """
 """
 
-__docformat__ = 'restructuredtext'
-__version__ = '$Id: $'
-
 # CFString.h
 kCFStringEncodingMacRoman = 0
 kCFStringEncodingWindowsLatin1 = 0x0500

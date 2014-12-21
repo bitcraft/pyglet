@@ -35,9 +35,6 @@
 """
 """
 
-__docformat__ = 'restructuredtext'
-__version__ = ''
-
 from pyglet.window import key
 
 # From SDL: src/video/quartz/SDL_QuartzKeys.h

@@ -35,9 +35,6 @@
 """
 """
 
-__docformat__ = 'restructuredtext'
-__version__ = '$Id: $'
-
 from pyglet.window import key
 from .constants import *
 

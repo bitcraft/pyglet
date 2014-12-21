@@ -44,9 +44,6 @@ References:
  * http://www.microsoft.com/typography/otspec
 """
 
-__docformat__ = 'restructuredtext'
-__version__ = '$Id$'
-
 import codecs
 import os
 import mmap

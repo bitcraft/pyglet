@@ -36,9 +36,6 @@
 """
 
 
-__docformat__ = 'restructuredtext'
-__version__ = '$Id$'
-
 import os.path
 
 from pyglet.gl import *

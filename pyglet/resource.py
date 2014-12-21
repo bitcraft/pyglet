@@ -83,10 +83,6 @@ The default path is ``['.']``.  If you modify the path, you must call
 
 :since: pyglet 1.1
 """
-
-__docformat__ = 'restructuredtext'
-__version__ = '$Id: $'
-
 import os
 import weakref
 import sys

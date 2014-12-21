@@ -35,10 +35,6 @@
 
 These extend and correct ctypes functions.
 """
-
-__docformat__ = 'restructuredtext'
-__version__ = '$Id: $'
-
 import os
 import re
 import sys

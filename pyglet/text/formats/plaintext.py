@@ -35,9 +35,6 @@
 """Plain text decoder.
 """
 
-__docformat__ = 'restructuredtext'
-__version__ = '$Id: $'
-
 import pyglet
 
 

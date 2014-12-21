@@ -70,14 +70,12 @@ def get_display():
 
     :rtype: :class:`Display`
     """
-    # If there's an existing display, return it (return arbitrary display if
-    # there are multiple).
     from pyglet.app import displays
     for display in displays:
         return display
 
-    # Otherwise, create a new display and return it.
     return Display()
+
 
 from pyglet import compat_platform
 if compat_platform == 'darwin':

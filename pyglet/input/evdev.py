@@ -1,11 +1,3 @@
-#!/usr/bin/env python
-
-"""
-"""
-
-__docformat__ = 'restructuredtext'
-__version__ = '$Id$'
-
 import ctypes
 import errno
 import os
@@ -16,6 +8,7 @@ from .base import Device, Control, RelativeAxis, AbsoluteAxis, Button, Joystick
 from .base import DeviceOpenException
 from .evdev_constants import *
 from .evdev_constants import _rel_raw_names, _abs_raw_names, _key_raw_names
+
 
 c = pyglet.lib.load_library('c')
 

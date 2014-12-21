@@ -1,9 +1,6 @@
 """
 """
 
-__docformat__ = 'restructuredtext'
-__version__ = '$Id: $'
-
 from ctypes import *
 from ctypes import util
 

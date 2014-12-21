@@ -21,6 +21,9 @@
       the benefit will be easier entry point into mocked tests and reduced
       burden on the developer to run the full interactive test suite
     * removed leading underscores in win32._kernel32, _gdi32, _user32, _shell32
+    * many names marked private with leading underscores were being imported and
+      used in other modules.  To make it consistant, leading underscores in
+      those names have been removed.
     * removed the global clock.  use pyglet.app.event_loop.clock instead
     * removed custom sphinx parsing.  will use vanilla spinx for modern look
     * updated many docstrings
@@ -32,6 +35,10 @@
       to be opened in many cases
     * updated astraea demo to modern pyglet
     * removed _eos_XXX attributes and associated legacy functions from media
+    * pyglet.media has names that shadow built-in bytes; renamed bytes_/bytes
+    * removed uneeded shebangs
+    * removed __docformat__ because there will be just one format
+    * removed __version__ in submodules because it is useless
 
 1.2beta1
     + new API: font.have_font(name) return True if named font is installed

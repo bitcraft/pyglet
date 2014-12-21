@@ -122,9 +122,6 @@ above, "Working with multiple screens")::
 
 """
 
-__docformat__ = 'restructuredtext'
-__version__ = '$Id$'
-
 import pprint
 import sys
 
@@ -237,7 +234,7 @@ class ImageMouseCursor(MouseCursor):
         gl.glPopAttrib()
 
 
-def _PlatformEventHandler(data):
+def PlatformEventHandler(data):
     """Decorator for platform event handlers.
 
     Apply giving the platform-specific data needed by the window to associate
@@ -264,7 +261,7 @@ def _PlatformEventHandler(data):
     return _event_wrapper
 
 
-def _ViewEventHandler(f):
+def ViewEventHandler(f):
     f._view = True
     return f
 

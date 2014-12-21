@@ -73,9 +73,6 @@ object.
 
 """
 
-__docformat__ = 'restructuredtext'
-__version__ = '$Id$'
-
 import sys
 import weakref
 

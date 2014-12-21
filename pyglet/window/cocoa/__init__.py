@@ -31,15 +31,6 @@
 # ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 # ----------------------------------------------------------------------------
-
-"""
-"""
-
-__docformat__ = 'restructuredtext'
-__version__ = '$Id: $'
-
-from ctypes import *
-
 import pyglet
 from pyglet.window import BaseWindow, WindowException
 from pyglet.window import MouseCursor, DefaultMouseCursor

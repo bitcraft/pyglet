@@ -56,9 +56,6 @@ The entire domain can be efficiently drawn in one step with the
 the same OpenGL primitive mode.
 """
 
-__docformat__ = 'restructuredtext'
-__version__ = '$Id: $'
-
 import ctypes
 import re
 

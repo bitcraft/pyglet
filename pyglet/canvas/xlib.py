@@ -1,11 +1,3 @@
-#!/usr/bin/env python
-
-"""
-"""
-
-__docformat__ = 'restructuredtext'
-__version__ = '$Id: $'
-
 from ctypes import *
 import ctypes
 
@@ -15,8 +7,9 @@ from .base import Display, Screen, ScreenMode, Canvas
 
 from . import xlib_vidmoderestore
 
+
 # TODO:
-#from pyglet.window import NoSuchDisplayException
+# from pyglet.window import NoSuchDisplayException
 
 
 class NoSuchDisplayException(Exception):

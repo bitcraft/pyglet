@@ -33,9 +33,6 @@
 # ----------------------------------------------------------------------------
 # $Id:$
 
-__docformat__ = 'restructuredtext'
-__version__ = '$Id: $'
-
 import ctypes
 
 from pyglet import app

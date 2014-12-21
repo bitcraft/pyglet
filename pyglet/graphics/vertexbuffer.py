@@ -44,9 +44,6 @@ method which provides the most efficient path for updating partial data within
 the buffer.
 """
 
-__docformat__ = 'restructuredtext'
-__version__ = '$Id: $'
-
 import ctypes
 import sys
 

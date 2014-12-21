@@ -1,16 +1,7 @@
-#!/usr/bin/env python
-
-"""
-"""
-
-__docformat__ = 'restructuredtext'
-__version__ = '$Id: $'
-
 import ctypes
 import pyglet
-from pyglet.input.base import \
-    Device, DeviceException, DeviceOpenException, \
-    Control, Button, RelativeAxis, AbsoluteAxis
+from pyglet.input.base import Device, DeviceException, DeviceOpenException
+from pyglet.input.base import Control, Button, RelativeAxis, AbsoluteAxis
 from pyglet.libs.x11 import xlib
 from pyglet.compat import asstr
 

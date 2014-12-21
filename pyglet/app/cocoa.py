@@ -34,9 +34,6 @@
 
 """
 """
-__docformat__ = 'restructuredtext'
-__version__ = '$Id: $'
-
 from pyglet.app.base import PlatformEventLoop
 from pyglet.libs.darwin.cocoapy import *
 

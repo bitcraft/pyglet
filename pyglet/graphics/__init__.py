@@ -158,9 +158,6 @@ video drivers, and requires indexed vertex lists.
 :since: pyglet 1.1
 """
 
-__docformat__ = 'restructuredtext'
-__version__ = '$Id: $'
-
 import ctypes
 
 import pyglet

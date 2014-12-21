@@ -35,23 +35,20 @@
 """Use avbin to decode audio and video media.
 """
 
-__docformat__ = 'restructuredtext'
-__version__ = '$Id$'
-
 import struct
 import ctypes
 import threading
 import time
 
 import pyglet
+import pyglet.lib
 from pyglet import gl
 from pyglet.gl import gl_info
 from pyglet import image
-import pyglet.lib
-from pyglet.media import \
-    MediaFormatException, StreamingSource, VideoFormat, AudioFormat, \
-    AudioData, MediaEvent, WorkerThread, SourceInfo
 from pyglet.compat import asbytes, asbytes_filename
+from pyglet.media import (MediaFormatException, StreamingSource, VideoFormat,
+                          AudioFormat, AudioData, MediaEvent, WorkerThread,
+                          SourceInfo)
 
 
 if pyglet.compat_platform.startswith('win') and struct.calcsize('P') == 8:
@@ -154,8 +151,8 @@ class AVbinPacket(ctypes.Structure):
         ('size', ctypes.c_size_t),
     ]
 
-AVbinLogCallback = ctypes.CFUNCTYPE(None,
-                                    ctypes.c_char_p, ctypes.c_int, ctypes.c_char_p)
+AVbinLogCallback = ctypes.CFUNCTYPE(None, ctypes.c_char_p, ctypes.c_int,
+                                    ctypes.c_char_p)
 
 av.avbin_get_version.restype = ctypes.c_int
 av.avbin_get_ffmpeg_revision.restype = ctypes.c_int
@@ -204,10 +201,10 @@ if True:
             return result
         return f
 
-    _avbin_lock = threading.Lock()
+    avbin_lock = threading.Lock()
     for name in dir(av):
         if name.startswith('avbin_'):
-            setattr(av, name, synchronize(getattr(av, name), _avbin_lock))
+            setattr(av, name, synchronize(getattr(av, name), avbin_lock))
 
 
 def get_version():
@@ -257,6 +254,7 @@ class AVbinSource(StreamingSource):
         self._video_stream_index = -1
         self._audio_stream = None
         self._audio_stream_index = -1
+        self._audio_packet_size = 0
 
         file_info = AVbinFileInfo()
         file_info.structure_size = ctypes.sizeof(file_info)
@@ -374,16 +372,21 @@ class AVbinSource(StreamingSource):
             self._decode_thread.clear_jobs()
 
     def _get_packet(self):
-        # Read a packet into self._packet.  Returns True if OK, False if no
-        # more packets are in stream.
+        """Read a packet into self._packet.
+
+        Returns True if OK, False if no more packets are in stream.
+        """
         return av.avbin_read(self._file, self._packet) == AVBIN_RESULT_OK
 
     def _process_packet(self):
-        # Returns (packet_type, packet), where packet_type = 'video' or
-        # 'audio'; and packet is VideoPacket or AudioData.  In either case,
-        # packet is buffered or queued for decoding; no further action is
-        # necessary.  Returns (None, None) if packet was neither type.
+        """Returns (packet_type, packet)
 
+        where packet_type = 'video' or 'audio'; and packet is VideoPacket or
+        AudioData.  In either case, packet is buffered or queued for decoding;
+        no further action is necessary.
+
+        Returns (None, None) if packet was neither type.
+        """
         if self._packet.stream_index == self._video_stream_index:
             if self._packet.timestamp < 0:
                 # TODO: TODO
@@ -417,7 +420,7 @@ class AVbinSource(StreamingSource):
 
         return None, None
 
-    def get_audio_data(self, bytes):
+    def get_audio_data(self, bytes_):
         try:
             audio_data = self._buffered_audio_data.pop(0)
             audio_data_timeend = audio_data.timestamp + audio_data.duration

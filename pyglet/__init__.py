@@ -37,8 +37,6 @@
 Detailed documentation is available at http://www.pyglet.org
 """
 
-__docformat__ = 'restructuredtext'
-__version__ = '$Id$'
 
 import os
 import sys

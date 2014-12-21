@@ -36,9 +36,6 @@
 Do not modify generated portions of this file.
 """
 
-__docformat__ = 'restructuredtext'
-__version__ = '$Id$'
-
 from ctypes import *
 from pyglet.gl.lib import link_GLX as _link_function
 from pyglet.gl.lib import c_ptrdiff_t, c_void

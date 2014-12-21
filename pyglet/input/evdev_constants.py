@@ -1,10 +1,5 @@
-#!/usr/bin/env python
-
 """Event constants from /usr/include/linux/input.h
 """
-
-__docformat__ = 'restructuredtext'
-__version__ = '$Id$'
 
 
 EV_SYN = 0x00

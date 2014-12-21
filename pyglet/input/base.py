@@ -37,9 +37,6 @@
 :since: pyglet 1.2
 """
 
-__docformat__ = 'restructuredtext'
-__version__ = '$Id: $'
-
 import sys
 
 from pyglet.event import EventDispatcher

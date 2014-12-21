@@ -49,9 +49,6 @@ Modules must also implement the two functions::
 
 """
 
-__docformat__ = 'restructuredtext'
-__version__ = '$Id: $'
-
 import os.path
 from pyglet import compat_platform
 

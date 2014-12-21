@@ -1,6 +1,3 @@
-#!/usr/bin/python
-# $Id:$
-
 from pyglet import gl, compat_platform
 from pyglet.gl import gl_info
 from pyglet.gl import glu_info

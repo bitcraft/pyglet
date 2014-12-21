@@ -129,9 +129,6 @@ use of the data in this arbitrary format).
 """
 
 
-__docformat__ = 'restructuredtext'
-__version__ = '$Id$'
-
 import sys
 import re
 import warnings

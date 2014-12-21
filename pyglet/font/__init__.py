@@ -67,9 +67,6 @@ See the `pyglet.font.base` module for documentation on the base classes used
 by this package.
 """
 
-__docformat__ = 'restructuredtext'
-__version__ = '$Id$'
-
 import os
 import weakref
 

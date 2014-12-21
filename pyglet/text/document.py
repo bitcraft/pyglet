@@ -164,9 +164,6 @@ of a ``None`` style is style- and application-dependent.
 :since: pyglet 1.1
 """
 
-__docformat__ = 'restructuredtext'
-__version__ = '$Id: $'
-
 import re
 
 from pyglet import event

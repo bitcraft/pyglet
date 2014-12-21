@@ -51,9 +51,6 @@ Or, if using more than one display::
 
 """
 
-__docformat__ = 'restructuredtext'
-__version__ = '$Id$'
-
 from ctypes import *
 
 from pyglet.gl.glx import *

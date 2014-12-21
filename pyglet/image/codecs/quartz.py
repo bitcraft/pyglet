@@ -35,9 +35,6 @@
 """
 """
 
-__docformat__ = 'restructuredtext'
-__version__ = '$Id$'
-
 from pyglet.image import ImageData, Animation, AnimationFrame
 from pyglet.image.codecs import *
 

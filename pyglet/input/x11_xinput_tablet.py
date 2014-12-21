@@ -1,16 +1,9 @@
-#!/usr/bin/env python
-
-"""
-"""
-
-__docformat__ = 'restructuredtext'
-__version__ = '$Id: $'
-
 import pyglet
-from pyglet.input.base import \
-    Tablet, TabletCanvas, TabletCursor, DeviceOpenException
-from pyglet.input.x11_xinput import \
-    get_devices, XInputWindowEventDispatcher, DeviceResponder
+from pyglet.input.base import Tablet, TabletCanvas, TabletCursor
+from pyglet.input.base import DeviceOpenException
+from pyglet.input.x11_xinput import get_devices
+from pyglet.input.x11_xinput import XInputWindowEventDispatcher
+from pyglet.input.x11_xinput import DeviceResponder
 
 try:
     from pyglet.libs.x11 import xinput as xi
@@ -86,8 +79,14 @@ class XInputTabletCursor(TabletCursor):
 
 
 def get_tablets(display=None):
-    # Each cursor appears as a separate xinput device; find devices that look
-    # like Wacom tablet cursors and amalgamate them into a single tablet.
+    """Get list of tablets connected to display.
+
+    Due to limitations, this may not be accurate.
+    Each cursor appears as a separate xinput device; find devices that look
+    like Wacom tablet cursors and amalgamate them into a single tablet.
+    :param display:
+    :return:
+    """
     cursors = list()
     devices = get_devices(display)
     for device in devices:

@@ -135,10 +135,6 @@ Not all event dispatchers require the call to ``dispatch_events``; check with
 the particular class documentation.
 
 """
-
-__docformat__ = 'restructuredtext'
-__version__ = '$Id$'
-
 import inspect
 
 EVENT_HANDLED = True

@@ -77,9 +77,6 @@ collect unused resources.
 
 """
 
-__docformat__ = 'restructuredtext'
-__version__ = '$Id$'
-
 import atexit
 import ctypes
 import heapq
@@ -353,17 +350,17 @@ class AudioData:
         self.duration = duration
         self.events = events
 
-    def consume(self, bytes, audio_format):
+    def consume(self, bytes_, audio_format):
         """Remove some data from beginning of packet.  All events are
         cleared."""
         self.events = ()
-        if bytes == self.length:
+        if bytes_ == self.length:
             self.data = None
             self.length = 0
             self.timestamp += self.duration
             self.duration = 0.
             return
-        elif bytes == 0:
+        elif bytes_ == 0:
             return
 
         if not isinstance(self.data, str):
@@ -374,10 +371,10 @@ class AudioData:
             data = ctypes.create_string_buffer(self.length)
             ctypes.memmove(data, self.data, self.length)
             self.data = data
-        self.data = self.data[bytes:]
-        self.length -= bytes
-        self.duration -= bytes / float(audio_format.bytes_per_second)
-        self.timestamp += bytes / float(audio_format.bytes_per_second)
+        self.data = self.data[bytes_:]
+        self.length -= bytes_
+        self.duration -= bytes_ / float(audio_format.bytes_per_second)
+        self.timestamp += bytes_ / float(audio_format.bytes_per_second)
 
     def get_string_data(self):
         """Return data as a string. (Python 3: return as bytes)"""
@@ -564,7 +561,7 @@ class Source:
         Default implementation returns self."""
         return self
 
-    def get_audio_data(self, bytes):
+    def get_audio_data(self, bytes_):
         """Get next packet of audio data.
 
         :Parameters:
@@ -647,7 +644,7 @@ class StaticSource(Source):
     def get_queue_source(self):
         return StaticMemorySource(self._data, self.audio_format)
 
-    def get_audio_data(self, bytes):
+    def get_audio_data(self, bytes_):
         raise RuntimeError('StaticSource cannot be queued.')
 
 
@@ -675,17 +672,17 @@ class StaticMemorySource(StaticSource):
 
         self._file.seek(offset)
 
-    def get_audio_data(self, bytes):
+    def get_audio_data(self, bytes_):
         offset = self._file.tell()
         timestamp = float(offset) / self.audio_format.bytes_per_second
 
         # Align to sample size
         if self.audio_format.bytes_per_sample == 2:
-            bytes &= 0xfffffffe
+            bytes_ &= 0xfffffffe
         elif self.audio_format.bytes_per_sample == 4:
-            bytes &= 0xfffffffc
+            bytes_ &= 0xfffffffc
 
-        data = self._file.read(bytes)
+        data = self._file.read(bytes_)
         if not len(data):
             return None
 
@@ -775,7 +772,7 @@ class SourceGroup:
     def advance_after_eos(self, advance):
         self._advance_after_eos = advance
 
-    def get_audio_data(self, bytes):
+    def get_audio_data(self, bytes_):
         """Get next audio packet.
 
         :Parameters:
@@ -786,7 +783,7 @@ class SourceGroup:
         :return: Audio data, or None if there is no more data.
         """
 
-        data = self._sources[0].get_audio_data(bytes)
+        data = self._sources[0].get_audio_data(bytes_)
         eos = False
         while not data:
             eos = True
@@ -804,7 +801,7 @@ class SourceGroup:
                 else:
                     return None
 
-            data = self._sources[0].get_audio_data(bytes)  # TODO method rename
+            data = self._sources[0].get_audio_data(bytes_)  # TODO method rename
 
         data.timestamp += self._timestamp_offset
         if eos:

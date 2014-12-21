@@ -36,9 +36,6 @@
 documents.
 """
 
-__docformat__ = 'restructuredtext'
-__version__ = '$Id: $'
-
 import operator
 import parser
 import re

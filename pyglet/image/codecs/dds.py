@@ -37,9 +37,6 @@
 Reference: http://msdn2.microsoft.com/en-us/library/bb172993.aspx
 """
 
-__docformat__ = 'restructuredtext'
-__version__ = '$Id$'
-
 from ctypes import *
 import struct
 
