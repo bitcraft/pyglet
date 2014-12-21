@@ -2,14 +2,14 @@
 # pyglet
 # Copyright (c) 2006-2008 Alex Holkner
 # All rights reserved.
-# 
+#
 # Redistribution and use in source and binary forms, with or without
-# modification, are permitted provided that the following conditions 
+# modification, are permitted provided that the following conditions
 # are met:
 #
-#  * Redistributions of source code must retain the above copyright
+# * Redistributions of source code must retain the above copyright
 #    notice, this list of conditions and the following disclaimer.
-#  * Redistributions in binary form must reproduce the above copyright 
+#  * Redistributions in binary form must reproduce the above copyright
 #    notice, this list of conditions and the following disclaimer in
 #    the documentation and/or other materials provided with the
 #    distribution.
@@ -32,20 +32,20 @@
 # POSSIBILITY OF SUCH DAMAGE.
 # ----------------------------------------------------------------------------
 
-'''
-'''
+"""
+"""
 
 __docformat__ = 'restructuredtext'
 __version__ = '$Id: $'
 
 import ctypes
-import Queue
+import queue
 
 import pyglet
 from pyglet.app import windows, BaseEventLoop
 from pyglet.window.carbon import carbon, types, constants, _oscheck
 
-EventHandlerProcPtr = ctypes.CFUNCTYPE(ctypes.c_int, ctypes.c_int, 
+EventHandlerProcPtr = ctypes.CFUNCTYPE(ctypes.c_int, ctypes.c_int,
                                        ctypes.c_void_p, ctypes.c_void_p)
 EventLoopTimerProc = ctypes.CFUNCTYPE(None, ctypes.c_void_p, ctypes.c_void_p)
 
@@ -67,11 +67,12 @@ POST_EVENT_KIND = 0
 # TODO when no windows are open Ctrl+C doesn't kill event loop.  Install a sig
 # handler?
 
+
 class MTCarbonEventLoop(BaseEventLoop):
     _running = False
 
     def __init__(self):
-        self._post_event_queue = Queue.Queue()
+        self._post_event_queue = queue.Queue()
 
     def post_event(self, dispatcher, event, *args):
         self._post_event_queue.put((dispatcher, event, args))
@@ -83,20 +84,20 @@ class MTCarbonEventLoop(BaseEventLoop):
         event_kind = POST_EVENT_KIND
         event_ref = ctypes.c_void_p()
         _oscheck(
-            carbon.CreateEvent(None, 
+            carbon.CreateEvent(None,
                                event_class, event_kind, 0,
                                kEventAttributeUserEvent,
                                ctypes.byref(event_ref))
         )
         _oscheck(
-            carbon.SetEventParameter(event_ref, 
+            carbon.SetEventParameter(event_ref,
                                      kEventParamPostTarget,
                                      typeEventTargetRef,
                                      ctypes.sizeof(ctypes.c_void_p),
                                      ctypes.byref(self._post_event_target))
         )
         _oscheck(
-            carbon.PostEventToQueue(self._event_queue, event_ref, 
+            carbon.PostEventToQueue(self._event_queue, event_ref,
                                     kEventPriorityStandard)
         )
         carbon.ReleaseEvent(event_ref)
@@ -126,7 +127,7 @@ class MTCarbonEventLoop(BaseEventLoop):
         while True:
             try:
                 dispatcher, event, args = self._post_event_queue.get(False)
-            except Queue.Empty:
+            except queue.Empty:
                 break
 
             dispatcher.dispatch_event(event, *args)
@@ -145,7 +146,7 @@ class MTCarbonEventLoop(BaseEventLoop):
         self._timer = timer = ctypes.c_void_p()
         idle_event_proc = EventLoopTimerProc(self._timer_proc)
         carbon.InstallEventLoopTimer(event_loop,
-                                     ctypes.c_double(0.1), #?
+                                     ctypes.c_double(0.1),  # ?
                                      kEventDurationForever,
                                      idle_event_proc,
                                      None,
@@ -160,7 +161,7 @@ class MTCarbonEventLoop(BaseEventLoop):
         self.dispatch_event('on_enter')
 
         # Dispatch events posted before entered run looop
-        self._running = True #XXX consolidate
+        self._running = True  # TODO: consolidate
         self._post_event_handler(None, None, None)
 
         while not self.has_exit:
@@ -173,9 +174,9 @@ class MTCarbonEventLoop(BaseEventLoop):
                 carbon.SendEventToEventTarget(e, event_dispatcher)
                 carbon.ReleaseEvent(e)
 
-            # Manual idle event 
-            if (carbon.GetNumEventsInQueue(self._event_queue) == 0 or 
-                self._force_idle):
+            # Manual idle event
+            if (carbon.GetNumEventsInQueue(self._event_queue) == 0 or
+                    self._force_idle):
                 self._force_idle = False
                 self._timer_proc(timer, None, False)
 
@@ -201,7 +202,7 @@ class MTCarbonEventLoop(BaseEventLoop):
                 allow_polling = False
                 old_width, old_height = window._resizing
                 rect = types.Rect()
-                carbon.GetWindowBounds(window._window, 
+                carbon.GetWindowBounds(window._window,
                                        constants.kWindowContentRgn,
                                        ctypes.byref(rect))
                 width = rect.right - rect.left
@@ -209,9 +210,9 @@ class MTCarbonEventLoop(BaseEventLoop):
                 if width != old_width or height != old_height:
                     window._resizing = width, height
                     window.switch_to()
-                    window.dispatch_event('on_resize', width, height) 
-    
-            # Check for live dragging
+                    window.dispatch_event('on_resize', width, height)
+
+                    # Check for live dragging
             if window._dragging:
                 allow_polling = False
 
@@ -236,6 +237,8 @@ class MTCarbonEventLoop(BaseEventLoop):
                 carbon.QuitEventLoop(self._event_loop)
             self._force_idle = True
             sleep_time = constants.kEventDurationForever
-        carbon.SetEventLoopTimerNextFireTime(timer, ctypes.c_double(sleep_time))
+        carbon.SetEventLoopTimerNextFireTime(
+            timer, ctypes.c_double(sleep_time))
+
 
 pyglet.app.EventLoop = MTCarbonEventLoop

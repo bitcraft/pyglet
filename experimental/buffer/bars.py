@@ -21,7 +21,7 @@ UPDATE_PERIOD = 0.01
 
 win = window.Window(vsync=False)
 batch = graphics.Batch()
-bars = []
+bars = list()
 
 colors = [
     [170, 0, 0],
@@ -30,21 +30,22 @@ colors = [
     [40, 180, 180],
     [200, 255, 100],
     [255, 70, 200],
-    ]
+]
+
 
 def create_bars():
     width = win.width / float(BARS)
     for i in range(BARS):
-        position = [i * width, 0, # degenerate
+        position = [i * width, 0,  # degenerate
                     i * width, 0,
                     (i + 1) * width, 0,
-                    (i + 1) * width, 0 # degenerate
-                   ]
+                    (i + 1) * width, 0  # degenerate
+                    ]
         color = colors[i % len(colors)] * 4
 
-        bar = batch.add(4, GL_TRIANGLE_STRIP, None, 
-            ('v2f/dynamic', position),
-            ('c3B/dynamic', color))
+        bar = batch.add(4, GL_TRIANGLE_STRIP, None,
+                        ('v2f/dynamic', position),
+                        ('c3B/dynamic', color))
         bars.append(bar)
 
 
@@ -57,9 +58,9 @@ def update_bars():
 
         # Update new vertices (overwrite old degenerate)
         for i in range((old_length - 1) * 2, length * 2):
-            if i & 1: # y
+            if i & 1:  # y
                 vertices[i] = BAR_SEGMENT_HEIGHT * (i // 4)
-            else: # x
+            else:  # x
                 vertices[i] = vertices[i - 4]
 
         # Update top degenerate (first degenerate is never modified)
@@ -67,12 +68,14 @@ def update_bars():
 
         # Update colors
         if length > old_length:
-            bar.colors[old_length*3:length*3] = \
+            bar.colors[old_length * 3:length * 3] = \
                 bar.colors[:3] * (length - old_length)
 
-stats_text = font.Text(font.load('', 12, bold=True), '', 
+
+stats_text = font.Text(font.load('', 12, bold=True), '',
                        x=win.width, y=0,
                        halign='right')
+
 
 def update_stats(dt):
     np = len(bars)
@@ -82,6 +85,8 @@ def update_stats(dt):
     stats_text.text = \
         'Bars: %d  Blocks: %d  Usage: %d%%  Fragmentation: %d%%' % \
         (np, blocks, usage * 100, fragmentation * 100)
+
+
 clock.schedule_interval(update_stats, 1)
 
 fps_text = clock.ClockDisplay(color=(1, 1, 1, 1))
@@ -99,7 +104,7 @@ while not win.has_exit:
     if update_time > UPDATE_PERIOD:
         update_bars()
         update_time -= UPDATE_PERIOD
-    
+
     win.clear()
     batch.draw()
 

@@ -1,10 +1,10 @@
-
 from pyglet.window import mouse
 
-import event
+from . import event
+
 
 def DragHandler(rule, buttons=mouse.LEFT):
-    class _DragHandler(object):
+    class _DragHandler:
         original_position = None
         mouse_buttons = buttons
 
@@ -15,7 +15,8 @@ def DragHandler(rule, buttons=mouse.LEFT):
             if self.original_position is None:
                 self.original_position = (widget.x, widget.y, widget.z)
                 widget.z += 1
-            widget.x += dx; widget.y += dy
+            widget.x += dx
+            widget.y += dy
             return event.EVENT_HANDLED
 
         @event.select(rule)
@@ -24,9 +25,10 @@ def DragHandler(rule, buttons=mouse.LEFT):
                 widget.z = self.original_position[2]
                 self.original_position = None
             else:
-                if self.original_position is None: return
+                if self.original_position is None:
+                    return
                 widget.x, widget.y, widget.z = self.original_position
                 self.original_position = None
             return event.EVENT_HANDLED
-    return _DragHandler()
 
+    return _DragHandler()

@@ -210,6 +210,7 @@ DISCL_NOWINKEY = 0x00000010
 
 DIPROP_BUFFERSIZE = 1
 
+
 class DIDEVICEINSTANCE(ctypes.Structure):
     _fields_ = (
         ('dwSize', DWORD),
@@ -222,11 +223,14 @@ class DIDEVICEINSTANCE(ctypes.Structure):
         ('wUsagePage', WORD),
         ('wUsage', WORD)
     )
+
+
 LPDIDEVICEINSTANCE = ctypes.POINTER(DIDEVICEINSTANCE)
 LPDIENUMDEVICESCALLBACK = ctypes.WINFUNCTYPE(BOOL, LPDIDEVICEINSTANCE, LPVOID)
 
+
 class DIDEVICEOBJECTINSTANCE(ctypes.Structure):
-    _fields_ = (    
+    _fields_ = (
         ('dwSize', DWORD),
         ('guidType', com.GUID),
         ('dwOfs', DWORD),
@@ -243,9 +247,12 @@ class DIDEVICEOBJECTINSTANCE(ctypes.Structure):
         ('wExponent', WORD),
         ('wReportId', WORD)
     )
+
+
 LPDIDEVICEOBJECTINSTANCE = ctypes.POINTER(DIDEVICEOBJECTINSTANCE)
 LPDIENUMDEVICEOBJECTSCALLBACK = \
-    ctypes.WINFUNCTYPE( BOOL, LPDIDEVICEOBJECTINSTANCE, LPVOID)
+    ctypes.WINFUNCTYPE(BOOL, LPDIDEVICEOBJECTINSTANCE, LPVOID)
+
 
 class DIOBJECTDATAFORMAT(ctypes.Structure):
     _fields_ = (
@@ -255,7 +262,10 @@ class DIOBJECTDATAFORMAT(ctypes.Structure):
         ('dwFlags', DWORD)
     )
     __slots__ = [n for n, t in _fields_]
+
+
 LPDIOBJECTDATAFORMAT = ctypes.POINTER(DIOBJECTDATAFORMAT)
+
 
 class DIDATAFORMAT(ctypes.Structure):
     _fields_ = (
@@ -267,7 +277,10 @@ class DIDATAFORMAT(ctypes.Structure):
         ('rgodf', LPDIOBJECTDATAFORMAT)
     )
     __slots__ = [n for n, t in _fields_]
+
+
 LPDIDATAFORMAT = ctypes.POINTER(DIDATAFORMAT)
+
 
 class DIDEVICEOBJECTDATA(ctypes.Structure):
     _fields_ = (
@@ -277,7 +290,10 @@ class DIDEVICEOBJECTDATA(ctypes.Structure):
         ('dwSequence', DWORD),
         ('uAppData', ctypes.POINTER(UINT))
     )
+
+
 LPDIDEVICEOBJECTDATA = ctypes.POINTER(DIDEVICEOBJECTDATA)
+
 
 class DIPROPHEADER(ctypes.Structure):
     _fields_ = (
@@ -286,13 +302,17 @@ class DIPROPHEADER(ctypes.Structure):
         ('dwObj', DWORD),
         ('dwHow', DWORD)
     )
+
+
 LPDIPROPHEADER = ctypes.POINTER(DIPROPHEADER)
+
 
 class DIPROPDWORD(ctypes.Structure):
     _fields_ = (
         ('diph', DIPROPHEADER),
         ('dwData', DWORD)
     )
+
 
 # All method names in the interfaces are filled in, but unused (so far)
 # methods have no parameters.. they'll crash when we try and use them, at
@@ -360,12 +380,13 @@ class IDirectInputDevice8(com.IUnknown):
          com.STDMETHOD()),
         ('GetImageInfo',
          com.STDMETHOD()),
-     ]
+    ]
+
 
 class IDirectInput8(com.IUnknown):
     _methods_ = [
         ('CreateDevice',
-         com.STDMETHOD(ctypes.POINTER(com.GUID), 
+         com.STDMETHOD(ctypes.POINTER(com.GUID),
                        ctypes.POINTER(IDirectInputDevice8),
                        ctypes.c_void_p)),
         ('EnumDevices',
@@ -384,14 +405,18 @@ class IDirectInput8(com.IUnknown):
          com.STDMETHOD()),
     ]
 
+
 IID_IDirectInput8W = \
-    com.GUID(0xBF798031,0x483A,0x4DA2,0xAA,0x99,0x5D,0x64,0xED,0x36,0x97,0x00)
+    com.GUID(0xBF798031, 0x483A, 0x4DA2, 0xAA, 0x99, 0x5D, 0x64, 0xED, 0x36,
+             0x97, 0x00)
 
 lib.DirectInput8Create.argtypes = \
     (ctypes.c_void_p, DWORD, com.LPGUID, ctypes.c_void_p, ctypes.c_void_p)
 
-class Element(object):
+
+class Element:
     value = None
+
     def __init__(self, object_instance):
         self.name = object_instance.tszName
         self._flags = object_instance.dwFlags
@@ -400,20 +425,22 @@ class Element(object):
 
     def get_value(self):
         return self.value
-        
-class Device(object):
+
+
+class Device:
+
     def __init__(self, device, device_instance):
         self.name = device_instance.tszInstanceName
-        #print self.name, hex(device_instance.dwDevType & 0xff), \
+        # print self.name, hex(device_instance.dwDevType & 0xff), \
         #                hex(device_instance.dwDevType & 0xff00)
-        #print hex(device_instance.wUsagePage), hex(device_instance.wUsage)
+        # print hex(device_instance.wUsagePage), hex(device_instance.wUsage)
 
         self._device = device
         self._init_elements()
         self._set_format()
 
     def _init_elements(self):
-        self.elements = []
+        self.elements = list()
         self._device.EnumObjects(
             LPDIENUMDEVICEOBJECTSCALLBACK(self._object_enum), None, DIDFT_ALL)
 
@@ -424,7 +451,7 @@ class Device(object):
             return DIENUM_CONTINUE
 
         element = Element(object_instance.contents)
-        self.elements.append(element)        
+        self.elements.append(element)
         return DIENUM_CONTINUE
 
     def _set_format(self):
@@ -437,7 +464,7 @@ class Device(object):
             object_format.dwOfs = offset
             object_format.dwType = element._type
             offset += 4
-             
+
         format = DIDATAFORMAT()
         format.dwSize = ctypes.sizeof(format)
         format.dwObjSize = ctypes.sizeof(DIOBJECTDATAFORMAT)
@@ -467,11 +494,11 @@ class Device(object):
             for window in pyglet.app.windows:
                 break
 
-        self._device.SetCooperativeLevel(window._hwnd, 
-            DISCL_BACKGROUND | DISCL_NONEXCLUSIVE)
+        self._device.SetCooperativeLevel(window._hwnd,
+                                         DISCL_BACKGROUND | DISCL_NONEXCLUSIVE)
         self._device.Acquire()
-        
-        # XXX HACK
+
+        # TODO: HACK
         pyglet.clock.schedule(self.dispatch_events)
 
     def close(self):
@@ -480,15 +507,15 @@ class Device(object):
 
         self._device.Unacquire()
 
-    # XXX HACK?
-    def dispatch_events(self, dt): # dt HACK
+    # TODO: HACK?
+    def dispatch_events(self, dt):  # dt HACK
         if not self.elements:
             return
-        
+
         events = (DIDEVICEOBJECTDATA * 64)()
         n_events = DWORD(len(events))
         self._device.GetDeviceData(ctypes.sizeof(DIDEVICEOBJECTDATA),
-                                   ctypes.cast(ctypes.pointer(events), 
+                                   ctypes.cast(ctypes.pointer(events),
                                                LPDIDEVICEOBJECTDATA),
                                    ctypes.byref(n_events),
                                    0)
@@ -496,21 +523,24 @@ class Device(object):
             index = event.dwOfs // 4
             self.elements[index].value = event.dwData
 
+
 def _device_enum(device_instance, arg):
     device = IDirectInputDevice8()
     dinput.CreateDevice(device_instance.contents.guidInstance,
                         ctypes.byref(device),
                         None)
     _devices.append(Device(device, device_instance.contents))
-    
+
     return DIENUM_CONTINUE
+
 
 def get_devices():
     global _devices
-    _devices = []
-    dinput.EnumDevices(DI8DEVCLASS_ALL, LPDIENUMDEVICESCALLBACK(_device_enum), 
+    _devices = list()
+    dinput.EnumDevices(DI8DEVCLASS_ALL, LPDIENUMDEVICESCALLBACK(_device_enum),
                        None, DIEDFL_ATTACHEDONLY)
     return _devices
+
 
 def _init_directinput():
     global dinput
@@ -520,12 +550,13 @@ def _init_directinput():
     lib.DirectInput8Create(module, DIRECTINPUT_VERSION,
                            IID_IDirectInput8W, ctypes.byref(dinput), None)
 
+
 _init_directinput()
-'''
+"""
 #for device in get_devices():
 device = get_devices()[0]
 device.open(w)
 print device.name
 
 pyglet.app.run()
-'''
+"""

@@ -1,13 +1,12 @@
+# !/usr/bin/env python
 
-#!/usr/bin/env python
-
-'''Testing a sprite.
+"""Testing a sprite.
 
 The ball should bounce off the sides of the window. You may resize the
 window.
 
 This test should just run without failing.
-'''
+"""
 
 __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
@@ -25,15 +24,27 @@ from scene2d.camera import FlatCamera
 
 ball_png = os.path.join(os.path.dirname(__file__), 'ball.png')
 
+
 class BouncySprite(Sprite):
+
     def update(self):
         # move, check bounds
         p = self.properties
-        self.x += p['dx']; self.y += p['dy']
-        if self.left < 0: self.left = 0; p['dx'] = -p['dx']
-        elif self.right > 320: self.right = 320; p['dx'] = -p['dx']
-        if self.bottom < 0: self.bottom = 0; p['dy'] = -p['dy']
-        elif self.top > 320: self.top = 320; p['dy'] = -p['dy']
+        self.x += p['dx']
+        self.y += p['dy']
+        if self.left < 0:
+            self.left = 0
+            p['dx'] = -p['dx']
+        elif self.right > 320:
+            self.right = 320
+            p['dx'] = -p['dx']
+        if self.bottom < 0:
+            self.bottom = 0
+            p['dy'] = -p['dy']
+        elif self.top > 320:
+            self.top = 320
+            p['dy'] = -p['dy']
+
 
 class SpriteOverlapTest(unittest.TestCase):
 
@@ -43,7 +54,7 @@ class SpriteOverlapTest(unittest.TestCase):
         image = Image2d.load(ball_png)
         ball1 = BouncySprite(0, 0, 64, 64, image, properties=dict(dx=10, dy=5))
         ball2 = BouncySprite(288, 0, 64, 64, image,
-            properties=dict(dx=-10, dy=5))
+                             properties=dict(dx=-10, dy=5))
         view = FlatView(0, 0, 320, 320, sprites=[ball1, ball2])
         view.fx, view.fy = 160, 160
 
@@ -69,5 +80,4 @@ class SpriteOverlapTest(unittest.TestCase):
 
         w.close()
 
-if __name__ == '__main__':
     unittest.main()

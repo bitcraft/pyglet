@@ -1,18 +1,19 @@
-
 from pyglet.gl import *
 from pyglet import font
 from layout import *
 
-import util
+from . import util
 
-class Style(object):
 
+class Style:
     font_name = ''
     font_size = 14
 
     def getFont(self, name=None, size=None):
-        if name is None: name = self.font_name
-        if size is None: size = self.font_size
+        if name is None:
+            name = self.font_name
+        if size is None:
+            size = self.font_size
         return font.load(name, size)
 
     def getGlyphString(self, text, name=None, size=None):
@@ -20,25 +21,29 @@ class Style(object):
         return font.GlyphString(text, glyphs)
 
     def text(self, text, color=(0, 0, 0, 1), font_size=None,
-            font_name=None, halign='left', width=None,
-            valign=font.Text.BOTTOM):
-        if font_size is None: font_size = self.font_size
-        if font_name is None: font_name = self.font_name
+             font_name=None, halign='left', width=None,
+             valign=font.Text.BOTTOM):
+        if font_size is None:
+            font_size = self.font_size
+        if font_name is None:
+            font_name = self.font_name
         f = self.getFont(name=font_name, size=font_size)
         return font.Text(f, text, color=color, halign=halign, width=width,
-            valign=valign)
+                         valign=valign)
 
     def textAsTexture(self, text, color=(0, 0, 0, 1), bgcolor=(1, 1, 1, 0),
-            font_size=None, font_name=None, halign='left', width=None,
-            rotate=0):
+                      font_size=None, font_name=None, halign='left', width=None,
+                      rotate=0):
         label = self.text(text, color=color, font_size=font_size,
-            font_name=font_name, halign=halign, width=width, valign='top')
+                          font_name=font_name, halign=halign, width=width,
+                          valign='top')
         label.width
         w = int(width or label.width)
-        h = font_size * len(label.lines) #int(label.height)
+        h = font_size * len(label.lines)  # int(label.height)
         x = c_int()
+
         def _f():
-            glPushAttrib(GL_COLOR_BUFFER_BIT|GL_ENABLE_BIT|GL_CURRENT_BIT)
+            glPushAttrib(GL_COLOR_BUFFER_BIT | GL_ENABLE_BIT | GL_CURRENT_BIT)
             glEnable(GL_TEXTURE_2D)
             glDisable(GL_DEPTH_TEST)
             glClearColor(*bgcolor)
@@ -58,27 +63,28 @@ class Style(object):
             label.draw()
             glPopMatrix()
             glPopAttrib()
+
         if rotate in (0, 180):
             return util.renderToTexture(w, h, _f)
         else:
             return util.renderToTexture(h, w, _f)
 
-    stylesheet = '''
+    stylesheet = """
 body {margin: 0px; background-color: white; font-family: sans-serif;}
 div.frame {border: 1px solid #555; background-color: white;}
 h1 {font-size: %(font_size)spx; color: black; margin: 2px;}
 p {font-size: %(font_size)spx; color: #444; margin: 2px;}
 .button {font-size: %(font_size)spx; border: 1px solid black; padding: 2px; margin: 0px;}
 a {color: blue;}
-'''%locals()
+""" % locals()
 
     def xhtml(self, text, width=None, height=None, style=None):
         layout = Layout()
         if style is None:
             style = self.stylesheet
-        layout.set_xhtml('''<?xml version="1.0"?>
+        layout.set_xhtml("""<?xml version="1.0"?>
             <html><head><style>%s</style></head>
-            <body>%s</body></html>'''%(style, text))
+            <body>%s</body></html>""" % (style, text))
         layout.viewport_x = 0
         layout.viewport_y = 0
         layout.viewport_width = width or 256
@@ -92,11 +98,13 @@ a {color: blue;}
     def xhtmlAsTexture(self, text, width=None, height=None, style=None):
         return xhtmlAsTexture(self.xhtml(text, width, height, style))
 
+
 def xhtmlAsTexture(layout):
     h = int(layout.view.canvas_height)
     w = int(layout.view.canvas_width)
+
     def _f():
-        glPushAttrib(GL_CURRENT_BIT|GL_COLOR_BUFFER_BIT|GL_ENABLE_BIT)
+        glPushAttrib(GL_CURRENT_BIT | GL_COLOR_BUFFER_BIT | GL_ENABLE_BIT)
         # always draw onto solid white
         glClearColor(1, 1, 1, 1)
         glClear(GL_COLOR_BUFFER_BIT)
@@ -108,22 +116,25 @@ def xhtmlAsTexture(layout):
         layout.view.draw()
         glPopMatrix()
         glPopAttrib()
+
     return util.renderToTexture(w, h, _f)
 
-class Gradient(object):
+
+class Gradient:
+
     def __init__(self, *corners):
-        '''Corner colours in order bottomleft, topleft, topright,
+        """Corner colours in order bottomleft, topleft, topright,
         bottomright.
-        '''
+        """
         self.corners = corners
 
     def __call__(self, rect, clipped):
         scissor = clipped != rect
         if scissor:
-            glPushAttrib(GL_ENABLE_BIT|GL_SCISSOR_BIT)
+            glPushAttrib(GL_ENABLE_BIT | GL_SCISSOR_BIT)
             glEnable(GL_SCISSOR_TEST)
-            glScissor(*map(int, (clipped.x, clipped.y, clipped.width,
-                clipped.height)))
+            glScissor(*list(map(int, (clipped.x, clipped.y, clipped.width,
+                                      clipped.height))))
 
         glBegin(GL_QUADS)
         glColor4f(*self.corners[0])
@@ -142,4 +153,3 @@ class Gradient(object):
 
         if scissor:
             glPopAttrib()
-

@@ -2,14 +2,14 @@
 # pyglet
 # Copyright (c) 2006-2008 Alex Holkner
 # All rights reserved.
-# 
+#
 # Redistribution and use in source and binary forms, with or without
-# modification, are permitted provided that the following conditions 
+# modification, are permitted provided that the following conditions
 # are met:
 #
 #  * Redistributions of source code must retain the above copyright
 #    notice, this list of conditions and the following disclaimer.
-#  * Redistributions in binary form must reproduce the above copyright 
+#  * Redistributions in binary form must reproduce the above copyright
 #    notice, this list of conditions and the following disclaimer in
 #    the documentation and/or other materials provided with the
 #    distribution.
@@ -31,9 +31,9 @@
 # ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 # ----------------------------------------------------------------------------
-'''This file is currently hand-coded; I don't have a MESA header file to build
+"""This file is currently hand-coded; I don't have a MESA header file to build
 off.
-'''
+"""
 
 __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
@@ -42,4 +42,5 @@ import ctypes
 from ctypes import *
 from pyglet.gl.lib import link_GLX as _link_function
 
-glXSwapIntervalMESA = _link_function('glXSwapIntervalMESA', c_int, [c_int], 'MESA_swap_control')
+glXSwapIntervalMESA = _link_function(
+    'glXSwapIntervalMESA', c_int, [c_int], 'MESA_swap_control')

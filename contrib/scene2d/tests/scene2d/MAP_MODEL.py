@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 
-'''Testing the map model.
+"""Testing the map model.
 
 This test should just run without failing.
-'''
+"""
 
 __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
@@ -15,13 +15,15 @@ from scene2d import RectMap, HexMap, RectCell, HexCell
 from scene2d.debug import gen_hex_map, gen_rect_map
 
 rmd = [
-   [ {'meta': x} for x in m ] for m in ['ad', 'be', 'cf']
+    [{'meta': x} for x in m] for m in ['ad', 'be', 'cf']
 ]
 hmd = [
-   [ {'meta': x} for x in m ] for m in ['ab', 'cd', 'ef', 'gh']
+    [{'meta': x} for x in m] for m in ['ab', 'cd', 'ef', 'gh']
 ]
 
+
 class MapModelTest(unittest.TestCase):
+
     def setUp(self):
         self.w = Window(width=1, height=1, visible=False)
 
@@ -30,13 +32,13 @@ class MapModelTest(unittest.TestCase):
 
     def test_rect_neighbor(self):
         # test rectangular tile map
-        #    +---+---+---+
+        # +---+---+---+
         #    | d | e | f |
         #    +---+---+---+
         #    | a | b | c |
         #    +---+---+---+
         m = gen_rect_map(rmd, 10, 16)
-        t = m.get_cell(0,0)
+        t = m.get_cell(0, 0)
         assert (t.x, t.y) == (0, 0) and t.properties['meta'] == 'a'
         assert m.get_neighbor(t, m.DOWN) is None
         assert m.get_neighbor(t, m.UP).properties['meta'] == 'd'
@@ -69,7 +71,7 @@ class MapModelTest(unittest.TestCase):
 
     def test_rect_coords(self):
         # test rectangular tile map
-        #    +---+---+---+
+        # +---+---+---+
         #    | d | e | f |
         #    +---+---+---+
         #    | a | b | c |
@@ -77,7 +79,7 @@ class MapModelTest(unittest.TestCase):
         m = gen_rect_map(rmd, 10, 16)
 
         # test tile sides / corners
-        t = m.get_cell(0,0)
+        t = m.get_cell(0, 0)
         assert t.top == 16
         assert t.bottom == 0
         assert t.left == 0
@@ -93,33 +95,33 @@ class MapModelTest(unittest.TestCase):
 
     def test_rect_pixel(self):
         # test rectangular tile map
-        #    +---+---+---+
+        # +---+---+---+
         #    | d | e | f |
         #    +---+---+---+
         #    | a | b | c |
         #    +---+---+---+
         m = gen_rect_map(rmd, 10, 16)
-        t = m.get(0,0)
+        t = m.get(0, 0)
         assert (t.x, t.y) == (0, 0) and t.properties['meta'] == 'a'
-        t = m.get(9,15)
+        t = m.get(9, 15)
         assert (t.x, t.y) == (0, 0) and t.properties['meta'] == 'a'
-        t = m.get(10,15)
+        t = m.get(10, 15)
         assert (t.x, t.y) == (1, 0) and t.properties['meta'] == 'b'
-        t = m.get(9,16)
+        t = m.get(9, 16)
         assert (t.x, t.y) == (0, 1) and t.properties['meta'] == 'd'
-        t = m.get(10,16)
+        t = m.get(10, 16)
         assert (t.x, t.y) == (1, 1) and t.properties['meta'] == 'e'
 
     def test_hex_neighbor(self):
         # test hexagonal tile map
         # tiles = [['a', 'b'], ['c', 'd'], ['e', 'f'], ['g', 'h']]
-        #   /d\ /h\
+        # /d\ /h\
         # /b\_/f\_/
         # \_/c\_/g\
         # /a\_/e\_/
-        # \_/ \_/ 
+        # \_/ \_/
         m = gen_hex_map(hmd, 32)
-        t = m.get_cell(0,0)
+        t = m.get_cell(0, 0)
         assert (t.x, t.y) == (0, 0) and t.properties['meta'] == 'a'
         assert m.get_neighbor(t, m.DOWN) is None
         assert m.get_neighbor(t, m.UP).properties['meta'] == 'b'
@@ -171,11 +173,11 @@ class MapModelTest(unittest.TestCase):
     def test_hex_coords(self):
         # test hexagonal tile map
         # tiles = [['a', 'b'], ['c', 'd'], ['e', 'f'], ['g', 'h']]
-        #   /d\ /h\
+        # /d\ /h\
         # /b\_/f\_/
         # \_/c\_/g\
         # /a\_/e\_/
-        # \_/ \_/ 
+        # \_/ \_/
         m = gen_hex_map(hmd, 32)
 
         # test tile sides / corners
@@ -225,30 +227,29 @@ class MapModelTest(unittest.TestCase):
     def test_hex_pixel(self):
         # test hexagonal tile map
         # tiles = [['a', 'b'], ['c', 'd'], ['e', 'f'], ['g', 'h']]
-        #   /d\ /h\
+        # /d\ /h\
         # /b\_/f\_/
         # \_/c\_/g\
         # /a\_/e\_/
-        # \_/ \_/ 
+        # \_/ \_/
         m = gen_hex_map(hmd, 32)
-        t = m.get(0,0)
+        t = m.get(0, 0)
         assert t is None
-        t = m.get(0,16)
+        t = m.get(0, 16)
         assert (t.x, t.y) == (0, 0) and t.properties['meta'] == 'a'
-        t = m.get(16,16)
+        t = m.get(16, 16)
         assert (t.x, t.y) == (0, 0) and t.properties['meta'] == 'a'
-        t = m.get(35,16)
+        t = m.get(35, 16)
         assert (t.x, t.y) == (0, 0) and t.properties['meta'] == 'a'
-        t = m.get(36,16)
+        t = m.get(36, 16)
         assert (t.x, t.y) == (1, 0) and t.properties['meta'] == 'c'
 
     def test_hex_dimensions(self):
-        m = gen_hex_map([[{'a':'a'}]], 32)
+        m = gen_hex_map([[{'a': 'a'}]], 32)
         assert m.pxw, m.pxh == (36, 32)
-        m = gen_hex_map([[{'a':'a'}]*2], 32)
+        m = gen_hex_map([[{'a': 'a'}] * 2], 32)
         assert m.pxw, m.pxh == (36, 64)
-        m = gen_hex_map([[{'a':'a'}]]*2, 32)
+        m = gen_hex_map([[{'a': 'a'}]] * 2, 32)
         assert m.pxw, m.pxh == (63, 48)
 
-if __name__ == '__main__':
     unittest.main()

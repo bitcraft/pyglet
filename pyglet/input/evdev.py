@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
-'''
-'''
+"""
+"""
 
 __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
@@ -12,10 +12,10 @@ import os
 
 import pyglet
 from pyglet.app.xlib import XlibSelectDevice
-from base import Device, Control, RelativeAxis, AbsoluteAxis, Button, Joystick
-from base import DeviceOpenException
-from evdev_constants import *
-from evdev_constants import _rel_raw_names, _abs_raw_names, _key_raw_names
+from .base import Device, Control, RelativeAxis, AbsoluteAxis, Button, Joystick
+from .base import DeviceOpenException
+from .evdev_constants import *
+from .evdev_constants import _rel_raw_names, _abs_raw_names, _key_raw_names
 
 c = pyglet.lib.load_library('c')
 
@@ -24,19 +24,20 @@ _IOC_TYPEBITS = 8
 _IOC_SIZEBITS = 14
 _IOC_DIRBITS = 2
 
-_IOC_NRMASK = ((1 << _IOC_NRBITS)-1)
-_IOC_TYPEMASK = ((1 << _IOC_TYPEBITS)-1)
-_IOC_SIZEMASK = ((1 << _IOC_SIZEBITS)-1)
-_IOC_DIRMASK = ((1 << _IOC_DIRBITS)-1)
+_IOC_NRMASK = ((1 << _IOC_NRBITS) - 1)
+_IOC_TYPEMASK = ((1 << _IOC_TYPEBITS) - 1)
+_IOC_SIZEMASK = ((1 << _IOC_SIZEBITS) - 1)
+_IOC_DIRMASK = ((1 << _IOC_DIRBITS) - 1)
 
 _IOC_NRSHIFT = 0
-_IOC_TYPESHIFT = (_IOC_NRSHIFT+_IOC_NRBITS)
-_IOC_SIZESHIFT = (_IOC_TYPESHIFT+_IOC_TYPEBITS)
-_IOC_DIRSHIFT = (_IOC_SIZESHIFT+_IOC_SIZEBITS)
+_IOC_TYPESHIFT = (_IOC_NRSHIFT + _IOC_NRBITS)
+_IOC_SIZESHIFT = (_IOC_TYPESHIFT + _IOC_TYPEBITS)
+_IOC_DIRSHIFT = (_IOC_SIZESHIFT + _IOC_SIZEBITS)
 
 _IOC_NONE = 0
 _IOC_WRITE = 1
 _IOC_READ = 2
+
 
 def _IOC(dir, type, nr, size):
     return ((dir << _IOC_DIRSHIFT) |
@@ -44,8 +45,10 @@ def _IOC(dir, type, nr, size):
             (nr << _IOC_NRSHIFT) |
             (size << _IOC_SIZESHIFT))
 
+
 def _IOR(type, nr, struct):
     request = _IOC(_IOC_READ, ord(type), nr, ctypes.sizeof(struct))
+
     def f(fileno):
         buffer = struct()
         if c.ioctl(fileno, request, ctypes.byref(buffer)) < 0:
@@ -53,6 +56,7 @@ def _IOR(type, nr, struct):
             raise OSError(err, errno.errorcode[err])
         return buffer
     return f
+
 
 def _IOR_len(type, nr):
     def f(fileno, buffer):
@@ -63,8 +67,10 @@ def _IOR_len(type, nr):
         return buffer
     return f
 
+
 def _IOR_str(type, nr):
     g = _IOR_len(type, nr)
+
     def f(fileno, len=256):
         return g(fileno, ctypes.create_string_buffer(len)).value
     return f
@@ -72,11 +78,13 @@ def _IOR_str(type, nr):
 time_t = ctypes.c_long
 suseconds_t = ctypes.c_long
 
+
 class timeval(ctypes.Structure):
     _fields_ = (
         ('tv_sec', time_t),
         ('tv_usec', suseconds_t)
     )
+
 
 class input_event(ctypes.Structure):
     _fields_ = (
@@ -86,6 +94,7 @@ class input_event(ctypes.Structure):
         ('value', ctypes.c_int32)
     )
 
+
 class input_id(ctypes.Structure):
     _fields_ = (
         ('bustype', ctypes.c_uint16),
@@ -93,6 +102,7 @@ class input_id(ctypes.Structure):
         ('product', ctypes.c_uint16),
         ('version', ctypes.c_uint16),
     )
+
 
 class input_absinfo(ctypes.Structure):
     _fields_ = (
@@ -108,11 +118,16 @@ EVIOCGID = _IOR('E', 0x02, input_id)
 EVIOCGNAME = _IOR_str('E', 0x06)
 EVIOCGPHYS = _IOR_str('E', 0x07)
 EVIOCGUNIQ = _IOR_str('E', 0x08)
+
+
 def EVIOCGBIT(fileno, ev, buffer):
     return _IOR_len('E', 0x20 + ev)(fileno, buffer)
+
+
 def EVIOCGABS(fileno, abs):
     buffer = input_absinfo()
     return _IOR_len('E', 0x40 + abs)(fileno, buffer)
+
 
 def get_set_bits(bytes):
     bits = set()
@@ -145,6 +160,8 @@ _rel_names = {
     REL_RZ: RelativeAxis.RZ,
     REL_WHEEL: RelativeAxis.WHEEL,
 }
+
+
 def _create_control(fileno, event_type, event_code):
     if event_type == EV_ABS:
         raw_name = _abs_raw_names.get(event_code, 'EV_ABS(%x)' % event_code)
@@ -168,11 +185,12 @@ def _create_control(fileno, event_type, event_code):
         name = None
         control = Button(name, raw_name)
     else:
-        value = min = max = 0 # TODO
+        value = min = max = 0  # TODO
         return None
     control._event_type = event_type
     control._event_code = event_code
     return control
+
 
 def _create_joystick(device):
     # Look for something with an ABS X and ABS Y axis, and a joystick 0 button
@@ -185,7 +203,7 @@ def _create_joystick(device):
         elif control._event_type == EV_ABS and control._event_code == ABS_Y:
             have_y = True
         elif control._event_type == EV_KEY and \
-             control._event_code in (BTN_JOYSTICK, BTN_GAMEPAD):
+                control._event_code in (BTN_JOYSTICK, BTN_GAMEPAD):
             have_button = True
     if not (have_x and have_y and have_button):
         return
@@ -201,9 +219,10 @@ event_types = {
     EV_SND: SND_MAX,
 }
 
+
 class EvdevDevice(XlibSelectDevice, Device):
     _fileno = None
-        
+
     def __init__(self, display, filename):
         self._filename = filename
 
@@ -224,7 +243,7 @@ class EvdevDevice(XlibSelectDevice, Device):
                 name = name.decode('latin-1')
             except UnicodeDecodeError:
                 pass
-            
+
         try:
             self.phys = EVIOCGPHYS(fileno)
         except OSError:
@@ -234,8 +253,8 @@ class EvdevDevice(XlibSelectDevice, Device):
         except OSError:
             self.uniq = ''
 
-        self.controls = []
-        self.control_map = {}
+        self.controls = list()
+        self.control_map = dict()
 
         event_types_bits = (ctypes.c_byte * 4)()
         EVIOCGBIT(fileno, 0, event_types_bits)
@@ -249,25 +268,25 @@ class EvdevDevice(XlibSelectDevice, Device):
             for event_code in get_set_bits(event_codes_bits):
                 control = _create_control(fileno, event_type, event_code)
                 if control:
-                    self.control_map[(event_type, event_code)] = control 
+                    self.control_map[(event_type, event_code)] = control
                     self.controls.append(control)
 
         os.close(fileno)
 
-        super(EvdevDevice, self).__init__(display, name)
+        super().__init__(display, name)
 
     def open(self, window=None, exclusive=False):
-        super(EvdevDevice, self).open(window, exclusive)
+        super().open(window, exclusive)
 
         try:
             self._fileno = os.open(self._filename, os.O_RDONLY | os.O_NONBLOCK)
-        except OSError, e:
+        except OSError as e:
             raise DeviceOpenException(e)
 
         pyglet.app.platform_event_loop._select_devices.add(self)
 
     def close(self):
-        super(EvdevDevice, self).close()
+        super().close()
 
         if not self._fileno:
             return
@@ -305,7 +324,9 @@ class EvdevDevice(XlibSelectDevice, Device):
             except KeyError:
                 pass
 
-_devices = {}
+_devices = dict()
+
+
 def get_devices(display=None):
     base = '/dev/input'
     for filename in os.listdir(base):
@@ -317,9 +338,10 @@ def get_devices(display=None):
             try:
                 _devices[path] = EvdevDevice(display, path)
             except OSError:
-                pass 
+                pass
 
-    return _devices.values()
+    return list(_devices.values())
+
 
 def get_joysticks(display=None):
-    return filter(None, [_create_joystick(d) for d in get_devices(display)])
+    return [_f for _f in [_create_joystick(d) for d in get_devices(display)] if _f]

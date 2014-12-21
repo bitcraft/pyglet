@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
-'''Base class for rendering tests.
-'''
+"""Base class for rendering tests.
+"""
 
 __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
@@ -19,8 +19,10 @@ from scene2d.drawable import ScaleEffect
 
 ball_png = os.path.join(os.path.dirname(__file__), 'ball.png')
 
+
 class RenderBase(unittest.TestCase):
     w = None
+
     def init_window(self, vx, vy):
         self.w = pyglet.window.Window(width=vx, height=vy)
 
@@ -40,6 +42,7 @@ class RenderBase(unittest.TestCase):
         self.w.push_handlers(self.keyboard)
 
     marker = None
+
     def show_focus(self):
         # add in a "sprite"
         marker = Image2d.load(ball_png)
@@ -52,8 +55,10 @@ class RenderBase(unittest.TestCase):
         while not self.w.has_exit:
             clock.tick()
             self.w.dispatch_events()
-            self.view.fx += (self.keyboard[key.RIGHT] - self.keyboard[key.LEFT]) * 5
-            self.view.fy += (self.keyboard[key.UP] - self.keyboard[key.DOWN]) * 5
+            self.view.fx += (self.keyboard[key.RIGHT] - self.keyboard[
+                key.LEFT]) * 5
+            self.view.fy += (
+                self.keyboard[key.UP] - self.keyboard[key.DOWN]) * 5
             if self.marker is not None:
                 self.marker.x = self.view.fx
                 self.marker.y = self.view.fy
@@ -61,5 +66,3 @@ class RenderBase(unittest.TestCase):
             self.view.draw()
             self.w.flip()
         self.w.close()
-
-

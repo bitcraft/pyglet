@@ -2,14 +2,14 @@
 # pyglet
 # Copyright (c) 2006-2008 Alex Holkner
 # All rights reserved.
-# 
+#
 # Redistribution and use in source and binary forms, with or without
-# modification, are permitted provided that the following conditions 
+# modification, are permitted provided that the following conditions
 # are met:
 #
-#  * Redistributions of source code must retain the above copyright
+# * Redistributions of source code must retain the above copyright
 #    notice, this list of conditions and the following disclaimer.
-#  * Redistributions in binary form must reproduce the above copyright 
+#  * Redistributions in binary form must reproduce the above copyright
 #    notice, this list of conditions and the following disclaimer in
 #    the documentation and/or other materials provided with the
 #    distribution.
@@ -38,7 +38,9 @@ import math
 
 from pyglet import media
 
-class PlayerReader(object):
+
+class PlayerReader:
+
     def __init__(self, player):
         self.player = player
 
@@ -65,7 +67,9 @@ class PlayerReader(object):
                 raise ReaderException('Invalid label line %d' % lineno)
             self.player.label = parts[1]
 
-class SpaceReader(object):
+
+class SpaceReader:
+
     def __init__(self, space):
         self.basedir = ''
         self.space = space
@@ -101,5 +105,5 @@ class SpaceReader(object):
                     reader = PlayerReader(player)
 
     def source(self, filename, **kwargs):
-        filename = os.path.join(self.basedir, filename) 
+        filename = os.path.join(self.basedir, filename)
         return media.load(filename, **kwargs)

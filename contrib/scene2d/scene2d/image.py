@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-'''
+"""
 Draw OpenGL textures in 2d scenes
 =================================
 
@@ -14,7 +14,7 @@ You may create a drawable image with:
     >>> i = Image2d.load('kitten.jpg')
     >>> i.draw()
 
-'''
+"""
 
 __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
@@ -30,7 +30,7 @@ from resource import register_factory, ResourceError
 def imageatlas_factory(resource, tag):
     filename = resource.find_file(tag.getAttribute('file'))
     if not filename:
-        raise ResourceError, 'No file= on <imageatlas> tag'
+        raise ResourceError('No file= on <imageatlas> tag')
     atlas = Image2d.load(filename)
     atlas.properties = resource.handle_properties(tag)
     if tag.hasAttribute('id'):
@@ -39,23 +39,25 @@ def imageatlas_factory(resource, tag):
 
     # figure default size if specified
     if tag.hasAttribute('size'):
-        d_width, d_height = map(int, tag.getAttribute('size').split('x'))
+        d_width, d_height = list(map(int, tag.getAttribute('size').split('x')))
     else:
         d_width = d_height = None
 
     for child in tag.childNodes:
-        if not hasattr(child, 'tagName'): continue
+        if not hasattr(child, 'tagName'):
+            continue
         if child.tagName != 'image':
-            raise ValueError, 'invalid child'
+            raise ValueError('invalid child')
 
         if child.hasAttribute('size'):
-            width, height = map(int, child.getAttribute('size').split('x'))
+            width, height = list(
+                map(int, child.getAttribute('size').split('x')))
         elif d_width is None:
-            raise ValueError, 'atlas or subimage must specify size'
+            raise ValueError('atlas or subimage must specify size')
         else:
             width, height = d_width, d_height
 
-        x, y = map(int, child.getAttribute('offset').split(','))
+        x, y = list(map(int, child.getAttribute('offset').split(',')))
         image = atlas.subimage(x, y, width, height)
         id = child.getAttribute('id')
         resource.add_resource(id, image)
@@ -65,7 +67,7 @@ def imageatlas_factory(resource, tag):
     if tag.hasAttribute('id'):
         image.id = tag.getAttribute('id')
         resource.add_resource(image.id, image)
-        
+
     return atlas
 
 
@@ -73,7 +75,7 @@ def imageatlas_factory(resource, tag):
 def image_factory(resource, tag):
     filename = resource.find_file(tag.getAttribute('file'))
     if not filename:
-        raise ResourceError, 'No file= on <image> tag'
+        raise ResourceError('No file= on <image> tag')
     image = Image2d.load(filename)
 
     image.properties = resource.handle_properties(tag)
@@ -86,8 +88,9 @@ def image_factory(resource, tag):
 
 
 class Image2d(Drawable):
+
     def __init__(self, texture, x, y):
-        super(Image2d, self).__init__()
+        super().__init__()
         self.texture = texture
         self.x = x
         self.y = y
@@ -97,7 +100,7 @@ class Image2d(Drawable):
 
     @classmethod
     def load(cls, filename=None, file=None):
-        '''Image is loaded from the given file.'''
+        """Image is loaded from the given file."""
         img = image.load(filename=filename, file=file)
         img = cls(img.texture, 0, 0)
         img.filename = filename
@@ -109,15 +112,16 @@ class Image2d(Drawable):
 
     @classmethod
     def from_texture(cls, texture):
-        '''Image is the entire texture.'''
+        """Image is the entire texture."""
         return cls(texture, 0, 0)
 
     @classmethod
     def from_subtexture(cls, texture, x, y, width, height):
-        '''Image is a section of the texture.'''
+        """Image is a section of the texture."""
         return cls(texture.get_region(x, y, width, height), x, y)
 
     __quad_list = None
+
     def quad_list(self):
         if self.__quad_list is not None:
             return self.__quad_list
@@ -125,7 +129,7 @@ class Image2d(Drawable):
         # Make quad display list
         self.__quad_list = glGenLists(1)
         glNewList(self.__quad_list, GL_COMPILE)
-        #self.texture.blit(0, 0, 0)  # This does same as QUADS below
+        # self.texture.blit(0, 0, 0)  # This does same as QUADS below
         glBegin(GL_QUADS)
         glTexCoord3f(*self.uvs[:3])
         glVertex2f(0, 0)
@@ -138,19 +142,20 @@ class Image2d(Drawable):
         glEnd()
         glEndList()
         return self.__quad_list
+
     quad_list = property(quad_list)
 
     def get_drawstyle(self):
-        # XXX note we don't pass in self.x/y here as they're offsets into the
+        # TODO: note we don't pass in self.x/y here as they're offsets into the
         # texture, not offsets to use when rendering the image to screen
         # for other scene2d objects that *is* what .x/y are for - perhaps
         # that's what they should be for here...
         return DrawStyle(color=(1, 1, 1, 1), texture=self.texture,
-            # <ah> uvs looks quite wrong here
-            width=self.width, height=self.height, uvs=(0,0,0,0),
-            draw_list=self.quad_list, draw_env=DRAW_BLENDED)
+                         # <ah> uvs looks quite wrong here
+                         width=self.width, height=self.height, uvs=(
+                             0, 0, 0, 0),
+                         draw_list=self.quad_list, draw_env=DRAW_BLENDED)
 
     def subimage(self, x, y, width, height):
-        return self.__class__(self.texture.get_region(x, y, width, height), 
+        return self.__class__(self.texture.get_region(x, y, width, height),
                               x, y)
-

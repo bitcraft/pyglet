@@ -1,46 +1,56 @@
 from pyglet.gl import *
- 
-class DrawEnv(object):
-    '''Sets up drawing environment.
+
+
+class DrawEnv:
+
+    """Sets up drawing environment.
 
     My have either or both of a "before" and "after" method.
-    '''
+    """
     pass
- 
+
+
 class DrawBlended(DrawEnv):
-    '''Sets up texture env for an alpha-blended draw.
-    '''
+
+    """Sets up texture env for an alpha-blended draw.
+    """
+
     def before(self):
         glPushAttrib(GL_ENABLE_BIT | GL_COLOR_BUFFER_BIT)
-        # XXX this belongs in a "DrawTextureBlended" or something
+        # TODO: this belongs in a "DrawTextureBlended" or something
         glEnable(GL_TEXTURE_2D)
         glEnable(GL_BLEND)
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
 
     def after(self):
         glPopAttrib()
+
+
 DRAW_BLENDED = DrawBlended()
- 
-class Drawable(object):
+
+
+class Drawable:
+
     def __init__(self):
-        self.effects = []
+        self.effects = list()
         self._style = None
 
     def add_effect(self, effect):
         self.effects.append(effect)
         self._style = None
+
     def remove_effect(self, effect):
         self.effects.remove(effect)
         self._style = None
- 
+
     def get_drawstyle(self):
         raise NotImplemented('implement on subclass')
- 
+
     def get_style(self):
-        '''Return the DrawStyle for this Drawable.
+        """Return the DrawStyle for this Drawable.
 
         This method should return None if nothing should be drawn.
-        '''
+        """
         if self._style is None:
             self._style = self.get_drawstyle()
             for effect in self.effects:
@@ -48,69 +58,86 @@ class Drawable(object):
         return self._style
 
     def draw(self):
-        '''Convenience method.
+        """Convenience method.
 
         Don't use this if you have a lot of drawables and care about
         performance. Collect up your drawables in a list and pass that to
         draw_many().
-        '''
+        """
         style = self.get_style()
-        if style is not None: style.draw()
+        if style is not None:
+            style.draw()
 
 
-class Effect(object):
+class Effect:
+
     def apply(self, style):
-        '''Modify some aspect of the style. If style.is_copy is False then
+        """Modify some aspect of the style. If style.is_copy is False then
         .copy() it. We don't do that automatically because there's a chance
         this method is a NOOP.
-        '''
+        """
         raise NotImplemented()
- 
+
+
 class TintEffect(Effect):
-    '''Apply a tint to the Drawable:
+
+    """Apply a tint to the Drawable:
 
     For each component RGBA:
 
         resultant color = drawable.color * tint.color
-    '''
+    """
+
     def __init__(self, tint):
         self.tint = tint
+
     def apply(self, style):
         style = style.copy()
         style.color = tuple([style.color[i] * self.tint[i] for i in range(4)])
         return style
- 
+
+
 class ScaleEffect(Effect):
-    '''Apply a scale to the Drawable.
-    '''
+
+    """Apply a scale to the Drawable.
+    """
+
     def __init__(self, sx, sy):
         self.sx, self.sy = sx, sy
+
     def apply(self, style):
         style = style.copy()
         style.sx = self.sx
         style.sy = self.sy
         return style
 
+
 class RotateEffect(Effect):
-    '''Apply a rotation (about the Z axis) to the Drawable.
-    '''
+
+    """Apply a rotation (about the Z axis) to the Drawable.
+    """
+
     def __init__(self, angle):
         self.angle = angle
+
     def apply(self, style):
         style = style.copy()
         style.angle = self.angle
         return style
 
-class DrawStyle(object):
-    '''
+
+class DrawStyle:
+
+    """
 
     Notes:
 
         draw_func(<DrawStyle instance>)
-    '''
+    """
+
     def __init__(self, color=None, texture=None, x=0, y=0, sx=1, sy=1,
-            angle=0, width=None, height=None, uvs=None, draw_list=None,
-            draw_env=None, draw_func=None):
+                 angle=0, width=None, height=None, uvs=None, draw_list=None,
+                 draw_env=None, draw_func=None):
         self.color = color
         self.x, self.y = x, y
         self.sx, self.sy = sx, sy
@@ -128,19 +155,20 @@ class DrawStyle(object):
         self.draw_env = draw_env
         self.draw_func = draw_func
         self.is_copy = False
- 
+
     def copy(self):
         s = DrawStyle(color=self.color, texture=self.texture, x=self.x,
-            y=self.y, width=self.width, height=self.height,
-            uvs=self.uvs, draw_list=self.draw_list, draw_env=self.draw_env,
-            draw_func=self.draw_func)
+                      y=self.y, width=self.width, height=self.height,
+                      uvs=self.uvs, draw_list=self.draw_list,
+                      draw_env=self.draw_env,
+                      draw_func=self.draw_func)
         s.is_copy = True
         return s
- 
+
     def draw(self):
         if self.color is not None:
             glColor4f(*self.color)
-        
+
         if self.texture is not None:
             glBindTexture(GL_TEXTURE_2D, self.texture.id)
 
@@ -158,7 +186,7 @@ class DrawStyle(object):
             glScalef(self.sx, self.sy, 1)
 
         if self.angle:
-            cx, cy = self.width/2, self.height/2
+            cx, cy = self.width / 2, self.height / 2
             glTranslatef(cx, cy, 0)
             glRotatef(self.angle, 0, 0, 1)
             glTranslatef(-cx, -cy, 0)
@@ -186,7 +214,7 @@ class DrawStyle(object):
 
 
 def draw_many(drawables):
-    styles = filter(None, [d.get_style() for d in drawables])
+    styles = [_f for _f in [d.get_style() for d in drawables] if _f]
     drawables.sort()
     old_color = None
     old_texture = None
@@ -213,7 +241,7 @@ def draw_many(drawables):
         if d.sx != 1 or d.sy != 1:
             glScalef(d.sx, d.sy, 1)
         if d.angle:
-            cx, cy = d.width/2, d.height/2
+            cx, cy = d.width / 2, d.height / 2
             glTranslatef(cx, cy, 0)
             glRotatef(d.angle, 0, 0, 1)
             glTranslatef(-cx, -cy, 0)
@@ -226,4 +254,3 @@ def draw_many(drawables):
 
     if old_env is not None and hasattr(old_env, 'after'):
         old_env.after()
-

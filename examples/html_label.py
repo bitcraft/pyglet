@@ -3,14 +3,14 @@
 # pyglet
 # Copyright (c) 2006-2008 Alex Holkner
 # All rights reserved.
-# 
+#
 # Redistribution and use in source and binary forms, with or without
-# modification, are permitted provided that the following conditions 
+# modification, are permitted provided that the following conditions
 # are met:
 #
-#  * Redistributions of source code must retain the above copyright
+# * Redistributions of source code must retain the above copyright
 #    notice, this list of conditions and the following disclaimer.
-#  * Redistributions in binary form must reproduce the above copyright 
+#  * Redistributions in binary form must reproduce the above copyright
 #    notice, this list of conditions and the following disclaimer in
 #    the documentation and/or other materials provided with the
 #    distribution.
@@ -33,9 +33,9 @@
 # POSSIBILITY OF SUCH DAMAGE.
 # ----------------------------------------------------------------------------
 
-'''A simple demonstration of the HTMLLabel class, as it might be used on a
+"""A simple demonstration of the HTMLLabel class, as it might be used on a
 help or introductory screen.
-'''
+"""
 
 __docformat__ = 'restructuredtext'
 __version__ = '$Id: $'
@@ -43,7 +43,7 @@ __version__ = '$Id: $'
 import os
 import pyglet
 
-html = '''
+html = """
 <h1>HTML labels in pyglet</h1>
 
 <p align="center"><img src="pyglet.png" /></p>
@@ -53,13 +53,14 @@ Different <font face="Helvetica,Arial" size=+2>fonts</font>, <em>styles</em>
 and <font color=maroon>colours</font> are supported.
 
 <p>This window has been made resizable; text will reflow to fit the new size.
-'''
+"""
 
 window = pyglet.window.Window(resizable=True)
 location = pyglet.resource.FileLocation(os.path.dirname(__file__))
 label = pyglet.text.HTMLLabel(html, location=location,
                               width=window.width,
                               multiline=True, anchor_y='center')
+
 
 @window.event
 def on_resize(width, height):
@@ -69,10 +70,12 @@ def on_resize(width, height):
     # Keep text vertically centered in the window
     label.y = window.height // 2
 
+
 @window.event
 def on_draw():
     window.clear()
     label.draw()
+
 
 pyglet.gl.glClearColor(1, 1, 1, 1)
 pyglet.app.run()

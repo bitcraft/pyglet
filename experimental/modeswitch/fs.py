@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
-'''
-'''
+"""
+"""
 
 __docformat__ = 'restructuredtext'
 __version__ = '$Id: $'
@@ -10,6 +10,7 @@ import pyglet
 from pyglet.gl import *
 
 window = pyglet.window.Window(fullscreen=True)
+
 
 @window.event
 def on_draw():
@@ -20,5 +21,6 @@ def on_draw():
     glRectf(1, 1, 759, 599)
     glColor3f(0, 1, 0)
     glRectf(1, 1, 639, 479)
+
 
 pyglet.app.run()

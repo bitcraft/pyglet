@@ -2,14 +2,14 @@
 # pyglet
 # Copyright (c) 2006-2008 Alex Holkner
 # All rights reserved.
-# 
+#
 # Redistribution and use in source and binary forms, with or without
-# modification, are permitted provided that the following conditions 
+# modification, are permitted provided that the following conditions
 # are met:
 #
-#  * Redistributions of source code must retain the above copyright
+# * Redistributions of source code must retain the above copyright
 #    notice, this list of conditions and the following disclaimer.
-#  * Redistributions in binary form must reproduce the above copyright 
+#  * Redistributions in binary form must reproduce the above copyright
 #    notice, this list of conditions and the following disclaimer in
 #    the documentation and/or other materials provided with the
 #    distribution.
@@ -49,13 +49,17 @@ LPUNKNOWN = ctypes.c_void_p
 D3DVALUE = ctypes.c_float
 PD3DVALUE = ctypes.POINTER(D3DVALUE)
 
+
 class D3DVECTOR(ctypes.Structure):
     _fields_ = [
         ('x', ctypes.c_float),
         ('y', ctypes.c_float),
         ('z', ctypes.c_float),
     ]
+
+
 PD3DVECTOR = ctypes.POINTER(D3DVECTOR)
+
 
 class WAVEFORMATEX(ctypes.Structure):
     _fields_ = [
@@ -65,16 +69,19 @@ class WAVEFORMATEX(ctypes.Structure):
         ('nAvgBytesPerSec', DWORD),
         ('nBlockAlign', WORD),
         ('wBitsPerSample', WORD),
-        ('cbSize', WORD), 
+        ('cbSize', WORD),
     ]
+
+
 LPWAVEFORMATEX = ctypes.POINTER(WAVEFORMATEX)
 WAVE_FORMAT_PCM = 1
+
 
 class DSCAPS(ctypes.Structure):
     _fields_ = [
         ('dwSize', DWORD),
         ('dwFlags', DWORD),
-        ('dwMinSecondarySampleRate', DWORD), 
+        ('dwMinSecondarySampleRate', DWORD),
         ('dwMaxSecondarySampleRate', DWORD),
         ('dwPrimaryBuffers', DWORD),
         ('dwMaxHwMixingAllBuffers', DWORD),
@@ -97,7 +104,10 @@ class DSCAPS(ctypes.Structure):
         ('dwReserved1', DWORD),
         ('dwReserved2', DWORD)
     ]
+
+
 LPDSCAPS = ctypes.POINTER(DSCAPS)
+
 
 class DSBCAPS(ctypes.Structure):
     _fields_ = [
@@ -107,7 +117,10 @@ class DSBCAPS(ctypes.Structure):
         ('dwUnlockTransferRate', DWORD),
         ('dwPlayCpuOverhead', DWORD),
     ]
+
+
 LPDSBCAPS = ctypes.POINTER(DSBCAPS)
+
 
 class DSBUFFERDESC(ctypes.Structure):
     _fields_ = [
@@ -117,7 +130,10 @@ class DSBUFFERDESC(ctypes.Structure):
         ('dwReserved', DWORD),
         ('lpwfxFormat', LPWAVEFORMATEX),
     ]
+
+
 LPDSBUFFERDESC = ctypes.POINTER(DSBUFFERDESC)
+
 
 class DS3DBUFFER(ctypes.Structure):
     _fields_ = [
@@ -132,7 +148,10 @@ class DS3DBUFFER(ctypes.Structure):
         ('flMaxDistance', D3DVALUE),
         ('dwMode', DWORD),
     ]
+
+
 LPDS3DBUFFER = ctypes.POINTER(DS3DBUFFER)
+
 
 class DS3DLISTENER(ctypes.Structure):
     _fields_ = [
@@ -145,7 +164,10 @@ class DS3DLISTENER(ctypes.Structure):
         ('flRolloffFactor', D3DVALUE),
         ('flDopplerFactor', D3DVALUE),
     ]
+
+
 LPDS3DLISTENER = ctypes.POINTER(DS3DLISTENER)
+
 
 class IDirectSoundBuffer(com.IUnknown):
     _methods_ = [
@@ -166,9 +188,9 @@ class IDirectSoundBuffer(com.IUnknown):
         ('Initialize',
          com.STDMETHOD(ctypes.c_void_p, LPDSBUFFERDESC)),
         ('Lock',
-         com.STDMETHOD(DWORD, DWORD, 
-                       ctypes.POINTER(ctypes.c_void_p), LPDWORD, 
-                       ctypes.POINTER(ctypes.c_void_p), LPDWORD, 
+         com.STDMETHOD(DWORD, DWORD,
+                       ctypes.POINTER(ctypes.c_void_p), LPDWORD,
+                       ctypes.POINTER(ctypes.c_void_p), LPDWORD,
                        DWORD)),
         ('Play',
          com.STDMETHOD(DWORD, DWORD, DWORD)),
@@ -190,8 +212,10 @@ class IDirectSoundBuffer(com.IUnknown):
          com.STDMETHOD()),
     ]
 
+
 IID_IDirectSound3DListener = com.GUID(
     0x279AFA84, 0x4981, 0x11CE, 0xA5, 0x21, 0x00, 0x20, 0xAF, 0x0B, 0xE5, 0x60)
+
 
 class IDirectSound3DListener(com.IUnknown):
     _methods_ = [
@@ -216,7 +240,7 @@ class IDirectSound3DListener(com.IUnknown):
         ('SetDopplerFactor',
          com.STDMETHOD(D3DVALUE, DWORD)),
         ('SetOrientation',
-         com.STDMETHOD(D3DVALUE, D3DVALUE, D3DVALUE, 
+         com.STDMETHOD(D3DVALUE, D3DVALUE, D3DVALUE,
                        D3DVALUE, D3DVALUE, D3DVALUE, DWORD)),
         ('SetPosition',
          com.STDMETHOD(D3DVALUE, D3DVALUE, D3DVALUE, DWORD)),
@@ -228,8 +252,10 @@ class IDirectSound3DListener(com.IUnknown):
          com.STDMETHOD()),
     ]
 
+
 IID_IDirectSound3DBuffer = com.GUID(
     0x279AFA86, 0x4981, 0x11CE, 0xA5, 0x21, 0x00, 0x20, 0xAF, 0x0B, 0xE5, 0x60)
+
 
 class IDirectSound3DBuffer(com.IUnknown):
     _methods_ = [
@@ -271,29 +297,31 @@ class IDirectSound3DBuffer(com.IUnknown):
          com.STDMETHOD(D3DVALUE, D3DVALUE, D3DVALUE, DWORD)),
     ]
 
+
 class IDirectSound(com.IUnknown):
     _methods_ = [
-        ('CreateSoundBuffer', 
-         com.STDMETHOD(LPDSBUFFERDESC, 
-                       ctypes.POINTER(IDirectSoundBuffer), 
+        ('CreateSoundBuffer',
+         com.STDMETHOD(LPDSBUFFERDESC,
+                       ctypes.POINTER(IDirectSoundBuffer),
                        LPUNKNOWN)),
-        ('GetCaps', 
+        ('GetCaps',
          com.STDMETHOD(LPDSCAPS)),
-        ('DuplicateSoundBuffer', 
-         com.STDMETHOD(IDirectSoundBuffer, 
+        ('DuplicateSoundBuffer',
+         com.STDMETHOD(IDirectSoundBuffer,
                        ctypes.POINTER(IDirectSoundBuffer))),
-        ('SetCooperativeLevel', 
+        ('SetCooperativeLevel',
          com.STDMETHOD(HWND, DWORD)),
-        ('Compact', 
+        ('Compact',
          com.STDMETHOD()),
-        ('GetSpeakerConfig', 
+        ('GetSpeakerConfig',
          com.STDMETHOD(LPDWORD)),
-        ('SetSpeakerConfig', 
+        ('SetSpeakerConfig',
          com.STDMETHOD(DWORD)),
-        ('Initialize', 
+        ('Initialize',
          com.STDMETHOD(com.LPGUID)),
     ]
     _type_ = com.COMInterface
+
 
 DirectSoundCreate = lib.DirectSoundCreate
 DirectSoundCreate.argtypes = \
@@ -325,9 +353,9 @@ DSSPEAKER_SURROUND = 0x00000005
 DSSPEAKER_5POINT1 = 0x00000006
 DSSPEAKER_7POINT1 = 0x00000007
 
-DSSPEAKER_GEOMETRY_MIN = 0x00000005  #   5 degrees
-DSSPEAKER_GEOMETRY_NARROW = 0x0000000A  #  10 degrees
-DSSPEAKER_GEOMETRY_WIDE = 0x00000014  #  20 degrees
+DSSPEAKER_GEOMETRY_MIN = 0x00000005  # 5 degrees
+DSSPEAKER_GEOMETRY_NARROW = 0x0000000A  # 10 degrees
+DSSPEAKER_GEOMETRY_WIDE = 0x00000014  # 20 degrees
 DSSPEAKER_GEOMETRY_MAX = 0x000000B4  # 180 degrees
 
 DSBCAPS_PRIMARYBUFFER = 0x00000001
@@ -385,8 +413,8 @@ DS3DMODE_DISABLE = 0x00000002
 DS3D_IMMEDIATE = 0x00000000
 DS3D_DEFERRED = 0x00000001
 
-DS3D_MINDISTANCEFACTOR = -1000000.0 # XXX FLT_MIN
-DS3D_MAXDISTANCEFACTOR = 1000000.0  # XXX FLT_MAX
+DS3D_MINDISTANCEFACTOR = -1000000.0  # TODO: FLT_MIN
+DS3D_MAXDISTANCEFACTOR = 1000000.0  # TODO: FLT_MAX
 DS3D_DEFAULTDISTANCEFACTOR = 1.0
 
 DS3D_MINROLLOFFFACTOR = 0.0
@@ -405,4 +433,3 @@ DS3D_MAXCONEANGLE = 360
 DS3D_DEFAULTCONEANGLE = 360
 
 DS3D_DEFAULTCONEOUTSIDEVOLUME = DSBVOLUME_MAX
-

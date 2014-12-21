@@ -8,7 +8,7 @@ from scene2d.sprite import Sprite, RotatableSprite, SpriteLayer
 from scene2d.image import Image2d
 from scene2d.tile import TileSet, Tile
 
-__all__ = [ 'RectMap', 'HexMap', 'RectCell', 'HexCell', 'FlatCamera',
-    'FlatView', 'ViewScrollHandler',
-    'Sprite', 'RotatableSprite', 'SpriteLayer',
-    'Image2d', 'TileSet', 'Tile']
+__all__ = ['RectMap', 'HexMap', 'RectCell', 'HexCell', 'FlatCamera',
+           'FlatView', 'ViewScrollHandler',
+           'Sprite', 'RotatableSprite', 'SpriteLayer',
+           'Image2d', 'TileSet', 'Tile']

@@ -2,14 +2,14 @@
 # pyglet
 # Copyright (c) 2006-2008 Alex Holkner
 # All rights reserved.
-# 
+#
 # Redistribution and use in source and binary forms, with or without
-# modification, are permitted provided that the following conditions 
+# modification, are permitted provided that the following conditions
 # are met:
 #
 #  * Redistributions of source code must retain the above copyright
 #    notice, this list of conditions and the following disclaimer.
-#  * Redistributions in binary form must reproduce the above copyright 
+#  * Redistributions in binary form must reproduce the above copyright
 #    notice, this list of conditions and the following disclaimer in
 #    the documentation and/or other materials provided with the
 #    distribution.
@@ -32,8 +32,8 @@
 # POSSIBILITY OF SUCH DAMAGE.
 # ----------------------------------------------------------------------------
 
-'''Simple Python-only RIFF reader, supports uncompressed WAV files.
-'''
+"""Simple Python-only RIFF reader, supports uncompressed WAV files.
+"""
 
 __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
@@ -57,13 +57,16 @@ IBM_FORMAT_MULAW = 0x0101
 IBM_FORMAT_ALAW = 0x0102
 IBM_FORMAT_ADPCM = 0x0103
 
+
 class RIFFFormatException(MediaFormatException):
     pass
+
 
 class WAVEFormatException(RIFFFormatException):
     pass
 
-class RIFFChunk(object):
+
+class RIFFChunk:
     header_fmt = '<4sL'
     header_length = struct.calcsize(header_fmt)
 
@@ -84,7 +87,8 @@ class RIFFChunk(object):
             self.offset,
             self.length)
 
-class RIFFForm(object):
+
+class RIFFForm:
     _chunks = None
 
     def __init__(self, file, offset):
@@ -95,7 +99,7 @@ class RIFFForm(object):
         if self._chunks:
             return self._chunks
 
-        self._chunks = []
+        self._chunks = list()
         self.file.seek(self.offset)
         offset = self.offset
         while True:
@@ -118,16 +122,19 @@ class RIFFForm(object):
     def __repr__(self):
         return '%s(offset=%r)' % (self.__class__.__name__, self.offset)
 
+
 class RIFFType(RIFFChunk):
+
     def __init__(self, *args, **kwargs):
-        super(RIFFType, self).__init__(*args, **kwargs)
-        
+        super().__init__(*args, **kwargs)
+
         self.file.seek(self.offset)
         form = self.file.read(4)
         if form != asbytes('WAVE'):
             raise RIFFFormatException('Unsupported RIFF form "%s"' % form)
 
         self.form = WaveForm(self.file, self.offset + 4)
+
 
 class RIFFFile(RIFFForm):
     _chunk_types = {
@@ -138,17 +145,19 @@ class RIFFFile(RIFFForm):
         if not hasattr(file, 'seek'):
             file = BytesIO(file.read())
 
-        super(RIFFFile, self).__init__(file, 0)
+        super().__init__(file, 0)
 
     def get_wave_form(self):
         chunks = self.get_chunks()
         if len(chunks) == 1 and isinstance(chunks[0], RIFFType):
             return chunks[0].form
 
+
 class WaveFormatChunk(RIFFChunk):
+
     def __init__(self, *args, **kwargs):
-        super(WaveFormatChunk, self).__init__(*args, **kwargs)
-        
+        super().__init__(*args, **kwargs)
+
         fmt = '<HHLLHH'
         if struct.calcsize(fmt) != self.length:
             raise RIFFFormatException('Size of format chunk is incorrect.')
@@ -160,8 +169,10 @@ class WaveFormatChunk(RIFFChunk):
          self.wBlockAlign,
          self.wBitsPerSample) = struct.unpack(fmt, self.get_data())
 
+
 class WaveDataChunk(RIFFChunk):
     pass
+
 
 class WaveForm(RIFFForm):
     _chunk_types = {
@@ -173,13 +184,15 @@ class WaveForm(RIFFForm):
         for chunk in self.get_chunks():
             if isinstance(chunk, WaveFormatChunk):
                 return chunk
-        
+
     def get_data_chunk(self):
         for chunk in self.get_chunks():
             if isinstance(chunk, WaveDataChunk):
                 return chunk
 
+
 class WaveSource(StreamingSource):
+
     def __init__(self, filename, file=None):
         if file is None:
             file = open(filename, 'rb')
@@ -205,7 +218,7 @@ class WaveSource(StreamingSource):
 
         if format.wBitsPerSample not in (8, 16):
             raise WAVEFormatException('Unsupported sample bit size: %d' %
-                format.wBitsPerSample)
+                                      format.wBitsPerSample)
 
         self.audio_format = AudioFormat(
             channels=format.wChannels,
@@ -230,7 +243,7 @@ class WaveSource(StreamingSource):
         timestamp = float(self._offset) / self.audio_format.bytes_per_second
         duration = float(bytes) / self.audio_format.bytes_per_second
 
-        return AudioData(data, len(data), timestamp, duration, [])
+        return AudioData(data, len(data), timestamp, duration, list())
 
     def seek(self, timestamp):
         offset = int(timestamp * self.audio_format.bytes_per_second)

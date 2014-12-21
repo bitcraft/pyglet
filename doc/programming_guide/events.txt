@@ -128,7 +128,7 @@ related event handlers in a single class.  In the following example, a
 ``GameEventHandler`` class is defined.  An instance of that class can be
 pushed on and popped off of a window::
 
-    class GameEventHandler(object):
+    class GameEventHandler:
         def on_key_press(self, symbol, modifiers):
             print 'Key pressed in game'
             return True
@@ -141,7 +141,7 @@ pushed on and popped off of a window::
 
     def start_game()
         window.push_handlers(game_handlers)
-    
+
     def stop_game()
         window.pop_handlers()
 
@@ -172,11 +172,11 @@ In the following example, a hypothetical GUI widget provides several events::
 
     ClankingWidget.register_event_type('on_clank')
     ClankingWidget.register_event_type('on_clicked')
-    
+
 Event handlers can then be attached as described in the preceding sections::
 
     widget = ClankingWidget()
-    
+
     @widget.event
     def on_clank():
         pass
@@ -187,7 +187,7 @@ Event handlers can then be attached as described in the preceding sections::
 
     def override_on_clicked(clicks):
         pass
-    
+
     widget.push_handlers(on_clicked=override_on_clicked)
 
 The `EventDispatcher` takes care of propogating the event to all attached
@@ -221,7 +221,7 @@ application.  The following example recreates the `ClockTimer` example from
     ClockTimer.register_event_type('on_update')
 
     # Abstract observer class
-    class Observer(object):
+    class Observer:
         def __init__(self, subject):
             subject.push_handlers(self)
 
@@ -246,39 +246,3 @@ created.
 
 .. _Observer design pattern: Gamma, et al., `Design Patterns` Addison-Wesley 1994
 
-Documenting events
-^^^^^^^^^^^^^^^^^^
-
-pyglet uses a modified version of `Epydoc`_ to construct its API
-documentation.  One of these modifications is the inclusion of an "Events"
-summary for event dispatchers.  If you plan on releasing your code as a
-library for others to use, you may want to consider using the same tool to
-document code.
-
-The patched version of Epydoc is included in the pyglet repository under
-``trunk/tools/epydoc`` (it is not included in distributions).  It has
-special notation for document event methods, and allows conditional
-execution when introspecting source code.
-
-If the ``sys.is_epydoc`` attribute exists and is ``True``, the module is
-currently being introspected for documentation.  pyglet places event
-documentation only within this conditional, to prevent extraneous methods
-appearing on the class.
-
-To document an event, create a method with the event's signature and add a
-blank ``event`` field to the docstring::
-
-    import sys
-
-    class MyDispatcher(object):
-        if getattr(sys, 'is_epydoc'):
-            def on_update():
-                '''The object was updated.
-
-                :event:
-                '''
-
-Note that the event parameters should not include ``self``.  The function will
-appear in the "Events" table and not as a method.
-
-.. _Epydoc: http://epydoc.sourceforge.net/

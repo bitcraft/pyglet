@@ -1,4 +1,5 @@
-import os, sys
+import os
+import sys
 
 from wydget import event, widgets, layouts
 from wydget.dialogs import base
@@ -10,6 +11,7 @@ elif sys.platform in ('win32', 'cygwin'):
 else:
     default_dir = os.path.expanduser('~/Desktop')
 
+
 class FileOpen(base.Dialog):
     id = '-file-dialog'
     name = 'file-dialog'
@@ -20,29 +22,31 @@ class FileOpen(base.Dialog):
         kw['bgcolor'] = 'white'
         kw['padding'] = 2
         kw['width'] = 300
-        super(FileOpen, self).__init__(parent, **kw)
+        super().__init__(parent, **kw)
         self.callback = callback
 
         self.layout = layouts.Vertical(self, halign='left', padding=2)
 
         label = widgets.Label(self, 'Select File to Open',
-            classes=('title',), bgcolor="aaa", padding=2, width="100%",
-            halign="center")
+                              classes=('title',), bgcolor="aaa", padding=2,
+                              width="100%",
+                              halign="center")
 
         self.path = widgets.TextInput(self, width="100%",
-            classes=('-file-open-path',))
+                                      classes=('-file-open-path',))
 
         self.listing = widgets.Selection(self, scrollable=True,
-            width="100%", is_exclusive=True, size=20,
-            classes=('-file-open-dialog',))
+                                         width="100%", is_exclusive=True,
+                                         size=20,
+                                         classes=('-file-open-dialog',))
 
         self.openPath(os.path.abspath(path))
 
         f = widgets.Frame(self, width=296, is_transparent=True)
         ok = widgets.TextButton(f, text='Ok', border="black",
-            classes=('-file-open-dialog-ok', ))
+                                classes=('-file-open-dialog-ok', ))
         cancel = widgets.TextButton(f, text='Cancel', border="black",
-            classes=('-file-open-dialog-cancel', ))
+                                    classes=('-file-open-dialog-cancel', ))
         f.layout = layouts.Horizontal(f, padding=10, halign='right')
 
         self.selected_file = None
@@ -59,8 +63,9 @@ class FileOpen(base.Dialog):
         if path != '/':
             self.addOption('..')
         for entry in os.listdir(path):
-            # XXX real filtering please
-            if entry.startswith('.'): continue
+            # TODO: real filtering please
+            if entry.startswith('.'):
+                continue
             if os.path.isdir(os.path.join(path, entry)):
                 entry += '/'
             self.addOption(entry)
@@ -73,16 +78,20 @@ class FileOpen(base.Dialog):
         if self.callback is not None:
             self.callback()
 
+
 class FileOption(widgets.Option):
     name = 'file-option'
+
 
 @event.default('file-option')
 def on_click(widget, x, y, buttons, modifiers, click_count):
     # copy from regular Option on_click
     widget.is_active = not widget.is_active
     select = widget.getParent('selection')
-    if select.scrollable: f = select.contents
-    else: f = select
+    if select.scrollable:
+        f = select.contents
+    else:
+        f = select
     if widget.is_active and select.is_exclusive:
         for child in f.children:
             if child is not widget:
@@ -94,7 +103,8 @@ def on_click(widget, x, y, buttons, modifiers, click_count):
     if widget.text == '..':
         dialog.selected_widget = None
         path = dialog.current_path
-        if path[-1] == '/': path = path[:-1]
+        if path[-1] == '/':
+            path = path[:-1]
         dialog.openPath(os.path.split(path)[0])
     elif widget.text[-1] == '/':
         dialog.selected_widget = None
@@ -112,12 +122,14 @@ def on_click(widget, x, y, buttons, modifiers, click_count):
             dialog.selected_widget = widget
     return event.EVENT_HANDLED
 
+
 @event.default('.-file-open-dialog-ok')
 def on_click(widget, *args):
     d = widget.getParent('file-dialog')
     d.on_ok()
     d.delete()
     return event.EVENT_HANDLED
+
 
 @event.default('.-file-open-dialog-cancel')
 def on_click(widget, *args):
@@ -126,11 +138,10 @@ def on_click(widget, *args):
     d.delete()
     return event.EVENT_HANDLED
 
+
 @event.default('.-file-open-path')
 def on_change(widget, value):
     value = os.path.expanduser(os.path.expandvars(value))
     if os.path.isdir(value):
         widget.parent.openPath(value)
     return event.EVENT_HANDLED
-
-

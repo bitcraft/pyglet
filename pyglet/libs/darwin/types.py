@@ -2,14 +2,14 @@
 # pyglet
 # Copyright (c) 2006-2008 Alex Holkner
 # All rights reserved.
-# 
+#
 # Redistribution and use in source and binary forms, with or without
-# modification, are permitted provided that the following conditions 
+# modification, are permitted provided that the following conditions
 # are met:
 #
 #  * Redistributions of source code must retain the above copyright
 #    notice, this list of conditions and the following disclaimer.
-#  * Redistributions in binary form must reproduce the above copyright 
+#  * Redistributions in binary form must reproduce the above copyright
 #    notice, this list of conditions and the following disclaimer in
 #    the documentation and/or other materials provided with the
 #    distribution.
@@ -32,8 +32,8 @@
 # POSSIBILITY OF SUCH DAMAGE.
 # ----------------------------------------------------------------------------
 
-'''
-'''
+"""
+"""
 
 __docformat__ = 'restructuredtext'
 __version__ = '$Id: $'
@@ -45,6 +45,7 @@ Fixed = c_int32
 ItemCount = c_uint32
 ByteOffset = ByteCount = c_uint32
 
+
 class Rect(Structure):
     _fields_ = [
         ('top', c_short),
@@ -53,11 +54,13 @@ class Rect(Structure):
         ('right', c_short)
     ]
 
+
 class Point(Structure):
     _fields_ = [
         ('v', c_short),
         ('h', c_short),
     ]
+
 
 class CGPoint(Structure):
     _fields_ = [
@@ -65,11 +68,13 @@ class CGPoint(Structure):
         ('y', c_float),
     ]
 
+
 class CGSize(Structure):
     _fields_ = [
         ('width', c_float),
         ('height', c_float)
     ]
+
 
 class CGRect(Structure):
     _fields_ = [
@@ -90,6 +95,7 @@ CGCaptureOptions = c_uint32
 HIPoint = CGPoint
 HISize = CGSize
 HIRect = CGRect
+
 
 class EventTypeSpec(Structure):
     _fields_ = [
@@ -126,6 +132,7 @@ MouseTrackingRef = c_void_p
 
 RgnHandle = c_void_p
 
+
 class ProcessSerialNumber(Structure):
     _fields_ = [('highLongOfPSN', c_uint32),
                 ('lowLongOfPSN', c_uint32)]
@@ -137,12 +144,14 @@ class HICommand_Menu(Structure):
         ('menuItemIndex', MenuItemIndex),
     ]
 
+
 class HICommand(Structure):
     _fields_ = [
         ('attributes', c_uint32),
         ('commandID', c_uint32),
         ('menu', HICommand_Menu)
     ]
+
 
 class EventRecord(Structure):
     _fields_ = [
@@ -153,12 +162,14 @@ class EventRecord(Structure):
         ('modifiers', c_uint16)
     ]
 
+
 class RGBColor(Structure):
     _fields_ = [
         ('red', c_ushort),
         ('green', c_ushort),
         ('blue', c_ushort)
     ]
+
 
 class TabletProximityRec(Structure):
     _fields_ = (
@@ -174,6 +185,7 @@ class TabletProximityRec(Structure):
         ('pointerType', c_uint8),
         ('enterProximity', c_uint8),
     )
+
 
 class TabletPointRec(Structure):
     _fields_ = (

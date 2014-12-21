@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
-'''
-'''
+"""
+"""
 
 __docformat__ = 'restructuredtext'
 __version__ = '$Id: $'
@@ -15,22 +15,26 @@ show_all = True
 window = pyglet.window.Window(1024, 768)
 batch = pyglet.graphics.Batch()
 
-class TrackedElement(object):
+
+class TrackedElement:
+
     def __init__(self, element):
         self.element = element
-        self.label = pyglet.text.Label(element.name, 
-            font_size=8,
-            x=x, y=y, anchor_y='top', batch=batch)
+        self.label = pyglet.text.Label(element.name,
+                                       font_size=8,
+                                       x=x, y=y, anchor_y='top', batch=batch)
 
     def update(self):
-        self.label.text = '%s: %s' % (self.element.name, 
+        self.label.text = '%s: %s' % (self.element.name,
                                       self.element.get_value())
 
+
 x = 0
-tracked_elements = []
+tracked_elements = list()
 for device in devices:
     y = window.height
-    label = pyglet.text.Label(device.name or '', x=x, y=y, anchor_y='top', batch=batch)
+    label = pyglet.text.Label(device.name or '', x=x, y=y, anchor_y='top',
+                              batch=batch)
     y -= label.content_height
 
     try:
@@ -51,14 +55,18 @@ for device in devices:
 
     x += window.width / len(devices)
 
+
 @window.event
 def on_draw():
     window.clear()
     batch.draw()
 
+
 def update(dt):
     for tracked_element in tracked_elements:
         tracked_element.update()
+
+
 pyglet.clock.schedule(update)
 
 pyglet.app.run()

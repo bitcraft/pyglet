@@ -3,7 +3,9 @@ import math
 import pyglet
 from pyglet.gl import *
 
+
 class SmoothLineGroup(pyglet.graphics.Group):
+
     def set_state(self):
         glPushAttrib(GL_ENABLE_BIT)
         glEnable(GL_BLEND)
@@ -20,8 +22,9 @@ class SmoothLineGroup(pyglet.graphics.Group):
     def __eq__(self, other):
         return self.__class__ is other.__class__
 
+
 def add_circle(batch, x, y, radius, color, num_points=20, antialised=True):
-    l = []
+    l = list()
     for n in range(num_points):
         angle = (math.pi * 2 * n) / num_points
         l.append(int(x + radius * math.cos(angle)))
@@ -36,5 +39,4 @@ def add_circle(batch, x, y, radius, color, num_points=20, antialised=True):
     else:
         group = None
     return batch.add(num_points, GL_LINE_STRIP, group, ('v2i', l),
-        ('c4B', color*num_points))
-
+                     ('c4B', color * num_points))

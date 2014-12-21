@@ -2,15 +2,14 @@
 #
 # pyglet documentation build configuration file.
 #
-# This file is execfile()d with the current directory set to its containing dir.
+# This file is execfile()d with the current directory set to its
+# containing dir.
 
 
 import os
 import sys
 import time
 import datetime
-
-sys.is_epydoc = True
 
 document_modules = ["pyglet", "tests"]
 
@@ -22,102 +21,116 @@ from ext.sphinx_mod import find_all_modules, write_build, write_blacklist
 # import the pyglet package.
 sys.path.insert(0, os.path.abspath('..'))
 
-
 try:
     import pyglet
-    print "Generating pyglet %s Documentation" % (pyglet.version)
+
+    print("Generating pyglet %s Documentation" % (pyglet.version))
 except:
-    print "ERROR: pyglet not found"
+    print("ERROR: pyglet not found")
     sys.exit(1)
 
 
-# -- PYGLET DOCUMENTATION CONFIGURATION ----------------------------------------
+# -- PYGLET DOCUMENTATION CONFIGURATION ----------------------------------
 
 
-
-implementations = ["carbon", "cocoa", "win32", "xlib"]
+implementations = ["cocoa", "win32", "xlib"]
 
 # For each module, a list of submodules that should not be imported.
 # If value is None, do not try to import any submodule.
 skip_modules = {"pyglet": {
-                     "pyglet.com": None,
-                     "pyglet.compat": None,
-                     "pyglet.lib": None,
-                     "pyglet.libs": None,
-                     "pyglet.app": implementations,
-                     "pyglet.canvas": implementations + ["xlib_vidmoderestore"],
-                     "pyglet.font": ["carbon",
-                                     "quartz",
-                                     "win32",
-                                     "freetype", "freetype_lib",
-                                     "win32query",],
-                     "pyglet.input": ["carbon_hid", "carbon_tablet",
-                                      "darwin_hid",
-                                      "directinput",
-                                      "evdev",
-                                      "wintab",
-                                      "x11_xinput", "x11_xinput_tablet"],
-                     "pyglet.image.codecs": ["gdiplus",
-                                             "gdkpixbuf2",
-                                             "pil",
-                                             "quartz",
-                                             "quicktime"],
-                     "pyglet.gl": implementations + ["agl",
-                                  "glext_arb", "glext_nv",
-                                  "glx", "glx_info",
-                                  "glxext_arb", "glxext_mesa", "glxext_nv",
-                                  "lib_agl", "lib_glx", "lib_wgl",
-                                  "wgl", "wgl_info", "wglext_arb", "wglext_nv"],
-                     "pyglet.media": ["avbin"],
-                     "pyglet.media.drivers": ["directsound",
-                                              "openal",
-                                              "pulse"],
-                     "pyglet.window": implementations,
-                     }
-               }
+    "pyglet.com": None,
+    "pyglet.compat": None,
+    "pyglet.lib": None,
+    "pyglet.libs": None,
+    "pyglet.app": implementations,
+    "pyglet.canvas": implementations + ["xlib_vidmoderestore"],
+    "pyglet.font": ["carbon",
+                    "quartz",
+                    "win32",
+                    "freetype", "freetype_lib",
+                    "win32query", ],
+    "pyglet.input": ["carbon_hid", "carbon_tablet",
+                     "darwin_hid",
+                     "directinput",
+                     "evdev",
+                     "wintab",
+                     "x11_xinput", "x11_xinput_tablet"],
+    "pyglet.image.codecs": ["gdiplus",
+                            "gdkpixbuf2",
+                            "pil",
+                            "quartz",
+                            "quicktime"],
+    "pyglet.gl": implementations + ["agl",
+                                    "glext_arb", "glext_nv",
+                                    "glx", "glx_info",
+                                    "glxext_arb", "glxext_mesa", "glxext_nv",
+                                    "lib_agl", "lib_glx", "lib_wgl",
+                                    "wgl", "wgl_info", "wglext_arb",
+                                    "wglext_nv"],
+    "pyglet.media": ["avbin"],
+    "pyglet.media.drivers": ["directsound",
+                             "openal",
+                             "pulse"],
+    "pyglet.window": implementations,
+}
+}
 
 
-             
 # Things that should not be documented
 
 def skip_member(member, obj):
-
     module = obj.__name__
 
-    if module=="tests.test": return True
-        
-    if ".win32" in module: return True
-    if ".carbon" in module: return True
-    if ".cocoa" in module: return True
-    if ".xlib" in module: return True
+    if module == "tests.test":
+        return True
 
-    if module=="pyglet.input.evdev_constants": return True
-    if module=="pyglet.window.key":
-        if member==member.upper(): return True
+    if ".win32" in module:
+        return True
+    if ".carbon" in module:
+        return True
+    if ".cocoa" in module:
+        return True
+    if ".xlib" in module:
+        return True
 
-    if module=="pyglet.gl.glu": return True
-    if module.startswith("pyglet.gl.glext_"): return True
-    if module.startswith("pyglet.gl.gl_ext_"): return True
-    if module.startswith("pyglet.gl.glxext_"): return True
-    if module.startswith("pyglet.image.codecs."): return True
+    if module == "pyglet.input.evdev_constants":
+        return True
+    if module == "pyglet.window.key":
+        if member == member.upper():
+            return True
 
-    if module!="pyglet.gl.gl":
+    if module == "pyglet.gl.glu":
+        return True
+    if module.startswith("pyglet.gl.glext_"):
+        return True
+    if module.startswith("pyglet.gl.gl_ext_"):
+        return True
+    if module.startswith("pyglet.gl.glxext_"):
+        return True
+    if module.startswith("pyglet.image.codecs."):
+        return True
+
+    if module != "pyglet.gl.gl":
         if member in ["DEFAULT_MODE", "current_context"]:
             return True
-    
-    if member.startswith("PFN"): return True
-    if member.startswith("GL_"): return True
-    if member.startswith("GLU_"): return True
-    if member.startswith("RTLD_"): return True
-    if member=="GLvoid": return True
-    if len(member)>4:
-        if member.startswith("gl") and member[2]==member[2].upper():
+
+    if member.startswith("PFN"):
+        return True
+    if member.startswith("GL_"):
+        return True
+    if member.startswith("GLU_"):
+        return True
+    if member.startswith("RTLD_"):
+        return True
+    if member == "GLvoid":
+        return True
+    if len(member) > 4:
+        if member.startswith("gl") and member[2] == member[2].upper():
             return True
-        if member.startswith("glu") and member[3]==member[3].upper():
+        if member.startswith("glu") and member[3] == member[3].upper():
             return True
 
     return False
-
 
 
 # autosummary generation filter
@@ -135,12 +148,11 @@ data = (("Date", now.strftime("%Y/%m/%d %H:%M:%S")),
 write_build(data, 'build.rst')
 
 
-
-# -- SPHINX STANDARD OPTIONS ---------------------------------------------------
+# -- SPHINX STANDARD OPTIONS ---------------------------------------------
 
 autosummary_generate = True
 
-# -- General configuration -----------------------------------------------------
+# -- General configuration -----------------------------------------------
 #
 # Note that not all possible configuration values are present in this file.
 #
@@ -158,10 +170,10 @@ extensions = ['sphinx.ext.autodoc',
               'ext.sphinx_mod',
               'ext.docstrings',
               'ext.autosummary',
-              'sphinx.ext.inheritance_diagram', 
+              'sphinx.ext.inheritance_diagram',
               'sphinx.ext.todo']
 
-autodoc_member_order='groupwise'
+autodoc_member_order = 'groupwise'
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -170,14 +182,14 @@ templates_path = ['_templates']
 source_suffix = '.txt'
 
 # The encoding of source files.
-#source_encoding = 'utf-8-sig'
+# source_encoding = 'utf-8-sig'
 
 # The master toctree document.
 master_doc = 'index'
 
 # General information about the project.
-project = u'pyglet'
-copyright = u'2006-2013, Alex Holkner'
+project = 'pyglet'
+copyright = '2006-2013, Alex Holkner'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -223,7 +235,7 @@ pygments_style = 'sphinx'
 modindex_common_prefix = ['pyglet.']
 
 
-# -- Options for HTML output ---------------------------------------------------
+# -- Options for HTML output ---------------------------------------------
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
@@ -232,7 +244,7 @@ html_theme = 'pyglet'
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
 # documentation.
-#html_theme_options = {}
+#html_theme_options = dict()
 
 # Add any paths that contain custom themes here, relative to this directory.
 html_theme_path = ["ext/theme"]
@@ -267,11 +279,11 @@ html_static_path = ['_static']
 #html_use_smartypants = True
 
 # Custom sidebar templates, maps document names to template names.
-#html_sidebars = {}
+#html_sidebars = dict()
 
 # Additional templates that should be rendered to pages, maps page names to
 # template names.
-#html_additional_pages = {}
+#html_additional_pages = dict()
 
 # If false, no module index is generated.
 html_domain_indices = True
@@ -303,24 +315,24 @@ html_show_sourcelink = False
 htmlhelp_basename = 'pygletdoc'
 
 
-# -- Options for LaTeX output --------------------------------------------------
+# -- Options for LaTeX output --------------------------------------------
 
 latex_elements = {
-# The paper size ('letterpaper' or 'a4paper').
-#'papersize': 'letterpaper',
+    # The paper size ('letterpaper' or 'a4paper').
+    #'papersize': 'letterpaper',
 
-# The font size ('10pt', '11pt' or '12pt').
-#'pointsize': '10pt',
+    # The font size ('10pt', '11pt' or '12pt').
+    #'pointsize': '10pt',
 
-# Additional stuff for the LaTeX preamble.
-#'preamble': '',
+    # Additional stuff for the LaTeX preamble.
+    #'preamble': '',
 }
 
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, documentclass [howto/manual]).
 latex_documents = [
-  ('index', 'pyglet.tex', u'pyglet Documentation',
-   u'Alex Holkner', 'manual'),
+    ('index', 'pyglet.tex', 'pyglet Documentation',
+     'Alex Holkner', 'manual'),
 ]
 
 # The name of an image file (relative to this directory) to place at the top of
@@ -338,44 +350,41 @@ latex_documents = [
 #latex_show_urls = False
 
 # Documents to append as an appendix to all manuals.
-#latex_appendices = []
+#latex_appendices = list()
 
 # If false, no module index is generated.
 #latex_domain_indices = True
 
 
-# -- Options for manual page output --------------------------------------------
+# -- Options for manual page output --------------------------------------
 
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    ('index', 'pyglet', u'pyglet Documentation',
-     [u'Alex Holkner'], 1)
+    ('index', 'pyglet', 'pyglet Documentation',
+     ['Alex Holkner'], 1)
 ]
 
 # If true, show URL addresses after external links.
 #man_show_urls = False
 
 
-# -- Options for Texinfo output ------------------------------------------------
+# -- Options for Texinfo output ------------------------------------------
 
 # Grouping the document tree into Texinfo files. List of tuples
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-  ('index', 'pyglet', u'pyglet Documentation',
-   u'Alex Holkner', 'pyglet', 'One line description of project.',
-   'Miscellaneous'),
+    ('index', 'pyglet', 'pyglet Documentation',
+     'Alex Holkner', 'pyglet', 'One line description of project.',
+     'Miscellaneous'),
 ]
 
 # Documents to append as an appendix to all manuals.
-#texinfo_appendices = []
+#texinfo_appendices = list()
 
 # If false, no module index is generated.
 #texinfo_domain_indices = True
 
 # How to display URL addresses: 'footnote', 'no', or 'inline'.
 #texinfo_show_urls = 'footnote'
-
-
-

@@ -1,15 +1,21 @@
-import os, sys
+import os
+import sys
+
 try:
     set
 except NameError:
     from sets import Set as set
 
+
 def fsencoding(s, encoding=sys.getfilesystemencoding()):
-    if isinstance(s, unicode):
+    if isinstance(s, str):
         s = s.encode(encoding)
     return s
 
+
 SCMDIRS = ['CVS', '.svn']
+
+
 def skipscm(ofn):
     ofn = fsencoding(ofn)
     fn = os.path.basename(ofn)
@@ -17,10 +23,12 @@ def skipscm(ofn):
         return False
     return True
 
+
 def skipfunc(junk=(), junk_exts=(), chain=()):
     junk = set(junk)
     junk_exts = set(junk_exts)
     chain = tuple(chain)
+
     def _skipfunc(fn):
         if os.path.basename(fn) in junk:
             return False
@@ -31,21 +39,23 @@ def skipfunc(junk=(), junk_exts=(), chain=()):
                 return False
         else:
             return True
+
     return _skipfunc
+
 
 JUNK = ['.DS_Store', '.gdb_history', 'build', 'dist'] + SCMDIRS
 JUNK_EXTS = ['.pbxuser', '.pyc', '.pyo', '.swp']
 skipjunk = skipfunc(JUNK, JUNK_EXTS)
 
-def copy_tree(src, dst,
-        preserve_mode=1,
-        preserve_times=1,
-        preserve_symlinks=0,
-        update=0,
-        verbose=0,
-        dry_run=0,
-        condition=None):
 
+def copy_tree(src, dst,
+              preserve_mode=1,
+              preserve_times=1,
+              preserve_symlinks=0,
+              update=0,
+              verbose=0,
+              dry_run=0,
+              condition=None):
     """
     Copy an entire directory tree 'src' to a new location 'dst'.  Both
     'src' and 'dst' must be directory names.  If 'src' is not a
@@ -66,7 +76,6 @@ def copy_tree(src, dst,
     'update' and 'verbose' are the same as for 'copy_file'.
     """
 
-
     from distutils.dir_util import mkpath
     from distutils.file_util import copy_file
     from distutils.dep_util import newer
@@ -84,9 +93,10 @@ def copy_tree(src, dst,
             "cannot copy tree '%s': not a directory" % src)
     try:
         names = os.listdir(src)
-    except os.error, (errno, errstr):
+    except os.error as xxx_todo_changeme:
+        (errno, errstr) = xxx_todo_changeme.args
         if dry_run:
-            names = []
+            names = list()
         else:
             raise DistutilsFileError("error listing files in '%s': %s" % (
                 src, errstr))
@@ -94,7 +104,7 @@ def copy_tree(src, dst,
     if not dry_run:
         mkpath(dst)
 
-    outputs = []
+    outputs = list()
 
     for n in names:
         src_name = os.path.join(src, n)

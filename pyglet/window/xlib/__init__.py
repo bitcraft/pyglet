@@ -2,14 +2,14 @@
 # pyglet
 # Copyright (c) 2006-2008 Alex Holkner
 # All rights reserved.
-# 
+#
 # Redistribution and use in source and binary forms, with or without
-# modification, are permitted provided that the following conditions 
+# modification, are permitted provided that the following conditions
 # are met:
 #
 #  * Redistributions of source code must retain the above copyright
 #    notice, this list of conditions and the following disclaimer.
-#  * Redistributions in binary form must reproduce the above copyright 
+#  * Redistributions in binary form must reproduce the above copyright
 #    notice, this list of conditions and the following disclaimer in
 #    the documentation and/or other materials provided with the
 #    distribution.
@@ -61,6 +61,7 @@ try:
 except:
     _have_xsync = False
 
+
 class mwmhints_t(Structure):
     _fields_ = [
         ('flags', c_uint32),
@@ -70,13 +71,14 @@ class mwmhints_t(Structure):
         ('status', c_uint32)
     ]
 
-# XXX: wraptypes can't parse the header this function is in yet
+# TODO:: wraptypes can't parse the header this function is in yet
 XkbSetDetectableAutoRepeat = xlib._lib.XkbSetDetectableAutoRepeat
 XkbSetDetectableAutoRepeat.restype = c_int
-XkbSetDetectableAutoRepeat.argtypes = [POINTER(xlib.Display), c_int, POINTER(c_int)]
+XkbSetDetectableAutoRepeat.argtypes = [
+    POINTER(xlib.Display), c_int, POINTER(c_int)]
 _can_detect_autorepeat = None
 
-XA_CARDINAL = 6 # Xatom.h:14
+XA_CARDINAL = 6  # Xatom.h:14
 
 # Do we have the November 2000 UTF8 extension?
 _have_utf8 = hasattr(xlib._lib, 'Xutf8TextListToTextProperty')
@@ -99,10 +101,13 @@ _motion_map = {
     (key.DELETE, False):    key.MOTION_DELETE,
 }
 
+
 class XlibException(WindowException):
-    '''An X11-specific exception.  This exception is probably a programming
-    error in pyglet.'''
+
+    """An X11-specific exception.  This exception is probably a programming
+    error in pyglet."""
     pass
+
 
 class XlibMouseCursor(MouseCursor):
     drawable = False
@@ -113,6 +118,7 @@ class XlibMouseCursor(MouseCursor):
 # Platform event data is single item, so use platform event handler directly.
 XlibEventHandler = _PlatformEventHandler
 ViewEventHandler = _ViewEventHandler
+
 
 class XlibWindow(BaseWindow):
     _x_display = None       # X display connection
@@ -128,7 +134,7 @@ class XlibWindow(BaseWindow):
     _width = 0
     _height = 0             # Last known window size
     _mouse_exclusive_client = None  # x,y of "real" mouse during exclusive
-    _mouse_buttons = [False] * 6 # State of each xlib button
+    _mouse_buttons = [False] * 6  # State of each xlib button
     _keyboard_exclusive = False
     _active = True
     _applied_mouse_exclusive = False
@@ -142,33 +148,34 @@ class XlibWindow(BaseWindow):
     _current_sync_valid = False
 
     _needs_resize = False   # True when resize event has been received but not
-                            # dispatched
+    # dispatched
 
-    _default_event_mask = (0x1ffffff 
-        & ~xlib.PointerMotionHintMask
-        & ~xlib.ResizeRedirectMask
-        & ~xlib.SubstructureNotifyMask)
+    _default_event_mask = (0x1ffffff
+                           & ~xlib.PointerMotionHintMask
+                           & ~xlib.ResizeRedirectMask
+                           & ~xlib.SubstructureNotifyMask)
 
     def __init__(self, *args, **kwargs):
         # Bind event handlers
-        self._event_handlers = {}
-        self._view_event_handlers = {}
+        self._event_handlers = dict()
+        self._view_event_handlers = dict()
         for name in self._platform_event_names:
             if not hasattr(self, name):
                 continue
             func = getattr(self, name)
             for message in func._platform_event_data:
                 if hasattr(func, '_view'):
-                    self._view_event_handlers[message] = func 
+                    self._view_event_handlers[message] = func
                 else:
-                    self._event_handlers[message] = func 
+                    self._event_handlers[message] = func
 
-        super(XlibWindow, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
         global _can_detect_autorepeat
         if _can_detect_autorepeat == None:
             supported_rtrn = c_int()
-            _can_detect_autorepeat = XkbSetDetectableAutoRepeat(self.display._display, c_int(1), byref(supported_rtrn))
+            _can_detect_autorepeat = XkbSetDetectableAutoRepeat(
+                self.display._display, c_int(1), byref(supported_rtrn))
         if _can_detect_autorepeat:
             self.pressed_keys = set()
 
@@ -187,7 +194,7 @@ class XlibWindow(BaseWindow):
             xlib.XDestroyWindow(self._x_display, self._window)
             del self.display._window_map[self._window]
             del self.display._window_map[self._view]
-            self._window = None 
+            self._window = None
             self._mapped = False
 
         # TODO: detect state loss only by examining context share.
@@ -204,7 +211,6 @@ class XlibWindow(BaseWindow):
 
         self._x_display = self.display._display
         self._x_screen_id = self.display.x_screen
-
 
         # Create X window if not already existing.
         if not self._window:
@@ -241,14 +247,14 @@ class XlibWindow(BaseWindow):
                 self._view_x = self._view_y = 0
 
             self._window = xlib.XCreateWindow(self._x_display, root,
-                0, 0, width, height, 0, visual_info.depth,
-                xlib.InputOutput, visual, mask,
-                byref(window_attributes))
-            self._view = xlib.XCreateWindow(self._x_display, 
-                self._window, self._view_x, self._view_y, 
-                self._width, self._height, 0, visual_info.depth, 
-                xlib.InputOutput, visual, mask, 
-                byref(window_attributes));
+                                              0, 0, width, height, 0, visual_info.depth,
+                                              xlib.InputOutput, visual, mask,
+                                              byref(window_attributes))
+            self._view = xlib.XCreateWindow(self._x_display,
+                                            self._window, self._view_x, self._view_y,
+                                            self._width, self._height, 0, visual_info.depth,
+                                            xlib.InputOutput, visual, mask,
+                                            byref(window_attributes))
             xlib.XMapWindow(self._x_display, self._view)
             xlib.XSelectInput(
                 self._x_display, self._view, self._default_event_mask)
@@ -261,7 +267,7 @@ class XlibWindow(BaseWindow):
             self.canvas = XlibCanvas(self.display, self._view)
 
             self.context.attach(self.canvas)
-            self.context.set_vsync(self._vsync) # XXX ?
+            self.context.set_vsync(self._vsync)  # TODO: ?
 
             # Setting null background pixmap disables drawing the background,
             # preventing flicker while resizing (in theory).
@@ -276,12 +282,13 @@ class XlibWindow(BaseWindow):
                                   self.config.double_buffer)
 
             # Set supported protocols
-            protocols = []
+            protocols = list()
             protocols.append(xlib.XInternAtom(self._x_display,
                                               asbytes('WM_DELETE_WINDOW'), False))
             if self._enable_xsync:
                 protocols.append(xlib.XInternAtom(self._x_display,
-                                                  asbytes('_NET_WM_SYNC_REQUEST'),
+                                                  asbytes(
+                                                      '_NET_WM_SYNC_REQUEST'),
                                                   False))
             protocols = (c_ulong * len(protocols))(*protocols)
             xlib.XSetWMProtocols(self._x_display, self._window,
@@ -316,15 +323,15 @@ class XlibWindow(BaseWindow):
                 self._set_wm_state('_NET_WM_STATE_FULLSCREEN')
 
         if self._fullscreen:
-            xlib.XMoveResizeWindow(self._x_display, self._window, 
-                self.screen.x, self.screen.y, 
-                self.screen.width, self.screen.height)
+            xlib.XMoveResizeWindow(self._x_display, self._window,
+                                   self.screen.x, self.screen.y,
+                                   self.screen.width, self.screen.height)
         else:
-            xlib.XResizeWindow(self._x_display, self._window, 
-                self._width, self._height)
+            xlib.XResizeWindow(self._x_display, self._window,
+                               self._width, self._height)
 
-        xlib.XChangeWindowAttributes(self._x_display, self._window, 
-            attributes_mask, byref(attributes))
+        xlib.XChangeWindowAttributes(self._x_display, self._window,
+                                     attributes_mask, byref(attributes))
 
         # Set style
         styles = {
@@ -333,7 +340,7 @@ class XlibWindow(BaseWindow):
             self.WINDOW_STYLE_TOOL: '_NET_WM_WINDOW_TYPE_UTILITY',
         }
         if self._style in styles:
-            self._set_atoms_property('_NET_WM_WINDOW_TYPE', 
+            self._set_atoms_property('_NET_WM_WINDOW_TYPE',
                                      (styles[self._style],))
         elif self._style == self.WINDOW_STYLE_BORDERLESS:
             MWM_HINTS_DECORATIONS = 1 << 1
@@ -341,11 +348,12 @@ class XlibWindow(BaseWindow):
             mwmhints = mwmhints_t()
             mwmhints.flags = MWM_HINTS_DECORATIONS
             mwmhints.decorations = 0
-            name = xlib.XInternAtom(self._x_display, asbytes('_MOTIF_WM_HINTS'), False)
+            name = xlib.XInternAtom(
+                self._x_display, asbytes('_MOTIF_WM_HINTS'), False)
             xlib.XChangeProperty(self._x_display, self._window,
-                name, name, 32, xlib.PropModeReplace, 
-                cast(pointer(mwmhints), POINTER(c_ubyte)),
-                PROP_MWM_HINTS_ELEMENTS)
+                                 name, name, 32, xlib.PropModeReplace,
+                                 cast(pointer(mwmhints), POINTER(c_ubyte)),
+                                 PROP_MWM_HINTS_ELEMENTS)
 
         # Set resizeable
         if not self._resizable and not self._fullscreen:
@@ -356,7 +364,8 @@ class XlibWindow(BaseWindow):
         self.set_caption(self._caption)
 
         # this is supported by some compositors (ie gnome-shell), and more to come
-        # see: http://standards.freedesktop.org/wm-spec/wm-spec-latest.html#idp6357888
+        # see:
+        # http://standards.freedesktop.org/wm-spec/wm-spec-latest.html#idp6357888
         _NET_WM_BYPASS_COMPOSITOR_HINT_ON = c_ulong(int(self._fullscreen))
         name = xlib.XInternAtom(self._x_display,
                                 asbytes('_NET_WM_BYPASS_COMPOSITOR'), False)
@@ -375,20 +384,21 @@ class XlibWindow(BaseWindow):
                 self.display._x_im = \
                     xlib.XOpenIM(self._x_display, None, None, None)
 
-            xlib.XFlush(self._x_display);
+            xlib.XFlush(self._x_display)
 
             # Need to set argtypes on this function because it's vararg,
             # and ctypes guesses wrong.
-            xlib.XCreateIC.argtypes = [xlib.XIM,    
+            xlib.XCreateIC.argtypes = [xlib.XIM,
                                        c_char_p, c_int,
                                        c_char_p, xlib.Window,
                                        c_char_p, xlib.Window,
                                        c_void_p]
-            self._x_ic = xlib.XCreateIC(self.display._x_im, 
-                asbytes('inputStyle'), xlib.XIMPreeditNothing|xlib.XIMStatusNothing,
-                asbytes('clientWindow'), self._window,
-                asbytes('focusWindow'), self._window,
-                None)
+            self._x_ic = xlib.XCreateIC(self.display._x_im,
+                                        asbytes(
+                                            'inputStyle'), xlib.XIMPreeditNothing | xlib.XIMStatusNothing,
+                                        asbytes('clientWindow'), self._window,
+                                        asbytes('focusWindow'), self._window,
+                                        None)
 
             filter_events = c_ulong()
             xlib.XGetICValues(self._x_ic,
@@ -428,9 +438,9 @@ class XlibWindow(BaseWindow):
         if self._override_redirect:
             # Possibly an override_redirect issue.
             self.activate()
-        
+
         self._update_view_size()
-        
+
         self.dispatch_event('on_resize', self._width, self._height)
         self.dispatch_event('on_show')
         self.dispatch_event('on_expose')
@@ -463,11 +473,11 @@ class XlibWindow(BaseWindow):
         parent = c_ulong()
         children = pointer(c_ulong())
         n_children = c_uint()
-        
+
         xlib.XQueryTree(self._x_display, self._window,
                         byref(root), byref(parent), byref(children),
                         byref(n_children))
-        
+
         return root.value != parent.value
 
     def close(self):
@@ -486,7 +496,7 @@ class XlibWindow(BaseWindow):
             xlib.XDestroyIC(self._x_ic)
             self._x_ic = None
 
-        super(XlibWindow, self).close()
+        super().close()
 
     def switch_to(self):
         if self.context:
@@ -532,14 +542,14 @@ class XlibWindow(BaseWindow):
         self.dispatch_event('on_resize', width, height)
 
     def _update_view_size(self):
-        xlib.XResizeWindow(self._x_display, self._view, 
+        xlib.XResizeWindow(self._x_display, self._view,
                            self._width, self._height)
 
     def get_size(self):
         # XGetGeometry and XWindowAttributes seem to always return the
         # original size of the window, which is wrong after the user
         # has resized it.
-        # XXX this is probably fixed now, with fix of resize.
+        # TODO: this is probably fixed now, with fix of resize.
         return self._width, self._height
 
     def set_location(self, x, y):
@@ -551,7 +561,7 @@ class XlibWindow(BaseWindow):
             attributes = xlib.XWindowAttributes()
             xlib.XGetWindowAttributes(self._x_display, self._window,
                                       byref(attributes))
-            # XXX at least under KDE's WM these attrs are both 0
+            # TODO: at least under KDE's WM these attrs are both 0
             x -= attributes.x
             y -= attributes.y
         xlib.XMoveWindow(self._x_display, self._window, x, y)
@@ -571,7 +581,7 @@ class XlibWindow(BaseWindow):
 
     def activate(self):
         xlib.XSetInputFocus(self._x_display, self._window,
-            xlib.RevertToParent, xlib.CurrentTime)
+                            xlib.RevertToParent, xlib.CurrentTime)
 
     def set_visible(self, visible=True):
         if visible:
@@ -600,35 +610,35 @@ class XlibWindow(BaseWindow):
             return
         if platform_visible is None:
             platform_visible = self._mouse_visible and \
-                               not self._mouse_cursor.drawable
+                not self._mouse_cursor.drawable
 
         if not platform_visible:
             # Hide pointer by creating an empty cursor
             black = xlib.XBlackPixel(self._x_display, self._x_screen_id)
             black = xlib.XColor()
             bmp = xlib.XCreateBitmapFromData(self._x_display, self._window,
-                c_buffer(8), 8, 8)
+                                             c_buffer(8), 8, 8)
             cursor = xlib.XCreatePixmapCursor(self._x_display, bmp, bmp,
-                black, black, 0, 0)
+                                              black, black, 0, 0)
             xlib.XDefineCursor(self._x_display, self._window, cursor)
             xlib.XFreeCursor(self._x_display, cursor)
             xlib.XFreePixmap(self._x_display, bmp)
         else:
             # Restore cursor
             if isinstance(self._mouse_cursor, XlibMouseCursor):
-                xlib.XDefineCursor(self._x_display, self._window, 
+                xlib.XDefineCursor(self._x_display, self._window,
                                    self._mouse_cursor.cursor)
             else:
                 xlib.XUndefineCursor(self._x_display, self._window)
 
     def set_mouse_position(self, x, y):
         xlib.XWarpPointer(self._x_display,
-            0,              # src window
-            self._window,   # dst window
-            0, 0,           # src x, y
-            0, 0,           # src w, h
-            x, self._height - y,
-        )
+                          0,              # src window
+                          self._window,   # dst window
+                          0, 0,           # src x, y
+                          0, 0,           # src w, h
+                          x, self._height - y,
+                          )
 
     def _update_exclusivity(self):
         mouse_exclusive = self._active and self._mouse_exclusive
@@ -640,13 +650,13 @@ class XlibWindow(BaseWindow):
 
                 # Restrict to client area
                 xlib.XGrabPointer(self._x_display, self._window,
-                    True,
-                    0,
-                    xlib.GrabModeAsync,
-                    xlib.GrabModeAsync,
-                    self._window,
-                    0,
-                    xlib.CurrentTime)
+                                  True,
+                                  0,
+                                  xlib.GrabModeAsync,
+                                  xlib.GrabModeAsync,
+                                  self._window,
+                                  0,
+                                  xlib.CurrentTime)
 
                 # Move pointer to center of window
                 x = self._width // 2
@@ -657,12 +667,12 @@ class XlibWindow(BaseWindow):
                 # Restrict to fullscreen area (prevent viewport scrolling)
                 self.set_mouse_position(0, 0)
                 r = xlib.XGrabPointer(self._x_display, self._view,
-                    True, 0,
-                    xlib.GrabModeAsync,
-                    xlib.GrabModeAsync,
-                    self._view,
-                    0,
-                    xlib.CurrentTime)
+                                      True, 0,
+                                      xlib.GrabModeAsync,
+                                      xlib.GrabModeAsync,
+                                      self._view,
+                                      0,
+                                      xlib.CurrentTime)
                 if r:
                     # Failed to grab, try again later
                     self._applied_mouse_exclusive = None
@@ -678,11 +688,11 @@ class XlibWindow(BaseWindow):
         if keyboard_exclusive != self._applied_keyboard_exclusive:
             if keyboard_exclusive:
                 xlib.XGrabKeyboard(self._x_display,
-                    self._window,
-                    False,
-                    xlib.GrabModeAsync,
-                    xlib.GrabModeAsync,
-                    xlib.CurrentTime)
+                                   self._window,
+                                   False,
+                                   xlib.GrabModeAsync,
+                                   xlib.GrabModeAsync,
+                                   xlib.CurrentTime)
             else:
                 xlib.XUngrabKeyboard(self._x_display, xlib.CurrentTime)
             self._applied_keyboard_exclusive = keyboard_exclusive
@@ -697,7 +707,7 @@ class XlibWindow(BaseWindow):
     def set_exclusive_keyboard(self, exclusive=True):
         if exclusive == self._keyboard_exclusive:
             return
-        
+
         self._keyboard_exclusive = exclusive
         self._update_exclusivity()
 
@@ -750,14 +760,15 @@ class XlibWindow(BaseWindow):
             image = image.get_image_data()
             pitch = -(image.width * len(format))
             s = c_buffer(sizeof(c_ulong) * 2)
-            memmove(s, cast((c_ulong * 2)(image.width, image.height), 
+            memmove(s, cast((c_ulong * 2)(image.width, image.height),
                             POINTER(c_ubyte)), len(s))
             data += s.raw + image.get_data(format, pitch)
         buffer = (c_ubyte * len(data))()
         memmove(buffer, data, len(data))
-        atom = xlib.XInternAtom(self._x_display, asbytes('_NET_WM_ICON'), False)
+        atom = xlib.XInternAtom(
+            self._x_display, asbytes('_NET_WM_ICON'), False)
         xlib.XChangeProperty(self._x_display, self._window, atom, XA_CARDINAL,
-            32, xlib.PropModeReplace, buffer, len(data)//sizeof(c_ulong))
+                             32, xlib.PropModeReplace, buffer, len(data) // sizeof(c_ulong))
 
     # Private utility
 
@@ -775,13 +786,14 @@ class XlibWindow(BaseWindow):
         atom = xlib.XInternAtom(self._x_display, asbytes(name), False)
         if not atom:
             raise XlibException('Undefined atom "%s"' % name)
-        assert type(value) in (str, unicode)
+        assert type(value) in (str, str)
         property = xlib.XTextProperty()
         if _have_utf8 and allow_utf8:
             buf = create_string_buffer(value.encode('utf8'))
             result = xlib.Xutf8TextListToTextProperty(self._x_display,
-                cast(pointer(buf), c_char_p), 1, xlib.XUTF8StringStyle, 
-                byref(property))
+                                                      cast(
+                                                          pointer(buf), c_char_p), 1, xlib.XUTF8StringStyle,
+                                                      byref(property))
             if result < 0:
                 raise XlibException('Could not create UTF8 text property')
         else:
@@ -791,36 +803,39 @@ class XlibWindow(BaseWindow):
             if result < 0:
                 raise XlibException('Could not create text property')
         xlib.XSetTextProperty(self._x_display,
-            self._window, byref(property), atom)
-        # XXX <rj> Xlib doesn't like us freeing this
-        #xlib.XFree(property.value)
+                              self._window, byref(property), atom)
+        # TODO: <rj> Xlib doesn't like us freeing this
+        # xlib.XFree(property.value)
 
     def _set_atoms_property(self, name, values, mode=xlib.PropModeReplace):
         name_atom = xlib.XInternAtom(self._x_display, asbytes(name), False)
-        atoms = []
+        atoms = list()
         for value in values:
-            atoms.append(xlib.XInternAtom(self._x_display, asbytes(value), False))
+            atoms.append(
+                xlib.XInternAtom(self._x_display, asbytes(value), False))
         atom_type = xlib.XInternAtom(self._x_display, asbytes('ATOM'), False)
         if len(atoms):
             atoms_ar = (xlib.Atom * len(atoms))(*atoms)
             xlib.XChangeProperty(self._x_display, self._window,
-                name_atom, atom_type, 32, mode,
-                cast(pointer(atoms_ar), POINTER(c_ubyte)), len(atoms))
+                                 name_atom, atom_type, 32, mode,
+                                 cast(pointer(atoms_ar), POINTER(c_ubyte)), len(atoms))
         else:
             xlib.XDeleteProperty(self._x_display, self._window, net_wm_state)
 
     def _set_wm_state(self, *states):
         # Set property
-        net_wm_state = xlib.XInternAtom(self._x_display, asbytes('_NET_WM_STATE'), False)
-        atoms = []
+        net_wm_state = xlib.XInternAtom(
+            self._x_display, asbytes('_NET_WM_STATE'), False)
+        atoms = list()
         for state in states:
-            atoms.append(xlib.XInternAtom(self._x_display, asbytes(state), False))
+            atoms.append(
+                xlib.XInternAtom(self._x_display, asbytes(state), False))
         atom_type = xlib.XInternAtom(self._x_display, asbytes('ATOM'), False)
         if len(atoms):
             atoms_ar = (xlib.Atom * len(atoms))(*atoms)
             xlib.XChangeProperty(self._x_display, self._window,
-                net_wm_state, atom_type, 32, xlib.PropModePrepend,
-                cast(pointer(atoms_ar), POINTER(c_ubyte)), len(atoms))
+                                 net_wm_state, atom_type, 32, xlib.PropModePrepend,
+                                 cast(pointer(atoms_ar), POINTER(c_ubyte)), len(atoms))
         else:
             xlib.XDeleteProperty(self._x_display, self._window, net_wm_state)
 
@@ -835,7 +850,7 @@ class XlibWindow(BaseWindow):
         for i, atom in enumerate(atoms):
             e.xclient.data.l[i + 1] = atom
         xlib.XSendEvent(self._x_display, self._get_root(),
-            False, xlib.SubstructureRedirectMask, byref(e))
+                        False, xlib.SubstructureRedirectMask, byref(e))
 
     # Event handling
 
@@ -872,10 +887,10 @@ class XlibWindow(BaseWindow):
             self.dispatch_platform_event_view(e)
 
         # Generic events for this window (the window close event).
-        while xlib.XCheckTypedWindowEvent(_x_display, _window, 
-                xlib.ClientMessage, byref(e)):
-            self.dispatch_platform_event(e) 
- 
+        while xlib.XCheckTypedWindowEvent(_x_display, _window,
+                                          xlib.ClientMessage, byref(e)):
+            self.dispatch_platform_event(e)
+
         if self._needs_resize:
             self.dispatch_event('on_resize', self._width, self._height)
             self.dispatch_event('on_expose')
@@ -927,7 +942,7 @@ class XlibWindow(BaseWindow):
         return modifiers
 
     # Event handlers
-    '''
+    """
     def _event_symbol(self, event):
         # pyglet.self.key keysymbols are identical to X11 keysymbols, no
         # need to map the keysymbol.
@@ -938,7 +953,7 @@ class XlibWindow(BaseWindow):
         elif symbol not in key._key_names.keys():
             symbol = key.user_key(event.xkey.keycode)
         return symbol
-    '''
+    """
 
     def _event_text_symbol(self, ev):
         text = None
@@ -994,10 +1009,10 @@ class XlibWindow(BaseWindow):
         if symbol and symbol not in key._key_names and ev.xkey.keycode:
             # Issue 353: Symbol is uppercase when shift key held down.
             try:
-                symbol = ord(unichr(symbol).lower())
+                symbol = ord(chr(symbol).lower())
             except ValueError:
                 # Not a valid unichr, use the keycode
-                symbol = key.user_key(ev.xkey.keycode) 
+                symbol = key.user_key(ev.xkey.keycode)
             else:
                 # If still not recognised, use the keycode
                 if symbol not in key._key_names:
@@ -1021,17 +1036,17 @@ class XlibWindow(BaseWindow):
     @XlibEventHandler(xlib.KeyRelease)
     def _event_key_view(self, ev):
         # Try to detect autorepeat ourselves if the server doesn't support it
-        # XXX: Doesn't always work, better off letting the server do it
+        # TODO:: Doesn't always work, better off letting the server do it
         global _can_detect_autorepeat
         if not _can_detect_autorepeat and ev.type == xlib.KeyRelease:
             # Look in the queue for a matching KeyPress with same timestamp,
             # indicating an auto-repeat rather than actual key event.
-            saved = []
+            saved = list()
             while True:
                 auto_event = xlib.XEvent()
                 result = xlib.XCheckWindowEvent(self._x_display,
-                    self._window, xlib.KeyPress|xlib.KeyRelease, 
-                    byref(auto_event))
+                                                self._window, xlib.KeyPress | xlib.KeyRelease,
+                                                byref(auto_event))
                 if not result:
                     break
                 saved.append(auto_event)
@@ -1116,11 +1131,11 @@ class XlibWindow(BaseWindow):
             # Reset pointer position
             ex, ey = self._mouse_exclusive_client
             xlib.XWarpPointer(self._x_display,
-                0,
-                self._window,
-                0, 0,
-                0, 0,
-                ex, ey)
+                              0,
+                              self._window,
+                              0, 0,
+                              0, 0,
+                              ex, ey)
 
         self._mouse_x = x
         self._mouse_y = y
@@ -1138,7 +1153,7 @@ class XlibWindow(BaseWindow):
             # Drag event
             modifiers = self._translate_modifiers(ev.xmotion.state)
             self.dispatch_event('on_mouse_drag',
-                x, y, dx, dy, buttons, modifiers)
+                                x, y, dx, dy, buttons, modifiers)
         else:
             # Motion event
             self.dispatch_event('on_mouse_motion', x, y, dx, dy)
@@ -1170,7 +1185,7 @@ class XlibWindow(BaseWindow):
 
             modifiers = self._translate_modifiers(ev.xmotion.state)
             self.dispatch_event('on_mouse_drag',
-                x, y, dx, dy, buttons, modifiers)
+                                x, y, dx, dy, buttons, modifiers)
 
     @XlibEventHandler(xlib.ClientMessage)
     def _event_clientmessage(self, ev):
@@ -1178,8 +1193,8 @@ class XlibWindow(BaseWindow):
         if atom == xlib.XInternAtom(ev.xclient.display,
                                     asbytes('WM_DELETE_WINDOW'), False):
             self.dispatch_event('on_close')
-        elif (self._enable_xsync and 
-              atom == xlib.XInternAtom(ev.xclient.display, 
+        elif (self._enable_xsync and
+              atom == xlib.XInternAtom(ev.xclient.display,
                                        asbytes('_NET_WM_SYNC_REQUEST'), False)):
             lo = ev.xclient.data.l[2]
             hi = ev.xclient.data.l[3]
@@ -1190,7 +1205,7 @@ class XlibWindow(BaseWindow):
             if xsync.XSyncValueIsZero(self._current_sync_value):
                 self._current_sync_valid = False
                 return
-            xsync.XSyncSetCounter(self._x_display, 
+            xsync.XSyncSetCounter(self._x_display,
                                   self._sync_counter,
                                   self._current_sync_value)
             self._current_sync_value = None
@@ -1216,13 +1231,13 @@ class XlibWindow(BaseWindow):
                 self.dispatch_event('on_mouse_scroll', x, y, 0, -1)
             elif ev.xbutton.button < len(self._mouse_buttons):
                 self._mouse_buttons[ev.xbutton.button] = True
-                self.dispatch_event('on_mouse_press', 
-                    x, y, button, modifiers)
+                self.dispatch_event('on_mouse_press',
+                                    x, y, button, modifiers)
         else:
             if ev.xbutton.button < 4:
                 self._mouse_buttons[ev.xbutton.button] = False
-                self.dispatch_event('on_mouse_release', 
-                    x, y, button, modifiers)
+                self.dispatch_event('on_mouse_release',
+                                    x, y, button, modifiers)
 
     @ViewEventHandler
     @XlibEventHandler(xlib.Expose)
@@ -1230,14 +1245,15 @@ class XlibWindow(BaseWindow):
         # Ignore all expose events except the last one. We could be told
         # about exposure rects - but I don't see the point since we're
         # working with OpenGL and we'll just redraw the whole scene.
-        if ev.xexpose.count > 0: return
+        if ev.xexpose.count > 0:
+            return
         self.dispatch_event('on_expose')
 
     @ViewEventHandler
     @XlibEventHandler(xlib.EnterNotify)
     def _event_enternotify(self, ev):
         # figure active mouse buttons
-        # XXX ignore modifier state?
+        # TODO: ignore modifier state?
         state = ev.xcrossing.state
         self._mouse_buttons[1] = state & xlib.Button1Mask
         self._mouse_buttons[2] = state & xlib.Button2Mask
@@ -1250,7 +1266,7 @@ class XlibWindow(BaseWindow):
         y = self._mouse_y = self.height - ev.xcrossing.y
         self._mouse_in_window = True
 
-        # XXX there may be more we could do here
+        # TODO: there may be more we could do here
         self.dispatch_event('on_mouse_enter', x, y)
 
     @ViewEventHandler

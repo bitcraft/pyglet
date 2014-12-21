@@ -38,7 +38,7 @@ The data type of each component can be either int or float.
 Use `pyglet.graphics.draw` to draw a primitive.  The following example draws
 two points at coordinates (10, 15) and (30, 35)::
 
-    pyglet.graphics.draw(2, pyglet.gl.GL_POINTS, 
+    pyglet.graphics.draw(2, pyglet.gl.GL_POINTS,
         ('v2i', (10, 15, 30, 35))
     )
 
@@ -53,7 +53,7 @@ position data has two components (2D) and int type.
 The following example has the same effect as the previous one, but uses
 floating point data and 3 components per vertex::
 
-    pyglet.graphics.draw(2, pyglet.gl.GL_POINTS, 
+    pyglet.graphics.draw(2, pyglet.gl.GL_POINTS,
         ('v3f', (10.0, 15.0, 0.0, 30.0, 35.0, 0.0))
     )
 
@@ -62,7 +62,7 @@ Vertices can also be drawn out of order and more than once by using the
 giving the indices into the vertex data.  The following example draws the same
 two points as above, but indexes the vertices (sequentially)::
 
-    pyglet.graphics.draw_indexed(2, pyglet.gl.GL_POINTS, 
+    pyglet.graphics.draw_indexed(2, pyglet.gl.GL_POINTS,
         [0, 1],
         ('v2i', (10, 15, 30, 35))
     )
@@ -87,7 +87,7 @@ Vertex attributes
 
 Besides the required vertex position, vertices can have several other numeric
 attributes.  Each is specified in the format string with a letter, the number
-of components and the data type.  
+of components and the data type.
 
 Each of the attributes is described in the table below with the set of valid
 format strings written as a regular expression (for example, ``"v[234][if]"``
@@ -187,7 +187,7 @@ specified alongside the vertex position data.  The following example
 reproduces the two points from the previous page, except that the first point
 is blue and the second green::
 
-    pyglet.graphics.draw(2, pyglet.gl.GL_POINTS, 
+    pyglet.graphics.draw(2, pyglet.gl.GL_POINTS,
         ('v2i', (10, 15, 30, 35)),
         ('c3B', (0, 0, 255, 0, 255, 0))
     )
@@ -218,7 +218,7 @@ list with the two coloured points used in the previous page::
         ('v2i', (10, 15, 30, 35)),
         ('c3B', (0, 0, 255, 0, 255, 0))
     )
-    
+
 To draw the vertex list, call its `VertexList.draw` method::
 
     vertex_list.draw(pyglet.gl.GL_POINTS)
@@ -287,7 +287,7 @@ them with any particular data.  You can specify just the format string in
 place of the ``(format, data)`` tuple in the data arguments `vertex_list`
 function.  The following example creates a vertex list of 1024 vertices with
 positional, color, texture coordinate and normal attributes::
-    
+
     vertex_list = pyglet.graphics.vertex_list(1024, 'v3f', 'c4B', 't2f', 'n3f')
 
 Data usage
@@ -453,7 +453,7 @@ example demonstrates this::
 
     class TextureBindGroup(pyglet.graphics.Group):
         def __init__(self, texture):
-            super(TextureBindGroup, self).__init__(parent=texture_enable_group)
+            super().__init__(parent=texture_enable_group)
             assert texture.target = GL_TEXTURE_2D
             self.texture = texture
 
@@ -463,7 +463,7 @@ example demonstrates this::
         # No unset_state method required.
 
         def __eq__(self, other):
-            return (self.__class__ is other.__class__ and 
+            return (self.__class__ is other.__class__ and
                     self.texture.id == other.texture.id and
                     self.texture.target == other.texture.target and
                     self.parent == other.parent)
@@ -499,7 +499,7 @@ group that is drawn before the vertex lists in the "foreground" group::
     batch.add(4, GL_QUADS, background, 'v2f')
     batch.add(4, GL_QUADS, foreground, 'v2f')
     batch.add(4, GL_QUADS, background, 'v2f', 'c4B')
-    
+
 By combining hierarchical groups with ordered groups it is possible to
 describe an entire scene within a single `Batch`, which then renders it as
 efficiently as possible.

@@ -21,8 +21,9 @@ car.anchor_x = 16
 car.anchor_y = 20
 for i in range(NUM_CARS):
     s = spryte.Sprite(car,
-        win.width*random.random(), win.height*random.random(),
-        batch=cars, dr=-45 + random.random()*90)
+                      win.width *
+                      random.random(), win.height * random.random(),
+                      batch=cars, dr=-45 + random.random() * 90)
 
 while not win.has_exit:
     win.dispatch_events()
@@ -34,4 +35,3 @@ while not win.has_exit:
     cars.draw()
     fps.draw()
     win.flip()
-

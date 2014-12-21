@@ -1,3 +1,23 @@
+1.2beta1-lt
+    * removed legacy carbon code
+    * removed contrib/layout/browser
+    * removed experimental/gui
+    * removed other unmaintained demo code under experimental/
+    * very good PEP8 compliance
+    * ran entire codebase through 2to3
+    * changed test names to lowercase (seriously why were they all caps?)
+    * made tests in tests more specific; ie.
+      change assertTrue(z==y) to assertEquals(z, y)
+    * converted many getter/setters to decorated methods
+    * sprites x/y axis can be scaled (issue #481)
+    * merge patch #454 (Utilize ARB_texture_non_power_of_two when present)
+    * merge patch #620 (drag and drop on windows)
+    * moved TextureGroup to text, since it was only used there, and not meant to
+      be used.  Docstrings said "don't use, just an example"
+    * tests are now split between unit tests and integration tests;
+      the benefit will be easier entry point into mocked tests and reduced
+      burden on the developer to rull the full interactive test suite
+
 1.2beta1
     + new API: font.have_font(name) return True if named font is installed
     * tests: invalid answer no longer marks test as passed, some windows can
@@ -144,7 +164,7 @@
       anchor_y
     * pyglet.text: Added TextLayout.content_valign property
     * pyglet.text: Changed styles using points and pixels to consistent
-      "distance" units 
+      "distance" units
     * pyglet.text: Added halign to Layout constructor
     * pyglet.sprite: Fixed animations with only one frame
     * pyglet.window: Added Window.invalid flag
@@ -229,7 +249,7 @@
     * Linux: Fixed config attribute types
     * OS X: Improved audio playback and event loop response
     * OS X: Fixed mouse delta of first event after setting exclusive
-    * OS X: Fixed menu tracking and application quit event 
+    * OS X: Fixed menu tracking and application quit event
     * OS X: Fixed window size events during creation and setting fullscreen
     * OS X: Fixed TGA support
     * OS X: Fixed fullscreen for external monitors that don't report their
@@ -288,7 +308,7 @@
       error encountered
     * OS X: Fixed rare QuickTime image load problem causing Bus Error
     * Win32: Fixed DirectSound audio driver timestamps
-    * Win32: Fixed reduntant attempt to load mapi32.dll 
+    * Win32: Fixed reduntant attempt to load mapi32.dll
 
 1.0.2
     * Egg for 2.5 is now compiled for Python 2.5, not 2.5b3.
@@ -327,7 +347,7 @@
     * pyglet.window: Providing width or height with fullscreen parameter to
       constructor will now raise an exception
     * OS X: Fixed interaction with non-pyglet window event loops
-    * OS X: Installer will use the system-installed and MacPorts versions of 
+    * OS X: Installer will use the system-installed and MacPorts versions of
       Python if found
     * OS X: Fixed library paths for systems with a case-sensitive file system
     * OS X: Fixed mouse events in fullscreen windows

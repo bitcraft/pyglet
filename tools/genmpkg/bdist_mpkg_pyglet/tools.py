@@ -11,18 +11,20 @@ try:
 except NameError:
     from sets import Set as set
 
+
 def Version(s):
     try:
         return StrictVersion(s)
     except ValueError:
         return LooseVersion(s)
 
+
 def run_setup(*args, **kwargs):
     """
     Re-entrant version of distutils.core.run_setup()
     """
     PRESERVE = '_setup_stop_after', '_setup_distribution'
-    d = {}
+    d = dict()
     for k in PRESERVE:
         try:
             d[k] = getattr(distutils.core, k)
@@ -31,8 +33,9 @@ def run_setup(*args, **kwargs):
     try:
         return distutils.core.run_setup(*args, **kwargs)
     finally:
-        for k,v in d.iteritems():
+        for k, v in d.items():
             setattr(distutils.core, k, v)
+
 
 def adminperms(src, verbose=0, dry_run=0):
     try:
@@ -44,6 +47,7 @@ def adminperms(src, verbose=0, dry_run=0):
         raise RuntimeError('Cannot chown/chgrp/chmod.  Are you running sudo?')
     return True
 
+
 def mkbom(src, pkgdir, verbose=0, dry_run=0, TOOL='/usr/bin/mkbom'):
     """
     Create a bill-of-materials (BOM) for the given src directory and store it
@@ -52,6 +56,7 @@ def mkbom(src, pkgdir, verbose=0, dry_run=0, TOOL='/usr/bin/mkbom'):
     dest = os.path.join(pkgdir, 'Contents', 'Archive.bom')
     mkpath(os.path.dirname(dest), verbose=verbose, dry_run=dry_run)
     spawn([TOOL, src, dest], verbose=verbose, dry_run=dry_run)
+
 
 def pax(src, pkgdir, verbose=0, dry_run=0, TOOL='/bin/pax'):
     """
@@ -70,17 +75,20 @@ def pax(src, pkgdir, verbose=0, dry_run=0, TOOL='/bin/pax'):
         os.chdir(pwd)
     return os.stat(dest).st_size
 
+
 def unicode_path(path, encoding=sys.getfilesystemencoding()):
-    if isinstance(path, unicode):
+    if isinstance(path, str):
         return path
-    return unicode(path, encoding)
+    return str(path, encoding)
+
 
 def walk_files(path):
     for root, dirs, files in os.walk(path):
         for fn in files:
             yield os.path.join(root, fn)
 
-def get_gid(name, _cache={}):
+
+def get_gid(name, _cache=dict()):
     if not _cache:
         for line in os.popen('/usr/bin/nidump group .'):
             fields = line.split(':')
@@ -91,6 +99,7 @@ def get_gid(name, _cache={}):
     except KeyError:
         raise ValueError('group %s not found' % (name,))
 
+
 def find_root(path, base='/'):
     """
     Return the list of files, the archive directory, and the destination path
@@ -98,11 +107,12 @@ def find_root(path, base='/'):
     files = list(walk_files(path))
     common = os.path.dirname(os.path.commonprefix(files))
     prefix = os.path.join(base, common[len(os.path.join(path, '')):])
-    #while not os.path.exists(prefix):
+    # while not os.path.exists(prefix):
     #    common = os.path.dirname(common)
     #    prefix = os.path.dirname(prefix)
     prefix = os.path.realpath(prefix)
     return files, common, prefix
+
 
 def admin_writable(path):
     gid = get_gid('admin')
@@ -110,12 +120,14 @@ def admin_writable(path):
         path = os.path.dirname(path)
     s = os.stat(path)
     mode = s.st_mode
-    return (mode & 00002) or (s.st_gid == gid and mode & 00020)
+    return (mode & 0o0002) or (s.st_gid == gid and mode & 0o0020)
+
 
 def reduce_size(files):
     return sum([os.stat(fn).st_size for fn in files])
 
-def sw_vers(_cache=[]):
+
+def sw_vers(_cache=list()):
     if not _cache:
         info = os.popen('/usr/bin/sw_vers').read().splitlines()
         for line in info:
@@ -126,6 +138,7 @@ def sw_vers(_cache=[]):
         else:
             raise ValueError("sw_vers not behaving correctly")
     return _cache[0]
+
 
 def is_framework_python():
     return os.path.dirname(os.path.dirname(sys.prefix)).endswith('.framework')

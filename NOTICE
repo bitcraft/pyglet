@@ -1,5 +1,5 @@
 pyglet
-Copyright 2006-2008 Alex Holkner 
+Copyright 2006-2008 Alex Holkner
 http://www.pyglet.org
 
 pyglet includes contributions from the following organisations and
@@ -33,6 +33,7 @@ anatoly techtonik
 Juan J. Martinez
 Txema Vicente
 Claudio Canepa
+Leif Theden
 
 pyglet/libs/win32/constants.py is derived from Python for Windows
 Extensions.  Copyright 1994-2001 Mark Hammond.

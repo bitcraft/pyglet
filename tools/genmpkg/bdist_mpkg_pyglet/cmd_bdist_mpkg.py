@@ -18,15 +18,15 @@ from bdist_mpkg_pyglet import pkg, tools, plists
 from bdist_mpkg_pyglet.util import copy_tree
 
 INSTALL_SCHEME_DESCRIPTIONS = dict(
-    purelib = u'(Required) Pure Python modules and packages',
-    platlib = u'(Required) Python modules, extensions, and packages',
-    headers = u'(Optional) Header files for development',
-    scripts = u'(Optional) Scripts to use from the Unix shell',
-    data    = u'(Optional) Additional data files (sometimes documentation)',
+    purelib='(Required) Pure Python modules and packages',
+    platlib='(Required) Python modules, extensions, and packages',
+    headers='(Optional) Header files for development',
+    scripts='(Optional) Scripts to use from the Unix shell',
+    data='(Optional) Additional data files (sometimes documentation)',
 )
 
-class bdist_mpkg (Command):
 
+class bdist_mpkg(Command):
     description = "create a Mac OS X mpkg distribution for Installer.app"
 
     user_options = [
@@ -66,7 +66,7 @@ class bdist_mpkg (Command):
 
     boolean_options = ['skip-build', 'keep-temp', 'open', 'zipdist']
 
-    def initialize_options (self):
+    def initialize_options(self):
         self.skip_build = False
         self.keep_temp = False
         self.open = False
@@ -83,13 +83,13 @@ class bdist_mpkg (Command):
         self.zipdist = False
         self.optimize = 2
         self.component_directory = './Contents/Packages'
-        self.scheme_command = {}
-        self.scheme_map = {}
-        self.packages = []
-        self.scheme_descriptions = {}
-        self.scheme_root = {}
-        self.scheme_copy = {}
-        self.scheme_subprojects = {}
+        self.scheme_command = dict()
+        self.scheme_map = dict()
+        self.packages = list()
+        self.scheme_descriptions = dict()
+        self.scheme_root = dict()
+        self.scheme_copy = dict()
+        self.scheme_subprojects = dict()
         self.command_schemes = None
         self.custom_schemes = None
         self.packagesdir = None
@@ -120,28 +120,28 @@ class bdist_mpkg (Command):
     def get_command_schemes(self):
         rval = self.command_schemes
         if rval is None:
-            rval = {}
-            for scheme, cmd in self.scheme_command.iteritems():
-                rval.setdefault(cmd, []).append(scheme)
+            rval = dict()
+            for scheme, cmd in self.scheme_command.items():
+                rval.setdefault(cmd, list()).append(scheme)
             self.command_schemes = rval
         return rval
 
-    def finalize_options (self):
+    def finalize_options(self):
         if not isinstance(self.optimize, int):
             self.optimize = int(self.optimize)
         self.set_undefined_options('build', ('build_base', 'build_base'))
-        self.reinitialize_command('build').build_base =  self.build_base
+        self.reinitialize_command('build').build_base = self.build_base
         self.set_undefined_options('bdist',
-            ('bdist_base', 'bdist_base'),
-            ('dist_dir', 'dist_dir'),
-            ('plat_name', 'plat_name'),
-        )
+                                   ('bdist_base', 'bdist_base'),
+                                   ('dist_dir', 'dist_dir'),
+                                   ('plat_name', 'plat_name'),
+                                   )
         if self.pkg_base is None:
             self.pkg_base = os.path.join(self.bdist_base, 'mpkg')
 
         if self.custom_schemes is None:
-            self.custom_schemes = {}
-        for scheme, desc in self.custom_schemes.iteritems():
+            self.custom_schemes = dict()
+        for scheme, desc in self.custom_schemes.items():
             if 'description' in desc:
                 self.scheme_descriptions[scheme] = desc['description']
             if 'prefix' in desc:
@@ -150,11 +150,12 @@ class bdist_mpkg (Command):
                 self.scheme_copy[scheme] = desc['source']
 
         install = self.get_finalized_command('install')
-        for scheme, description in INSTALL_SCHEME_DESCRIPTIONS.iteritems():
+        for scheme, description in INSTALL_SCHEME_DESCRIPTIONS.items():
             self.scheme_command.setdefault(scheme, 'install')
             self.scheme_descriptions.setdefault(scheme, description)
             self.scheme_map.setdefault(scheme,
-                os.path.realpath(getattr(install, 'install_' + scheme)))
+                                       os.path.realpath(getattr(install,
+                                                                'install_' + scheme)))
 
         if tools.is_framework_python():
             if self.get_scheme_prefix('scripts').startswith(sys.prefix):
@@ -193,7 +194,6 @@ class bdist_mpkg (Command):
             self.component_directory
         )
 
-
     def run_extra(self):
         """
         Subclass and add stuff here to add entries to scheme_map
@@ -201,14 +201,14 @@ class bdist_mpkg (Command):
         pass
 
     def scheme_hook(self, scheme, pkgname, version, files, common,
-            prefix, pkgdir):
+                    prefix, pkgdir):
         """
         Subclass and do stuff with the scheme post-packaging
         """
         pass
 
     def run_subprojects(self):
-        for scheme,setupfile in self.scheme_subprojects.iteritems():
+        for scheme, setupfile in self.scheme_subprojects.items():
             self.run_subproject(scheme, setupfile)
 
     def run_subproject(self, scheme, setupfile):
@@ -290,7 +290,7 @@ class bdist_mpkg (Command):
 
     def run_adminperms(self):
         tools.adminperms(self.pkg_base,
-            verbose=self.verbose, dry_run=self.dry_run)
+                         verbose=self.verbose, dry_run=self.dry_run)
 
     def mkpath(self, fn):
         mkpath(fn, dry_run=self.dry_run, verbose=self.verbose)
@@ -314,7 +314,7 @@ class bdist_mpkg (Command):
         return os.path.join(self.dist_dir, self.metapackagename)
 
     def get_schemes(self):
-        return self.scheme_map.keys()
+        return list(self.scheme_map.keys())
 
     def get_scheme_prefix(self, scheme):
         return self.scheme_map.get(scheme)
@@ -348,7 +348,7 @@ class bdist_mpkg (Command):
             return None
         files, common, prefix = self.get_scheme_root(scheme)
         if prefix is not None:
-            description += u'\nInstalled to: ' + tools.unicode_path(prefix)
+            description += '\nInstalled to: ' + tools.unicode_path(prefix)
         return description
 
     def get_metapackage(self):
@@ -378,24 +378,24 @@ class bdist_mpkg (Command):
         version = self.get_scheme_version(scheme)
 
         pkg.make_package(self,
-            pkgname, version,
-            files, common, prefix,
-            pkgdir,
-            self.get_scheme_info(scheme),
-            self.get_scheme_description(scheme),
-        )
+                         pkgname, version,
+                         files, common, prefix,
+                         pkgdir,
+                         self.get_scheme_info(scheme),
+                         self.get_scheme_description(scheme),
+                         )
 
         self.scheme_hook(scheme, pkgname, version, files, common, prefix,
-            pkgdir)
+                         pkgdir)
 
     def make_metapackage(self):
         pkg.make_metapackage(self,
-            self.get_name(),
-            self.get_version(),
-            self.packages,
-            self.get_metapackage(),
-            self.get_metapackage_info(),
-        )
+                             self.get_name(),
+                             self.get_version(),
+                             self.packages,
+                             self.get_metapackage(),
+                             self.get_metapackage_info(),
+                             )
 
     def remove_temp(self):
         remove_tree(self.pkg_base, dry_run=self.dry_run)
@@ -410,7 +410,7 @@ class bdist_mpkg (Command):
                 self.run_command(command)
 
     def run_copy(self):
-        for scheme, source in self.scheme_copy.iteritems():
+        for scheme, source in self.scheme_copy.items():
             log.info("copying files for scheme %s" % (scheme,))
             target = self.get_scheme_install_target(scheme)
             self.copy_tree(source, target)
@@ -465,7 +465,7 @@ class bdist_mpkg (Command):
                 arcfn = os.path.join(zipbase, fn[len(mpkgroot):])
                 compression = zipfile.ZIP_DEFLATED
                 if os.path.splitext(fn)[1] == '.gz':
-                    compression= zipfile.ZIP_STORED
+                    compression = zipfile.ZIP_STORED
                 z.write(fn, arcfn, compression)
 
         # ZipFile always marks the files' attributes to be interpreted as if
@@ -474,12 +474,12 @@ class bdist_mpkg (Command):
         # proper file attributes. So manually fix the appropriate attributes on
         # each of the ZipInfo's to specify the host system as a UNIX.
         for zinfo in z.filelist:
-            zinfo.create_system = 3 # UNIX
+            zinfo.create_system = 3  # UNIX
 
         z.close()
 
     def copy_tree(self, infile, outfile, preserve_mode=1,
-            preserve_times=1, preserve_symlinks=1, condition=None):
+                  preserve_times=1, preserve_symlinks=1, condition=None):
         """
         Copy an entire directory tree respecting verbose, dry-run,
         and force flags.

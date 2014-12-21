@@ -2,14 +2,14 @@
 # pyglet
 # Copyright (c) 2006-2008 Alex Holkner
 # All rights reserved.
-# 
+#
 # Redistribution and use in source and binary forms, with or without
-# modification, are permitted provided that the following conditions 
+# modification, are permitted provided that the following conditions
 # are met:
 #
 #  * Redistributions of source code must retain the above copyright
 #    notice, this list of conditions and the following disclaimer.
-#  * Redistributions in binary form must reproduce the above copyright 
+#  * Redistributions in binary form must reproduce the above copyright
 #    notice, this list of conditions and the following disclaimer in
 #    the documentation and/or other materials provided with the
 #    distribution.
@@ -33,7 +33,7 @@
 # ----------------------------------------------------------------------------
 # $Id:$
 
-'''Minimal Windows COM interface.
+"""Minimal Windows COM interface.
 
 Allows pyglet to use COM interfaces on Windows without comtypes.  Unlike
 comtypes, this module does not provide property interfaces, read typelibs,
@@ -67,13 +67,14 @@ the return value.
 
 Don't forget to manually manage memory... call Release() when you're done with
 an interface.
-'''
+"""
 
 import ctypes
 import sys
 
 if sys.platform != 'win32':
     raise ImportError('pyglet.com requires a Windows build of Python')
+
 
 class GUID(ctypes.Structure):
     _fields_ = [
@@ -98,8 +99,11 @@ LPGUID = ctypes.POINTER(GUID)
 IID = GUID
 REFIID = ctypes.POINTER(IID)
 
-class METHOD(object):
-    '''COM method.'''
+
+class METHOD:
+
+    """COM method."""
+
     def __init__(self, restype, *args):
         self.restype = restype
         self.argtypes = args
@@ -107,13 +111,19 @@ class METHOD(object):
     def get_field(self):
         return ctypes.WINFUNCTYPE(self.restype, *self.argtypes)
 
-class STDMETHOD(METHOD):
-    '''COM method with HRESULT return value.'''
-    def __init__(self, *args):
-        super(STDMETHOD, self).__init__(ctypes.HRESULT, *args)
 
-class COMMethodInstance(object):
-    '''Binds a COM interface method.'''
+class STDMETHOD(METHOD):
+
+    """COM method with HRESULT return value."""
+
+    def __init__(self, *args):
+        super().__init__(ctypes.HRESULT, *args)
+
+
+class COMMethodInstance:
+
+    """Binds a COM interface method."""
+
     def __init__(self, name, i, method):
         self.name = name
         self.i = i
@@ -125,16 +135,20 @@ class COMMethodInstance(object):
                 self.method.get_field()(self.i, self.name)(obj, *args)
         raise AttributeError()
 
+
 class COMInterface(ctypes.Structure):
-    '''Dummy struct to serve as the type of all COM pointers.'''
+
+    """Dummy struct to serve as the type of all COM pointers."""
     _fields_ = [
         ('lpVtbl', ctypes.c_void_p),
     ]
 
+
 class InterfaceMetaclass(type(ctypes.POINTER(COMInterface))):
-    '''Creates COM interface pointers.'''
+
+    """Creates COM interface pointers."""
     def __new__(cls, name, bases, dct):
-        methods = []
+        methods = list()
         for base in bases[::-1]:
             methods.extend(base.__dict__.get('_methods_', ()))
         methods.extend(dct.get('_methods_', ()))
@@ -144,11 +158,13 @@ class InterfaceMetaclass(type(ctypes.POINTER(COMInterface))):
 
         dct['_type_'] = COMInterface
 
-        return super(InterfaceMetaclass, cls).__new__(cls, name, bases, dct)
+        return super().__new__(cls, name, bases, dct)
 
-class Interface(ctypes.POINTER(COMInterface)):
-    '''Base COM interface pointer.'''
-    __metaclass__ = InterfaceMetaclass
+
+class Interface(ctypes.POINTER(COMInterface), metaclass=InterfaceMetaclass):
+
+    """Base COM interface pointer."""
+
 
 class IUnknown(Interface):
     _methods_ = [
@@ -156,4 +172,3 @@ class IUnknown(Interface):
         ('AddRef', METHOD(ctypes.c_int)),
         ('Release', METHOD(ctypes.c_int))
     ]
-

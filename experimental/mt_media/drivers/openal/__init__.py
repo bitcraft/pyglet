@@ -2,14 +2,14 @@
 # pyglet
 # Copyright (c) 2006-2008 Alex Holkner
 # All rights reserved.
-# 
+#
 # Redistribution and use in source and binary forms, with or without
-# modification, are permitted provided that the following conditions 
+# modification, are permitted provided that the following conditions
 # are met:
 #
-#  * Redistributions of source code must retain the above copyright
+# * Redistributions of source code must retain the above copyright
 #    notice, this list of conditions and the following disclaimer.
-#  * Redistributions in binary form must reproduce the above copyright 
+#  * Redistributions in binary form must reproduce the above copyright
 #    notice, this list of conditions and the following disclaimer in
 #    the documentation and/or other materials provided with the
 #    distribution.
@@ -38,18 +38,21 @@ import heapq
 import sys
 import threading
 import time
-import Queue
+import queue
 
 import pyglet
+
 _debug = pyglet.options['debug_media']
 
 import mt_media
 
-import lib_openal as al
-import lib_alc as alc
+from . import lib_openal as al
+from . import lib_alc as alc
+
 
 class OpenALException(mt_media.MediaException):
     pass
+
 
 # TODO move functions into context/driver?
 
@@ -69,6 +72,7 @@ def _split_nul_strings(s):
     s = s[:i - 1]
     return s.split('\0')
 
+
 def get_extensions():
     extensions = alc.alcGetString(context._device, alc.ALC_EXTENSIONS)
     if sys.platform == 'darwin':
@@ -76,15 +80,18 @@ def get_extensions():
     else:
         return _split_nul_strings(extensions)
 
+
 def have_extension(extension):
     return extension in get_extensions()
 
+
 format_map = {
-    (1,  8): al.AL_FORMAT_MONO8,
+    (1, 8): al.AL_FORMAT_MONO8,
     (1, 16): al.AL_FORMAT_MONO16,
-    (2,  8): al.AL_FORMAT_STEREO8,
+    (2, 8): al.AL_FORMAT_STEREO8,
     (2, 16): al.AL_FORMAT_STEREO16,
 }
+
 
 class OpenALWorker(mt_media.MediaThread):
     # Minimum size to bother refilling (bytes)
@@ -97,7 +104,7 @@ class OpenALWorker(mt_media.MediaThread):
     _sleep_time = None
 
     def __init__(self):
-        super(OpenALWorker, self).__init__()
+        super().__init__()
         self.players = set()
 
     def run(self):
@@ -147,6 +154,7 @@ class OpenALWorker(mt_media.MediaThread):
         self.condition.notify()
         self.condition.release()
 
+
 class OpenALAudioPlayer(mt_media.AbstractAudioPlayer):
     #: Minimum size of an OpenAL buffer worth bothering with, in bytes
     _min_buffer_size = 512
@@ -155,7 +163,7 @@ class OpenALAudioPlayer(mt_media.AbstractAudioPlayer):
     _ideal_buffer_size = 44800
 
     def __init__(self, source_group, player):
-        super(OpenALAudioPlayer, self).__init__(source_group, player)
+        super().__init__(source_group, player)
         audio_format = source_group.audio_format
 
         try:
@@ -184,17 +192,17 @@ class OpenALAudioPlayer(mt_media.AbstractAudioPlayer):
         self._write_cursor = 0
 
         # List of currently queued buffer sizes (in bytes)
-        self._buffer_sizes = []
+        self._buffer_sizes = list()
 
         # List of currently queued buffer timestamps
-        self._buffer_timestamps = []
+        self._buffer_timestamps = list()
 
         # Timestamp at end of last written buffer (timestamp to return in case
         # of underrun)
         self._underrun_timestamp = None
 
         # List of (cursor, MediaEvent)
-        self._events = []
+        self._events = list()
 
         # Desired play state (True even if stopped due to underrun)
         self._playing = False
@@ -217,7 +225,7 @@ class OpenALAudioPlayer(mt_media.AbstractAudioPlayer):
 
     def delete(self):
         return
-        # XXX TODO crashes
+        # TODO: TODO crashes
         context.lock()
         al.alDeleteSources(1, self._al_source)
         context.unlock()
@@ -288,7 +296,7 @@ class OpenALAudioPlayer(mt_media.AbstractAudioPlayer):
                 self._underrun_timestamp = \
                     self._buffer_timestamps[-1] + \
                     self._buffer_sizes[-1] / \
-                        float(self.source_group.audio_format.bytes_per_second)
+                    float(self.source_group.audio_format.bytes_per_second)
             self._buffer_cursor += sum(self._buffer_sizes[:processed])
             del self._buffer_sizes[:processed]
             del self._buffer_timestamps[:processed]
@@ -304,14 +312,14 @@ class OpenALAudioPlayer(mt_media.AbstractAudioPlayer):
             al.alGetSourcei(self._al_source, al.AL_BYTE_OFFSET, bytes)
             context.unlock()
             if _debug:
-                print 'got bytes offset', bytes.value
+                print('got bytes offset', bytes.value)
             self._play_cursor = self._buffer_cursor + bytes.value
         else:
             # Interpolate system time past buffer timestamp
             self._play_cursor = \
                 self._buffer_cursor + int(
-                    (time.time() - self._buffer_system_time) * \
-                        self.source_group.audio_format.bytes_per_second)
+                    (time.time() - self._buffer_system_time) *
+                    self.source_group.audio_format.bytes_per_second)
 
         # Process events
         while self._events and self._events[0][0] < self._play_cursor:
@@ -333,7 +341,7 @@ class OpenALAudioPlayer(mt_media.AbstractAudioPlayer):
 
     def refill(self, write_size):
         if _debug:
-            print 'refill', write_size
+            print('refill', write_size)
 
         self._lock.acquire()
 
@@ -344,7 +352,7 @@ class OpenALAudioPlayer(mt_media.AbstractAudioPlayer):
                 self._events.append(
                     (self._write_cursor, mt_media.MediaEvent(0, 'on_eos')))
                 self._events.append(
-                    (self._write_cursor, 
+                    (self._write_cursor,
                      mt_media.MediaEvent(0, 'on_source_group_eos')))
                 break
 
@@ -356,12 +364,12 @@ class OpenALAudioPlayer(mt_media.AbstractAudioPlayer):
             buffer = al.ALuint()
             context.lock()
             al.alGenBuffers(1, buffer)
-            al.alBufferData(buffer, 
+            al.alBufferData(buffer,
                             self._al_format,
                             audio_data.data,
                             audio_data.length,
                             self.source_group.audio_format.sample_rate)
-            al.alSourceQueueBuffers(self._al_source, 1, ctypes.byref(buffer)) 
+            al.alSourceQueueBuffers(self._al_source, 1, ctypes.byref(buffer))
             context.unlock()
 
             self._write_cursor += audio_data.length
@@ -376,7 +384,7 @@ class OpenALAudioPlayer(mt_media.AbstractAudioPlayer):
             al.alGetSourcei(self._al_source, al.AL_SOURCE_STATE, state)
             if state.value != al.AL_PLAYING:
                 if _debug:
-                    print 'underrun'
+                    print('underrun')
                 al.alSourcePlay(self._al_source)
             context.unlock()
 
@@ -393,7 +401,7 @@ class OpenALAudioPlayer(mt_media.AbstractAudioPlayer):
 
         return buffer_timestamp + \
             (self._play_cursor - self._buffer_cursor) / \
-                float(self.source_group.audio_format.bytes_per_second)
+            float(self.source_group.audio_format.bytes_per_second)
 
     def set_volume(self, volume):
         context.lock()
@@ -442,9 +450,11 @@ class OpenALAudioPlayer(mt_media.AbstractAudioPlayer):
         al.alSourcef(self._al_source, al.AL_CONE_OUTER_GAIN, cone_outer_gain)
         context.unlock()
 
+
 class OpenALDriver(mt_media.AbstractAudioDriver):
+
     def __init__(self, device_name=None):
-        super(OpenALDriver, self).__init__()
+        super().__init__()
 
         # TODO devices must be enumerated on Windows, otherwise 1.0 context is
         # returned.
@@ -482,12 +492,11 @@ class OpenALDriver(mt_media.AbstractAudioDriver):
     def get_version(self):
         major = alc.ALCint()
         minor = alc.ALCint()
-        alc.alcGetIntegerv(self._device, alc.ALC_MAJOR_VERSION, 
+        alc.alcGetIntegerv(self._device, alc.ALC_MAJOR_VERSION,
                            ctypes.sizeof(major), major)
-        alc.alcGetIntegerv(self._device, alc.ALC_MINOR_VERSION, 
+        alc.alcGetIntegerv(self._device, alc.ALC_MINOR_VERSION,
                            ctypes.sizeof(minor), minor)
         return major.value, minor.value
-
 
     # Listener API
 
@@ -502,7 +511,7 @@ class OpenALDriver(mt_media.AbstractAudioDriver):
         self.lock()
         al.alListener3f(al.AL_POSITION, x, y, z)
         self.unlock()
-        self._position = position 
+        self._position = position
 
     def _set_forward_orientation(self, orientation):
         val = (al.ALfloat * 6)(*(orientation + self._up_orientation))
@@ -518,11 +527,13 @@ class OpenALDriver(mt_media.AbstractAudioDriver):
         self.unlock()
         self._up_orientation = orientation
 
+
 context = None
+
 
 def create_audio_driver(device_name=None):
     global context
     context = OpenALDriver(device_name)
     if _debug:
-        print 'OpenAL', context.get_version()
+        print('OpenAL', context.get_version())
     return context

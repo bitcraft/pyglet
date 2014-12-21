@@ -2,14 +2,14 @@
 # pyglet
 # Copyright (c) 2006-2008 Alex Holkner
 # All rights reserved.
-# 
+#
 # Redistribution and use in source and binary forms, with or without
-# modification, are permitted provided that the following conditions 
+# modification, are permitted provided that the following conditions
 # are met:
 #
 #  * Redistributions of source code must retain the above copyright
 #    notice, this list of conditions and the following disclaimer.
-#  * Redistributions in binary form must reproduce the above copyright 
+#  * Redistributions in binary form must reproduce the above copyright
 #    notice, this list of conditions and the following disclaimer in
 #    the documentation and/or other materials provided with the
 #    distribution.
@@ -31,15 +31,15 @@
 # ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 # ----------------------------------------------------------------------------
-'''Wrapper for Xext
+"""Wrapper for Xext
 
 Generated with:
 tools/genwrappers.py xsync
 
 Do not modify this file.
-'''
+"""
 
-__docformat__ =  'restructuredtext'
+__docformat__ = 'restructuredtext'
 __version__ = '$Id$'
 
 import ctypes
@@ -59,6 +59,7 @@ for t in _int_types:
     if sizeof(t) == sizeof(c_size_t):
         c_ptrdiff_t = t
 
+
 class c_void(Structure):
     # c_void_p is a buggy return type, converting to int, so
     # POINTER(None) == c_void_p is actually written as
@@ -66,12 +67,12 @@ class c_void(Structure):
     _fields_ = [('dummy', c_int)]
 
 
-# XXX DODGY relative import of xlib.py, which contains XID etc definitions.
+# TODO: DODGY relative import of xlib.py, which contains XID etc definitions.
 # can't use wrapped import which gave
 #   import pyglet.window.xlib.xlib
 # because Python has the lamest import semantics and can't handle that kind of
 # recursive import, even though it's the same as
-import xlib
+from . import xlib
 
 SYNC_MAJOR_VERSION = 3 	# /usr/include/X11/extensions/sync.h:4901
 SYNC_MINOR_VERSION = 0 	# /usr/include/X11/extensions/sync.h:4902
@@ -120,6 +121,8 @@ XSyncAlarmState = enum_anon_95 	# /usr/include/X11/extensions/sync.h:4964
 XID = xlib.XID
 XSyncCounter = XID 	# /usr/include/X11/extensions/sync.h:4967
 XSyncAlarm = XID 	# /usr/include/X11/extensions/sync.h:4968
+
+
 class struct__XSyncValue(Structure):
     __slots__ = [
         'hi',
@@ -195,12 +198,14 @@ XSyncValueHigh32.argtypes = [XSyncValue]
 # /usr/include/X11/extensions/sync.h:5036
 XSyncValueAdd = _lib.XSyncValueAdd
 XSyncValueAdd.restype = None
-XSyncValueAdd.argtypes = [POINTER(XSyncValue), XSyncValue, XSyncValue, POINTER(c_int)]
+XSyncValueAdd.argtypes = [
+    POINTER(XSyncValue), XSyncValue, XSyncValue, POINTER(c_int)]
 
 # /usr/include/X11/extensions/sync.h:5043
 XSyncValueSubtract = _lib.XSyncValueSubtract
 XSyncValueSubtract.restype = None
-XSyncValueSubtract.argtypes = [POINTER(XSyncValue), XSyncValue, XSyncValue, POINTER(c_int)]
+XSyncValueSubtract.argtypes = [
+    POINTER(XSyncValue), XSyncValue, XSyncValue, POINTER(c_int)]
 
 # /usr/include/X11/extensions/sync.h:5050
 XSyncMaxValue = _lib.XSyncMaxValue
@@ -211,6 +216,7 @@ XSyncMaxValue.argtypes = [POINTER(XSyncValue)]
 XSyncMinValue = _lib.XSyncMinValue
 XSyncMinValue.restype = None
 XSyncMinValue.argtypes = [POINTER(XSyncValue)]
+
 
 class struct__XSyncSystemCounter(Structure):
     __slots__ = [
@@ -224,7 +230,10 @@ struct__XSyncSystemCounter._fields_ = [
     ('resolution', XSyncValue),
 ]
 
-XSyncSystemCounter = struct__XSyncSystemCounter 	# /usr/include/X11/extensions/sync.h:5131
+# /usr/include/X11/extensions/sync.h:5131
+XSyncSystemCounter = struct__XSyncSystemCounter
+
+
 class struct_anon_96(Structure):
     __slots__ = [
         'counter',
@@ -240,6 +249,8 @@ struct_anon_96._fields_ = [
 ]
 
 XSyncTrigger = struct_anon_96 	# /usr/include/X11/extensions/sync.h:5139
+
+
 class struct_anon_97(Structure):
     __slots__ = [
         'trigger',
@@ -251,6 +262,8 @@ struct_anon_97._fields_ = [
 ]
 
 XSyncWaitCondition = struct_anon_97 	# /usr/include/X11/extensions/sync.h:5144
+
+
 class struct_anon_98(Structure):
     __slots__ = [
         'trigger',
@@ -265,7 +278,10 @@ struct_anon_98._fields_ = [
     ('state', XSyncAlarmState),
 ]
 
-XSyncAlarmAttributes = struct_anon_98 	# /usr/include/X11/extensions/sync.h:5152
+# /usr/include/X11/extensions/sync.h:5152
+XSyncAlarmAttributes = struct_anon_98
+
+
 class struct_anon_99(Structure):
     __slots__ = [
         'type',
@@ -294,7 +310,10 @@ struct_anon_99._fields_ = [
     ('destroyed', Bool),
 ]
 
-XSyncCounterNotifyEvent = struct_anon_99 	# /usr/include/X11/extensions/sync.h:5169
+# /usr/include/X11/extensions/sync.h:5169
+XSyncCounterNotifyEvent = struct_anon_99
+
+
 class struct_anon_100(Structure):
     __slots__ = [
         'type',
@@ -319,7 +338,10 @@ struct_anon_100._fields_ = [
     ('state', XSyncAlarmState),
 ]
 
-XSyncAlarmNotifyEvent = struct_anon_100 	# /usr/include/X11/extensions/sync.h:5181
+# /usr/include/X11/extensions/sync.h:5181
+XSyncAlarmNotifyEvent = struct_anon_100
+
+
 class struct_anon_101(Structure):
     __slots__ = [
         'type',
@@ -341,6 +363,8 @@ struct_anon_101._fields_ = [
 ]
 
 XSyncAlarmError = struct_anon_101 	# /usr/include/X11/extensions/sync.h:5195
+
+
 class struct_anon_102(Structure):
     __slots__ = [
         'type',
@@ -365,7 +389,8 @@ XSyncCounterError = struct_anon_102 	# /usr/include/X11/extensions/sync.h:5205
 # /usr/include/X11/extensions/sync.h:5213
 XSyncQueryExtension = _lib.XSyncQueryExtension
 XSyncQueryExtension.restype = c_int
-XSyncQueryExtension.argtypes = [POINTER(Display), POINTER(c_int), POINTER(c_int)]
+XSyncQueryExtension.argtypes = [
+    POINTER(Display), POINTER(c_int), POINTER(c_int)]
 
 # /usr/include/X11/extensions/sync.h:5219
 XSyncInitialize = _lib.XSyncInitialize
@@ -405,7 +430,8 @@ XSyncDestroyCounter.argtypes = [POINTER(Display), XSyncCounter]
 # /usr/include/X11/extensions/sync.h:5256
 XSyncQueryCounter = _lib.XSyncQueryCounter
 XSyncQueryCounter.restype = c_int
-XSyncQueryCounter.argtypes = [POINTER(Display), XSyncCounter, POINTER(XSyncValue)]
+XSyncQueryCounter.argtypes = [
+    POINTER(Display), XSyncCounter, POINTER(XSyncValue)]
 
 # /usr/include/X11/extensions/sync.h:5262
 XSyncAwait = _lib.XSyncAwait
@@ -415,7 +441,8 @@ XSyncAwait.argtypes = [POINTER(Display), POINTER(XSyncWaitCondition), c_int]
 # /usr/include/X11/extensions/sync.h:5268
 XSyncCreateAlarm = _lib.XSyncCreateAlarm
 XSyncCreateAlarm.restype = XSyncAlarm
-XSyncCreateAlarm.argtypes = [POINTER(Display), c_ulong, POINTER(XSyncAlarmAttributes)]
+XSyncCreateAlarm.argtypes = [
+    POINTER(Display), c_ulong, POINTER(XSyncAlarmAttributes)]
 
 # /usr/include/X11/extensions/sync.h:5274
 XSyncDestroyAlarm = _lib.XSyncDestroyAlarm
@@ -425,12 +452,14 @@ XSyncDestroyAlarm.argtypes = [POINTER(Display), XSyncAlarm]
 # /usr/include/X11/extensions/sync.h:5279
 XSyncQueryAlarm = _lib.XSyncQueryAlarm
 XSyncQueryAlarm.restype = c_int
-XSyncQueryAlarm.argtypes = [POINTER(Display), XSyncAlarm, POINTER(XSyncAlarmAttributes)]
+XSyncQueryAlarm.argtypes = [
+    POINTER(Display), XSyncAlarm, POINTER(XSyncAlarmAttributes)]
 
 # /usr/include/X11/extensions/sync.h:5285
 XSyncChangeAlarm = _lib.XSyncChangeAlarm
 XSyncChangeAlarm.restype = c_int
-XSyncChangeAlarm.argtypes = [POINTER(Display), XSyncAlarm, c_ulong, POINTER(XSyncAlarmAttributes)]
+XSyncChangeAlarm.argtypes = [
+    POINTER(Display), XSyncAlarm, c_ulong, POINTER(XSyncAlarmAttributes)]
 
 # /usr/include/X11/extensions/sync.h:5292
 XSyncSetPriority = _lib.XSyncSetPriority
@@ -444,28 +473,28 @@ XSyncGetPriority.argtypes = [POINTER(Display), XID, POINTER(c_int)]
 
 
 __all__ = ['SYNC_MAJOR_VERSION', 'SYNC_MINOR_VERSION', 'X_SyncInitialize',
-'X_SyncListSystemCounters', 'X_SyncCreateCounter', 'X_SyncSetCounter',
-'X_SyncChangeCounter', 'X_SyncQueryCounter', 'X_SyncDestroyCounter',
-'X_SyncAwait', 'X_SyncCreateAlarm', 'X_SyncChangeAlarm', 'X_SyncQueryAlarm',
-'X_SyncDestroyAlarm', 'X_SyncSetPriority', 'X_SyncGetPriority',
-'XSyncCounterNotify', 'XSyncAlarmNotify', 'XSyncAlarmNotifyMask',
-'XSyncNumberEvents', 'XSyncBadCounter', 'XSyncBadAlarm', 'XSyncNumberErrors',
-'XSyncCACounter', 'XSyncCAValueType', 'XSyncCAValue', 'XSyncCATestType',
-'XSyncCADelta', 'XSyncCAEvents', 'XSyncValueType', 'XSyncAbsolute',
-'XSyncRelative', 'XSyncTestType', 'XSyncPositiveTransition',
-'XSyncNegativeTransition', 'XSyncPositiveComparison',
-'XSyncNegativeComparison', 'XSyncAlarmState', 'XSyncAlarmActive',
-'XSyncAlarmInactive', 'XSyncAlarmDestroyed', 'XSyncCounter', 'XSyncAlarm',
-'XSyncValue', 'XSyncIntToValue', 'XSyncIntsToValue', 'XSyncValueGreaterThan',
-'XSyncValueLessThan', 'XSyncValueGreaterOrEqual', 'XSyncValueLessOrEqual',
-'XSyncValueEqual', 'XSyncValueIsNegative', 'XSyncValueIsZero',
-'XSyncValueIsPositive', 'XSyncValueLow32', 'XSyncValueHigh32',
-'XSyncValueAdd', 'XSyncValueSubtract', 'XSyncMaxValue', 'XSyncMinValue',
-'XSyncSystemCounter', 'XSyncTrigger', 'XSyncWaitCondition',
-'XSyncAlarmAttributes', 'XSyncCounterNotifyEvent', 'XSyncAlarmNotifyEvent',
-'XSyncAlarmError', 'XSyncCounterError', 'XSyncQueryExtension',
-'XSyncInitialize', 'XSyncListSystemCounters', 'XSyncFreeSystemCounterList',
-'XSyncCreateCounter', 'XSyncSetCounter', 'XSyncChangeCounter',
-'XSyncDestroyCounter', 'XSyncQueryCounter', 'XSyncAwait', 'XSyncCreateAlarm',
-'XSyncDestroyAlarm', 'XSyncQueryAlarm', 'XSyncChangeAlarm',
-'XSyncSetPriority', 'XSyncGetPriority']
+           'X_SyncListSystemCounters', 'X_SyncCreateCounter', 'X_SyncSetCounter',
+           'X_SyncChangeCounter', 'X_SyncQueryCounter', 'X_SyncDestroyCounter',
+           'X_SyncAwait', 'X_SyncCreateAlarm', 'X_SyncChangeAlarm', 'X_SyncQueryAlarm',
+           'X_SyncDestroyAlarm', 'X_SyncSetPriority', 'X_SyncGetPriority',
+           'XSyncCounterNotify', 'XSyncAlarmNotify', 'XSyncAlarmNotifyMask',
+           'XSyncNumberEvents', 'XSyncBadCounter', 'XSyncBadAlarm', 'XSyncNumberErrors',
+           'XSyncCACounter', 'XSyncCAValueType', 'XSyncCAValue', 'XSyncCATestType',
+           'XSyncCADelta', 'XSyncCAEvents', 'XSyncValueType', 'XSyncAbsolute',
+           'XSyncRelative', 'XSyncTestType', 'XSyncPositiveTransition',
+           'XSyncNegativeTransition', 'XSyncPositiveComparison',
+           'XSyncNegativeComparison', 'XSyncAlarmState', 'XSyncAlarmActive',
+           'XSyncAlarmInactive', 'XSyncAlarmDestroyed', 'XSyncCounter', 'XSyncAlarm',
+           'XSyncValue', 'XSyncIntToValue', 'XSyncIntsToValue', 'XSyncValueGreaterThan',
+           'XSyncValueLessThan', 'XSyncValueGreaterOrEqual', 'XSyncValueLessOrEqual',
+           'XSyncValueEqual', 'XSyncValueIsNegative', 'XSyncValueIsZero',
+           'XSyncValueIsPositive', 'XSyncValueLow32', 'XSyncValueHigh32',
+           'XSyncValueAdd', 'XSyncValueSubtract', 'XSyncMaxValue', 'XSyncMinValue',
+           'XSyncSystemCounter', 'XSyncTrigger', 'XSyncWaitCondition',
+           'XSyncAlarmAttributes', 'XSyncCounterNotifyEvent', 'XSyncAlarmNotifyEvent',
+           'XSyncAlarmError', 'XSyncCounterError', 'XSyncQueryExtension',
+           'XSyncInitialize', 'XSyncListSystemCounters', 'XSyncFreeSystemCounterList',
+           'XSyncCreateCounter', 'XSyncSetCounter', 'XSyncChangeCounter',
+           'XSyncDestroyCounter', 'XSyncQueryCounter', 'XSyncAwait', 'XSyncCreateAlarm',
+           'XSyncDestroyAlarm', 'XSyncQueryAlarm', 'XSyncChangeAlarm',
+           'XSyncSetPriority', 'XSyncGetPriority']

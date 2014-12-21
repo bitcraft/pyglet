@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
-'''
-'''
+"""
+"""
 
 __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
@@ -20,7 +20,8 @@ import threading
 from pyglet.window.xlib import xlib
 import lib_xf86vmode as xf86vmode
 
-class ModeList(object):
+
+class ModeList:
     invalid = True
 
     def __init__(self, x_display, x_screen):
@@ -39,14 +40,14 @@ class ModeList(object):
 
         count = ctypes.c_int()
         modes = ctypes.POINTER(ctypes.POINTER(xf86vmode.XF86VidModeModeInfo))()
-        xf86vmode.XF86VidModeGetAllModeLines(self.x_display, self.x_screen, 
+        xf86vmode.XF86VidModeGetAllModeLines(self.x_display, self.x_screen,
                                              count, modes)
 
         # Copy modes out of list and free list
-        self.modes = []
+        self.modes = list()
         for i in range(count.value):
             mode = xf86vmode.XF86VidModeModeInfo()
-            ctypes.memmove(ctypes.byref(mode), ctypes.byref(modes.contents[i]), 
+            ctypes.memmove(ctypes.byref(mode), ctypes.byref(modes.contents[i]),
                            ctypes.sizeof(mode))
             self.modes.append(mode)
             if mode.privsize:
@@ -56,35 +57,35 @@ class ModeList(object):
         self.invalid = False
 
     def _mode_packet(self, mode):
-        return ModePacket(self.display_name, self.x_screen, 
+        return ModePacket(self.display_name, self.x_screen,
                           mode.hdisplay, mode.vdisplay, mode.dotclock)
 
     def get_mode(self):
-        '''Get current mode (ModePacket)'''
+        """Get current mode (ModePacket)"""
         self._validate()
         return self._mode_packet(self.modes[0])
 
     def set_mode(self, width, height, dotclock=None):
-        '''Set mode closest to requested width, height and dotclock (if
+        """Set mode closest to requested width, height and dotclock (if
         specified).  Actual mode is returned.  Exception is raised
         if width or height are above maximum.
-        '''
+        """
         self._validate()
 
         best_mode = None
         for mode in self.modes:
             if width > mode.hdisplay or height > mode.vdisplay:
                 continue
-            
+
             if not best_mode:
                 best_mode = mode
                 continue
 
             if mode.hdisplay == best_mode.hdisplay:
                 if mode.vdisplay < best_mode.vdisplay:
-                    if (dotclock is not None and 
-                        abs(dotclock - mode.dotclock) < 
-                        abs(dotclock - best_mode.dotclock)):
+                    if (dotclock is not None and
+                            abs(dotclock - mode.dotclock) <
+                            abs(dotclock - best_mode.dotclock)):
                         best_mode = mode
                 elif mode.vdisplay < best_mode.vdisplay:
                     best_mode = mode
@@ -94,23 +95,25 @@ class ModeList(object):
         if best_mode is None:
             raise Exception('No mode is in range of requested resolution.')
 
-        xf86vmode.XF86VidModeSwitchToMode(self.x_display, self.x_screen, 
+        xf86vmode.XF86VidModeSwitchToMode(self.x_display, self.x_screen,
                                           best_mode)
         xlib.XFlush(self.x_display)
         self.invalid = True
         return self._mode_packet(best_mode)
 
+
 # Mode packets tell the child process how to restore a given display and
 # screen.  Only one packet should be sent per display/screen (more would
 # indicate redundancy or incorrect restoration).  Packet format is:
-#   display (max 256 chars), 
+# display (max 256 chars),
 #   screen
 #   width
 #   height
 #   dotclock
-class ModePacket(object):
+class ModePacket:
     format = '256siHHI'
     size = struct.calcsize(format)
+
     def __init__(self, display_name, screen, width, height, dotclock):
         self.display_name = display_name
         self.screen = screen
@@ -139,9 +142,11 @@ class ModePacket(object):
         mode_list.set_mode(self.width, self.height, self.dotclock)
         xlib.XCloseDisplay(display)
 
+
 _restore_mode_child_installed = False
 _restorable_screens = set()
 _mode_write_pipe = None
+
 
 def _install_restore_mode_child():
     global _mode_write_pipe
@@ -169,12 +174,13 @@ def _install_restore_mode_child():
         # all displays/screens it knows about.
         def _sighup(signum, frame):
             parent_wait_mutex.unlock()
+
         parent_wait_mutex = mutex.mutex()
         parent_wait_mutex.lock(lambda arg: arg, None)
         signal.signal(signal.SIGHUP, _sighup)
 
         # Wait for parent to die and read packets from parent pipe
-        packets = []
+        packets = list()
         buffer = ''
         while parent_wait_mutex.test():
             data = os.read(mode_read_pipe, ModePacket.size)
@@ -188,13 +194,14 @@ def _install_restore_mode_child():
         for packet in packets:
             packet.set()
         sys.exit(0)
-        
+
     else:
         # Parent process.  Clean up pipe then continue running program as
         # normal.  Send mode packets through pipe as additional
         # displays/screens are mode switched.
         os.close(mode_read_pipe)
         _restore_mode_child_installed = True
+
 
 def _set_restore_mode(mode):
     _install_restore_mode_child()
@@ -206,6 +213,7 @@ def _set_restore_mode(mode):
     os.write(_mode_write_pipe, mode.encode())
     _restorable_screens.add((mode.display_name, mode.screen))
 
+
 def _set_mode(screen, width, height):
     display_name = screen.display
     mode_list = ModeList.from_screen(screen)
@@ -214,11 +222,12 @@ def _set_mode(screen, width, height):
     new_mode = mode_list.set_mode(width, height)
     return new_mode.width, new_mode.height
 
+
 import pyglet
+
 window = pyglet.window.Window()
 _set_mode(window.screen, 800, 600)
 pyglet.app.run()
 
 # Trigger a segfault -- mode still gets restored thanks to child :-)
-print ctypes.c_char_p.from_address(0)
-
+print(ctypes.c_char_p.from_address(0))

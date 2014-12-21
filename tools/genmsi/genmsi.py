@@ -1,6 +1,6 @@
 # 2. Create build/pyglet.wxs from pyglet.wxs, add all file components
 # 3. Run candle and light on build/pyglet.wxs to generate
-#    ../../dist/pyglet.msi
+# ../../dist/pyglet.msi
 
 import os
 import re
@@ -11,7 +11,9 @@ from xml.dom.minidom import parse
 
 import pkg_resources
 
-class PythonVersion(object):
+
+class PythonVersion:
+
     def __init__(self, version, key_root, display_version):
         self.version = version
         self.display_version = display_version
@@ -20,7 +22,9 @@ class PythonVersion(object):
         self.key = r'SOFTWARE\Python\PythonCore\%s\InstallPath' % version
         self.dir_prop = 'PYTHONHOME%s' % self.id
         self.exe_prop = 'PYTHONEXE%s' % self.id
-        self.components = []
+        self.components = list()
+
+
 PYTHON_VERSIONS = (
     PythonVersion('2.4', 'HKLM', 'Python 2.4'),
     PythonVersion('2.5', 'HKLM', 'Python 2.5'),
@@ -32,9 +36,11 @@ PYTHON_VERSIONS = (
 MISSING_PYTHON_MESSAGE = 'pyglet requires Python 2.4 or later.  The ' \
                          'installation will be aborted.'
 
-exclude_packages = []
+exclude_packages = list()
 
 ids = set()
+
+
 def id(name):
     num = 1
     id = name
@@ -44,7 +50,10 @@ def id(name):
     ids.add(id)
     return id
 
+
 shortnames = set()
+
+
 def shortname(name, ext):
     num = 1
     shortname = '%s.%s' % (name[:8], ext)
@@ -54,11 +63,13 @@ def shortname(name, ext):
     shortnames.add(shortname)
     return shortname
 
+
 def node(doc, node_name, **kwargs):
     node = doc.createElement(node_name)
-    for key, value in kwargs.items():
+    for key, value in list(kwargs.items()):
         node.setAttribute(key, value)
     return node
+
 
 def add_package(name, src_dir, doc, dest_node, pyver):
     if name in exclude_packages:
@@ -67,8 +78,8 @@ def add_package(name, src_dir, doc, dest_node, pyver):
     src_path = os.path.join(src_dir, name)
 
     directory = node(doc, 'Directory',
-        Id=id('%sDir' % name),
-        Name=name)
+                     Id=id('%sDir' % name),
+                     Name=name)
     dest_node.appendChild(doc.createTextNode('\n\n'))
     dest_node.appendChild(directory)
     dest_node.appendChild(doc.createTextNode('\n\n'))
@@ -82,24 +93,29 @@ def add_package(name, src_dir, doc, dest_node, pyver):
         elif filename.endswith('.py'):
             add_module(filename, src_path, doc, directory, pyver)
 
+
 def component_id(name, pyver):
     component = id(name)
     pyver.components.append(component)
     return component
 
+
 guid_seq = 0
+
+
 def guid():
     global guid_seq
     guid_seq += 1
     return uuid1(clock_seq=guid_seq).hex.upper()
+
 
 def add_module(name, src_dir, doc, dest_node, pyver):
     src_path = os.path.join(src_dir, name)
     basefile = os.path.splitext(name)[0]
 
     component = node(doc, 'Component',
-        Id= component_id('%sComponent' % basefile, pyver),
-        Guid=guid())
+                     Id=component_id('%sComponent' % basefile, pyver),
+                     Guid=guid())
 
     component.appendChild(
         node(doc, 'File',
@@ -122,11 +138,11 @@ def add_module(name, src_dir, doc, dest_node, pyver):
     # Some readability
     dest_node.appendChild(doc.createTextNode('\n'))
 
+
 def call(cmd):
-    print cmd
+    print(cmd)
     return subprocess.call(cmd, shell=True)
 
-if __name__ == '__main__':
     script_dir = os.path.dirname(__file__)
     root_dir = os.path.join(script_dir, '../..')
     dist_dir = os.path.join(root_dir, 'dist')
@@ -136,7 +152,7 @@ if __name__ == '__main__':
         pass
 
     # Copy current avbin into res
-    shutil.copyfile('c:/windows/system32/avbin.dll', 
+    shutil.copyfile('c:/windows/system32/avbin.dll',
                     os.path.join(script_dir, 'res', 'avbin.dll'))
 
     # Determine release version from setup.py
@@ -175,9 +191,9 @@ if __name__ == '__main__':
     assert not parts or parts[0] == '*final'
 
     version_windows = '%d.%d.%d.%d' % (major, minor, patch, base + tagnum)
-    print 'Version %s is Windows version %s' % (version, version_windows)
-    
-    print 'Writing pyglet.wxs'
+    print('Version %s is Windows version %s' % (version, version_windows))
+
+    print('Writing pyglet.wxs')
 
     # Open template wxs and find Product element
     wxs = parse(os.path.join(script_dir, 'pyglet.in.wxs'))
@@ -186,7 +202,7 @@ if __name__ == '__main__':
 
     # Add Python discovery
     for pyver in PYTHON_VERSIONS:
-        Property = node(wxs, 'Property', 
+        Property = node(wxs, 'Property',
                         Id=pyver.dir_prop)
         Property.appendChild(
             node(wxs, 'RegistrySearch',
@@ -194,26 +210,25 @@ if __name__ == '__main__':
                  Root=pyver.key_root,
                  Key=pyver.key,
                  Type='directory'))
-        Product.appendChild(Property) 
-    
-    # Add install conditional on at least one Python version present.
+        Product.appendChild(Property)
+
+        # Add install conditional on at least one Python version present.
     Condition = node(wxs, 'Condition',
                      Message=MISSING_PYTHON_MESSAGE)
     Condition.appendChild(wxs.createTextNode(
         ' or '.join([pyver.dir_prop for pyver in PYTHON_VERSIONS])))
     Product.appendChild(Condition)
 
-    
     # Get TARGETDIR Directory element
     for elem in wxs.getElementsByTagName('Directory'):
         if elem.getAttribute('Id') == 'TARGETDIR':
             target_dir = elem
             break
-       
+
     # Create entire set of components for each python version (WiX 3 will
     # ensure only one copy of the source file is in the archive)
     for pyver in PYTHON_VERSIONS:
-        python_home = node(wxs, 'Directory', 
+        python_home = node(wxs, 'Directory',
                            Id=pyver.dir_prop)
         target_dir.appendChild(python_home)
 
@@ -226,7 +241,7 @@ if __name__ == '__main__':
                              Id='%sSitePackages' % pyver.dir_prop,
                              Name='site-packages')
         lib_dir.appendChild(site_packages)
-                             
+
         add_package('pyglet', root_dir, wxs, site_packages, pyver)
 
     # Add all components to features
@@ -259,22 +274,22 @@ if __name__ == '__main__':
                 '(&RuntimeFeature%s=3) AND NOT(!RuntimeFeature%s=3)' % (
                     pyver.id, pyver.id)))
             return node
-        
+
         # Define the actions
         Product.appendChild(node(wxs, 'CustomAction',
-          Id='SetPythonExe%s' % pyver.id,
-          Property=pyver.exe_prop,
-          Value=r'[%s]\pythonw.exe' % pyver.dir_prop))
+                                 Id='SetPythonExe%s' % pyver.id,
+                                 Property=pyver.exe_prop,
+                                 Value=r'[%s]\pythonw.exe' % pyver.dir_prop))
         Product.appendChild(node(wxs, 'CustomAction',
-          Id='ByteCompile%s' % pyver.id,
-          Property=pyver.exe_prop,
-          ExeCommand=r'-c "import compileall; compileall.compile_dir(\"[%s]\Lib\site-packages\pyglet\", force=1)"' % pyver.dir_prop,
-          Return='ignore'))
+                                 Id='ByteCompile%s' % pyver.id,
+                                 Property=pyver.exe_prop,
+                                 ExeCommand=r'-c "import compileall; compileall.compile_dir(\"[%s]\Lib\site-packages\pyglet\", force=1)"' % pyver.dir_prop,
+                                 Return='ignore'))
         Product.appendChild(node(wxs, 'CustomAction',
-          Id='ByteOptimize%s' % pyver.id,
-          Property=pyver.exe_prop,
-          ExeCommand=r'-OO -c "import compileall; compileall.compile_dir(\"[%s]\Lib\site-packages\pyglet\", force=1)"' % pyver.dir_prop,
-          Return='ignore'))
+                                 Id='ByteOptimize%s' % pyver.id,
+                                 Property=pyver.exe_prop,
+                                 ExeCommand=r'-OO -c "import compileall; compileall.compile_dir(\"[%s]\Lib\site-packages\pyglet\", force=1)"' % pyver.dir_prop,
+                                 Return='ignore'))
 
         # Schedule execution of these actions
         InstallExecuteSequence.appendChild(cond(
@@ -290,7 +305,7 @@ if __name__ == '__main__':
                  Action='ByteOptimize%s' % pyver.id,
                  After='ByteCompile%s' % pyver.id)))
         last_action = 'ByteOptimize%s' % pyver.id
-        
+
         # Set progress text for the actions
         progress = node(wxs, 'ProgressText',
                         Action='ByteCompile%s' % pyver.id)
@@ -302,15 +317,15 @@ if __name__ == '__main__':
         progress.appendChild(wxs.createTextNode(
             'Byte-optimizing modules for Python %s' % pyver.version))
         UI.appendChild(progress)
-    
+
     # Write wxs file
     wxs.writexml(open(os.path.join(script_dir, 'pyglet.wxs'), 'w'))
-    
+
     # Compile
     call('candle -out %s %s' % (os.path.join(script_dir, 'pyglet.wixobj'),
                                 os.path.join(script_dir, 'pyglet.wxs')))
 
     # Link
-    call('light -sval -out %s %s' % \
-        (os.path.join(dist_dir, 'pyglet-%s.msi' % version),
-         os.path.join(script_dir, 'pyglet.wixobj')))
+    call('light -sval -out %s %s' %
+         (os.path.join(dist_dir, 'pyglet-%s.msi' % version),
+          os.path.join(script_dir, 'pyglet.wixobj')))

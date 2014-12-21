@@ -10,12 +10,13 @@ from pyglet import window
 
 try:
     # Try and create a window with multisampling (antialiasing)
-    config = Config(sample_buffers=1, samples=4, 
-                    depth_size=16, double_buffer=True,)
+    config = Config(sample_buffers=1, samples=4,
+                    depth_size=16, double_buffer=True, )
     w = window.Window(resizable=True, config=config, vsync=False)
 except window.NoSuchConfigException:
     # Fall back to no multisampling for old hardware
     w = window.Window(resizable=True)
+
 
 @w.event
 def on_resize(width, height):
@@ -26,6 +27,7 @@ def on_resize(width, height):
     gluPerspective(60., width / float(height), .1, 1000.)
     glMatrixMode(GL_MODELVIEW)
 
+
 def setup():
     # One-time GL setup
     glClearColor(1, 1, 1, 1)
@@ -33,10 +35,10 @@ def setup():
     glEnable(GL_DEPTH_TEST)
 
     # Uncomment this line for a wireframe view
-    #glPolygonMode(GL_FRONT_AND_BACK, GL_LINE)
+    # glPolygonMode(GL_FRONT_AND_BACK, GL_LINE)
 
     # Simple light setup.  On Windows GL_LIGHT0 is enabled by default,
-    # but this is not the case on Linux or Mac, so remember to always 
+    # but this is not the case on Linux or Mac, so remember to always
     # include it.
     glEnable(GL_LIGHTING)
     glEnable(GL_LIGHT0)
@@ -53,16 +55,19 @@ def setup():
     glLightfv(GL_LIGHT1, GL_DIFFUSE, vec(.5, .5, .5, 1))
     glLightfv(GL_LIGHT1, GL_SPECULAR, vec(1, 1, 1, 1))
 
-    glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, vec(0.5, 0, 0.3, 1))
+    glMaterialfv(
+        GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, vec(0.5, 0, 0.3, 1))
     glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, vec(1, 1, 1, 1))
     glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, 50)
 
-class Torus(object):
+
+class Torus:
     list = None
+
     def __init__(self, radius, inner_radius, slices, inner_slices):
         # Create the vertex and normal arrays.
-        vertices = []
-        normals = []
+        vertices = list()
+        normals = list()
 
         u_step = 2 * pi / (slices - 1)
         v_step = 2 * pi / (inner_slices - 1)
@@ -90,25 +95,26 @@ class Torus(object):
             u += u_step
 
         # Create a list of triangle indices.
-        indices = []
+        indices = list()
         for i in range(slices - 1):
             for j in range(inner_slices - 1):
                 p = i * inner_slices + j
                 indices.extend([p, p + inner_slices, p + inner_slices + 1])
                 indices.extend([p, p + 1, p + inner_slices + 1])
 
-        self.domain = vertexdomain.create_indexed_domain('v3f/static', 
+        self.domain = vertexdomain.create_indexed_domain('v3f/static',
                                                          'n3f/static')
-        primitive = self.domain.create(len(vertices)//3, len(indices))
+        primitive = self.domain.create(len(vertices) // 3, len(indices))
         primitive.vertices = vertices
         primitive.normals = normals
         primitive.indices = indices
-       
+
     def draw(self):
         self.domain.draw(GL_TRIANGLES)
 
     def cleanup(self):
         pass
+
 
 def run(runs=3):
     torus = Torus(1, 0.3, 500, 500)
@@ -140,16 +146,15 @@ def run(runs=3):
 
         if count > 2.:
             count = 0.
-            print clock.get_fps()
+            print(clock.get_fps())
             runs -= 1
             if runs == 0:
-                #break
+                # break
                 pass
         count += dt
 
     torus.cleanup()
     return w.has_exit
 
-if __name__ == '__main__':
     setup()
     run(1)

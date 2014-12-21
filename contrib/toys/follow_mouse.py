@@ -1,4 +1,4 @@
-'''
+"""
 Code by Richard Jones, released into the public domain.
 
 Inspired by http://screamyguy.net/lines/index.htm
@@ -10,8 +10,7 @@ the next line segment.
 
 Note: when working with a single buffer it is always a good idea to
 glFlush() when you've finished your rendering.
-'''
-
+"""
 
 import sys
 import random
@@ -23,11 +22,13 @@ from pyglet.gl import *
 config = Config(double_buffer=False)
 window = pyglet.window.Window(fullscreen='-fs' in sys.argv, config=config)
 
-class Line(object):
+
+class Line:
     batch = pyglet.graphics.Batch()
-    lines = batch.add(100, GL_LINES, None, ('v2f', (0.0,)  * 200), ('c4B', (255, ) * 400))
-    unallocated = range(100)
-    active = []
+    lines = batch.add(100, GL_LINES, None, ('v2f', (0.0,) * 200),
+                      ('c4B', (255, ) * 400))
+    unallocated = list(range(100))
+    active = list()
 
     def __init__(self):
         self.n = self.unallocated.pop()
@@ -69,6 +70,7 @@ class Line(object):
         glFlush()
 
     mouse_x = mouse_y = 0
+
     @classmethod
     def on_mouse_motion(cls, x, y, dx, dy):
         cls.mouse_x, cls.mouse_y = x, y
@@ -86,16 +88,18 @@ class Line(object):
         n = len(cls.active)
         for n, line in enumerate(cls.active):
             line.update(dt)
-            cls.lines.vertices[n*4:n*4+4] = [line.lx, line.ly, line.x, line.y]
+            cls.lines.vertices[n * 4:n * 4 + 4] = [line.lx, line.ly, line.x,
+                                                   line.y]
+
 
 glEnable(GL_BLEND)
 glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
 glEnable(GL_LINE_SMOOTH)
 
-# need to set a FPS limit since we're not going to be limited by VSYNC in single-buffer mode
+# need to set a FPS limit since we're not going to be limited by VSYNC in
+# single-buffer mode
 pyglet.clock.set_fps_limit(30)
 
 pyglet.clock.schedule(Line.tick)
 window.push_handlers(Line)
 pyglet.app.run()
-

@@ -5,8 +5,10 @@ from pyglet import gl, compat_platform
 from pyglet.gl import gl_info
 from pyglet.gl import glu_info
 
-class Config(object):
-    '''Graphics configuration.
+
+class Config:
+
+    """Graphics configuration.
 
     A Config stores the preferences for OpenGL attributes such as the
     number of auxilliary buffers, size of the colour and depth buffers,
@@ -53,7 +55,7 @@ class Config(object):
         `accum_alpha_size` : int
             Bits per pixel devoted to the alpha component in the accumulation
             buffer.
-    '''
+    """
 
     _attribute_names = [
         'double_buffer',
@@ -84,13 +86,13 @@ class Config(object):
     debug = None
 
     def __init__(self, **kwargs):
-        '''Create a template config with the given attributes.
+        """Create a template config with the given attributes.
 
         Specify attributes as keyword arguments, for example::
 
             template = Config(double_buffer=True)
 
-        '''
+        """
         for name in self._attribute_names:
             if name in kwargs:
                 setattr(self, name, kwargs[name])
@@ -105,16 +107,16 @@ class Config(object):
         return False
 
     def get_gl_attributes(self):
-        '''Return a list of attributes set on this config.
+        """Return a list of attributes set on this config.
 
         :rtype: list of tuple (name, value)
         :return: All attributes, with unset attributes having a value of
             ``None``.
-        '''
+        """
         return [(name, getattr(self, name)) for name in self._attribute_names]
 
     def match(self, canvas):
-        '''Return a list of matching complete configs for the given canvas.
+        """Return a list of matching complete configs for the given canvas.
 
         :since: pyglet 1.2
 
@@ -123,47 +125,18 @@ class Config(object):
                 Display to host contexts created from the config.
 
         :rtype: list of `CanvasConfig`
-        '''
+        """
         raise NotImplementedError('abstract')
-
-    def create_context(self, share):
-        '''Create a GL context that satisifies this configuration.
-
-        :deprecated: Use `CanvasConfig.create_context`.
-
-        :Parameters:
-            `share` : `Context`
-                If not None, a context with which to share objects with.
-
-        :rtype: `Context`
-        :return: The new context.
-        '''
-        raise gl.ConfigException(
-            'This config cannot be used to create contexts.  '
-            'Use Config.match to created a CanvasConfig')
-
-    def is_complete(self):
-        '''Determine if this config is complete and able to create a context.
-
-        Configs created directly are not complete, they can only serve
-        as templates for retrieving a supported config from the system.
-        For example, `pyglet.window.Screen.get_matching_configs` returns
-        complete configs.
-
-        :deprecated: Use ``isinstance(config, CanvasConfig)``.
-
-        :rtype: bool
-        :return: True if the config is complete and can create a context.
-        '''
-        return isinstance(self, CanvasConfig)
 
     def __repr__(self):
         import pprint
-        return '%s(%s)' % (self.__class__.__name__, 
+        return '%s(%s)' % (self.__class__.__name__,
                            pprint.pformat(self.get_gl_attributes()))
 
+
 class CanvasConfig(Config):
-    '''OpenGL configuration for a particular canvas.
+
+    """OpenGL configuration for a particular canvas.
 
     Use `Config.match` to obtain an instance of this class.
 
@@ -173,7 +146,8 @@ class CanvasConfig(Config):
         `canvas` : `Canvas`
             The canvas this config is valid on.
 
-    '''
+    """
+
     def __init__(self, canvas, base_config):
         self.canvas = canvas
 
@@ -186,7 +160,7 @@ class CanvasConfig(Config):
         raise NotImplementedError('abstract')
 
     def create_context(self, share):
-        '''Create a GL context that satisifies this configuration.
+        """Create a GL context that satisifies this configuration.
 
         :Parameters:
             `share` : `Context`
@@ -194,22 +168,25 @@ class CanvasConfig(Config):
 
         :rtype: `Context`
         :return: The new context.
-        '''
+        """
         raise NotImplementedError('abstract')
 
     def is_complete(self):
         return True
- 
 
-class ObjectSpace(object):
+
+class ObjectSpace:
+
     def __init__(self):
         # Textures and buffers scheduled for deletion the next time this
         # object space is active.
-        self._doomed_textures = []
-        self._doomed_buffers = []
+        self._doomed_textures = list()
+        self._doomed_buffers = list()
 
-class Context(object):
-    '''OpenGL context for drawing.
+
+class Context:
+
+    """OpenGL context for drawing.
 
     Use `CanvasConfig.create_context` to create a context.
 
@@ -218,7 +195,7 @@ class Context(object):
             An object which is shared between all contexts that share
             GL objects.
 
-    '''
+    """
 
     #: Context share behaviour indicating that objects should not be
     #: shared with existing contexts.
@@ -227,7 +204,7 @@ class Context(object):
     #: Context share behaviour indicating that objects are shared with
     #: the most recently created context (the default).
     CONTEXT_SHARE_EXISTING = 1
-    
+
     # Used for error checking, True if currently within a glBegin/End block.
     # Ignored if error checking is disabled.
     _gl_begin = False
@@ -254,14 +231,14 @@ class Context(object):
         ('_workaround_vbo',
          lambda info: (info.get_renderer().startswith('ATI Radeon X')
                        or info.get_renderer().startswith('RADEON XPRESS 200M')
-                       or info.get_renderer() == 
-                            'Intel 965/963 Graphics Media Accelerator')),
+                       or info.get_renderer() ==
+                       'Intel 965/963 Graphics Media Accelerator')),
 
         # Some ATI cards on OS X start drawing from a VBO before it's written
         # to.  In these cases pyglet needs to call glFinish() to flush the
         # pipeline after updating a buffer but before rendering.
         ('_workaround_vbo_finish',
-         lambda info: ('ATI' in info.get_renderer() and 
+         lambda info: ('ATI' in info.get_renderer() and
                        info.have_version(1, 5) and
                        compat_platform == 'darwin')),
     ]
@@ -275,7 +252,7 @@ class Context(object):
             self.object_space = context_share.object_space
         else:
             self.object_space = ObjectSpace()
-    
+
     def __repr__(self):
         return '%s()' % self.__class__.__name__
 
@@ -293,10 +270,10 @@ class Context(object):
         if not self.canvas:
             raise RuntimeError('Canvas has not been attached')
 
-        # XXX not per-thread
+        # TODO: not per-thread
         gl.current_context = self
 
-        # XXX
+        # TODO:
         gl_info.set_active_context()
         glu_info.set_active_context()
 
@@ -315,21 +292,21 @@ class Context(object):
             textures = self.object_space._doomed_textures[:]
             textures = (gl.GLuint * len(textures))(*textures)
             gl.glDeleteTextures(len(textures), textures)
-            self.object_space._doomed_textures[0:len(textures)] = []
+            self.object_space._doomed_textures[0:len(textures)] = list()
         if self.object_space._doomed_buffers:
             buffers = self.object_space._doomed_buffers[:]
             buffers = (gl.GLuint * len(buffers))(*buffers)
             gl.glDeleteBuffers(len(buffers), buffers)
-            self.object_space._doomed_buffers[0:len(buffers)] = []
+            self.object_space._doomed_buffers[0:len(buffers)] = list()
 
     def destroy(self):
-        '''Release the context.
+        """Release the context.
 
         The context will not be useable after being destroyed.  Each platform
         has its own convention for releasing the context and the buffer(s)
         that depend on it in the correct order; this should never be called
         by an application.
-        '''
+        """
         self.detach()
 
         if gl.current_context is self:
@@ -341,7 +318,7 @@ class Context(object):
                 gl._shadow_window.switch_to()
 
     def delete_texture(self, texture_id):
-        '''Safely delete a texture belonging to this context.
+        """Safely delete a texture belonging to this context.
 
         Usually, the texture is released immediately using
         ``glDeleteTextures``, however if another context that does not share
@@ -352,7 +329,7 @@ class Context(object):
             `texture_id` : int
                 The OpenGL name of the texture to delete.
 
-        '''
+        """
         if self.object_space is gl.current_context.object_space:
             id = gl.GLuint(texture_id)
             gl.glDeleteTextures(1, id)
@@ -360,7 +337,7 @@ class Context(object):
             self.object_space._doomed_textures.append(texture_id)
 
     def delete_buffer(self, buffer_id):
-        '''Safely delete a buffer object belonging to this context.
+        """Safely delete a buffer object belonging to this context.
 
         This method behaves similarly to `delete_texture`, though for
         ``glDeleteBuffers`` instead of ``glDeleteTextures``.
@@ -370,7 +347,7 @@ class Context(object):
                 The OpenGL name of the buffer to delete.
 
         :since: pyglet 1.1
-        '''
+        """
         if self.object_space is gl.current_context.object_space and False:
             id = gl.GLuint(buffer_id)
             gl.glDeleteBuffers(1, id)
@@ -378,10 +355,10 @@ class Context(object):
             self.object_space._doomed_buffers.append(buffer_id)
 
     def get_info(self):
-        '''Get the OpenGL information for this context.
+        """Get the OpenGL information for this context.
 
         :since: pyglet 1.2
 
         :rtype: `GLInfo`
-        '''
+        """
         return self._info

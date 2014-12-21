@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
-'''Simple viewer for DDS texture files.
-'''
+"""Simple viewer for DDS texture files.
+"""
 
 __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
@@ -22,8 +22,9 @@ import pyglet.window
 
 from OpenGL.GLU import *
 
+
 def usage():
-    print textwrap.dedent('''
+    print(textwrap.dedent("""
         Usage: ddsview.py [--header] texture1.dds texture2.dds ...
 
             --header    Dump the header of each file instead of displaying.
@@ -35,15 +36,17 @@ def usage():
             space               Toggle flat or sphere view
 
         Click and drag with mouse to reposition texture with wrapping.
-        ''')
+        """))
+
 
 texture_index = 0
-textures = []
+textures = list()
 mipmap_level = 0
 last_pos = None
 texture_offset = [0, 0]
 view = 'flat'
 sphere_angle = 0
+
 
 def keydown(character, symbol, modifiers):
     global mipmap_level, texture_index
@@ -60,8 +63,9 @@ def keydown(character, symbol, modifiers):
     elif symbol == SDLK_RIGHT:
         texture_index = min(len(textures) - 1, texture_index + 1)
     elif symbol == SDLK_SPACE:
-        toggle_view() 
+        toggle_view()
     return True
+
 
 def mousemotion(x, y):
     global last_pos
@@ -72,6 +76,7 @@ def mousemotion(x, y):
         update_texture_matrix()
     last_pos = x, y
 
+
 def update_texture_matrix():
     glMatrixMode(GL_TEXTURE)
     glLoadIdentity()
@@ -79,6 +84,7 @@ def update_texture_matrix():
                  -texture_offset[1] / float(textures[texture_index].size[1]),
                  0)
     glMatrixMode(GL_MODELVIEW)
+
 
 def toggle_view():
     global view
@@ -94,9 +100,11 @@ def toggle_view():
         glLightfv(GL_LIGHT0, GL_POSITION, (c_float * 4)(0.5, 0.5, 1, 0))
         view = 'sphere'
 
+
 def sphere_mousemotion(x, y):
     # TODO: virtual trackball
     return True
+
 
 def draw_sphere():
     global sphere_angle
@@ -115,11 +123,12 @@ def draw_sphere():
     glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE)
     sphere = gluNewQuadric()
     gluQuadricTexture(sphere, True)
-    gluSphere(sphere, 1.0, 100, 100)    
+    gluSphere(sphere, 1.0, 100, 100)
     gluDeleteQuadric(sphere)
     glPopAttrib()
 
     glPopMatrix()
+
 
 def main(args):
     header = False
@@ -137,8 +146,9 @@ def main(args):
 
     if header:
         for arg in args:
-            print pyglet.dds.DDSURFACEDESC2(open(arg,
-            'r').read(pyglet.dds.DDSURFACEDESC2.get_size()))
+            print(pyglet.dds.DDSURFACEDESC2(open(arg,
+                                                 'r').read(
+                pyglet.dds.DDSURFACEDESC2.get_size())))
     else:
         pyglet.window.set_window(resizable=True)
         global textures, texture_index
@@ -164,6 +174,4 @@ def main(args):
                 draw_sphere()
             pyglet.window.flip()
 
-
-if __name__ == '__main__':
     main(sys.argv)

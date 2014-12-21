@@ -9,7 +9,7 @@ import shader
 w = window.Window(512, 512)
 kitten = image.load('../examples/programming_guide/kitten.jpg')
 
-pinch_f = '''
+pinch_f = """
 uniform sampler2D tex;
 uniform vec2 size;
 uniform vec2 mouse;
@@ -26,21 +26,24 @@ void main() {
 
     gl_FragColor = texture2D(tex, pos + v);
 }
-'''
-
+"""
 
 pinch = shader.ShaderProgram()
 pinch.setShader(shader.FragmentShader('pinch_f', pinch_f))
 pinch.install()
 pinch.uset2F('size', float(kitten.width), float(kitten.height))
 
+
 @w.event
 def on_mouse_motion(x, y, *args):
-    pinch.uset2F('mouse', float(x)/kitten.width, float(y)/kitten.height)
+    pinch.uset2F('mouse', float(x) / kitten.width, float(y) / kitten.height)
     return True
+
 
 strength = 50.
 pinch.uset1F('strength', strength)
+
+
 @w.event
 def on_mouse_scroll(x, y, dx, dy):
     global strength
@@ -48,9 +51,9 @@ def on_mouse_scroll(x, y, dx, dy):
     pinch.uset1F('strength', float(strength))
     return True
 
+
 while not w.has_exit:
     w.dispatch_events()
     glClear(GL_COLOR_BUFFER_BIT)
     kitten.blit(0, 0)
     w.flip()
-

@@ -2,14 +2,14 @@
 # pyglet
 # Copyright (c) 2006-2008 Alex Holkner
 # All rights reserved.
-# 
+#
 # Redistribution and use in source and binary forms, with or without
-# modification, are permitted provided that the following conditions 
+# modification, are permitted provided that the following conditions
 # are met:
 #
 #  * Redistributions of source code must retain the above copyright
 #    notice, this list of conditions and the following disclaimer.
-#  * Redistributions in binary form must reproduce the above copyright 
+#  * Redistributions in binary form must reproduce the above copyright
 #    notice, this list of conditions and the following disclaimer in
 #    the documentation and/or other materials provided with the
 #    distribution.
@@ -32,11 +32,11 @@
 # POSSIBILITY OF SUCH DAMAGE.
 # ----------------------------------------------------------------------------
 
-'''Decoder for BMP files.
+"""Decoder for BMP files.
 
 Currently supports version 3 and 4 bitmaps with BI_RGB and BI_BITFIELDS
 encoding.  Alpha channel is supported for 32-bit BI_RGB only.
-'''
+"""
 
 # Official docs are at
 # http://msdn2.microsoft.com/en-us/library/ms532311.aspx
@@ -63,6 +63,7 @@ BI_RLE8 = 1
 BI_RLE4 = 2
 BI_BITFIELDS = 3
 
+
 class BITMAPFILEHEADER(ctypes.LittleEndianStructure):
     _pack_ = 1
     _fields_ = [
@@ -72,6 +73,7 @@ class BITMAPFILEHEADER(ctypes.LittleEndianStructure):
         ('bfReserved2', WORD),
         ('bfOffBits', DWORD)
     ]
+
 
 class BITMAPINFOHEADER(ctypes.LittleEndianStructure):
     _pack_ = 1
@@ -90,6 +92,7 @@ class BITMAPINFOHEADER(ctypes.LittleEndianStructure):
     ]
 
 CIEXYZTRIPLE = FXPT2DOT30 * 9
+
 
 class BITMAPV4HEADER(ctypes.LittleEndianStructure):
     _pack_ = 1
@@ -116,6 +119,7 @@ class BITMAPV4HEADER(ctypes.LittleEndianStructure):
         ('bV4GammaBlue', DWORD),
     ]
 
+
 class RGBFields(ctypes.LittleEndianStructure):
     _pack_ = 1
     _fields_ = [
@@ -137,9 +141,11 @@ class RGBQUAD(ctypes.LittleEndianStructure):
     def __repr__(self):
         return '<%d, %d, %d>' % (self.rgbRed, self.rgbGreen, self.rgbBlue)
 
+
 def ptr_add(ptr, offset):
     address = ctypes.addressof(ptr.contents) + offset
     return ctypes.pointer(type(ptr.contents).from_address(address))
+
 
 def to_ctypes(buffer, offset, type):
     if offset + ctypes.sizeof(type) > len(buffer):
@@ -147,7 +153,9 @@ def to_ctypes(buffer, offset, type):
     ptr = ptr_add(ctypes.pointer(buffer), offset)
     return ctypes.cast(ptr, ctypes.POINTER(type)).contents
 
+
 class BMPImageDecoder(ImageDecoder):
+
     def get_file_extensions(self):
         return ['.bmp']
 
@@ -173,7 +181,7 @@ class BMPImageDecoder(ImageDecoder):
 
         width = info_header.biWidth
         height = info_header.biHeight
-        if width <= 0  or info_header.biPlanes != 1:
+        if width <= 0 or info_header.biPlanes != 1:
             raise ImageDecodeException(
                 'BMP file has corrupt parameters: %r' % (filename or file))
         pitch_sign = height < 0 and -1 or 1
@@ -185,7 +193,7 @@ class BMPImageDecoder(ImageDecoder):
                 'Unsupported compression: %r' % (filename or file))
 
         clr_used = 0
-        bitcount = info_header.biBitCount 
+        bitcount = info_header.biBitCount
         if bitcount == 1:
             pitch = (width + 7) // 8
             bits_type = ctypes.c_ubyte
@@ -205,7 +213,7 @@ class BMPImageDecoder(ImageDecoder):
         elif bitcount == 24:
             pitch = width * 3
             bits_type = ctypes.c_ubyte
-            decoder = decode_24bit 
+            decoder = decode_24bit
         elif bitcount == 32:
             pitch = width * 4
             if compression == BI_RGB:
@@ -224,14 +232,14 @@ class BMPImageDecoder(ImageDecoder):
         pitch = (pitch + 3) & ~3
         packed_width = pitch // ctypes.sizeof(bits_type)
 
-        if bitcount < 16 and compression == BI_RGB: 
-            clr_used = info_header.biClrUsed or (1 <<  bitcount)
+        if bitcount < 16 and compression == BI_RGB:
+            clr_used = info_header.biClrUsed or (1 << bitcount)
             palette = to_ctypes(buffer, palette_offset, RGBQUAD * clr_used)
-            bits = to_ctypes(buffer, bits_offset, 
+            bits = to_ctypes(buffer, bits_offset,
                              bits_type * packed_width * height)
             return decoder(bits, palette, width, height, pitch, pitch_sign)
         elif bitcount >= 16 and compression == BI_RGB:
-            bits = to_ctypes(buffer, bits_offset, 
+            bits = to_ctypes(buffer, bits_offset,
                              bits_type * (packed_width * height))
             return decoder(bits, None, width, height, pitch, pitch_sign)
         elif compression == BI_BITFIELDS:
@@ -243,19 +251,21 @@ class BMPImageDecoder(ImageDecoder):
                 b_mask = info_header.bV4BlueMask
             else:
                 fields_offset = info_header_offset + \
-                    ctypes.sizeof(BITMAPINFOHEADER) 
+                    ctypes.sizeof(BITMAPINFOHEADER)
                 fields = to_ctypes(buffer, fields_offset, RGBFields)
                 r_mask = fields.red
                 g_mask = fields.green
                 b_mask = fields.blue
+
             class _BitsArray(ctypes.LittleEndianStructure):
                 _pack_ = 1
                 _fields_ = [
                     ('data', bits_type * packed_width * height),
                 ]
             bits = to_ctypes(buffer, bits_offset, _BitsArray).data
-            return decoder(bits, r_mask, g_mask, b_mask, 
+            return decoder(bits, r_mask, g_mask, b_mask,
                            width, height, pitch, pitch_sign)
+
 
 def decode_1bit(bits, palette, width, height, pitch, pitch_sign):
     rgb_pitch = (((pitch << 3) + 7) & ~0x7) * 3
@@ -273,6 +283,7 @@ def decode_1bit(bits, palette, width, height, pitch, pitch_sign):
 
     return ImageData(width, height, 'RGB', buffer, pitch_sign * rgb_pitch)
 
+
 def decode_4bit(bits, palette, width, height, pitch, pitch_sign):
     rgb_pitch = (((pitch << 1) + 1) & ~0x1) * 3
     buffer = (ctypes.c_ubyte * (height * rgb_pitch))()
@@ -287,6 +298,7 @@ def decode_4bit(bits, palette, width, height, pitch, pitch_sign):
                 i += 3
 
     return ImageData(width, height, 'RGB', buffer, pitch_sign * rgb_pitch)
+
 
 def decode_8bit(bits, palette, width, height, pitch, pitch_sign):
     rgb_pitch = pitch * 3
@@ -308,10 +320,12 @@ def decode_24bit(bits, palette, width, height, pitch, pitch_sign):
     ctypes.memmove(buffer, bits, len(buffer))
     return ImageData(width, height, 'BGR', buffer, pitch_sign * pitch)
 
+
 def decode_32bit_rgb(bits, palette, width, height, pitch, pitch_sign):
     buffer = (ctypes.c_ubyte * (height * pitch))()
     ctypes.memmove(buffer, bits, len(buffer))
     return ImageData(width, height, 'BGRA', buffer, pitch_sign * pitch)
+
 
 def get_shift(mask):
     if not mask:
@@ -333,7 +347,8 @@ def get_shift(mask):
     else:
         return s, 0
 
-def decode_bitfields(bits, r_mask, g_mask, b_mask, 
+
+def decode_bitfields(bits, r_mask, g_mask, b_mask,
                      width, height, pitch, pitch_sign):
     r_shift1, r_shift2 = get_shift(r_mask)
     g_shift1, g_shift2 = get_shift(g_mask)
@@ -346,14 +361,16 @@ def decode_bitfields(bits, r_mask, g_mask, b_mask,
     for row in bits:
         for packed in row:
             buffer[i] = (packed & r_mask) >> r_shift1 << r_shift2
-            buffer[i+1] = (packed & g_mask) >> g_shift1 << g_shift2
-            buffer[i+2] = (packed & b_mask) >> b_shift1 << b_shift2
+            buffer[i + 1] = (packed & g_mask) >> g_shift1 << g_shift2
+            buffer[i + 2] = (packed & b_mask) >> b_shift1 << b_shift2
             i += 3
 
     return ImageData(width, height, 'RGB', buffer, pitch_sign * rgb_pitch)
 
+
 def get_decoders():
     return [BMPImageDecoder()]
 
+
 def get_encoders():
-    return []
+    return list()

@@ -1,12 +1,12 @@
-'''Wrapper for Xinerama
+"""Wrapper for Xinerama
 
 Generated with:
 tools/genwrappers.py xinerama
 
 Do not modify this file.
-'''
+"""
 
-__docformat__ =  'restructuredtext'
+__docformat__ = 'restructuredtext'
 __version__ = '$Id$'
 
 import ctypes
@@ -26,6 +26,7 @@ for t in _int_types:
     if sizeof(t) == sizeof(c_size_t):
         c_ptrdiff_t = t
 
+
 class c_void(Structure):
     # c_void_p is a buggy return type, converting to int, so
     # POINTER(None) == c_void_p is actually written as
@@ -34,6 +35,7 @@ class c_void(Structure):
 
 
 import pyglet.libs.x11.xlib
+
 
 class struct_anon_93(Structure):
     __slots__ = [
@@ -51,17 +53,20 @@ struct_anon_93._fields_ = [
     ('height', c_short),
 ]
 
-XineramaScreenInfo = struct_anon_93 	# /usr/include/X11/extensions/Xinerama.h:40
+# /usr/include/X11/extensions/Xinerama.h:40
+XineramaScreenInfo = struct_anon_93
 Display = pyglet.libs.x11.xlib.Display
 # /usr/include/X11/extensions/Xinerama.h:44
 XineramaQueryExtension = _lib.XineramaQueryExtension
 XineramaQueryExtension.restype = c_int
-XineramaQueryExtension.argtypes = [POINTER(Display), POINTER(c_int), POINTER(c_int)]
+XineramaQueryExtension.argtypes = [
+    POINTER(Display), POINTER(c_int), POINTER(c_int)]
 
 # /usr/include/X11/extensions/Xinerama.h:50
 XineramaQueryVersion = _lib.XineramaQueryVersion
 XineramaQueryVersion.restype = c_int
-XineramaQueryVersion.argtypes = [POINTER(Display), POINTER(c_int), POINTER(c_int)]
+XineramaQueryVersion.argtypes = [
+    POINTER(Display), POINTER(c_int), POINTER(c_int)]
 
 # /usr/include/X11/extensions/Xinerama.h:56
 XineramaIsActive = _lib.XineramaIsActive
@@ -75,4 +80,4 @@ XineramaQueryScreens.argtypes = [POINTER(Display), POINTER(c_int)]
 
 
 __all__ = ['XineramaScreenInfo', 'XineramaQueryExtension',
-'XineramaQueryVersion', 'XineramaIsActive', 'XineramaQueryScreens']
+           'XineramaQueryVersion', 'XineramaIsActive', 'XineramaQueryScreens']

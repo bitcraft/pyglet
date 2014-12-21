@@ -1,6 +1,6 @@
 var createHTTP = function() {
     var http = null;
-    if(window.XMLHttpRequest) {         
+    if(window.XMLHttpRequest) {
         try {
             http = new XMLHttpRequest();
         } catch(e) {
@@ -17,7 +17,7 @@ var createHTTP = function() {
     }
 
     return http;
-}
+};
 
 var getHTTPDocument = function(url, resultCallback) {
     var http = createHTTP();
@@ -27,28 +27,28 @@ var getHTTPDocument = function(url, resultCallback) {
             if (http.responseText)
                 resultCallback(http);
         }
-    }
+    };
     http.send(null);
-}
+};
 
 var createDiv = function(className) {
     var elem = document.createElement('div');
     elem.setAttribute('class', className);
     return elem;
-}
+};
 
 var createAnchor = function(url) {
     var e = document.createElement('a');
     e.setAttribute('href', url);
     return e;
-}
+};
 
 var createImage = function(url, alt) {
     var e = document.createElement('img');
     e.setAttribute('src', url);
     e.setAttribute('alt', alt);
     return e;
-}
+};
 
 var createTextDiv = function(className, text) {
     var e = document.createElement('div');
@@ -58,7 +58,7 @@ var createTextDiv = function(className, text) {
     else if (text != null)
         e.appendChild(text);
     return e;
-}
+};
 
 var createTextSpan = function(className, text) {
     var e = document.createElement('span');
@@ -68,7 +68,7 @@ var createTextSpan = function(className, text) {
     else if (text != null)
         e.appendChild(text);
     return e;
-}
+};
 
 var getElementByName = function(node, name) {
     if (node.nodeType == Node.ELEMENT_NODE && node.nodeName == name)
@@ -79,7 +79,7 @@ var getElementByName = function(node, name) {
             return child;
     }
     return null;
-}
+};
 
 var getElementText = function(node) {
     if (!node)
@@ -91,9 +91,9 @@ var getElementText = function(node) {
         text += getElementText(node.childNodes[i]);
     }
     return text;
-}
+};
 
-var entities = new Object();
+var entities = {};
 entities['&quot;'] = "\"";
 entities['&amp;'] = "&";
 entities['&apos;'] = "'";
@@ -105,47 +105,47 @@ var interpretEntities = function(text)
     for (var key in entities)
         text = text.replace(new RegExp(key, 'g'), entities[key]);
     return text;
-}
+};
 
 var stripTags = function(text)
 {
     return text.replace(/<[^>]*>/g, '');
-}
+};
 
 var GalleryItem = function(name, url, image) {
     this.name = name;
     this.url = url;
     this.image = image;
-}
+};
 
 var Gallery = function(container, maxRows, cols) {
     this.container = container;
     this.maxRows = maxRows;
-    this.cols = cols
+    this.cols = cols;
     this.items = null;
     this.tableElement = null;
     this.random = false;
     this.start = 0;
-}
+};
 
 Gallery.prototype.setButtons = function(prev, next) {
     var obj = this;
     this.prevButton = prev;
     this.nextButton = next;
-    prev.onclick = function() {obj.prevPage();}
+    prev.onclick = function() {obj.prevPage();};
     next.onclick = function() {obj.nextPage();}
-}
+};
 
 Gallery.prototype.populate = function() {
     var obj = this;
     getHTTPDocument('gallery-items.txt', function(http) {
         obj.onData(http.responseText);
     });
-}
+};
 
 Gallery.prototype.onData = function(data) {
     var items = data.split('\n');
-    this.items = new Array();
+    this.items = [];
     while (items.length >= 3) {
         this.items.push(
             new GalleryItem(items.shift(), items.shift(), items.shift()));
@@ -157,7 +157,7 @@ Gallery.prototype.onData = function(data) {
         })
     }
     this.repopulate();
-}
+};
 
 Gallery.prototype.repopulate = function() {
     if (this.tableElement) {
@@ -190,28 +190,28 @@ Gallery.prototype.repopulate = function() {
     }
     this.container.appendChild(tableElement);
     this.tableElement = tableElement;
-}
+};
 
 Gallery.prototype.prevPage = function() {
     this.start = Math.max(0, this.start - 1);
     this.repopulate();
-}
+};
 
 Gallery.prototype.nextPage = function() {
     this.start = Math.max(0, Math.min(this.start + 1, this.maxpage));
     this.repopulate();
-}
+};
 
 var Discussion = function(container) {
     this.container = container;
-}
+};
 
 Discussion.prototype.populate = function() {
     var obj = this;
     getHTTPDocument('pyglet-users.xml', function(http) {
         obj.onData(http.responseXML);
     });
-}
+};
 
 Discussion.prototype.onData = function(doc) {
     feed = doc.documentElement;
@@ -226,15 +226,15 @@ Discussion.prototype.onData = function(doc) {
         summary = interpretEntities(stripTags(summary));
         this.addEntry(name, title, summary);
     }
-}
+};
 
 Discussion.prototype.addEntry = function(name, title, summary) {
     var entry = createDiv('discussion-entry');
     this.container.appendChild(entry);
-    
+
     titleElement = createTextSpan('discussion-title', title);
     entry.appendChild(titleElement);
     entry.appendChild(document.createTextNode(summary));
     nameElement = createTextSpan('discussion-attribution', 'Posted by ' + name);
     entry.appendChild(nameElement);
-}
+};

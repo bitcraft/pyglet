@@ -34,7 +34,7 @@ decoder typically returns ImageData).
 Public interfaces are:
 
 <code python>
-  class AbstractImage(object):
+  class AbstractImage:
       width  -> int
       height -> int
       image_data = property()       -> ImageData
@@ -46,7 +46,7 @@ Public interfaces are:
 
       # blit this image to active framebuffer(s)
       blit(self, x, y, z)
-      
+
       # blit source image into this image
       blit_into(self, source, x, y, z)
 
@@ -59,9 +59,9 @@ Public interfaces are:
       pitch  -> int  (bytes per row, -ve if rows are top-to-bottom)
       data   -> str
       set_mipmap_image(self, level, image)
-  
+
   class CompressedImageData(AbstractData):
-      # Read-only (or, modify at own risk) 
+      # Read-only (or, modify at own risk)
       data -> str
       gl_format -> int
       set_mipmap_data(self, level, data)
@@ -75,7 +75,7 @@ Public interfaces are:
       get_region(self, x, y, width, height)  -> TextureRegion
       get_level(self, level) -> Texture
       __del__(self)  # releases texture
-  
+
   class TextureRegion(Texture):
       # width, height, refer to the region
       # blit does not clip to region (but does translate coordinates)
@@ -84,10 +84,10 @@ Public interfaces are:
 
   class DepthTexture(Texture):
 
- 
+
   class TileableTexture(Texture):
       # width, height refer to tile size, not texture size (which cannot be determined)
-      
+
       blit_tiled(self, x, y, z, width, height)
 
   class AbstractImageSequence:
@@ -156,7 +156,7 @@ Public interfaces are:
       get_aux_buffer(self) -> ColorBufferImage
       get_depth_buffer(self) -> DepthBufferImage
       get_buffer_mask(self) -> BufferImageMask
-  
+
   # top-level convenience funcs get_buffer_manager for you:
   get_color_buffer()
   get_aux_buffer()

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
-'''
-'''
+"""
+"""
 
 __docformat__ = 'restructuredtext'
 __version__ = '$Id: $'
@@ -9,7 +9,7 @@ __version__ = '$Id: $'
 import input
 
 # (usage_page, usage): Device class
-'''
+"""
 device_usage_map = {
     (0x01, 0x01): input.PointerDevice,
     (0x01, 0x01): input.MouseDevice,
@@ -19,7 +19,7 @@ device_usage_map = {
     (0x01, 0x07): input.KeypadDevice,
     (0x01, 0x08): input.MultiAxisControllerDevice,
 }
-'''
+"""
 
 element_usage_names = {
     (0x01, 0x30): 'x',
@@ -36,14 +36,16 @@ element_usage_names = {
     (0x01, 0x3e): 'select',
 }
 
+
 def get_element_usage_known(usage_page, usage):
     if usage_page == 0x09 and usage > 0:
         return True
-    
+
     if (usage_page, usage) in element_usage_names:
         return True
 
     return False
+
 
 def get_element_usage_name(usage_page, usage):
     if usage_page == 0x09:

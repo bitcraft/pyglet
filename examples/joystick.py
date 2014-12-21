@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
-'''
-'''
+"""
+"""
 
 __docformat__ = 'restructuredtext'
 __version__ = '$Id: $'
@@ -16,10 +16,11 @@ joystick.open()
 
 window = pyglet.window.Window()
 
+
 @window.event
 def on_draw():
-    x = (0.8*joystick.x + 1) * window.width / 2
-    y = (-0.8*joystick.y + 1) * window.height / 2
+    x = (0.8 * joystick.x + 1) * window.width / 2
+    y = (-0.8 * joystick.y + 1) * window.height / 2
     z = joystick.z
     angle = joystick.rz * 180
 
@@ -58,6 +59,7 @@ def on_draw():
     glBegin(GL_POINTS)
     glVertex2f(x + joystick.hat_x * 50, y + joystick.hat_y * 50)
     glEnd()
+
 
 pyglet.clock.schedule(lambda dt: None)
 pyglet.app.run()

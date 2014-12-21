@@ -2,14 +2,14 @@
 # pyglet
 # Copyright (c) 2006-2008 Alex Holkner
 # All rights reserved.
-# 
+#
 # Redistribution and use in source and binary forms, with or without
-# modification, are permitted provided that the following conditions 
+# modification, are permitted provided that the following conditions
 # are met:
 #
 #  * Redistributions of source code must retain the above copyright
 #    notice, this list of conditions and the following disclaimer.
-#  * Redistributions in binary form must reproduce the above copyright 
+#  * Redistributions in binary form must reproduce the above copyright
 #    notice, this list of conditions and the following disclaimer in
 #    the documentation and/or other materials provided with the
 #    distribution.
@@ -32,7 +32,7 @@
 # POSSIBILITY OF SUCH DAMAGE.
 # ----------------------------------------------------------------------------
 
-'''Group multiple small images into larger textures.
+"""Group multiple small images into larger textures.
 
 This module is used by `pyglet.resource` to efficiently pack small images into
 larger textures.  `TextureAtlas` maintains one texture; `TextureBin` manages a
@@ -56,19 +56,23 @@ application's responsibility to keep track of the regions returned by the
 ``add`` methods.
 
 :since: pyglet 1.1
-'''
+"""
 
 __docformat__ = 'restructuredtext'
 __version__ = '$Id: $'
 
 import pyglet
 
+
 class AllocatorException(Exception):
-    '''The allocator does not have sufficient free space for the requested
-    image size.'''
+
+    """The allocator does not have sufficient free space for the requested
+    image size."""
     pass
 
-class _Strip(object):
+
+class _Strip:
+
     def __init__(self, y, max_height):
         self.x = 0
         self.y = y
@@ -87,8 +91,10 @@ class _Strip(object):
     def compact(self):
         self.max_height = self.y2 - self.y
 
-class Allocator(object):
-    '''Rectangular area allocation algorithm.
+
+class Allocator:
+
+    """Rectangular area allocation algorithm.
 
     Initialise with a given ``width`` and ``height``, then repeatedly
     call `alloc` to retrieve free regions of the area and protect that
@@ -96,9 +102,10 @@ class Allocator(object):
 
     `Allocator` uses a fairly simple strips-based algorithm.  It performs best
     when rectangles are allocated in decreasing height order.
-    '''
+    """
+
     def __init__(self, width, height):
-        '''Create an `Allocator` of the given size.
+        """Create an `Allocator` of the given size.
 
         :Parameters:
             `width` : int
@@ -106,7 +113,7 @@ class Allocator(object):
             `height` : int
                 Height of the allocation region.
 
-        '''
+        """
         assert width > 0 and height > 0
         self.width = width
         self.height = height
@@ -114,7 +121,7 @@ class Allocator(object):
         self.used_area = 0
 
     def alloc(self, width, height):
-        '''Get a free area in the allocator of the given size.
+        """Get a free area in the allocator of the given size.
 
         After calling `alloc`, the requested area will no longer be used.
         If there is not enough room to fit the given area `AllocatorException`
@@ -129,7 +136,7 @@ class Allocator(object):
         :rtype: int, int
         :return: The X and Y coordinates of the bottom-left corner of the
             allocated region.
-        '''
+        """
         for strip in self.strips:
             if self.width - strip.x >= width and strip.max_height >= height:
                 self.used_area += width * height
@@ -143,36 +150,39 @@ class Allocator(object):
             return newstrip.add(width, height)
 
         raise AllocatorException('No more space in %r for box %dx%d' % (
-                self, width, height))
+            self, width, height))
 
     def get_usage(self):
-        '''Get the fraction of area already allocated.
+        """Get the fraction of area already allocated.
 
         This method is useful for debugging and profiling only.
 
         :rtype: float
-        '''
+        """
         return self.used_area / float(self.width * self.height)
-            
+
     def get_fragmentation(self):
-        '''Get the fraction of area that's unlikely to ever be used, based on
+        """Get the fraction of area that's unlikely to ever be used, based on
         current allocation behaviour.
 
         This method is useful for debugging and profiling only.
 
         :rtype: float
-        '''
+        """
         # The total unused area in each compacted strip is summed.
         if not self.strips:
             return 0.
         possible_area = self.strips[-1].y2 * self.width
         return 1.0 - self.used_area / float(possible_area)
 
-class TextureAtlas(object):
-    '''Collection of images within a texture.
-    '''
+
+class TextureAtlas:
+
+    """Collection of images within a texture.
+    """
+
     def __init__(self, width=256, height=256):
-        '''Create a texture atlas of the given size.
+        """Create a texture atlas of the given size.
 
         :Parameters:
             `width` : int
@@ -180,13 +190,13 @@ class TextureAtlas(object):
             `height` : int
                 Height of the underlying texture.
 
-        '''
+        """
         self.texture = pyglet.image.Texture.create(
             width, height, pyglet.gl.GL_RGBA, rectangle=True)
         self.allocator = Allocator(width, height)
 
     def add(self, img):
-        '''Add an image to the atlas.
+        """Add an image to the atlas.
 
         This method will fail if the given image cannot be transferred
         directly to a texture (for example, if it is another texture).
@@ -201,21 +211,24 @@ class TextureAtlas(object):
 
         :rtype: `TextureRegion`
         :return: The region of the atlas containing the newly added image.
-        '''
-        
+        """
+
         x, y = self.allocator.alloc(img.width, img.height)
         self.texture.blit_into(img, x, y, 0)
         region = self.texture.get_region(x, y, img.width, img.height)
         return region
 
-class TextureBin(object):
-    '''Collection of texture atlases.
+
+class TextureBin:
+
+    """Collection of texture atlases.
 
     `TextureBin` maintains a collection of texture atlases, and creates new
     ones as necessary to accommodate images added to the bin.
-    '''
+    """
+
     def __init__(self, texture_width=256, texture_height=256):
-        '''Create a texture bin for holding atlases of the given size.
+        """Create a texture bin for holding atlases of the given size.
 
         :Parameters:
             `texture_width` : int
@@ -223,13 +236,13 @@ class TextureBin(object):
             `texture_height` : int
                 Height of texture atlases to create.
 
-        '''
-        self.atlases = []
+        """
+        self.atlases = list()
         self.texture_width = texture_width
         self.texture_height = texture_height
 
     def add(self, img):
-        '''Add an image into this texture bin.
+        """Add an image into this texture bin.
 
         This method calls `TextureAtlas.add` for the first atlas that has room
         for the image.
@@ -243,7 +256,7 @@ class TextureBin(object):
 
         :rtype: `TextureRegion`
         :return: The region of an atlas containing the newly added image.
-        '''
+        """
         for atlas in list(self.atlases):
             try:
                 return atlas.add(img)

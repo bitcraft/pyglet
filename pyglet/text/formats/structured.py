@@ -2,14 +2,14 @@
 # pyglet
 # Copyright (c) 2006-2008 Alex Holkner
 # All rights reserved.
-# 
+#
 # Redistribution and use in source and binary forms, with or without
-# modification, are permitted provided that the following conditions 
+# modification, are permitted provided that the following conditions
 # are met:
 #
 #  * Redistributions of source code must retain the above copyright
 #    notice, this list of conditions and the following disclaimer.
-#  * Redistributions in binary form must reproduce the above copyright 
+#  * Redistributions in binary form must reproduce the above copyright
 #    notice, this list of conditions and the following disclaimer in
 #    the documentation and/or other materials provided with the
 #    distribution.
@@ -32,51 +32,98 @@
 # POSSIBILITY OF SUCH DAMAGE.
 # ----------------------------------------------------------------------------
 
-'''Base class for structured (hierarchical) document formats.
-'''
+"""Base class for structured (hierarchical) document formats.
+"""
 
 __docformat__ = 'restructuredtext'
 __version__ = '$Id: $'
 
 import re
-
 import pyglet
+from pyglet.gl import *
+
+
+class TextureGroup(pyglet.graphics.Group):
+
+    """A group that enables and binds a texture.
+
+    Texture groups are equal if their textures' targets and names are equal.
+    """
+    # Don't use this, create your own group classes that are more specific.
+    # This is just an example.
+
+    def __init__(self, texture, parent=None):
+        """Create a texture group.
+
+        :Parameters:
+            `texture` : `Texture`
+                Texture to bind.
+            `parent` : `Group`
+                Parent group.
+
+        """
+        super().__init__(parent)
+        self.texture = texture
+
+    def set_state(self):
+        glEnable(self.texture.target)
+        glBindTexture(self.texture.target, self.texture.id)
+
+    def unset_state(self):
+        glDisable(self.texture.target)
+
+    def __hash__(self):
+        return hash((self.texture.target, self.texture.id, self.parent))
+
+    def __eq__(self, other):
+        return (self.__class__ is other.__class__ and
+                self.texture.target == other.texture.target and
+                self.texture.id == other.texture.id and
+                self.parent == other.parent)
+
+    def __repr__(self):
+        return '%s(id=%d)' % (self.__class__.__name__, self.texture.id)
+
 
 class ImageElement(pyglet.text.document.InlineElement):
+
     def __init__(self, image, width=None, height=None):
         self.image = image.get_texture()
         self.width = width is None and image.width or width
         self.height = height is None and image.height or height
-        self.vertex_lists = {}
+        self.vertex_lists = dict()
 
         anchor_y = self.height // image.height * image.anchor_y
         ascent = max(0, self.height - anchor_y)
         descent = min(0, -anchor_y)
-        super(ImageElement, self).__init__(ascent, descent, self.width)
+        super().__init__(ascent, descent, self.width)
 
     def place(self, layout, x, y):
-        group = pyglet.graphics.TextureGroup(self.image.texture, 
+        group = pyglet.graphics.TextureGroup(self.image.texture,
                                              layout.top_group)
         x1 = x
         y1 = y + self.descent
         x2 = x + self.width
         y2 = y + self.height + self.descent
         vertex_list = layout.batch.add(4, pyglet.gl.GL_QUADS, group,
-            ('v2i', (x1, y1, x2, y1, x2, y2, x1, y2)),
-            ('c3B', (255, 255, 255) * 4),
-            ('t3f', self.image.tex_coords))
+                                       ('v2i',
+                                        (x1, y1, x2, y1, x2, y2, x1, y2)),
+                                       ('c3B', (255, 255, 255) * 4),
+                                       ('t3f', self.image.tex_coords))
         self.vertex_lists[layout] = vertex_list
 
     def remove(self, layout):
         self.vertex_lists[layout].delete()
         del self.vertex_lists[layout]
 
+
 def _int_to_roman(input):
     # From http://aspn.activestate.com/ASPN/Cookbook/Python/Recipe/81611
     if not 0 < input < 4000:
-        raise ValueError, "Argument must be between 1 and 3999"    
+        raise ValueError("Argument must be between 1 and 3999")
     ints = (1000, 900,  500, 400, 100,  90, 50,  40, 10,  9,   5,   4,  1)
-    nums = ('M',  'CM', 'D', 'CD','C', 'XC','L','XL','X','IX','V','IV','I')
+    nums = ('M',  'CM', 'D', 'CD', 'C', 'XC',
+            'L', 'XL', 'X', 'IX', 'V', 'IV', 'I')
     result = ""
     for i in range(len(ints)):
         count = int(input / ints[i])
@@ -84,9 +131,11 @@ def _int_to_roman(input):
         input -= ints[i] * count
     return result
 
-class ListBuilder(object):
+
+class ListBuilder:
+
     def begin(self, decoder, style):
-        '''Begin a list.
+        """Begin a list.
 
         :Parameters:
             `decoder` : `StructuredTextDecoder`
@@ -94,20 +143,20 @@ class ListBuilder(object):
             `style` : dict
                 Style dictionary that applies over the entire list.
 
-        '''
+        """
         left_margin = decoder.current_style.get('margin_left') or 0
         tab_stops = decoder.current_style.get('tab_stops')
         if tab_stops:
             tab_stops = list(tab_stops)
         else:
-            tab_stops = []
+            tab_stops = list()
         tab_stops.append(left_margin + 50)
         style['margin_left'] = left_margin + 50
         style['indent'] = -30
         style['tab_stops'] = tab_stops
 
     def item(self, decoder, style, value=None):
-        '''Begin a list item.
+        """Begin a list item.
 
         :Parameters:
             `decoder` : `StructuredTextDecoder`
@@ -118,14 +167,14 @@ class ListBuilder(object):
                 Optional value of the list item.  The meaning is list-type
                 dependent.
 
-        '''            
+        """
         mark = self.get_mark(value)
         if mark:
             decoder.add_text(mark)
         decoder.add_text('\t')
 
     def get_mark(self, value=None):
-        '''Get the mark text for the next list item.
+        """Get the mark text for the next list item.
 
         :Parameters:
             `value` : str
@@ -133,29 +182,31 @@ class ListBuilder(object):
                 dependent.
 
         :rtype: str
-        '''
+        """
         return ''
 
+
 class UnorderedListBuilder(ListBuilder):
+
     def __init__(self, mark):
-        '''Create an unordered list with constant mark text.
+        """Create an unordered list with constant mark text.
 
         :Parameters:
             `mark` : str
                 Mark to prepend to each list item.
 
-        '''
+        """
         self.mark = mark
-
 
     def get_mark(self, value):
         return self.mark
+
 
 class OrderedListBuilder(ListBuilder):
     format_re = re.compile('(.*?)([1aAiI])(.*)')
 
     def __init__(self, start, format):
-        '''Create an ordered list with sequentially numbered mark text.
+        """Create an ordered list with sequentially numbered mark text.
 
         The format is composed of an optional prefix text, a numbering
         scheme character followed by suffix text. Valid numbering schemes
@@ -181,10 +232,11 @@ class OrderedListBuilder(ListBuilder):
             `format` : str
                 Format style, for example ``"1."``.
 
-        '''
+        """
         self.next_value = start
 
-        self.prefix, self.numbering, self.suffix = self.format_re.match(format).groups()
+        self.prefix, self.numbering, self.suffix = self.format_re.match(
+            format).groups()
         assert self.numbering in '1aAiI'
 
     def get_mark(self, value):
@@ -210,13 +262,15 @@ class OrderedListBuilder(ListBuilder):
         else:
             return '%s%d%s' % (self.prefix, value, self.suffix)
 
+
 class StructuredTextDecoder(pyglet.text.DocumentDecoder):
+
     def decode(self, text, location=None):
         self.len_text = 0
-        self.current_style = {}
-        self.next_style = {}
-        self.stack = []
-        self.list_stack = []
+        self.current_style = dict()
+        self.next_style = dict()
+        self.stack = list()
+        self.list_stack = list()
         self.document = pyglet.text.document.FormattedDocument()
         if location is None:
             location = pyglet.resource.FileLocation('')
@@ -224,11 +278,11 @@ class StructuredTextDecoder(pyglet.text.DocumentDecoder):
         return self.document
 
     def decode_structured(self, text, location):
-        raise NotImplementedError('abstract') 
+        raise NotImplementedError('abstract')
 
     def push_style(self, key, styles):
-        old_styles = {}
-        for name in styles.keys():
+        old_styles = dict()
+        for name in list(styles.keys()):
             old_styles[name] = self.current_style.get(name)
         self.stack.append((key, old_styles))
         self.current_style.update(styles)

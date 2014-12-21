@@ -8,7 +8,7 @@
 .. inheritance-diagram:: {{ objname }}
 
 .. autoclass:: {{ objname }}
-  
+
 
 {% block constructor_desc %}
 {% if constructor %}
@@ -50,7 +50,7 @@
 
 {% block attributes %}
 {% if attributes %}
-   
+
    **Attributes:**
 
       .. autosummary::
@@ -137,7 +137,7 @@ Inherited members
 {% for item in inh_methods %}
 
    .. automethod:: {{ objname }}.{{ item }}
-      :noindex:
+:noindex:
 
 {%- endfor %}
 {% endif %}
@@ -152,7 +152,7 @@ Inherited members
 {% for item in inh_events %}
 
    .. automethod:: {{ objname }}.{{ item }}
-      :noindex:
+:noindex:
 
 {%- endfor %}
 {% endif %}
@@ -167,7 +167,7 @@ Inherited members
 {% for item in inh_attributes %}
 
    .. autoattribute:: {{ objname }}.{{ item }}
-      :noindex:
+:noindex:
 
 {%- endfor %}
 {% endif %}

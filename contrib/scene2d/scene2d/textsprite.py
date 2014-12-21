@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
-'''
-'''
+"""
+"""
 
 __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
@@ -13,15 +13,17 @@ from scene2d.sprite import Sprite
 from pyglet.font import GlyphString
 
 # TODO: inherit from Sprite
-class TextSprite(object):
+
+
+class TextSprite:
     _layout_width = None  # Width to layout text to
-    _text_width = 0       # Calculated width of text
-    _text_height = 0      # Calculated height of text (bottom descender to top
-                          # ascender)
+    _text_width = 0  # Calculated width of text
+    _text_height = 0  # Calculated height of text (bottom descender to top
+    # ascender)
 
-    _dirty = False        # Flag if require layout
+    _dirty = False  # Flag if require layout
 
-    def __init__(self, font, text, x=0, y=0, z=0, color=(1,1,1,1)):
+    def __init__(self, font, text, x=0, y=0, z=0, color=(1, 1, 1, 1)):
         self._dirty = True
         self.font = font
         self._text = text
@@ -31,12 +33,12 @@ class TextSprite(object):
         self.leading = 0
 
     def _clean(self):
-        '''Resolve changed layout'''
+        """Resolve changed layout"""
 
-        '''
+        """
         # Each 'line' in 'glyph_lines' is a list of Glyph objects.  Do
         # line wrapping now.
-        glyph_lines = []
+        glyph_lines = list()
         if self._layout_width is None:
             for line in self.text.split('\n'):
                 glyph_lines.append((line, self.font.get_glyphs(self.text)))
@@ -53,7 +55,7 @@ class TextSprite(object):
         line_height = self.font.ascent - self.font.descent + self.leading
         y = 0
         self._text_width = 0
-        self.strings = []
+        self.strings = list()
         for text, glyphs in glyph_lines:
             string = GlyphString(text, glyphs, 0, y)
             self._text_width = max(self._text_width, string.width)
@@ -61,20 +63,20 @@ class TextSprite(object):
             self.strings.append(string)
 
         self._text_height = -y
-        '''
+        """
 
         text = self._text + ' '
         glyphs = self.font.get_glyphs(text)
         self._glyph_string = GlyphString(text, glyphs)
 
-        self.lines = []
+        self.lines = list()
         i = 0
         if self._layout_width is None:
             self._text_width = 0
             while '\n' in text[i:]:
                 end = text.index('\n', i)
                 self.lines.append((i, end))
-                self._text_width = max(self._text_width, 
+                self._text_width = max(self._text_width,
                                        self._glyph_string.get_subwidth(i, end))
                 i = end + 1
             end = len(text)
@@ -82,11 +84,11 @@ class TextSprite(object):
                 self.lines.append((i, end))
                 self._text_width = max(self._text_width,
                                        self._glyph_string.get_subwidth(i, end))
-                                   
+
         else:
             bp = self._glyph_string.get_break_index(i, self._layout_width)
             while i < len(text) and bp > i:
-                if text[bp-1] == '\n':
+                if text[bp - 1] == '\n':
                     self.lines.append((i, bp - 1))
                 else:
                     self.lines.append((i, bp))
@@ -94,12 +96,12 @@ class TextSprite(object):
                 bp = self._glyph_string.get_break_index(i, self._layout_width)
             if i < len(text) - 1:
                 self.lines.append((i, len(text)))
-            
+
         self.line_height = self.font.ascent - self.font.descent + self.leading
         self._text_height = self.line_height * len(self.lines)
 
         self._dirty = False
-        
+
     def draw(self):
         if self._dirty:
             self._clean()
@@ -140,5 +142,3 @@ class TextSprite(object):
         self._dirty = True
 
     text = property(lambda self: self._text, set_text)
-
-

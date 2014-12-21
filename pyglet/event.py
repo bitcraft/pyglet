@@ -2,14 +2,14 @@
 # pyglet
 # Copyright (c) 2006-2008 Alex Holkner
 # All rights reserved.
-# 
+#
 # Redistribution and use in source and binary forms, with or without
-# modification, are permitted provided that the following conditions 
+# modification, are permitted provided that the following conditions
 # are met:
 #
 #  * Redistributions of source code must retain the above copyright
 #    notice, this list of conditions and the following disclaimer.
-#  * Redistributions in binary form must reproduce the above copyright 
+#  * Redistributions in binary form must reproduce the above copyright
 #    notice, this list of conditions and the following disclaimer in
 #    the documentation and/or other materials provided with the
 #    distribution.
@@ -32,7 +32,7 @@
 # POSSIBILITY OF SUCH DAMAGE.
 # ----------------------------------------------------------------------------
 
-'''Event dispatch framework.
+"""Event dispatch framework.
 
 All objects that produce events in pyglet implement `EventDispatcher`,
 providing a consistent interface for registering and manipulating event
@@ -134,32 +134,36 @@ updates the application state and checks for new events::
 Not all event dispatchers require the call to ``dispatch_events``; check with
 the particular class documentation.
 
-'''
+"""
 
 __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
 
 import inspect
 
-EVENT_HANDLED = True 
+EVENT_HANDLED = True
 EVENT_UNHANDLED = None
 
+
 class EventException(Exception):
-    '''An exception raised when an event handler could not be attached.
-    '''
+
+    """An exception raised when an event handler could not be attached.
+    """
     pass
 
-class EventDispatcher(object):
-    '''Generic event dispatcher interface.
+
+class EventDispatcher:
+
+    """Generic event dispatcher interface.
 
     See the module docstring for usage.
-    '''
+    """
     # Placeholder empty stack; real stack is created only if needed
     _event_stack = ()
 
     @classmethod
     def register_event_type(cls, name):
-        '''Register an event type with the dispatcher.
+        """Register an event type with the dispatcher.
 
         Registering event types allows the dispatcher to validate event
         handler names as they are attached, and to search attached objects for
@@ -169,66 +173,66 @@ class EventDispatcher(object):
             `name` : str
                 Name of the event to register.
 
-        '''
+        """
         if not hasattr(cls, 'event_types'):
-            cls.event_types = []
+            cls.event_types = list()
         cls.event_types.append(name)
         return name
 
     def push_handlers(self, *args, **kwargs):
-        '''Push a level onto the top of the handler stack, then attach zero or
+        """Push a level onto the top of the handler stack, then attach zero or
         more event handlers.
 
         If keyword arguments are given, they name the event type to attach.
         Otherwise, a callable's `__name__` attribute will be used.  Any other
         object may also be specified, in which case it will be searched for
         callables with event names.
-        '''
+        """
         # Create event stack if necessary
         if type(self._event_stack) is tuple:
-            self._event_stack = []
+            self._event_stack = list()
 
         # Place dict full of new handlers at beginning of stack
-        self._event_stack.insert(0, {})
+        self._event_stack.insert(0, dict())
         self.set_handlers(*args, **kwargs)
 
     def _get_handlers(self, args, kwargs):
-        '''Implement handler matching on arguments for set_handlers and
+        """Implement handler matching on arguments for set_handlers and
         remove_handlers.
-        '''
-        for object in args:
-            if inspect.isroutine(object):
+        """
+        for object_ in args:
+            if inspect.isroutine(object_):
                 # Single magically named function
-                name = object.__name__
+                name = object_.__name__
                 if name not in self.event_types:
                     raise EventException('Unknown event "%s"' % name)
-                yield name, object
+                yield name, object_
             else:
                 # Single instance with magically named methods
-                for name in dir(object):
+                for name in dir(object_):
                     if name in self.event_types:
-                        yield name, getattr(object, name)
-        for name, handler in kwargs.items():
+                        yield name, getattr(object_, name)
+        for name, handler in list(kwargs.items()):
             # Function for handling given event (no magic)
             if name not in self.event_types:
                 raise EventException('Unknown event "%s"' % name)
             yield name, handler
 
     def set_handlers(self, *args, **kwargs):
-        '''Attach one or more event handlers to the top level of the handler
+        """Attach one or more event handlers to the top level of the handler
         stack.
-        
+
         See `push_handlers` for the accepted argument types.
-        '''
+        """
         # Create event stack if necessary
         if type(self._event_stack) is tuple:
-            self._event_stack = [{}]
+            self._event_stack = [dict()]
 
         for name, handler in self._get_handlers(args, kwargs):
             self.set_handler(name, handler)
 
     def set_handler(self, name, handler):
-        '''Attach a single event handler.
+        """Attach a single event handler.
 
         :Parameters:
             `name` : str
@@ -236,32 +240,32 @@ class EventDispatcher(object):
             `handler` : callable
                 Event handler to attach.
 
-        '''
+        """
         # Create event stack if necessary
         if type(self._event_stack) is tuple:
-            self._event_stack = [{}]
+            self._event_stack = [dict()]
 
         self._event_stack[0][name] = handler
 
     def pop_handlers(self):
-        '''Pop the top level of event handlers off the stack.
-        '''
+        """Pop the top level of event handlers off the stack.
+        """
         assert self._event_stack and 'No handlers pushed'
 
         del self._event_stack[0]
 
     def remove_handlers(self, *args, **kwargs):
-        '''Remove event handlers from the event stack.
+        """Remove event handlers from the event stack.
 
         See `push_handlers` for the accepted argument types.  All handlers
         are removed from the first stack frame that contains any of the given
         handlers.  No error is raised if any handler does not appear in that
         frame, or if no stack frame contains any of the given handlers.
 
-        If the stack frame is empty after removing the handlers, it is 
+        If the stack frame is empty after removing the handlers, it is
         removed from the stack.  Note that this interferes with the expected
         symmetry of `push_handlers` and `pop_handlers`.
-        '''
+        """
         handlers = list(self._get_handlers(args, kwargs))
 
         # Find the first stack frame containing any of the handlers
@@ -292,7 +296,7 @@ class EventDispatcher(object):
             self._event_stack.remove(frame)
 
     def remove_handler(self, name, handler):
-        '''Remove a single event handler.
+        """Remove a single event handler.
 
         The given event handler is removed from the first handler stack frame
         it appears in.  The handler must be the exact same callable as passed
@@ -306,7 +310,7 @@ class EventDispatcher(object):
                 Name of the event type to remove.
             `handler` : callable
                 Event handler to remove.
-        '''
+        """
         for frame in self._event_stack:
             try:
                 if frame[name] == handler:
@@ -316,8 +320,8 @@ class EventDispatcher(object):
                 pass
 
     def dispatch_event(self, event_type, *args):
-        '''Dispatch a single event to the attached handlers.
-        
+        """Dispatch a single event to the attached handlers.
+
         The event is propagated to all handlers from from the top of the stack
         until one returns `EVENT_HANDLED`.  This method should be used only by
         `EventDispatcher` implementors; applications should call
@@ -335,14 +339,15 @@ class EventDispatcher(object):
                 Arguments to pass to the event handler.
 
         :rtype: bool or None
-        :return: (Since pyglet 1.2) `EVENT_HANDLED` if an event handler 
+        :return: (Since pyglet 1.2) `EVENT_HANDLED` if an event handler
             returned `EVENT_HANDLED`; `EVENT_UNHANDLED` if one or more event
             handlers were invoked but returned only `EVENT_UNHANDLED`;
             otherwise ``False``.  In pyglet 1.1 and earler, the return value
             is always ``None``.
 
-        '''
-        assert event_type in self.event_types, "%r not found in %r.event_types == %r" % (event_type, self, self.event_types)
+        """
+        assert event_type in self.event_types, "%r not found in %r.event_types == %r" % (
+            event_type, self, self.event_types)
 
         invoked = False
 
@@ -356,7 +361,6 @@ class EventDispatcher(object):
                         return EVENT_HANDLED
                 except TypeError:
                     self._raise_dispatch_exception(event_type, args, handler)
-
 
         # Check instance for an event handler
         if hasattr(self, event_type):
@@ -377,7 +381,7 @@ class EventDispatcher(object):
         # A common problem in applications is having the wrong number of
         # arguments in an event handler.  This is caught as a TypeError in
         # dispatch_event but the error message is obfuscated.
-        # 
+        #
         # Here we check if there is indeed a mismatch in argument count,
         # and construct a more useful exception message if so.  If this method
         # doesn't find a problem with the number of arguments, the error
@@ -391,7 +395,7 @@ class EventDispatcher(object):
         n_handler_args = len(handler_args)
 
         # Remove "self" arg from handler if it's a bound method
-        if inspect.ismethod(handler) and handler.im_self:
+        if inspect.ismethod(handler) and handler.__self__:
             n_handler_args -= 1
 
         # Allow *args varargs to overspecify arguments
@@ -399,30 +403,30 @@ class EventDispatcher(object):
             n_handler_args = max(n_handler_args, n_args)
 
         # Allow default values to overspecify arguments
-        if (n_handler_args > n_args and 
-            handler_defaults and
-            n_handler_args - len(handler_defaults) <= n_args):
+        if (n_handler_args > n_args and
+                handler_defaults and
+                n_handler_args - len(handler_defaults) <= n_args):
             n_handler_args = n_args
 
         if n_handler_args != n_args:
             if inspect.isfunction(handler) or inspect.ismethod(handler):
                 descr = '%s at %s:%d' % (
-                    handler.func_name,
-                    handler.func_code.co_filename,
-                    handler.func_code.co_firstlineno)
+                    handler.__name__,
+                    handler.__code__.co_filename,
+                    handler.__code__.co_firstlineno)
             else:
                 descr = repr(handler)
-            
+
             raise TypeError(
                 '%s event was dispatched with %d arguments, but '
-                'handler %s has an incompatible function signature' % 
+                'handler %s has an incompatible function signature' %
                 (event_type, len(args), descr))
         else:
             raise
 
     def event(self, *args):
-        '''Function decorator for an event handler.  
-        
+        """Function decorator for an event handler.
+
         Usage::
 
             win = window.Window()
@@ -437,7 +441,7 @@ class EventDispatcher(object):
             def foo(self, width, height):
                 # ...
 
-        '''
+        """
         if len(args) == 0:                      # @window.event()
             def decorator(func):
                 name = func.__name__
@@ -449,8 +453,9 @@ class EventDispatcher(object):
             name = func.__name__
             self.set_handler(name, func)
             return args[0]
-        elif type(args[0]) in (str, unicode):   # @window.event('on_resize')
+        elif type(args[0]) in (str, str):   # @window.event('on_resize')
             name = args[0]
+
             def decorator(func):
                 self.set_handler(name, func)
                 return func

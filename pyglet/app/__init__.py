@@ -2,14 +2,14 @@
 # pyglet
 # Copyright (c) 2006-2008 Alex Holkner
 # All rights reserved.
-# 
+#
 # Redistribution and use in source and binary forms, with or without
-# modification, are permitted provided that the following conditions 
+# modification, are permitted provided that the following conditions
 # are met:
 #
 #  * Redistributions of source code must retain the above copyright
 #    notice, this list of conditions and the following disclaimer.
-#  * Redistributions in binary form must reproduce the above copyright 
+#  * Redistributions in binary form must reproduce the above copyright
 #    notice, this list of conditions and the following disclaimer in
 #    the documentation and/or other materials provided with the
 #    distribution.
@@ -32,13 +32,13 @@
 # POSSIBILITY OF SUCH DAMAGE.
 # ----------------------------------------------------------------------------
 
-'''Application-wide functionality.
+"""Application-wide functionality.
 
 Applications
 ------------
 
-Most applications need only call :func:`run` after creating one or more 
-windows to begin processing events.  For example, a simple application 
+Most applications need only call :func:`run` after creating one or more
+windows to begin processing events.  For example, a simple application
 consisting of one window is::
 
     import pyglet
@@ -64,14 +64,14 @@ default policy is to wait until all windows are closed)::
 
 
 :attr:`event_loop` is the global event loop.  Applications can replace this
-with their own subclass of :class:`EventLoop` before calling 
+with their own subclass of :class:`EventLoop` before calling
 :meth:`EventLoop.run`.
 
-:attr:`platform_event_loop` is the platform-dependent event loop. 
-Applications must not subclass or replace this :class:`PlatformEventLoop` 
+:attr:`platform_event_loop` is the platform-dependent event loop.
+Applications must not subclass or replace this :class:`PlatformEventLoop`
 object.
 
-'''
+"""
 
 __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
@@ -79,18 +79,20 @@ __version__ = '$Id$'
 import sys
 import weakref
 
-_is_epydoc = hasattr(sys, 'is_epydoc') and sys.is_epydoc
 
 class AppException(Exception):
     pass
 
-class WeakSet(object):
-    '''Set of objects, referenced weakly.
+
+class WeakSet:
+
+    """Set of objects, referenced weakly.
 
     Adding an object to this set does not prevent it from being garbage
     collected.  Upon being garbage collected, the object is automatically
     removed from the set.
-    '''
+    """
+
     def __init__(self):
         self._dict = weakref.WeakKeyDictionary()
 
@@ -101,7 +103,7 @@ class WeakSet(object):
         del self._dict[value]
 
     def __iter__(self):
-        for key in self._dict.keys():
+        for key in list(self._dict.keys()):
             yield key
 
     def __contains__(self, other):
@@ -111,11 +113,10 @@ class WeakSet(object):
         return len(self._dict)
 
 
-
 displays = WeakSet()
-'''Set of all open displays.  Instances of :class:`pyglet.canvas.Display` 
-are automatically added to this set upon construction.  The set uses weak 
-references, so displays are removed from the set when they are no longer 
+'''Set of all open displays.  Instances of :class:`pyglet.canvas.Display`
+are automatically added to this set upon construction.  The set uses weak
+references, so displays are removed from the set when they are no longer
 referenced.
 
 :deprecated: Use :func:`pyglet.canvas.get_display`.
@@ -123,27 +124,27 @@ referenced.
 :type: :class:`WeakSet`
 '''
 
-
 windows = WeakSet()
-'''Set of all open windows (including invisible windows).  Instances of
-:class:`pyglet.window.Window` are automatically added to this set upon 
-construction. The set uses weak references, so windows are removed from 
+"""Set of all open windows (including invisible windows).  Instances of
+:class:`pyglet.window.Window` are automatically added to this set upon
+construction. The set uses weak references, so windows are removed from
 the set when they are no longer referenced or are closed explicitly.
-'''
+"""
 
 
 def run():
-    '''Begin processing events, scheduled functions and window updates.
+    """Begin processing events, scheduled functions and window updates.
 
     This is a convenience function, equivalent to::
 
         pyglet.app.event_loop.run()
 
-    '''
+    """
     event_loop.run()
 
+
 def exit():
-    '''Exit the application event loop.
+    """Exit the application event loop.
 
     Causes the application event loop to finish, if an event loop is currently
     running.  The application may not necessarily exit (for example, there may
@@ -153,28 +154,19 @@ def exit():
 
         event_loop.exit()
 
-    '''
+    """
     event_loop.exit()
 
 from pyglet.app.base import EventLoop
 from pyglet import compat_platform
-if _is_epydoc:
-    from pyglet.app.base import PlatformEventLoop
+if compat_platform == 'darwin':
+    from pyglet.app.cocoa import CocoaEventLoop as PlatformEventLoop
+elif compat_platform in ('win32', 'cygwin'):
+    from pyglet.app.win32 import Win32EventLoop as PlatformEventLoop
 else:
-    if compat_platform == 'darwin':
-        from pyglet import options as pyglet_options
-        if pyglet_options['darwin_cocoa']:
-            from pyglet.app.cocoa import CocoaEventLoop as PlatformEventLoop
-        else:
-            from pyglet.app.carbon import CarbonEventLoop as PlatformEventLoop
-    elif compat_platform in ('win32', 'cygwin'):
-        from pyglet.app.win32 import Win32EventLoop as PlatformEventLoop
-    else:
-        from pyglet.app.xlib import XlibEventLoop as PlatformEventLoop
-
+    from pyglet.app.xlib import XlibEventLoop as PlatformEventLoop
 
 
 event_loop = EventLoop()
 
 platform_event_loop = PlatformEventLoop()
-

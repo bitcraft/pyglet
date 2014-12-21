@@ -7,12 +7,16 @@ from pyglet.window import key
 from pyglet import clock
 from scene2d import *
 
+
 class PlayerSprite(Sprite):
-    bullets = []
+    bullets = list()
+
     def update(self, dt):
         self.x += (keyboard[key.RIGHT] - keyboard[key.LEFT]) * 200 * dt
-        if self.left < 0: self.left = 0
-        if self.right > w.width: self.right = w.width
+        if self.left < 0:
+            self.left = 0
+        if self.right > w.width:
+            self.right = w.width
         if self.properties['fired']:
             self.properties['fired'] = max(0, self.properties['fired'] - dt)
         if keyboard[key.SPACE]:
@@ -23,8 +27,10 @@ class PlayerSprite(Sprite):
                 view.sprites.append(shot)
                 self.bullets.append(shot)
 
+
 class EnemySprite(Sprite):
-    bullets = []
+    bullets = list()
+
     def update(self, dt):
         self.x += self.properties['dx'] * dt
         if self.right > w.width:
@@ -42,6 +48,7 @@ class EnemySprite(Sprite):
         else:
             self.properties['fired'] = max(0, self.properties['fired'] - dt)
 
+
 w = pyglet.window.Window(width=512, height=512)
 w.set_exclusive_mouse()
 clock.set_fps_limit(30)
@@ -51,13 +58,13 @@ dirname = os.path.dirname(__file__)
 r = Resource.load(os.path.join(dirname, 'invaders.xml'))
 player = PlayerSprite.from_image(0, 0, r['player'], properties=dict(fired=0))
 clock.schedule(player.update)
-view = FlatView.from_window(w, fx=w.width/2, fy=w.height/2,
-    sprites=[player])
+view = FlatView.from_window(w, fx=w.width / 2, fy=w.height / 2,
+                            sprites=[player])
 
 dead = False
 enemies = [
     EnemySprite.from_image(100, 400, r['enemy1'],
-        properties={'dx': 150, 'fired': 0})
+                           properties={'dx': 150, 'fired': 0})
 ]
 for enemy in enemies:
     view.sprites.append(enemy)
@@ -74,7 +81,7 @@ while not (w.has_exit or dead):
     for shot in list(enemies[0].bullets):
         shot.y -= 200 * dt
         if shot.overlaps(player):
-            print 'YOU LOST!'
+            print('YOU LOST!')
             dead = True
             break
         if shot.y < 0:
@@ -93,11 +100,10 @@ while not (w.has_exit or dead):
 
     # end game
     if not enemies:
-        print 'YOU WON!'
+        print('YOU WON!')
         break
 
     view.clear()
     view.draw()
     w.flip()
 w.close()
-

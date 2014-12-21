@@ -2,14 +2,14 @@
 # pyglet
 # Copyright (c) 2006-2008 Alex Holkner
 # All rights reserved.
-# 
+#
 # Redistribution and use in source and binary forms, with or without
-# modification, are permitted provided that the following conditions 
+# modification, are permitted provided that the following conditions
 # are met:
 #
 #  * Redistributions of source code must retain the above copyright
 #    notice, this list of conditions and the following disclaimer.
-#  * Redistributions in binary form must reproduce the above copyright 
+#  * Redistributions in binary form must reproduce the above copyright
 #    notice, this list of conditions and the following disclaimer in
 #    the documentation and/or other materials provided with the
 #    distribution.
@@ -32,8 +32,8 @@
 # POSSIBILITY OF SUCH DAMAGE.
 # ----------------------------------------------------------------------------
 
-'''
-'''
+"""
+"""
 
 __docformat__ = 'restructuredtext'
 __version__ = '$Id: $'
@@ -57,17 +57,17 @@ eventLoopQuitErr = -9876
 kEventPriorityStandard = 1
 
 # MacApplication.h
-kUIModeNormal                 = 0
-kUIModeContentSuppressed      = 1
-kUIModeContentHidden          = 2
-kUIModeAllSuppressed          = 4
-kUIModeAllHidden              = 3
-kUIOptionAutoShowMenuBar      = 1 << 0
-kUIOptionDisableAppleMenu     = 1 << 2
+kUIModeNormal = 0
+kUIModeContentSuppressed = 1
+kUIModeContentHidden = 2
+kUIModeAllSuppressed = 4
+kUIModeAllHidden = 3
+kUIOptionAutoShowMenuBar = 1 << 0
+kUIOptionDisableAppleMenu = 1 << 2
 kUIOptionDisableProcessSwitch = 1 << 3
-kUIOptionDisableForceQuit     = 1 << 4
+kUIOptionDisableForceQuit = 1 << 4
 kUIOptionDisableSessionTerminate = 1 << 5
-kUIOptionDisableHide          = 1 << 6
+kUIOptionDisableHide = 1 << 6
 
 # MacWindows.h
 kAlertWindowClass = 1
@@ -94,7 +94,7 @@ kWindowVerticalZoomAttribute = 0x4
 kWindowFullZoomAttribute = kWindowHorizontalZoomAttribute | \
     kWindowVerticalZoomAttribute
 kWindowCollapseBoxAttribute = 0x8
-kWindowResizableAttribute = 0x10 
+kWindowResizableAttribute = 0x10
 kWindowSideTitlebarAttribute = 0x20
 kWindowToolbarAttribute = 0x40
 kWindowMetalAttribute = 1 << 8
@@ -113,11 +113,11 @@ kWindowLiveResizeAttribute = 1 << 28
 kWindowIgnoreClicksAttribute = 1 << 29
 kWindowNoConstrainAttribute = 1 << 31
 kWindowStandardDocumentAttributes = kWindowCloseBoxAttribute | \
-                                    kWindowFullZoomAttribute | \
-                                    kWindowCollapseBoxAttribute | \
-                                    kWindowResizableAttribute
+    kWindowFullZoomAttribute | \
+    kWindowCollapseBoxAttribute | \
+    kWindowResizableAttribute
 kWindowStandardFloatingAttributes = kWindowCloseBoxAttribute | \
-                                    kWindowCollapseBoxAttribute
+    kWindowCollapseBoxAttribute
 
 kWindowCenterOnMainScreen = 1
 kWindowCenterOnParentWindow = 2
@@ -131,41 +131,42 @@ kWindowAlertPositionOnParentWindow = 8
 kWindowAlertPositionOnParentWindowScreen = 9
 
 
-kWindowTitleBarRgn            = 0
-kWindowTitleTextRgn           = 1
-kWindowCloseBoxRgn            = 2
-kWindowZoomBoxRgn             = 3
-kWindowDragRgn                = 5
-kWindowGrowRgn                = 6
-kWindowCollapseBoxRgn         = 7
-kWindowTitleProxyIconRgn      = 8
-kWindowStructureRgn           = 32
-kWindowContentRgn             = 33
-kWindowUpdateRgn              = 34
-kWindowOpaqueRgn              = 35
-kWindowGlobalPortRgn          = 40
-kWindowToolbarButtonRgn       = 41
+kWindowTitleBarRgn = 0
+kWindowTitleTextRgn = 1
+kWindowCloseBoxRgn = 2
+kWindowZoomBoxRgn = 3
+kWindowDragRgn = 5
+kWindowGrowRgn = 6
+kWindowCollapseBoxRgn = 7
+kWindowTitleProxyIconRgn = 8
+kWindowStructureRgn = 32
+kWindowContentRgn = 33
+kWindowUpdateRgn = 34
+kWindowOpaqueRgn = 35
+kWindowGlobalPortRgn = 40
+kWindowToolbarButtonRgn = 41
 
-inDesk                        = 0
-inNoWindow                    = 0
-inMenuBar                     = 1
-inSysWindow                   = 2
-inContent                     = 3
-inDrag                        = 4
-inGrow                        = 5
-inGoAway                      = 6
-inZoomIn                      = 7
-inZoomOut                     = 8
-inCollapseBox                 = 11
-inProxyIcon                   = 12
-inToolbarButton               = 13
-inStructure                   = 15 
+inDesk = 0
+inNoWindow = 0
+inMenuBar = 1
+inSysWindow = 2
+inContent = 3
+inDrag = 4
+inGrow = 5
+inGoAway = 6
+inZoomIn = 7
+inZoomOut = 8
+inCollapseBox = 11
+inProxyIcon = 12
+inToolbarButton = 13
+inStructure = 15
+
 
 def _name(name):
     return ord(name[0]) << 24 | \
-           ord(name[1]) << 16 | \
-           ord(name[2]) << 8 | \
-           ord(name[3])
+        ord(name[1]) << 16 | \
+        ord(name[2]) << 8 | \
+        ord(name[3])
 
 # AEDataModel.h
 
@@ -191,52 +192,52 @@ typeEventRef = _name('evrf')
 
 # CarbonEvents.h
 
-kEventParamWindowRef          = _name('wind')
-kEventParamWindowPartCode     = _name('wpar')
-kEventParamGrafPort           = _name('graf')
-kEventParamMenuRef            = _name('menu')
-kEventParamEventRef           = _name('evnt')
-kEventParamControlRef         = _name('ctrl')
-kEventParamRgnHandle          = _name('rgnh')
-kEventParamEnabled            = _name('enab')
-kEventParamDimensions         = _name('dims')
-kEventParamBounds             = _name('boun')
-kEventParamAvailableBounds    = _name('avlb')
+kEventParamWindowRef = _name('wind')
+kEventParamWindowPartCode = _name('wpar')
+kEventParamGrafPort = _name('graf')
+kEventParamMenuRef = _name('menu')
+kEventParamEventRef = _name('evnt')
+kEventParamControlRef = _name('ctrl')
+kEventParamRgnHandle = _name('rgnh')
+kEventParamEnabled = _name('enab')
+kEventParamDimensions = _name('dims')
+kEventParamBounds = _name('boun')
+kEventParamAvailableBounds = _name('avlb')
 #kEventParamAEEventID          = keyAEEventID
 #kEventParamAEEventClass       = keyAEEventClass
-kEventParamCGContextRef       = _name('cntx')
-kEventParamDeviceDepth        = _name('devd')
-kEventParamDeviceColor        = _name('devc')
-kEventParamMutableArray       = _name('marr')
-kEventParamResult             = _name('ansr')
-kEventParamMinimumSize        = _name('mnsz')
-kEventParamMaximumSize        = _name('mxsz')
-kEventParamAttributes         = _name('attr')
-kEventParamReason             = _name('why?')
-kEventParamTransactionID      = _name('trns')
-kEventParamGDevice            = _name('gdev')
-kEventParamIndex              = _name('indx')
-kEventParamUserData           = _name('usrd')
-kEventParamShape              = _name('shap')
-typeWindowRef                 = _name('wind')
-typeWindowPartCode            = _name('wpar')
-typeGrafPtr                   = _name('graf')
-typeGWorldPtr                 = _name('gwld')
-typeMenuRef                   = _name('menu')
-typeControlRef                = _name('ctrl')
-typeCollection                = _name('cltn')
-typeQDRgnHandle               = _name('rgnh')
-typeOSStatus                  = _name('osst')
-typeCFIndex                   = _name('cfix')
-typeCGContextRef              = _name('cntx')
-typeQDPoint                   = _name('QDpt')
-typeHICommand                 = _name('hcmd')
-typeHIPoint                   = _name('hipt')
-typeHISize                    = _name('hisz')
-typeHIRect                    = _name('hirc')
-typeHIShapeRef                = _name('shap')
-typeVoidPtr                   = _name('void')
-typeGDHandle                  = _name('gdev') 
+kEventParamCGContextRef = _name('cntx')
+kEventParamDeviceDepth = _name('devd')
+kEventParamDeviceColor = _name('devc')
+kEventParamMutableArray = _name('marr')
+kEventParamResult = _name('ansr')
+kEventParamMinimumSize = _name('mnsz')
+kEventParamMaximumSize = _name('mxsz')
+kEventParamAttributes = _name('attr')
+kEventParamReason = _name('why?')
+kEventParamTransactionID = _name('trns')
+kEventParamGDevice = _name('gdev')
+kEventParamIndex = _name('indx')
+kEventParamUserData = _name('usrd')
+kEventParamShape = _name('shap')
+typeWindowRef = _name('wind')
+typeWindowPartCode = _name('wpar')
+typeGrafPtr = _name('graf')
+typeGWorldPtr = _name('gwld')
+typeMenuRef = _name('menu')
+typeControlRef = _name('ctrl')
+typeCollection = _name('cltn')
+typeQDRgnHandle = _name('rgnh')
+typeOSStatus = _name('osst')
+typeCFIndex = _name('cfix')
+typeCGContextRef = _name('cntx')
+typeQDPoint = _name('QDpt')
+typeHICommand = _name('hcmd')
+typeHIPoint = _name('hipt')
+typeHISize = _name('hisz')
+typeHIRect = _name('hirc')
+typeHIShapeRef = _name('shap')
+typeVoidPtr = _name('void')
+typeGDHandle = _name('gdev')
 
 kCoreEventClass = _name('aevt')
 kEventClassMouse = _name('mous')
@@ -263,48 +264,48 @@ kEventClassTSMDocumentAccess = _name('tdac')
 kEventDurationForever = -1.0
 
 # Appearance.h
-kThemeArrowCursor             = 0
-kThemeCopyArrowCursor         = 1
-kThemeAliasArrowCursor        = 2
+kThemeArrowCursor = 0
+kThemeCopyArrowCursor = 1
+kThemeAliasArrowCursor = 2
 kThemeContextualMenuArrowCursor = 3
-kThemeIBeamCursor             = 4
-kThemeCrossCursor             = 5
-kThemePlusCursor              = 6
-kThemeWatchCursor             = 7
-kThemeClosedHandCursor        = 8
-kThemeOpenHandCursor          = 9
-kThemePointingHandCursor      = 10
-kThemeCountingUpHandCursor    = 11
-kThemeCountingDownHandCursor  = 12
+kThemeIBeamCursor = 4
+kThemeCrossCursor = 5
+kThemePlusCursor = 6
+kThemeWatchCursor = 7
+kThemeClosedHandCursor = 8
+kThemeOpenHandCursor = 9
+kThemePointingHandCursor = 10
+kThemeCountingUpHandCursor = 11
+kThemeCountingDownHandCursor = 12
 kThemeCountingUpAndDownHandCursor = 13
-kThemeSpinningCursor          = 14
-kThemeResizeLeftCursor        = 15
-kThemeResizeRightCursor       = 16
-kThemeResizeLeftRightCursor   = 17
-kThemeNotAllowedCursor        = 18
-kThemeResizeUpCursor          = 19
-kThemeResizeDownCursor        = 20
-kThemeResizeUpDownCursor      = 21
-kThemePoofCursor              = 22
+kThemeSpinningCursor = 14
+kThemeResizeLeftCursor = 15
+kThemeResizeRightCursor = 16
+kThemeResizeLeftRightCursor = 17
+kThemeNotAllowedCursor = 18
+kThemeResizeUpCursor = 19
+kThemeResizeDownCursor = 20
+kThemeResizeUpDownCursor = 21
+kThemePoofCursor = 22
 
 # AE
-kEventAppleEvent                = 1
-kEventAppQuit                   = 3
-kAEQuitApplication              = _name('quit')
+kEventAppleEvent = 1
+kEventAppQuit = 3
+kAEQuitApplication = _name('quit')
 
 # Commands
-kEventProcessCommand            = 1
-kEventParamHICommand            = _name('hcmd')
-kEventParamDirectObject         = _name('----')
-kHICommandQuit                  = _name('quit')
+kEventProcessCommand = 1
+kEventParamHICommand = _name('hcmd')
+kEventParamDirectObject = _name('----')
+kHICommandQuit = _name('quit')
 
 # Keyboard
-kEventRawKeyDown                = 1
-kEventRawKeyRepeat              = 2
-kEventRawKeyUp                  = 3
-kEventRawKeyModifiersChanged    = 4
-kEventHotKeyPressed             = 5
-kEventHotKeyReleased            = 6
+kEventRawKeyDown = 1
+kEventRawKeyRepeat = 2
+kEventRawKeyUp = 3
+kEventRawKeyModifiersChanged = 4
+kEventHotKeyPressed = 5
+kEventHotKeyReleased = 6
 
 kEventParamKeyCode = _name('kcod')
 kEventParamKeyMacCharCodes = _name('kchr')
@@ -313,50 +314,50 @@ kEventParamKeyUnicodes = _name('kuni')
 kEventParamKeyboardType = _name('kbdt')
 typeEventHotKeyID = _name('hkid')
 
-activeFlagBit                 = 0
-btnStateBit                   = 7
-cmdKeyBit                     = 8
-shiftKeyBit                   = 9
-alphaLockBit                  = 10
-optionKeyBit                  = 11
-controlKeyBit                 = 12
-rightShiftKeyBit              = 13
-rightOptionKeyBit             = 14
-rightControlKeyBit            = 15
-numLockBit                    = 16
+activeFlagBit = 0
+btnStateBit = 7
+cmdKeyBit = 8
+shiftKeyBit = 9
+alphaLockBit = 10
+optionKeyBit = 11
+controlKeyBit = 12
+rightShiftKeyBit = 13
+rightOptionKeyBit = 14
+rightControlKeyBit = 15
+numLockBit = 16
 
-activeFlag                    = 1 << activeFlagBit
-btnState                      = 1 << btnStateBit
-cmdKey                        = 1 << cmdKeyBit
-shiftKey                      = 1 << shiftKeyBit
-alphaLock                     = 1 << alphaLockBit
-optionKey                     = 1 << optionKeyBit
-controlKey                    = 1 << controlKeyBit
-rightShiftKey                 = 1 << rightShiftKeyBit
-rightOptionKey                = 1 << rightOptionKeyBit
-rightControlKey               = 1 << rightControlKeyBit
-numLock                       = 1 << numLockBit
+activeFlag = 1 << activeFlagBit
+btnState = 1 << btnStateBit
+cmdKey = 1 << cmdKeyBit
+shiftKey = 1 << shiftKeyBit
+alphaLock = 1 << alphaLockBit
+optionKey = 1 << optionKeyBit
+controlKey = 1 << controlKeyBit
+rightShiftKey = 1 << rightShiftKeyBit
+rightOptionKey = 1 << rightOptionKeyBit
+rightControlKey = 1 << rightControlKeyBit
+numLock = 1 << numLockBit
 
 # TextInput
-kEventTextInputUpdateActiveInputArea    = 1
-kEventTextInputUnicodeForKeyEvent       = 2
-kEventTextInputOffsetToPos              = 3
-kEventTextInputPosToOffset              = 4
-kEventTextInputShowHideBottomWindow     = 5
-kEventTextInputGetSelectedText          = 6
-kEventTextInputUnicodeText              = 7
+kEventTextInputUpdateActiveInputArea = 1
+kEventTextInputUnicodeForKeyEvent = 2
+kEventTextInputOffsetToPos = 3
+kEventTextInputPosToOffset = 4
+kEventTextInputShowHideBottomWindow = 5
+kEventTextInputGetSelectedText = 6
+kEventTextInputUnicodeText = 7
 
 kEventParamTextInputSendText = _name('tstx')
 kEventParamTextInputSendKeyboardEvent = _name('tske')
 
 # Mouse
-kEventMouseDown                 = 1
-kEventMouseUp                   = 2
-kEventMouseMoved                = 5
-kEventMouseDragged              = 6
-kEventMouseEntered              = 8
-kEventMouseExited               = 9
-kEventMouseWheelMoved           = 10
+kEventMouseDown = 1
+kEventMouseUp = 2
+kEventMouseMoved = 5
+kEventMouseDragged = 6
+kEventMouseEntered = 8
+kEventMouseExited = 9
+kEventMouseWheelMoved = 10
 kEventParamMouseLocation = _name('mloc')
 kEventParamWindowMouseLocation = _name('wmou')
 kEventParamMouseButton = _name('mbtn')
@@ -367,9 +368,9 @@ kEventParamMouseDelta = _name('mdta')
 kEventParamMouseChord = _name('chor')
 kEventParamTabletEventType = _name('tblt')
 kEventParamMouseTrackingRef = _name('mtrf')
-typeMouseButton         = _name('mbtn')
-typeMouseWheelAxis      = _name('mwax')
-typeMouseTrackingRef    = _name('mtrf')
+typeMouseButton = _name('mbtn')
+typeMouseWheelAxis = _name('mwax')
+typeMouseTrackingRef = _name('mtrf')
 
 kMouseTrackingOptionsLocalClip = 0
 kMouseTrackingOptionsGlobalClip = 1
@@ -382,148 +383,148 @@ kEventMouseWheelAxisX = 0
 kEventMouseWheelAxisY = 1
 
 DEFAULT_CREATOR_CODE = _name('PYGL')    # <ah> this is registered for Pyglet
-                                        # apps.  register your own at:
-                                        # http://developer.apple.com/datatype
+# apps.  register your own at:
+# http://developer.apple.com/datatype
 
 # Window
-kEventWindowUpdate                  = 1
-kEventWindowDrawContent             = 2
+kEventWindowUpdate = 1
+kEventWindowDrawContent = 2
 
 # -- window activation events --
 
-kEventWindowActivated               = 5
-kEventWindowDeactivated             = 6
-kEventWindowHandleActivate          = 91
-kEventWindowHandleDeactivate        = 92
-kEventWindowGetClickActivation      = 7
-kEventWindowGetClickModality        = 8
+kEventWindowActivated = 5
+kEventWindowDeactivated = 6
+kEventWindowHandleActivate = 91
+kEventWindowHandleDeactivate = 92
+kEventWindowGetClickActivation = 7
+kEventWindowGetClickModality = 8
 
 # -- window state change events --
 
-kEventWindowShowing                 = 22
-kEventWindowHiding                  = 23
-kEventWindowShown                   = 24
-kEventWindowHidden                  = 25
-kEventWindowCollapsing              = 86
-kEventWindowCollapsed               = 67
-kEventWindowExpanding               = 87
-kEventWindowExpanded                = 70
-kEventWindowZoomed                  = 76
-kEventWindowBoundsChanging          = 26
-kEventWindowBoundsChanged           = 27
-kEventWindowResizeStarted           = 28
-kEventWindowResizeCompleted         = 29
-kEventWindowDragStarted             = 30
-kEventWindowDragCompleted           = 31
-kEventWindowClosed                  = 73
-kEventWindowTransitionStarted       = 88
-kEventWindowTransitionCompleted     = 89
+kEventWindowShowing = 22
+kEventWindowHiding = 23
+kEventWindowShown = 24
+kEventWindowHidden = 25
+kEventWindowCollapsing = 86
+kEventWindowCollapsed = 67
+kEventWindowExpanding = 87
+kEventWindowExpanded = 70
+kEventWindowZoomed = 76
+kEventWindowBoundsChanging = 26
+kEventWindowBoundsChanged = 27
+kEventWindowResizeStarted = 28
+kEventWindowResizeCompleted = 29
+kEventWindowDragStarted = 30
+kEventWindowDragCompleted = 31
+kEventWindowClosed = 73
+kEventWindowTransitionStarted = 88
+kEventWindowTransitionCompleted = 89
 
 # -- window click events --
 
-kEventWindowClickDragRgn            = 32
-kEventWindowClickResizeRgn          = 33
-kEventWindowClickCollapseRgn        = 34
-kEventWindowClickCloseRgn           = 35
-kEventWindowClickZoomRgn            = 36
-kEventWindowClickContentRgn         = 37
-kEventWindowClickProxyIconRgn       = 38
-kEventWindowClickToolbarButtonRgn   = 41
-kEventWindowClickStructureRgn       = 42
+kEventWindowClickDragRgn = 32
+kEventWindowClickResizeRgn = 33
+kEventWindowClickCollapseRgn = 34
+kEventWindowClickCloseRgn = 35
+kEventWindowClickZoomRgn = 36
+kEventWindowClickContentRgn = 37
+kEventWindowClickProxyIconRgn = 38
+kEventWindowClickToolbarButtonRgn = 41
+kEventWindowClickStructureRgn = 42
 
 # -- window cursor change events --
 
-kEventWindowCursorChange            = 40
+kEventWindowCursorChange = 40
 
 # -- window action events --
 
-kEventWindowCollapse                = 66
-kEventWindowCollapsed               = 67
-kEventWindowCollapseAll             = 68
-kEventWindowExpand                  = 69
-kEventWindowExpanded                = 70
-kEventWindowExpandAll               = 71
-kEventWindowClose                   = 72
-kEventWindowClosed                  = 73
-kEventWindowCloseAll                = 74
-kEventWindowZoom                    = 75
-kEventWindowZoomed                  = 76
-kEventWindowZoomAll                 = 77
-kEventWindowContextualMenuSelect    = 78
-kEventWindowPathSelect              = 79
-kEventWindowGetIdealSize            = 80
-kEventWindowGetMinimumSize          = 81
-kEventWindowGetMaximumSize          = 82
-kEventWindowConstrain               = 83
-kEventWindowHandleContentClick      = 85
-kEventWindowCollapsing              = 86
-kEventWindowExpanding               = 87
-kEventWindowTransitionStarted       = 88
-kEventWindowTransitionCompleted     = 89
-kEventWindowGetDockTileMenu         = 90
-kEventWindowHandleActivate          = 91
-kEventWindowHandleDeactivate        = 92
-kEventWindowProxyBeginDrag          = 128
-kEventWindowProxyEndDrag            = 129
-kEventWindowToolbarSwitchMode       = 150
+kEventWindowCollapse = 66
+kEventWindowCollapsed = 67
+kEventWindowCollapseAll = 68
+kEventWindowExpand = 69
+kEventWindowExpanded = 70
+kEventWindowExpandAll = 71
+kEventWindowClose = 72
+kEventWindowClosed = 73
+kEventWindowCloseAll = 74
+kEventWindowZoom = 75
+kEventWindowZoomed = 76
+kEventWindowZoomAll = 77
+kEventWindowContextualMenuSelect = 78
+kEventWindowPathSelect = 79
+kEventWindowGetIdealSize = 80
+kEventWindowGetMinimumSize = 81
+kEventWindowGetMaximumSize = 82
+kEventWindowConstrain = 83
+kEventWindowHandleContentClick = 85
+kEventWindowCollapsing = 86
+kEventWindowExpanding = 87
+kEventWindowTransitionStarted = 88
+kEventWindowTransitionCompleted = 89
+kEventWindowGetDockTileMenu = 90
+kEventWindowHandleActivate = 91
+kEventWindowHandleDeactivate = 92
+kEventWindowProxyBeginDrag = 128
+kEventWindowProxyEndDrag = 129
+kEventWindowToolbarSwitchMode = 150
 
 # -- window focus events --
 
-kEventWindowFocusAcquired           = 200
-kEventWindowFocusRelinquish         = 201
-kEventWindowFocusContent            = 202
-kEventWindowFocusToolbar            = 203
-kEventWindowFocusDrawer             = 204
+kEventWindowFocusAcquired = 200
+kEventWindowFocusRelinquish = 201
+kEventWindowFocusContent = 202
+kEventWindowFocusToolbar = 203
+kEventWindowFocusDrawer = 204
 
 # -- sheet events --
 
-kEventWindowSheetOpening            = 210
-kEventWindowSheetOpened             = 211
-kEventWindowSheetClosing            = 212
-kEventWindowSheetClosed             = 213
+kEventWindowSheetOpening = 210
+kEventWindowSheetOpened = 211
+kEventWindowSheetClosing = 212
+kEventWindowSheetClosed = 213
 
 # -- drawer events --
 
-kEventWindowDrawerOpening           = 220
-kEventWindowDrawerOpened            = 221
-kEventWindowDrawerClosing           = 222
-kEventWindowDrawerClosed            = 223
+kEventWindowDrawerOpening = 220
+kEventWindowDrawerOpened = 221
+kEventWindowDrawerClosing = 222
+kEventWindowDrawerClosed = 223
 
 # -- window definition events --
 
-kEventWindowDrawFrame               = 1000
-kEventWindowDrawPart                = 1001
-kEventWindowGetRegion               = 1002
-kEventWindowHitTest                 = 1003
-kEventWindowInit                    = 1004
-kEventWindowDispose                 = 1005
-kEventWindowDragHilite              = 1006
-kEventWindowModified                = 1007
-kEventWindowSetupProxyDragImage     = 1008
-kEventWindowStateChanged            = 1009
-kEventWindowMeasureTitle            = 1010
-kEventWindowDrawGrowBox             = 1011
-kEventWindowGetGrowImageRegion      = 1012
-kEventWindowPaint                   = 1013
+kEventWindowDrawFrame = 1000
+kEventWindowDrawPart = 1001
+kEventWindowGetRegion = 1002
+kEventWindowHitTest = 1003
+kEventWindowInit = 1004
+kEventWindowDispose = 1005
+kEventWindowDragHilite = 1006
+kEventWindowModified = 1007
+kEventWindowSetupProxyDragImage = 1008
+kEventWindowStateChanged = 1009
+kEventWindowMeasureTitle = 1010
+kEventWindowDrawGrowBox = 1011
+kEventWindowGetGrowImageRegion = 1012
+kEventWindowPaint = 1013
 
 # Process.h
 
-kNoProcess                    = 0
-kSystemProcess                = 1
-kCurrentProcess               = 2
+kNoProcess = 0
+kSystemProcess = 1
+kCurrentProcess = 2
 
 # CGColorSpace.h
 kCGRenderingIntentDefault = 0
 
 # CGImage.h
-kCGImageAlphaNone                   = 0
-kCGImageAlphaPremultipliedLast      = 1
-kCGImageAlphaPremultipliedFirst     = 2
-kCGImageAlphaLast                   = 3
-kCGImageAlphaFirst                  = 4
-kCGImageAlphaNoneSkipLast           = 5
-kCGImageAlphaNoneSkipFirst          = 6
-kCGImageAlphaOnly                   = 7
+kCGImageAlphaNone = 0
+kCGImageAlphaPremultipliedLast = 1
+kCGImageAlphaPremultipliedFirst = 2
+kCGImageAlphaLast = 3
+kCGImageAlphaFirst = 4
+kCGImageAlphaNoneSkipLast = 5
+kCGImageAlphaNoneSkipFirst = 6
+kCGImageAlphaOnly = 7
 
 # Tablet
 kEventTabletPoint = 1

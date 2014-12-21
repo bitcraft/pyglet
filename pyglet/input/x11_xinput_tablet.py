@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
-'''
-'''
+"""
+"""
 
 __docformat__ = 'restructuredtext'
 __version__ = '$Id: $'
@@ -18,6 +18,7 @@ try:
 except:
     _have_xinput = False
 
+
 class XInputTablet(Tablet):
     name = 'XInput Tablet'
 
@@ -27,16 +28,18 @@ class XInputTablet(Tablet):
     def open(self, window):
         return XInputTabletCanvas(window, self.cursors)
 
+
 class XInputTabletCanvas(DeviceResponder, TabletCanvas):
+
     def __init__(self, window, cursors):
-        super(XInputTabletCanvas, self).__init__(window)
+        super().__init__(window)
         self.cursors = cursors
 
         dispatcher = XInputWindowEventDispatcher.get_dispatcher(window)
 
         self.display = window.display
-        self._open_devices = []
-        self._cursor_map = {}
+        self._open_devices = list()
+        self._cursor_map = dict()
         for cursor in cursors:
             device = cursor.device
             device_id = device._device_id
@@ -74,15 +77,18 @@ class XInputTabletCanvas(DeviceResponder, TabletCanvas):
         cursor = self._cursor_map.get(e.deviceid)
         self.dispatch_event('on_leave', cursor)
 
+
 class XInputTabletCursor(TabletCursor):
+
     def __init__(self, device):
-        super(XInputTabletCursor, self).__init__(device.name)
+        super().__init__(device.name)
         self.device = device
+
 
 def get_tablets(display=None):
     # Each cursor appears as a separate xinput device; find devices that look
-    # like Wacom tablet cursors and amalgamate them into a single tablet. 
-    cursors = []
+    # like Wacom tablet cursors and amalgamate them into a single tablet.
+    cursors = list()
     devices = get_devices(display)
     for device in devices:
         if device.name in ('stylus', 'cursor', 'eraser') and \
@@ -91,4 +97,4 @@ def get_tablets(display=None):
 
     if cursors:
         return [XInputTablet(cursors)]
-    return []
+    return list()

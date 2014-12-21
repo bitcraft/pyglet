@@ -2,14 +2,14 @@
 # pyglet
 # Copyright (c) 2006-2008 Alex Holkner
 # All rights reserved.
-# 
+#
 # Redistribution and use in source and binary forms, with or without
-# modification, are permitted provided that the following conditions 
+# modification, are permitted provided that the following conditions
 # are met:
 #
 #  * Redistributions of source code must retain the above copyright
 #    notice, this list of conditions and the following disclaimer.
-#  * Redistributions in binary form must reproduce the above copyright 
+#  * Redistributions in binary form must reproduce the above copyright
 #    notice, this list of conditions and the following disclaimer in
 #    the documentation and/or other materials provided with the
 #    distribution.
@@ -32,8 +32,8 @@
 # POSSIBILITY OF SUCH DAMAGE.
 # ----------------------------------------------------------------------------
 
-'''
-'''
+"""
+"""
 
 __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
@@ -59,7 +59,8 @@ try:
     _have_getprocaddress = True
 except AttributeError:
     _have_getprocaddress = False
-    
+
+
 def link_GL(name, restype, argtypes, requires=None, suggestions=None):
     try:
         func = getattr(gl_lib, name)
@@ -70,7 +71,8 @@ def link_GL(name, restype, argtypes, requires=None, suggestions=None):
     except AttributeError:
         if _have_getprocaddress:
             # Fallback if implemented but not in ABI
-            bname = cast(pointer(create_string_buffer(asbytes(name))), POINTER(c_ubyte))
+            bname = cast(
+                pointer(create_string_buffer(asbytes(name))), POINTER(c_ubyte))
             addr = glXGetProcAddressARB(bname)
             if addr:
                 ftype = CFUNCTYPE(*((restype,) + tuple(argtypes)))
@@ -82,6 +84,7 @@ def link_GL(name, restype, argtypes, requires=None, suggestions=None):
 
 link_GLX = link_GL
 
+
 def link_GLU(name, restype, argtypes, requires=None, suggestions=None):
     try:
         func = getattr(glu_lib, name)
@@ -91,4 +94,3 @@ def link_GLU(name, restype, argtypes, requires=None, suggestions=None):
         return func
     except AttributeError:
         return missing_function(name, requires, suggestions)
-

@@ -1,12 +1,12 @@
-'''Wrapper for avformat
+"""Wrapper for avformat
 
 Generated with:
 ../tools/wraptypes/wrap.py /usr/include/ffmpeg/avformat.h -o lib_avformat.py
 
 .. Then hacked.  DON'T REGENERATE.
-'''
+"""
 
-__docformat__ =  'restructuredtext'
+__docformat__ = 'restructuredtext'
 __version__ = '$Id$'
 
 import ctypes
@@ -25,6 +25,7 @@ for t in _int_types:
     if sizeof(t) == sizeof(c_size_t):
         c_ptrdiff_t = t
 
+
 class c_void(Structure):
     # c_void_p is a buggy return type, converting to int, so
     # POINTER(None) == c_void_p is actually written as
@@ -32,10 +33,11 @@ class c_void(Structure):
     _fields_ = [('dummy', c_int)]
 
 
+LIBAVFORMAT_BUILD = 4621  # /usr/include/ffmpeg/avformat.h:8
+LIBAVFORMAT_VERSION_INT = 0  # /usr/include/ffmpeg/avformat.h:10
+LIBAVFORMAT_VERSION = 0  # /usr/include/ffmpeg/avformat.h:11
 
-LIBAVFORMAT_BUILD = 4621 	# /usr/include/ffmpeg/avformat.h:8
-LIBAVFORMAT_VERSION_INT = 0 	# /usr/include/ffmpeg/avformat.h:10
-LIBAVFORMAT_VERSION = 0 	# /usr/include/ffmpeg/avformat.h:11
+
 class struct_AVPacket(Structure):
     __slots__ = [
         'pts',
@@ -48,6 +50,8 @@ class struct_AVPacket(Structure):
         'destruct',
         'priv',
     ]
+
+
 struct_AVPacket._fields_ = [
     ('pts', c_int64),
     ('dts', c_int64),
@@ -60,8 +64,8 @@ struct_AVPacket._fields_ = [
     ('priv', POINTER(None)),
 ]
 
-AVPacket = struct_AVPacket 	# /usr/include/ffmpeg/avformat.h:42
-PKT_FLAG_KEY = 1 	# /usr/include/ffmpeg/avformat.h:43
+AVPacket = struct_AVPacket  # /usr/include/ffmpeg/avformat.h:42
+PKT_FLAG_KEY = 1  # /usr/include/ffmpeg/avformat.h:43
 # /usr/include/ffmpeg/avformat.h:45
 av_destruct_packet_nofree = _lib.av_destruct_packet_nofree
 av_destruct_packet_nofree.restype = None
@@ -77,19 +81,22 @@ av_dup_packet = _lib.av_dup_packet
 av_dup_packet.restype = c_int
 av_dup_packet.argtypes = [POINTER(AVPacket)]
 
+
 class struct_AVFrac(Structure):
     __slots__ = [
         'val',
         'num',
         'den',
     ]
+
+
 struct_AVFrac._fields_ = [
     ('val', c_int64),
     ('num', c_int64),
     ('den', c_int64),
 ]
 
-AVFrac = struct_AVFrac 	# /usr/include/ffmpeg/avformat.h:80
+AVFrac = struct_AVFrac  # /usr/include/ffmpeg/avformat.h:80
 # /usr/include/ffmpeg/avformat.h:82
 av_frac_init = _lib.av_frac_init
 av_frac_init.restype = None
@@ -105,20 +112,25 @@ av_frac_set = _lib.av_frac_set
 av_frac_set.restype = None
 av_frac_set.argtypes = [POINTER(AVFrac), c_int64]
 
+
 class struct_AVProbeData(Structure):
     __slots__ = [
         'filename',
         'buf',
         'buf_size',
     ]
+
+
 struct_AVProbeData._fields_ = [
     ('filename', c_char_p),
     ('buf', POINTER(c_ubyte)),
     ('buf_size', c_int),
 ]
 
-AVProbeData = struct_AVProbeData 	# /usr/include/ffmpeg/avformat.h:96
-AVPROBE_SCORE_MAX = 100 	# /usr/include/ffmpeg/avformat.h:98
+AVProbeData = struct_AVProbeData  # /usr/include/ffmpeg/avformat.h:96
+AVPROBE_SCORE_MAX = 100  # /usr/include/ffmpeg/avformat.h:98
+
+
 class struct_AVFormatParameters(Structure):
     __slots__ = [
         'frame_rate',
@@ -138,10 +150,16 @@ class struct_AVFormatParameters(Structure):
         'video_codec_id',
         'audio_codec_id',
     ]
+
+
 enum_PixelFormat = c_int
+
+
 class struct_AVImageFormat(Structure):
     __slots__ = [
     ]
+
+
 struct_AVImageFormat._fields_ = [
     ('_opaque_struct', c_int)
 ]
@@ -166,11 +184,14 @@ struct_AVFormatParameters._fields_ = [
     ('audio_codec_id', enum_CodecID),
 ]
 
-AVFormatParameters = struct_AVFormatParameters 	# /usr/include/ffmpeg/avformat.h:120
-AVFMT_NOFILE = 1 	# /usr/include/ffmpeg/avformat.h:122
-AVFMT_NEEDNUMBER = 2 	# /usr/include/ffmpeg/avformat.h:123
-AVFMT_SHOW_IDS = 8 	# /usr/include/ffmpeg/avformat.h:124
-AVFMT_RAWPICTURE = 32 	# /usr/include/ffmpeg/avformat.h:125
+# /usr/include/ffmpeg/avformat.h:120
+AVFormatParameters = struct_AVFormatParameters
+AVFMT_NOFILE = 1  # /usr/include/ffmpeg/avformat.h:122
+AVFMT_NEEDNUMBER = 2  # /usr/include/ffmpeg/avformat.h:123
+AVFMT_SHOW_IDS = 8  # /usr/include/ffmpeg/avformat.h:124
+AVFMT_RAWPICTURE = 32  # /usr/include/ffmpeg/avformat.h:125
+
+
 class struct_AVOutputFormat(Structure):
     __slots__ = [
         'name',
@@ -188,37 +209,53 @@ class struct_AVOutputFormat(Structure):
         'interleave_packet',
         'next',
     ]
-class struct_AVFormatContext(Structure):
-    __slots__ = [
-    ]
-struct_AVFormatContext._fields_ = [
-    ('_opaque_struct', c_int)
-]
+
 
 class struct_AVFormatContext(Structure):
     __slots__ = [
     ]
+
+
 struct_AVFormatContext._fields_ = [
     ('_opaque_struct', c_int)
 ]
 
-class struct_AVFormatContext(Structure):
-    __slots__ = [
-    ]
-struct_AVFormatContext._fields_ = [
-    ('_opaque_struct', c_int)
-]
 
 class struct_AVFormatContext(Structure):
     __slots__ = [
     ]
+
+
 struct_AVFormatContext._fields_ = [
     ('_opaque_struct', c_int)
 ]
 
+
 class struct_AVFormatContext(Structure):
     __slots__ = [
     ]
+
+
+struct_AVFormatContext._fields_ = [
+    ('_opaque_struct', c_int)
+]
+
+
+class struct_AVFormatContext(Structure):
+    __slots__ = [
+    ]
+
+
+struct_AVFormatContext._fields_ = [
+    ('_opaque_struct', c_int)
+]
+
+
+class struct_AVFormatContext(Structure):
+    __slots__ = [
+    ]
+
+
 struct_AVFormatContext._fields_ = [
     ('_opaque_struct', c_int)
 ]
@@ -231,16 +268,24 @@ struct_AVOutputFormat._fields_ = [
     ('priv_data_size', c_int),
     ('audio_codec', enum_CodecID),
     ('video_codec', enum_CodecID),
-    ('write_header', POINTER(CFUNCTYPE(c_int, POINTER(struct_AVFormatContext)))),
-    ('write_packet', POINTER(CFUNCTYPE(c_int, POINTER(struct_AVFormatContext), POINTER(AVPacket)))),
-    ('write_trailer', POINTER(CFUNCTYPE(c_int, POINTER(struct_AVFormatContext)))),
+    (
+        'write_header', POINTER(CFUNCTYPE(c_int, POINTER(struct_AVFormatContext)))),
+    ('write_packet', POINTER(
+        CFUNCTYPE(c_int, POINTER(struct_AVFormatContext), POINTER(AVPacket)))),
+    ('write_trailer',
+     POINTER(CFUNCTYPE(c_int, POINTER(struct_AVFormatContext)))),
     ('flags', c_int),
-    ('set_parameters', POINTER(CFUNCTYPE(c_int, POINTER(struct_AVFormatContext), POINTER(AVFormatParameters)))),
-    ('interleave_packet', POINTER(CFUNCTYPE(c_int, POINTER(struct_AVFormatContext), POINTER(AVPacket), POINTER(AVPacket), c_int))),
+    ('set_parameters', POINTER(CFUNCTYPE(c_int, POINTER(struct_AVFormatContext),
+                                         POINTER(AVFormatParameters)))),
+    ('interleave_packet', POINTER(
+        CFUNCTYPE(c_int, POINTER(struct_AVFormatContext), POINTER(AVPacket),
+                  POINTER(AVPacket), c_int))),
     ('next', POINTER(struct_AVOutputFormat)),
 ]
 
-AVOutputFormat = struct_AVOutputFormat 	# /usr/include/ffmpeg/avformat.h:148
+AVOutputFormat = struct_AVOutputFormat  # /usr/include/ffmpeg/avformat.h:148
+
+
 class struct_AVInputFormat(Structure):
     __slots__ = [
         'name',
@@ -259,51 +304,73 @@ class struct_AVInputFormat(Structure):
         'read_pause',
         'next',
     ]
-class struct_AVFormatContext(Structure):
-    __slots__ = [
-    ]
-struct_AVFormatContext._fields_ = [
-    ('_opaque_struct', c_int)
-]
+
 
 class struct_AVFormatContext(Structure):
     __slots__ = [
     ]
+
+
 struct_AVFormatContext._fields_ = [
     ('_opaque_struct', c_int)
 ]
 
-class struct_AVFormatContext(Structure):
-    __slots__ = [
-    ]
-struct_AVFormatContext._fields_ = [
-    ('_opaque_struct', c_int)
-]
 
 class struct_AVFormatContext(Structure):
     __slots__ = [
     ]
+
+
 struct_AVFormatContext._fields_ = [
     ('_opaque_struct', c_int)
 ]
 
-class struct_AVFormatContext(Structure):
-    __slots__ = [
-    ]
-struct_AVFormatContext._fields_ = [
-    ('_opaque_struct', c_int)
-]
 
 class struct_AVFormatContext(Structure):
     __slots__ = [
     ]
+
+
 struct_AVFormatContext._fields_ = [
     ('_opaque_struct', c_int)
 ]
 
+
 class struct_AVFormatContext(Structure):
     __slots__ = [
     ]
+
+
+struct_AVFormatContext._fields_ = [
+    ('_opaque_struct', c_int)
+]
+
+
+class struct_AVFormatContext(Structure):
+    __slots__ = [
+    ]
+
+
+struct_AVFormatContext._fields_ = [
+    ('_opaque_struct', c_int)
+]
+
+
+class struct_AVFormatContext(Structure):
+    __slots__ = [
+    ]
+
+
+struct_AVFormatContext._fields_ = [
+    ('_opaque_struct', c_int)
+]
+
+
+class struct_AVFormatContext(Structure):
+    __slots__ = [
+    ]
+
+
 struct_AVFormatContext._fields_ = [
     ('_opaque_struct', c_int)
 ]
@@ -313,11 +380,17 @@ struct_AVInputFormat._fields_ = [
     ('long_name', c_char_p),
     ('priv_data_size', c_int),
     ('read_probe', POINTER(CFUNCTYPE(c_int, POINTER(AVProbeData)))),
-    ('read_header', POINTER(CFUNCTYPE(c_int, POINTER(struct_AVFormatContext), POINTER(AVFormatParameters)))),
-    ('read_packet', POINTER(CFUNCTYPE(c_int, POINTER(struct_AVFormatContext), POINTER(AVPacket)))),
+    ('read_header', POINTER(CFUNCTYPE(c_int, POINTER(struct_AVFormatContext),
+                                      POINTER(AVFormatParameters)))),
+    ('read_packet', POINTER(
+        CFUNCTYPE(c_int, POINTER(struct_AVFormatContext), POINTER(AVPacket)))),
     ('read_close', POINTER(CFUNCTYPE(c_int, POINTER(struct_AVFormatContext)))),
-    ('read_seek', POINTER(CFUNCTYPE(c_int, POINTER(struct_AVFormatContext), c_int, c_int64, c_int))),
-    ('read_timestamp', POINTER(CFUNCTYPE(c_int64, POINTER(struct_AVFormatContext), c_int, POINTER(c_int64), c_int64))),
+    ('read_seek', POINTER(
+        CFUNCTYPE(c_int, POINTER(struct_AVFormatContext), c_int, c_int64,
+                  c_int))),
+    ('read_timestamp', POINTER(
+        CFUNCTYPE(c_int64, POINTER(struct_AVFormatContext), c_int,
+                  POINTER(c_int64), c_int64))),
     ('flags', c_int),
     ('extensions', c_char_p),
     ('value', c_int),
@@ -326,8 +399,10 @@ struct_AVInputFormat._fields_ = [
     ('next', POINTER(struct_AVInputFormat)),
 ]
 
-AVInputFormat = struct_AVInputFormat 	# /usr/include/ffmpeg/avformat.h:203
-AVINDEX_KEYFRAME = 1 	# /usr/include/ffmpeg/avformat.h:208
+AVInputFormat = struct_AVInputFormat  # /usr/include/ffmpeg/avformat.h:203
+AVINDEX_KEYFRAME = 1  # /usr/include/ffmpeg/avformat.h:208
+
+
 class struct_AVIndexEntry(Structure):
     __slots__ = [
         'pos',
@@ -335,6 +410,8 @@ class struct_AVIndexEntry(Structure):
         'flags',
         'min_distance',
     ]
+
+
 struct_AVIndexEntry._fields_ = [
     ('pos', c_int64),
     ('timestamp', c_int64),
@@ -342,7 +419,9 @@ struct_AVIndexEntry._fields_ = [
     ('min_distance', c_int),
 ]
 
-AVIndexEntry = struct_AVIndexEntry 	# /usr/include/ffmpeg/avformat.h:212
+AVIndexEntry = struct_AVIndexEntry  # /usr/include/ffmpeg/avformat.h:212
+
+
 class struct_AVStream(Structure):
     __slots__ = [
         'index',
@@ -370,6 +449,8 @@ class struct_AVStream(Structure):
         'nb_index_entries',
         'index_entries_allocated_size',
     ]
+
+
 class struct_AVCodecContext(Structure):
     __slots__ = [
         'av_class',
@@ -533,21 +614,30 @@ class struct_AVCodecContext(Structure):
         'mb_lmin',
         'mb_lmax',
     ]
-class struct_AVCLASS(Structure):
-    __slots__ = [
-    ]
-struct_AVCLASS._fields_ = [
-    ('_opaque_struct', c_int)
-]
+
 
 class struct_AVCLASS(Structure):
     __slots__ = [
     ]
+
+
 struct_AVCLASS._fields_ = [
     ('_opaque_struct', c_int)
 ]
 
-AVClass = struct_AVCLASS 	# /usr/include/ffmpeg/avcodec.h:728
+
+class struct_AVCLASS(Structure):
+    __slots__ = [
+    ]
+
+
+struct_AVCLASS._fields_ = [
+    ('_opaque_struct', c_int)
+]
+
+AVClass = struct_AVCLASS  # /usr/include/ffmpeg/avcodec.h:728
+
+
 class struct_AVFrame(Structure):
     __slots__ = [
         'data',
@@ -580,6 +670,8 @@ class struct_AVFrame(Structure):
         'dct_coeff',
         'ref_index',
     ]
+
+
 class struct_AVPanScan(Structure):
     __slots__ = [
         'id',
@@ -587,6 +679,8 @@ class struct_AVPanScan(Structure):
         'height',
         'position',
     ]
+
+
 struct_AVPanScan._fields_ = [
     ('id', c_int),
     ('width', c_int),
@@ -594,7 +688,7 @@ struct_AVPanScan._fields_ = [
     ('position', (c_int16 * 2) * 3),
 ]
 
-AVPanScan = struct_AVPanScan 	# /usr/include/ffmpeg/avcodec.h:474
+AVPanScan = struct_AVPanScan  # /usr/include/ffmpeg/avcodec.h:474
 struct_AVFrame._fields_ = [
     ('data', POINTER(c_uint8) * 4),
     ('linesize', c_int * 4),
@@ -627,16 +721,22 @@ struct_AVFrame._fields_ = [
     ('ref_index', POINTER(c_int8) * 2),
 ]
 
-AVFrame = struct_AVFrame 	# /usr/include/ffmpeg/avcodec.h:721
+AVFrame = struct_AVFrame  # /usr/include/ffmpeg/avcodec.h:721
 enum_SampleFormat = c_int
+
+
 class struct_AVCodec(Structure):
     __slots__ = [
     ]
+
+
 struct_AVCodec._fields_ = [
     ('_opaque_struct', c_int)
 ]
 
 enum_CodecType = c_int
+
+
 class struct_RcOverride(Structure):
     __slots__ = [
         'start_frame',
@@ -644,6 +744,8 @@ class struct_RcOverride(Structure):
         'qscale',
         'quality_factor',
     ]
+
+
 struct_RcOverride._fields_ = [
     ('start_frame', c_int),
     ('end_frame', c_int),
@@ -651,21 +753,29 @@ struct_RcOverride._fields_ = [
     ('quality_factor', c_float),
 ]
 
-RcOverride = struct_RcOverride 	# /usr/include/ffmpeg/avcodec.h:308
+RcOverride = struct_RcOverride  # /usr/include/ffmpeg/avcodec.h:308
+
+
 class struct_AVRational(Structure):
     __slots__ = [
         'num',
         'den',
     ]
+
+
 struct_AVRational._fields_ = [
     ('num', c_int),
     ('den', c_int),
 ]
 
-AVRational = struct_AVRational 	# /usr/include/ffmpeg/rational.h:38
+AVRational = struct_AVRational  # /usr/include/ffmpeg/rational.h:38
+
+
 class struct_AVPaletteControl(Structure):
     __slots__ = [
     ]
+
+
 struct_AVPaletteControl._fields_ = [
     ('_opaque_struct', c_int)
 ]
@@ -685,7 +795,9 @@ struct_AVCodecContext._fields_ = [
     ('gop_size', c_int),
     ('pix_fmt', enum_PixelFormat),
     ('rate_emu', c_int),
-    ('draw_horiz_band', POINTER(CFUNCTYPE(None, POINTER(struct_AVCodecContext), POINTER(AVFrame), c_int * 4, c_int, c_int, c_int))),
+    ('draw_horiz_band', POINTER(
+        CFUNCTYPE(None, POINTER(struct_AVCodecContext), POINTER(AVFrame),
+                  c_int * 4, c_int, c_int, c_int))),
     ('sample_rate', c_int),
     ('channels', c_int),
     ('sample_fmt', enum_SampleFormat),
@@ -707,7 +819,9 @@ struct_AVCodecContext._fields_ = [
     ('priv_data', POINTER(None)),
     ('rtp_mode', c_int),
     ('rtp_payload_size', c_int),
-    ('rtp_callback', POINTER(CFUNCTYPE(None, POINTER(struct_AVCodecContext), POINTER(None), c_int, c_int))),
+    ('rtp_callback', POINTER(
+        CFUNCTYPE(None, POINTER(struct_AVCodecContext), POINTER(None), c_int,
+                  c_int))),
     ('mv_bits', c_int),
     ('header_bits', c_int),
     ('i_tex_bits', c_int),
@@ -728,8 +842,10 @@ struct_AVCodecContext._fields_ = [
     ('strict_std_compliance', c_int),
     ('b_quant_offset', c_float),
     ('error_resilience', c_int),
-    ('get_buffer', POINTER(CFUNCTYPE(c_int, POINTER(struct_AVCodecContext), POINTER(AVFrame)))),
-    ('release_buffer', POINTER(CFUNCTYPE(None, POINTER(struct_AVCodecContext), POINTER(AVFrame)))),
+    ('get_buffer', POINTER(
+        CFUNCTYPE(c_int, POINTER(struct_AVCodecContext), POINTER(AVFrame)))),
+    ('release_buffer', POINTER(
+        CFUNCTYPE(None, POINTER(struct_AVCodecContext), POINTER(AVFrame)))),
     ('has_b_frames', c_int),
     ('block_align', c_int),
     ('parse_only', c_int),
@@ -780,7 +896,9 @@ struct_AVCodecContext._fields_ = [
     ('me_pre_cmp', c_int),
     ('pre_dia_size', c_int),
     ('me_subpel_quality', c_int),
-    ('get_format', POINTER(CFUNCTYPE(enum_PixelFormat, POINTER(struct_AVCodecContext), POINTER(enum_PixelFormat)))),
+    ('get_format', POINTER(
+        CFUNCTYPE(enum_PixelFormat, POINTER(struct_AVCodecContext),
+                  POINTER(enum_PixelFormat)))),
     ('dtg_active_format', c_int),
     ('me_range', c_int),
     ('frame_rate_base', c_int),
@@ -803,7 +921,8 @@ struct_AVCodecContext._fields_ = [
     ('lmax', c_int),
     ('palctrl', POINTER(struct_AVPaletteControl)),
     ('noise_reduction', c_int),
-    ('reget_buffer', POINTER(CFUNCTYPE(c_int, POINTER(struct_AVCodecContext), POINTER(AVFrame)))),
+    ('reget_buffer', POINTER(
+        CFUNCTYPE(c_int, POINTER(struct_AVCodecContext), POINTER(AVFrame)))),
     ('rc_initial_buffer_occupancy', c_int),
     ('inter_threshold', c_int),
     ('flags2', c_int),
@@ -811,7 +930,12 @@ struct_AVCodecContext._fields_ = [
     ('antialias_algo', c_int),
     ('quantizer_noise_shaping', c_int),
     ('thread_count', c_int),
-    ('execute', POINTER(CFUNCTYPE(c_int, POINTER(struct_AVCodecContext), CFUNCTYPE(c_int, POINTER(struct_AVCodecContext), POINTER(None)), POINTER(POINTER(None)), POINTER(c_int), c_int))),
+    ('execute', POINTER(CFUNCTYPE(c_int, POINTER(struct_AVCodecContext),
+                                  CFUNCTYPE(c_int,
+                                            POINTER(struct_AVCodecContext),
+                                            POINTER(None)),
+                                  POINTER(POINTER(None)), POINTER(c_int),
+                                  c_int))),
     ('thread_opaque', POINTER(None)),
     ('me_threshold', c_int),
     ('mb_threshold', c_int),
@@ -833,10 +957,14 @@ struct_AVCodecContext._fields_ = [
     ('mb_lmax', c_int),
 ]
 
-AVCodecContext = struct_AVCodecContext 	# /usr/include/ffmpeg/avcodec.h:1883
+AVCodecContext = struct_AVCodecContext  # /usr/include/ffmpeg/avcodec.h:1883
+
+
 class struct_AVCodecParserContext(Structure):
     __slots__ = [
     ]
+
+
 struct_AVCodecParserContext._fields_ = [
     ('_opaque_struct', c_int)
 ]
@@ -868,9 +996,11 @@ struct_AVStream._fields_ = [
     ('index_entries_allocated_size', c_int),
 ]
 
-AVStream = struct_AVStream 	# /usr/include/ffmpeg/avformat.h:256
-AVFMTCTX_NOHEADER = 1 	# /usr/include/ffmpeg/avformat.h:258
-MAX_STREAMS = 20 	# /usr/include/ffmpeg/avformat.h:261
+AVStream = struct_AVStream  # /usr/include/ffmpeg/avformat.h:256
+AVFMTCTX_NOHEADER = 1  # /usr/include/ffmpeg/avformat.h:258
+MAX_STREAMS = 20  # /usr/include/ffmpeg/avformat.h:261
+
+
 class struct_AVFormatContext(Structure):
     __slots__ = [
         'av_class',
@@ -907,6 +1037,8 @@ class struct_AVFormatContext(Structure):
         'preload',
         'max_delay',
     ]
+
+
 class struct_anon_17(Structure):
     __slots__ = [
         'buffer',
@@ -928,15 +1060,19 @@ class struct_anon_17(Structure):
         'update_checksum',
         'error',
     ]
-offset_t = c_int64 	# /usr/include/ffmpeg/avio.h:6
+
+
+offset_t = c_int64  # /usr/include/ffmpeg/avio.h:6
 struct_anon_17._fields_ = [
     ('buffer', POINTER(c_ubyte)),
     ('buffer_size', c_int),
     ('buf_ptr', POINTER(c_ubyte)),
     ('buf_end', POINTER(c_ubyte)),
     ('opaque', POINTER(None)),
-    ('read_packet', POINTER(CFUNCTYPE(c_int, POINTER(None), POINTER(c_uint8), c_int))),
-    ('write_packet', POINTER(CFUNCTYPE(c_int, POINTER(None), POINTER(c_uint8), c_int))),
+    ('read_packet',
+     POINTER(CFUNCTYPE(c_int, POINTER(None), POINTER(c_uint8), c_int))),
+    ('write_packet',
+     POINTER(CFUNCTYPE(c_int, POINTER(None), POINTER(c_uint8), c_int))),
     ('seek', POINTER(CFUNCTYPE(c_int, POINTER(None), offset_t, c_int))),
     ('pos', offset_t),
     ('must_flush', c_int),
@@ -946,14 +1082,19 @@ struct_anon_17._fields_ = [
     ('max_packet_size', c_int),
     ('checksum', c_ulong),
     ('checksum_ptr', POINTER(c_ubyte)),
-    ('update_checksum', POINTER(CFUNCTYPE(c_ulong, c_ulong, POINTER(c_uint8), c_uint))),
+    ('update_checksum',
+     POINTER(CFUNCTYPE(c_ulong, c_ulong, POINTER(c_uint8), c_uint))),
     ('error', c_int),
 ]
 
-ByteIOContext = struct_anon_17 	# /usr/include/ffmpeg/avio.h:86
+ByteIOContext = struct_anon_17  # /usr/include/ffmpeg/avio.h:86
+
+
 class struct_AVPacketList(Structure):
     __slots__ = [
     ]
+
+
 struct_AVPacketList._fields_ = [
     ('_opaque_struct', c_int)
 ]
@@ -994,33 +1135,47 @@ struct_AVFormatContext._fields_ = [
     ('max_delay', c_int),
 ]
 
-AVFormatContext = struct_AVFormatContext 	# /usr/include/ffmpeg/avformat.h:321
+AVFormatContext = struct_AVFormatContext  # /usr/include/ffmpeg/avformat.h:321
+
+
 class struct_AVPacketList(Structure):
     __slots__ = [
         'pkt',
         'next',
     ]
+
+
 struct_AVPacketList._fields_ = [
     ('pkt', AVPacket),
     ('next', POINTER(struct_AVPacketList)),
 ]
 
-AVPacketList = struct_AVPacketList 	# /usr/include/ffmpeg/avformat.h:326
-class struct_AVInputImageContext(Structure):
-    __slots__ = [
-    ]
-struct_AVInputImageContext._fields_ = [
-    ('_opaque_struct', c_int)
-]
+AVPacketList = struct_AVPacketList  # /usr/include/ffmpeg/avformat.h:326
+
 
 class struct_AVInputImageContext(Structure):
     __slots__ = [
     ]
+
+
 struct_AVInputImageContext._fields_ = [
     ('_opaque_struct', c_int)
 ]
 
-AVInputImageContext = struct_AVInputImageContext 	# /usr/include/ffmpeg/avformat.h:333
+
+class struct_AVInputImageContext(Structure):
+    __slots__ = [
+    ]
+
+
+struct_AVInputImageContext._fields_ = [
+    ('_opaque_struct', c_int)
+]
+
+# /usr/include/ffmpeg/avformat.h:333
+AVInputImageContext = struct_AVInputImageContext
+
+
 class struct_AVImageInfo(Structure):
     __slots__ = [
         'pix_fmt',
@@ -1029,17 +1184,21 @@ class struct_AVImageInfo(Structure):
         'interleaved',
         'pict',
     ]
+
+
 class struct_AVPicture(Structure):
     __slots__ = [
         'data',
         'linesize',
     ]
+
+
 struct_AVPicture._fields_ = [
     ('data', POINTER(c_uint8) * 4),
     ('linesize', c_int * 4),
 ]
 
-AVPicture = struct_AVPicture 	# /usr/include/ffmpeg/avcodec.h:1975
+AVPicture = struct_AVPicture  # /usr/include/ffmpeg/avcodec.h:1975
 struct_AVImageInfo._fields_ = [
     ('pix_fmt', enum_PixelFormat),
     ('width', c_int),
@@ -1048,8 +1207,10 @@ struct_AVImageInfo._fields_ = [
     ('pict', AVPicture),
 ]
 
-AVImageInfo = struct_AVImageInfo 	# /usr/include/ffmpeg/avformat.h:341
-AVIMAGE_INTERLEAVED = 1 	# /usr/include/ffmpeg/avformat.h:344
+AVImageInfo = struct_AVImageInfo  # /usr/include/ffmpeg/avformat.h:341
+AVIMAGE_INTERLEAVED = 1  # /usr/include/ffmpeg/avformat.h:344
+
+
 class struct_AVImageFormat(Structure):
     __slots__ = [
         'name',
@@ -1061,18 +1222,24 @@ class struct_AVImageFormat(Structure):
         'flags',
         'next',
     ]
+
+
 struct_AVImageFormat._fields_ = [
     ('name', c_char_p),
     ('extensions', c_char_p),
     ('img_probe', POINTER(CFUNCTYPE(c_int, POINTER(AVProbeData)))),
-    ('img_read', POINTER(CFUNCTYPE(c_int, POINTER(ByteIOContext), CFUNCTYPE(c_int, POINTER(None), POINTER(AVImageInfo)), POINTER(None)))),
+    ('img_read', POINTER(CFUNCTYPE(c_int, POINTER(ByteIOContext),
+                                   CFUNCTYPE(c_int, POINTER(None),
+                                             POINTER(AVImageInfo)),
+                                   POINTER(None)))),
     ('supported_pixel_formats', c_int),
-    ('img_write', POINTER(CFUNCTYPE(c_int, POINTER(ByteIOContext), POINTER(AVImageInfo)))),
+    ('img_write',
+     POINTER(CFUNCTYPE(c_int, POINTER(ByteIOContext), POINTER(AVImageInfo)))),
     ('flags', c_int),
     ('next', POINTER(struct_AVImageFormat)),
 ]
 
-AVImageFormat = struct_AVImageFormat 	# /usr/include/ffmpeg/avformat.h:362
+AVImageFormat = struct_AVImageFormat  # /usr/include/ffmpeg/avformat.h:362
 # /usr/include/ffmpeg/avformat.h:364
 av_register_image_format = _lib.av_register_image_format
 av_register_image_format.restype = None
@@ -1096,12 +1263,17 @@ av_guess_image2_codec.argtypes = [c_char_p]
 # /usr/include/ffmpeg/avformat.h:368
 av_read_image = _lib.av_read_image
 av_read_image.restype = c_int
-av_read_image.argtypes = [POINTER(ByteIOContext), c_char_p, POINTER(AVImageFormat), CFUNCTYPE(c_int, POINTER(None), POINTER(AVImageInfo)), POINTER(None)]
+av_read_image.argtypes = [POINTER(ByteIOContext), c_char_p,
+                          POINTER(AVImageFormat),
+                          CFUNCTYPE(
+                              c_int, POINTER(None), POINTER(AVImageInfo)),
+                          POINTER(None)]
 
 # /usr/include/ffmpeg/avformat.h:371
 av_write_image = _lib.av_write_image
 av_write_image.restype = c_int
-av_write_image.argtypes = [POINTER(ByteIOContext), POINTER(AVImageFormat), POINTER(AVImageInfo)]
+av_write_image.argtypes = [POINTER(ByteIOContext), POINTER(AVImageFormat),
+                           POINTER(AVImageInfo)]
 
 # /usr/include/ffmpeg/avformat.h:528
 av_register_input_format = _lib.av_register_input_format
@@ -1126,23 +1298,30 @@ guess_format.argtypes = [c_char_p, c_char_p, c_char_p]
 # /usr/include/ffmpeg/avformat.h:534
 av_guess_codec = _lib.av_guess_codec
 av_guess_codec.restype = enum_CodecID
-av_guess_codec.argtypes = [POINTER(AVOutputFormat), c_char_p, c_char_p, c_char_p, enum_CodecType]
+av_guess_codec.argtypes = [POINTER(AVOutputFormat), c_char_p, c_char_p,
+                           c_char_p, enum_CodecType]
+
 
 class struct__IO_FILE(Structure):
     __slots__ = [
     ]
+
+
 struct__IO_FILE._fields_ = [
     ('_opaque_struct', c_int)
 ]
+
 
 class struct__IO_FILE(Structure):
     __slots__ = [
     ]
+
+
 struct__IO_FILE._fields_ = [
     ('_opaque_struct', c_int)
 ]
 
-FILE = struct__IO_FILE 	# /usr/include/gentoo-multilib/amd64/stdio.h:46
+FILE = struct__IO_FILE  # /usr/include/gentoo-multilib/amd64/stdio.h:46
 # /usr/include/ffmpeg/avformat.h:537
 av_hex_dump = _lib.av_hex_dump
 av_hex_dump.restype = None
@@ -1156,7 +1335,8 @@ av_pkt_dump.argtypes = [POINTER(FILE), POINTER(AVPacket), c_int]
 # /usr/include/ffmpeg/avformat.h:540
 av_register_all = _lib.av_register_all
 av_register_all.restype = None
-av_register_all.argtypes = []
+av_register_all.argtypes = list()
+
 
 class struct_FifoBuffer(Structure):
     __slots__ = [
@@ -1165,6 +1345,8 @@ class struct_FifoBuffer(Structure):
         'wptr',
         'end',
     ]
+
+
 struct_FifoBuffer._fields_ = [
     ('buffer', POINTER(c_uint8)),
     ('rptr', POINTER(c_uint8)),
@@ -1172,7 +1354,7 @@ struct_FifoBuffer._fields_ = [
     ('end', POINTER(c_uint8)),
 ]
 
-FifoBuffer = struct_FifoBuffer 	# /usr/include/ffmpeg/avformat.h:545
+FifoBuffer = struct_FifoBuffer  # /usr/include/ffmpeg/avformat.h:545
 # /usr/include/ffmpeg/avformat.h:547
 fifo_init = _lib.fifo_init
 fifo_init.restype = c_int
@@ -1191,17 +1373,20 @@ fifo_size.argtypes = [POINTER(FifoBuffer), POINTER(c_uint8)]
 # /usr/include/ffmpeg/avformat.h:550
 fifo_read = _lib.fifo_read
 fifo_read.restype = c_int
-fifo_read.argtypes = [POINTER(FifoBuffer), POINTER(c_uint8), c_int, POINTER(POINTER(c_uint8))]
+fifo_read.argtypes = [POINTER(FifoBuffer), POINTER(c_uint8), c_int,
+                      POINTER(POINTER(c_uint8))]
 
 # /usr/include/ffmpeg/avformat.h:551
 fifo_write = _lib.fifo_write
 fifo_write.restype = None
-fifo_write.argtypes = [POINTER(FifoBuffer), POINTER(c_uint8), c_int, POINTER(POINTER(c_uint8))]
+fifo_write.argtypes = [POINTER(FifoBuffer), POINTER(c_uint8), c_int,
+                       POINTER(POINTER(c_uint8))]
 
 # /usr/include/ffmpeg/avformat.h:552
 put_fifo = _lib.put_fifo
 put_fifo.restype = c_int
-put_fifo.argtypes = [POINTER(ByteIOContext), POINTER(FifoBuffer), c_int, POINTER(POINTER(c_uint8))]
+put_fifo.argtypes = [POINTER(ByteIOContext), POINTER(FifoBuffer), c_int,
+                     POINTER(POINTER(c_uint8))]
 
 # /usr/include/ffmpeg/avformat.h:553
 fifo_realloc = _lib.fifo_realloc
@@ -1221,25 +1406,30 @@ av_probe_input_format.argtypes = [POINTER(AVProbeData), c_int]
 # /usr/include/ffmpeg/avformat.h:558
 av_open_input_stream = _lib.av_open_input_stream
 av_open_input_stream.restype = c_int
-av_open_input_stream.argtypes = [POINTER(POINTER(AVFormatContext)), POINTER(ByteIOContext), c_char_p, POINTER(AVInputFormat), POINTER(AVFormatParameters)]
+av_open_input_stream.argtypes = [POINTER(POINTER(AVFormatContext)),
+                                 POINTER(ByteIOContext), c_char_p,
+                                 POINTER(AVInputFormat),
+                                 POINTER(AVFormatParameters)]
 
 # /usr/include/ffmpeg/avformat.h:561
 av_open_input_file = _lib.av_open_input_file
 av_open_input_file.restype = c_int
-av_open_input_file.argtypes = [POINTER(POINTER(AVFormatContext)), c_char_p, POINTER(AVInputFormat), c_int, POINTER(AVFormatParameters)]
+av_open_input_file.argtypes = [POINTER(POINTER(AVFormatContext)), c_char_p,
+                               POINTER(AVInputFormat), c_int,
+                               POINTER(AVFormatParameters)]
 
 # /usr/include/ffmpeg/avformat.h:566
 av_alloc_format_context = _lib.av_alloc_format_context
 av_alloc_format_context.restype = POINTER(AVFormatContext)
-av_alloc_format_context.argtypes = []
+av_alloc_format_context.argtypes = list()
 
-AVERROR_UNKNOWN = -1 	# /usr/include/ffmpeg/avformat.h:568
-AVERROR_IO = -2 	# /usr/include/ffmpeg/avformat.h:569
-AVERROR_NUMEXPECTED = -3 	# /usr/include/ffmpeg/avformat.h:570
-AVERROR_INVALIDDATA = -4 	# /usr/include/ffmpeg/avformat.h:571
-AVERROR_NOMEM = -5 	# /usr/include/ffmpeg/avformat.h:572
-AVERROR_NOFMT = -6 	# /usr/include/ffmpeg/avformat.h:573
-AVERROR_NOTSUPP = -7 	# /usr/include/ffmpeg/avformat.h:574
+AVERROR_UNKNOWN = -1  # /usr/include/ffmpeg/avformat.h:568
+AVERROR_IO = -2  # /usr/include/ffmpeg/avformat.h:569
+AVERROR_NUMEXPECTED = -3  # /usr/include/ffmpeg/avformat.h:570
+AVERROR_INVALIDDATA = -4  # /usr/include/ffmpeg/avformat.h:571
+AVERROR_NOMEM = -5  # /usr/include/ffmpeg/avformat.h:572
+AVERROR_NOFMT = -6  # /usr/include/ffmpeg/avformat.h:573
+AVERROR_NOTSUPP = -7  # /usr/include/ffmpeg/avformat.h:574
 # /usr/include/ffmpeg/avformat.h:576
 av_find_stream_info = _lib.av_find_stream_info
 av_find_stream_info.restype = c_int
@@ -1285,8 +1475,8 @@ av_set_pts_info = _lib.av_set_pts_info
 av_set_pts_info.restype = None
 av_set_pts_info.argtypes = [POINTER(AVStream), c_int, c_int, c_int]
 
-AVSEEK_FLAG_BACKWARD = 1 	# /usr/include/ffmpeg/avformat.h:587
-AVSEEK_FLAG_BYTE = 2 	# /usr/include/ffmpeg/avformat.h:589
+AVSEEK_FLAG_BACKWARD = 1  # /usr/include/ffmpeg/avformat.h:587
+AVSEEK_FLAG_BYTE = 2  # /usr/include/ffmpeg/avformat.h:589
 # /usr/include/ffmpeg/avformat.h:592
 av_find_default_stream_index = _lib.av_find_default_stream_index
 av_find_default_stream_index.restype = c_int
@@ -1300,17 +1490,20 @@ av_index_search_timestamp.argtypes = [POINTER(AVStream), c_int64, c_int]
 # /usr/include/ffmpeg/avformat.h:594
 av_add_index_entry = _lib.av_add_index_entry
 av_add_index_entry.restype = c_int
-av_add_index_entry.argtypes = [POINTER(AVStream), c_int64, c_int64, c_int, c_int]
+av_add_index_entry.argtypes = [POINTER(AVStream), c_int64, c_int64, c_int,
+                               c_int]
 
 # /usr/include/ffmpeg/avformat.h:596
 av_seek_frame_binary = _lib.av_seek_frame_binary
 av_seek_frame_binary.restype = c_int
-av_seek_frame_binary.argtypes = [POINTER(AVFormatContext), c_int, c_int64, c_int]
+av_seek_frame_binary.argtypes = [POINTER(AVFormatContext), c_int, c_int64,
+                                 c_int]
 
 # /usr/include/ffmpeg/avformat.h:599
 av_set_parameters = _lib.av_set_parameters
 av_set_parameters.restype = c_int
-av_set_parameters.argtypes = [POINTER(AVFormatContext), POINTER(AVFormatParameters)]
+av_set_parameters.argtypes = [POINTER(AVFormatContext),
+                              POINTER(AVFormatParameters)]
 
 # /usr/include/ffmpeg/avformat.h:600
 av_write_header = _lib.av_write_header
@@ -1325,7 +1518,8 @@ av_write_frame.argtypes = [POINTER(AVFormatContext), POINTER(AVPacket)]
 # /usr/include/ffmpeg/avformat.h:602
 av_interleaved_write_frame = _lib.av_interleaved_write_frame
 av_interleaved_write_frame.restype = c_int
-av_interleaved_write_frame.argtypes = [POINTER(AVFormatContext), POINTER(AVPacket)]
+av_interleaved_write_frame.argtypes = [POINTER(AVFormatContext),
+                                       POINTER(AVPacket)]
 
 # /usr/include/ffmpeg/avformat.h:604
 av_write_trailer = _lib.av_write_trailer
@@ -1355,9 +1549,9 @@ parse_date.argtypes = [c_char_p, c_int]
 # /usr/include/ffmpeg/avformat.h:614
 av_gettime = _lib.av_gettime
 av_gettime.restype = c_int64
-av_gettime.argtypes = []
+av_gettime.argtypes = list()
 
-FFM_PACKET_SIZE = 4096 	# /usr/include/ffmpeg/avformat.h:617
+FFM_PACKET_SIZE = 4096  # /usr/include/ffmpeg/avformat.h:617
 # /usr/include/ffmpeg/avformat.h:618
 ffm_read_write_index = _lib.ffm_read_write_index
 ffm_read_write_index.restype = offset_t
@@ -1388,42 +1582,56 @@ filename_number_test = _lib.filename_number_test
 filename_number_test.restype = c_int
 filename_number_test.argtypes = [c_char_p]
 
-
 __all__ = ['LIBAVFORMAT_BUILD', 'LIBAVFORMAT_VERSION_INT',
-'LIBAVFORMAT_VERSION', 'AVPacket', 'PKT_FLAG_KEY',
-'av_destruct_packet_nofree', 'av_new_packet', 'av_dup_packet', 'AVFrac',
-'av_frac_init', 'av_frac_add', 'av_frac_set', 'AVProbeData',
-'AVPROBE_SCORE_MAX', 'AVFormatParameters', 'AVFMT_NOFILE', 'AVFMT_NEEDNUMBER',
-'AVFMT_SHOW_IDS', 'AVFMT_RAWPICTURE', 'AVOutputFormat', 'AVInputFormat',
-'AVINDEX_KEYFRAME', 'AVIndexEntry', 'AVStream', 'AVFMTCTX_NOHEADER',
-'MAX_STREAMS', 'AVFormatContext', 'AVPacketList', 'AVInputImageContext',
-'AVImageInfo', 'AVIMAGE_INTERLEAVED', 'AVImageFormat',
-'av_register_image_format', 'av_probe_image_format', 'guess_image_format',
-'av_guess_image2_codec', 'av_read_image', 'av_write_image', 'mpegps_init',
-'mpegts_init', 'rm_init', 'crc_init', 'img_init', 'img2_init', 'asf_init',
-'avienc_init', 'avidec_init', 'swf_init', 'mov_init', 'movenc_init',
-'flvenc_init', 'flvdec_init', 'jpeg_init', 'gif_init', 'au_init', 'amr_init',
-'ff_wav_init', 'pcm_read_seek', 'raw_init', 'mp3_init', 'yuv4mpeg_init',
-'ogg_init', 'ff_dv_init', 'ffm_init', 'redir_open', 'fourxm_init', 'str_init',
-'roq_init', 'ipmovie_init', 'nut_init', 'wc3_init', 'westwood_init',
-'film_init', 'idcin_init', 'flic_init', 'vmd_init', 'matroska_init',
-'sol_init', 'ea_init', 'nsvdec_init', 'av_register_input_format',
-'av_register_output_format', 'guess_stream_format', 'guess_format',
-'av_guess_codec', 'av_hex_dump', 'av_pkt_dump', 'av_register_all',
-'FifoBuffer', 'fifo_init', 'fifo_free', 'fifo_size', 'fifo_read',
-'fifo_write', 'put_fifo', 'fifo_realloc', 'av_find_input_format',
-'av_probe_input_format', 'av_open_input_stream', 'av_open_input_file',
-'av_alloc_format_context', 'AVERROR_UNKNOWN', 'AVERROR_IO',
-'AVERROR_NUMEXPECTED', 'AVERROR_INVALIDDATA', 'AVERROR_NOMEM',
-'AVERROR_NOFMT', 'AVERROR_NOTSUPP', 'av_find_stream_info', 'av_read_packet',
-'av_read_frame', 'av_seek_frame', 'av_read_play', 'av_read_pause',
-'av_close_input_file', 'av_new_stream', 'av_set_pts_info',
-'AVSEEK_FLAG_BACKWARD', 'AVSEEK_FLAG_BYTE', 'av_find_default_stream_index',
-'av_index_search_timestamp', 'av_add_index_entry', 'av_seek_frame_binary',
-'av_set_parameters', 'av_write_header', 'av_write_frame',
-'av_interleaved_write_frame', 'av_write_trailer', 'dump_format',
-'parse_image_size', 'parse_frame_rate', 'parse_date', 'av_gettime',
-'FFM_PACKET_SIZE', 'ffm_read_write_index', 'ffm_write_write_index',
-'ffm_set_write_index', 'find_info_tag', 'get_frame_filename',
-'filename_number_test', 'video_grab_init', 'audio_init', 'dv1394_init',
-'dc1394_init']
+           'LIBAVFORMAT_VERSION', 'AVPacket', 'PKT_FLAG_KEY',
+           'av_destruct_packet_nofree', 'av_new_packet', 'av_dup_packet',
+           'AVFrac',
+           'av_frac_init', 'av_frac_add', 'av_frac_set', 'AVProbeData',
+           'AVPROBE_SCORE_MAX', 'AVFormatParameters', 'AVFMT_NOFILE',
+           'AVFMT_NEEDNUMBER',
+           'AVFMT_SHOW_IDS', 'AVFMT_RAWPICTURE', 'AVOutputFormat',
+           'AVInputFormat',
+           'AVINDEX_KEYFRAME', 'AVIndexEntry', 'AVStream', 'AVFMTCTX_NOHEADER',
+           'MAX_STREAMS', 'AVFormatContext', 'AVPacketList',
+           'AVInputImageContext',
+           'AVImageInfo', 'AVIMAGE_INTERLEAVED', 'AVImageFormat',
+           'av_register_image_format', 'av_probe_image_format',
+           'guess_image_format',
+           'av_guess_image2_codec', 'av_read_image', 'av_write_image',
+           'mpegps_init',
+           'mpegts_init', 'rm_init', 'crc_init', 'img_init', 'img2_init',
+           'asf_init',
+           'avienc_init', 'avidec_init', 'swf_init', 'mov_init', 'movenc_init',
+           'flvenc_init', 'flvdec_init', 'jpeg_init', 'gif_init', 'au_init',
+           'amr_init',
+           'ff_wav_init', 'pcm_read_seek', 'raw_init', 'mp3_init',
+           'yuv4mpeg_init',
+           'ogg_init', 'ff_dv_init', 'ffm_init', 'redir_open', 'fourxm_init',
+           'str_init',
+           'roq_init', 'ipmovie_init', 'nut_init', 'wc3_init', 'westwood_init',
+           'film_init', 'idcin_init', 'flic_init', 'vmd_init', 'matroska_init',
+           'sol_init', 'ea_init', 'nsvdec_init', 'av_register_input_format',
+           'av_register_output_format', 'guess_stream_format', 'guess_format',
+           'av_guess_codec', 'av_hex_dump', 'av_pkt_dump', 'av_register_all',
+           'FifoBuffer', 'fifo_init', 'fifo_free', 'fifo_size', 'fifo_read',
+           'fifo_write', 'put_fifo', 'fifo_realloc', 'av_find_input_format',
+           'av_probe_input_format', 'av_open_input_stream',
+           'av_open_input_file',
+           'av_alloc_format_context', 'AVERROR_UNKNOWN', 'AVERROR_IO',
+           'AVERROR_NUMEXPECTED', 'AVERROR_INVALIDDATA', 'AVERROR_NOMEM',
+           'AVERROR_NOFMT', 'AVERROR_NOTSUPP', 'av_find_stream_info',
+           'av_read_packet',
+           'av_read_frame', 'av_seek_frame', 'av_read_play', 'av_read_pause',
+           'av_close_input_file', 'av_new_stream', 'av_set_pts_info',
+           'AVSEEK_FLAG_BACKWARD', 'AVSEEK_FLAG_BYTE',
+           'av_find_default_stream_index',
+           'av_index_search_timestamp', 'av_add_index_entry',
+           'av_seek_frame_binary',
+           'av_set_parameters', 'av_write_header', 'av_write_frame',
+           'av_interleaved_write_frame', 'av_write_trailer', 'dump_format',
+           'parse_image_size', 'parse_frame_rate', 'parse_date', 'av_gettime',
+           'FFM_PACKET_SIZE', 'ffm_read_write_index', 'ffm_write_write_index',
+           'ffm_set_write_index', 'find_info_tag', 'get_frame_filename',
+           'filename_number_test', 'video_grab_init', 'audio_init',
+           'dv1394_init',
+           'dc1394_init']

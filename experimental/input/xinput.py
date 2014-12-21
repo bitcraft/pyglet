@@ -6,7 +6,7 @@
 # modification, are permitted provided that the following conditions
 # are met:
 #
-#  * Redistributions of source code must retain the above copyright
+# * Redistributions of source code must retain the above copyright
 #    notice, this list of conditions and the following disclaimer.
 #  * Redistributions in binary form must reproduce the above copyright
 #    notice, this list of conditions and the following disclaimer in
@@ -41,7 +41,9 @@ from pyglet.window.xlib import xlib
 
 import lib_xinput as xi
 
-class XInputDevice(object):
+
+class XInputDevice:
+
     def __init__(self, display, device_info):
         self._x_display = display._display
         self._device_id = device_info.id
@@ -59,7 +61,7 @@ class XInputDevice(object):
         self._open_device = xi.XOpenDevice(self._x_display, self._device_id)
         if not self._open_device:
             raise Exception('Cannot open device')
-        
+
     def close(self):
         if not self._open_device:
             return
@@ -70,9 +72,11 @@ class XInputDevice(object):
         assert window._x_display == self._x_display
         return XInputDeviceInstance(self, window)
 
+
 class XInputDeviceInstance(pyglet.event.EventDispatcher):
+
     def __init__(self, device, window):
-        '''Create an opened instance of a device on the given window.
+        """Create an opened instance of a device on the given window.
 
         :Parameters:
             `device` : XInputDevice
@@ -80,13 +84,13 @@ class XInputDeviceInstance(pyglet.event.EventDispatcher):
             `window` : Window
                 Window to open device on
 
-        '''
+        """
         assert device._x_display == window._x_display
         assert device._open_device
 
         self.device = device
         self.window = window
-        self._events = []
+        self._events = list()
 
         try:
             dispatcher = window.__xinput_window_event_dispatcher
@@ -138,7 +142,7 @@ class XInputDeviceInstance(pyglet.event.EventDispatcher):
 
             elif class_info.input_class == xi.FocusClass:
                 pass
-                
+
             elif class_info.input_class == xi.OtherClass:
                 pass
 
@@ -154,15 +158,18 @@ class XInputDeviceInstance(pyglet.event.EventDispatcher):
         self._events.append(_class)
         self.window._event_handlers[_type] = handler
 
+
 XInputDeviceInstance.register_event_type('on_button_press')
 XInputDeviceInstance.register_event_type('on_button_release')
 XInputDeviceInstance.register_event_type('on_motion')
 XInputDeviceInstance.register_event_type('on_proximity_in')
 XInputDeviceInstance.register_event_type('on_proximity_out')
 
-class XInputWindowEventDispatcher(object):
+
+class XInputWindowEventDispatcher:
+
     def __init__(self):
-        self._instances = {}
+        self._instances = dict()
 
     def add_instance(self, instance):
         self._instances[instance.device._device_id] = instance
@@ -189,22 +196,22 @@ class XInputWindowEventDispatcher(object):
     @pyglet.window.xlib.XlibEventHandler(0)
     def _event_xinput_button_press(self, ev):
         e = ctypes.cast(ctypes.byref(ev),
-            ctypes.POINTER(xi.XDeviceButtonEvent)).contents
+                        ctypes.POINTER(xi.XDeviceButtonEvent)).contents
 
         self.dispatch_instance_event(e, 'on_button_press', e.button)
 
     @pyglet.window.xlib.XlibEventHandler(0)
     def _event_xinput_button_release(self, ev):
         e = ctypes.cast(ctypes.byref(ev),
-            ctypes.POINTER(xi.XDeviceButtonEvent)).contents
+                        ctypes.POINTER(xi.XDeviceButtonEvent)).contents
 
         self.dispatch_instance_event(e, 'on_button_release', e.button)
 
     @pyglet.window.xlib.XlibEventHandler(0)
     def _event_xinput_motion(self, ev):
         e = ctypes.cast(ctypes.byref(ev),
-            ctypes.POINTER(xi.XDeviceMotionEvent)).contents
-        axis_data = []
+                        ctypes.POINTER(xi.XDeviceMotionEvent)).contents
+        axis_data = list()
         for i in range(e.axes_count):
             axis_data.append(e.axis_data[i])
         self.dispatch_instance_event(e, 'on_motion', axis_data, e.x, e.y)
@@ -212,30 +219,32 @@ class XInputWindowEventDispatcher(object):
     @pyglet.window.xlib.XlibEventHandler(0)
     def _event_xinput_proximity_in(self, ev):
         e = ctypes.cast(ctypes.byref(ev),
-            ctypes.POINTER(xi.XProximityNotifyEvent)).contents
+                        ctypes.POINTER(xi.XProximityNotifyEvent)).contents
         self.dispatch_instance_event(e, 'on_proximity_in')
 
     @pyglet.window.xlib.XlibEventHandler(-1)
     def _event_xinput_proximity_out(self, ev):
         e = ctypes.cast(ctypes.byref(ev),
-            ctypes.POINTER(xi.XProximityNotifyEvent)).contents
+                        ctypes.POINTER(xi.XProximityNotifyEvent)).contents
         self.dispatch_instance_event(e, 'on_proximity_out')
+
 
 def _check_extension(display):
     major_opcode = ctypes.c_int()
     first_event = ctypes.c_int()
     first_error = ctypes.c_int()
-    xlib.XQueryExtension(display._display, 'XInputExtension', 
-        ctypes.byref(major_opcode), 
-        ctypes.byref(first_event),
-        ctypes.byref(first_error))
+    xlib.XQueryExtension(display._display, 'XInputExtension',
+                         ctypes.byref(major_opcode),
+                         ctypes.byref(first_event),
+                         ctypes.byref(first_error))
     if not major_opcode.value:
         raise Exception('XInput extension not available')
+
 
 def get_devices(display):
     _check_extension(display)
 
-    devices = []
+    devices = list()
     count = ctypes.c_int(0)
     device_list = xi.XListInputDevices(display._display, count)
 
@@ -244,4 +253,3 @@ def get_devices(display):
         devices.append(XInputDevice(display, device_info))
 
     return devices
-

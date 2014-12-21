@@ -1,7 +1,7 @@
 Documentation
 *************
 
-This is the ``pyglet`` documentation, generated with ``sphinx``. 
+This is the ``pyglet`` documentation, generated with ``sphinx``.
 
 Details:
 
@@ -15,10 +15,10 @@ Details:
 Writing documentation
 ---------------------
 
-``pyglet`` uses reStructuredText markup language for both 
+``pyglet`` uses reStructuredText markup language for both
 the Programming Guide and the docstrings embedded in the code.
 
-Literature 
+Literature
 ==========
 
 
@@ -28,13 +28,13 @@ The entry point for all the documentation is ``pyglet/doc/index.txt``, which cal
 
 * ``pyglet/doc/programming_guide``: The first page of the programming guide.
 
-* ``pyglet/doc/internal``: 
-  Documentation for those working on Pyglet itself, such as how to make a release 
+* ``pyglet/doc/internal``:
+  Documentation for those working on Pyglet itself, such as how to make a release
   or how the ctypes library is used.
 
 .. seealso::
 
-   * `Sphinx: reStructuredText Primer <http://sphinx.pocoo.org/rest.html>`_ 
+   * `Sphinx: reStructuredText Primer <http://sphinx.pocoo.org/rest.html>`_
 
 Source code
 ===========
@@ -47,72 +47,72 @@ The API documentation is generated from the source code docstrings.
    .. code-block:: python
 
       class Class1():
-      '''Short description.
+      """Short description.
 
       Detailed explanation, formatted as reST.
-      Can be as detailed as it is needed. 
-    
-   
-      :Ivariables: 
+      Can be as detailed as it is needed.
+
+
+      :Ivariables:
          `arg1`
              description
 
-      
+
       :since: pyglet 1.2
 
-      '''
+      """
 
       attribute1 = None
-      '''This is an attribute.
+      """This is an attribute.
 
       More details.
-      '''
+      """
 
       #: This is another attribute.
       attribute2 = None
 
 
       def __init__(self):
-          '''Constructor
+          """Constructor
 
-          :parameters: 
+          :parameters:
              `arg1` : type
                 description
-          '''
+          """
 
           self.instance_attribute = None
-          '''This is an instance attribute.
-          '''
+          """This is an instance attribute.
+          """
 
       def method(self):
-          '''Short description.
+          """Short description.
 
           :returns: return description
           :rtype: returned type
-          '''
+          """
 
       def _get_property1(self):
-          '''Getter Method 
-          
+          """Getter Method
+
           :return: property1 value
           :rtype: property1 type
-          '''
+          """
 
       def _set_property1(self, value):
-          '''Setter Method 
-          
+          """Setter Method
+
           :param value: property1 value # This is the ReST style
           :type value: property1 type   # But you can use :parameters:
-          '''
-   
+          """
+
       property1 = property(_get_property1, _set_property1,
-                        doc='''Short description
-   
+                        doc="""Short description
+
       This is another attribute.
 
       :type: type
       :see: something else
-      ''')
+      """)
 
 
 Pyglet has some special roles.
@@ -149,7 +149,7 @@ To cross-reference to any documented API member, use the following roles:
           - The :meth:`~pyglet.window.Window.close` method
         * - ``:attr:`~pyglet.window.Window.fullscreen```
           - The :attr:`~pyglet.window.Window.fullscreen` attribute
-        
+
 
 .. note:: Use ``~`` to show only the last part.
 

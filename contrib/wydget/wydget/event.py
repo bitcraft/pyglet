@@ -1,4 +1,4 @@
-'''Implement event handling for wydget GUIs.
+"""Implement event handling for wydget GUIs.
 
 The `GUIEventDispatcher` class is automatically mixed into the `wydget.GUI`
 class and is activated by pushing the gui onto a window's event handlers
@@ -124,25 +124,25 @@ Focus events include the source of the focus event:
 Elements marked is_focusable=True will participate in tab-key focus
 movement.
 
-'''
+"""
 
 import inspect
 import time
 
 from pyglet.event import (EventDispatcher, EVENT_UNHANDLED, EVENT_HANDLED,
-    EventException)
+                          EventException)
 from pyglet.window import key
 
 from layout.css import Rule, RuleSet, Selector, SimpleSelector
 
 # partially snarfed from layout.gl.event
 # Instead of each stack layer being a dictionary mapping event-name to
-# event-function, each layer is a dictionary mapping event-name to 
+# event-function, each layer is a dictionary mapping event-name to
 # RuleSet
 
-class GUIEventDispatcher(EventDispatcher):
 
-    default_event_handlers = {}
+class GUIEventDispatcher(EventDispatcher):
+    default_event_handlers = dict()
 
     def __init__(self):
         EventDispatcher.__init__(self)
@@ -150,45 +150,46 @@ class GUIEventDispatcher(EventDispatcher):
         self._event_stack = [self.default_event_handlers]
 
         # list of elements that have responded to an on_element_enter event
-        self.entered_elements = []
+        self.entered_elements = list()
 
     @classmethod
     def set_default_handler(cls, name, selector, handler):
-        '''Inspect handler for a selector and apply to the primary-set.
+        """Inspect handler for a selector and apply to the primary-set.
         If the handler has no selector, it is assumed to have a universal
         selector.
-        '''
+        """
         if name not in cls.default_event_handlers:
             cls.default_event_handlers[name] = RuleSet()
         ruleset = cls.default_event_handlers[name]
         ruleset.add_rule(Rule(selector, handler))
 
     def select(self, rule, event_name=None):
-        # XXX assume passed an element with an id to select on
+        # TODO: assume passed an element with an id to select on
         if not isinstance(rule, str):
             rule = '#' + rule.id
 
         def decorate(func):
             func.selectors = [Selector.from_string(r.strip())
-                for r in rule.split(',')]
+                              for r in rule.split(',')]
             if event_name is not None:
                 func.event_name = event_name
             self.push_handlers(func)
             return func
+
         return decorate
 
     def set_handlers(self, *args, **kwargs):
-        '''Attach one or more event handlers to the top level of the handler
+        """Attach one or more event handlers to the top level of the handler
         stack.
-        
+
         See `push_handlers` for the accepted argument types.
-        '''
+        """
         # Create event stack if necessary
         if type(self._event_stack) is tuple:
-            self._event_stack = [{}]
+            self._event_stack = [dict()]
 
         for object in args:
-            if inspect.isroutine(object):
+            if inspect.isroutine:
                 # Single magically named function
                 name = getattr(object, 'event_name', object.__name__)
                 if name not in self.event_types:
@@ -196,50 +197,51 @@ class GUIEventDispatcher(EventDispatcher):
                 self.set_handler(name, object)
             else:
                 # Single instance with magically named methods
-                for name, handler in inspect.getmembers(object):
+                for name, handler in inspect.getmembers:
                     name = getattr(handler, 'event_name', name)
                     if name in self.event_types:
                         self.set_handler(name, handler)
-        for name, handler in kwargs.items():
+        for name, handler in list(kwargs.items()):
             # Function for handling given event (no magic)
             if name not in self.event_types:
                 raise EventException('Unknown event "%s"' % name)
             self.set_handler(name, handler)
 
     def set_handler(self, name, handler):
-        '''Inspect handler for a selector and apply to the primary-set.
+        """Inspect handler for a selector and apply to the primary-set.
         If the handler has no selector, it is assumed to have a universal
         selector.
-        '''
+        """
         if name not in self._event_stack[0]:
             self._event_stack[0][name] = RuleSet()
         ruleset = self._event_stack[0][name]
-        #if not hasattr(handler, 'selector'):
-            #handler.selector = universal_selector
+        # if not hasattr(handler, 'selector'):
+        #handler.selector = universal_selector
         for selector in handler.selectors:
             ruleset.add_rule(Rule(selector, handler))
 
     def dispatch_event(self, element, event_type, *args, **kw):
-        '''Pass the event to the element.
+        """Pass the event to the element.
 
         If propogate is True (the default) then events will propogate up
         to the element's parent.
 
         Since the event may be handled by a parent of the element passed
         in, we pass back the element that handled the event.
-        '''
-        propogate=kw.get('propogate', True)
+        """
+        propogate = kw.get('propogate', True)
         for frame in self._event_stack:
             ruleset = frame.get(event_type, None)
-            if not ruleset: continue
+            if not ruleset:
+                continue
             rules = ruleset.get_matching_rules(element)
             for rule in rules:
                 handler = rule.declaration_set
                 try:
                     ret = handler(element, *args)
-                except TypeError, message:
-                    print 'ERROR CALLING  %r (%r, *%r)]'%(handler,
-                        element, args)
+                except TypeError as message:
+                    print('ERROR CALLING  %r (%r, *%r)]' % (handler,
+                                                            element, args))
                     raise
                 if ret != EVENT_UNHANDLED:
                     return element, EVENT_HANDLED
@@ -250,7 +252,6 @@ class GUIEventDispatcher(EventDispatcher):
 
         return (None, EVENT_UNHANDLED)
 
-
     # EVENT HANDLER BEHAVIOR
     mouse_press_element = None
     drag_element = None
@@ -260,10 +261,10 @@ class GUIEventDispatcher(EventDispatcher):
     focused_element = None
 
     def setModal(self, element):
-        '''The element will capture all input.
+        """The element will capture all input.
 
         setModal(None) to clear.
-        '''
+        """
         if element is None:
             for child in self.children:
                 child.is_enabled = True
@@ -276,16 +277,16 @@ class GUIEventDispatcher(EventDispatcher):
                 else:
                     found = True
                     child.is_modal = True
-            assert found, '%r not found in gui children'%(element,)
+            assert found, '%r not found in gui children' % (element,)
 
     def setFocus(self, element, source):
-        '''The "source" has set the focus of keyboard input to "element".
+        """The "source" has set the focus of keyboard input to "element".
 
         "source" is either 'tab' (key), 'mouse' or 'code'.
 
         All future `on_text`, `on_text_motion` and `on_text_motion_select`
         events will be passed to the element.
-        '''
+        """
         # gain focus first so some elements are able to detect whether their
         # child has been focused
         if element is not None and self.focused_element is not element:
@@ -304,23 +305,29 @@ class GUIEventDispatcher(EventDispatcher):
         self.focused_element = element
 
     def focusNextElement(self, direction=1):
-        '''Move the focus on to the next element.
-        '''
-        if not self._focus_order: return
+        """Move the focus on to the next element.
+        """
+        if not self._focus_order:
+            return
 
         # determine the index of the next element to possibly focus on
         N = len(self._focus_order)
         if self.focused_element is None:
-            if direction == 1: i = 0
-            else: i = N-1
+            if direction == 1:
+                i = 0
+            else:
+                i = N - 1
         else:
             try:
-                i = self._focus_order.index(self.focused_element.id) + direction
+                i = self._focus_order.index(
+                    self.focused_element.id) + direction
             except ValueError:
                 # element not in the focus order list
                 i = 0
-            if i < 0: i = N-1
-            if i >= N: i = 0
+            if i < 0:
+                i = N - 1
+            if i >= N:
+                i = 0
 
         # now start at that index and work through the focusable elements
         # until we find a visible & enabled one to focus on
@@ -331,10 +338,12 @@ class GUIEventDispatcher(EventDispatcher):
                 self.setFocus(element, source='tab')
                 return
             i += direction
-            if i < 0: i = N-1
-            if i >= N: i = 0
-            if i == j: return       # no focusable element found
-
+            if i < 0:
+                i = N - 1
+            if i >= N:
+                i = 0
+            if i == j:
+                return  # no focusable element found
 
     # NOW THE EVENT HANDLERS
     def on_resize(self, w, h):
@@ -345,13 +354,13 @@ class GUIEventDispatcher(EventDispatcher):
         return EVENT_UNHANDLED
 
     def generateEnterLeave(self, x, y, element):
-        # XXX this would possibly be simpler if we could ask whether
+        # TODO: this would possibly be simpler if we could ask whether
         # elements handled the on_element_enter event
 
         # see which elements (starting with the one under the mouse and
         # moving up the parentage) care about an on_element_enter event
-        enter = []
-        over = []
+        enter = list()
+        over = list()
         e = element
         while e:
             if not e.isEnabled():
@@ -368,66 +377,66 @@ class GUIEventDispatcher(EventDispatcher):
         # (only if they still exist)
         all = enter + over
         for e in self.entered_elements:
-            if e not in all and self.has('#'+e.id):
+            if e not in all and self.has('#' + e.id):
                 self.dispatch_event(e, 'on_element_leave', x, y,
-                    propogate=False)
+                                    propogate=False)
 
         # and now generate enter events
         for e in enter:
             if self.dispatch_event(e, 'on_element_enter', x, y,
-                    propogate=False)[1]:
+                                   propogate=False)[1]:
                 over.append(e)
 
-        #if mouse stable (not moving)? and 1 second has passed
+        # if mouse stable (not moving)? and 1 second has passed
         #    element.on_element_hover(x, y)
 
         # remember the elements we're over for later _leave events
         self.entered_elements = over
 
     def on_mouse_motion(self, x, y, dx, dy):
-        '''Determine what element(s) the mouse is positioned over and
+        """Determine what element(s) the mouse is positioned over and
         generate on_element_enter and on_element_leave events. Additionally
         generate a new on_mouse_motion event for the element under the
         mouse.
-        '''
+        """
         element = self.determineHit(x, y)
 
         if self.debug_display is not None:
-            self.debug_display.text = '%r classes=%r'%(element,
-                element and element.classes)
+            self.debug_display.text = '%r classes=%r' % (element,
+                                                         element and element.classes)
 
         self.generateEnterLeave(x, y, element)
 
         if element is not None and element.isEnabled():
             return self.dispatch_event(element, 'on_mouse_motion', x, y,
-                dx, dy)[1]
+                                       dx, dy)[1]
 
         return EVENT_UNHANDLED
 
     def on_mouse_enter(self, x, y):
-        '''Translate this into an on_mouse_motion event.
-        '''
+        """Translate this into an on_mouse_motion event.
+        """
         return self.on_mouse_motion(x, y, 0, 0)
 
     def on_mouse_leave(self, x, y):
-        '''Translate this into an on_element_leave for all
+        """Translate this into an on_element_leave for all
         on_element_enter'ed elements.
-        '''
+        """
         # leave all entered elements
         for e in self.entered_elements:
             self.dispatch_event(e, 'on_element_leave', x, y, propogate=False)
-        self.entered_elements = []
+        self.entered_elements = list()
         return EVENT_HANDLED
 
     def on_mouse_press(self, x, y, button, modifiers):
-        '''Pass this event on to the element underneath the mouse.
+        """Pass this event on to the element underneath the mouse.
         Additionally, switch keyboard focus to this element through
         `self.setFocus(element, source='mouse')`
 
         The element will be registered as potentially interesting for
         generating future `on_mouse_release`, `on_click` and `on_drag`
         events.
-        '''
+        """
         element = self.determineHit(x, y)
 
         # set these now before so we can still generate drag events
@@ -440,29 +449,31 @@ class GUIEventDispatcher(EventDispatcher):
 
         # don't do any further processing if there's no element or it's
         # disabled
-        if element is None: return EVENT_UNHANDLED
-        if not element.isEnabled(): return EVENT_UNHANDLED
+        if element is None:
+            return EVENT_UNHANDLED
+        if not element.isEnabled():
+            return EVENT_UNHANDLED
 
         # switch focus
         self.setFocus(element, source='mouse')
 
         return self.dispatch_event(element, 'on_mouse_press', x, y, button,
-            modifiers)[1]
+                                   modifiers)[1]
 
     def on_mouse_drag(self, x, y, dx, dy, buttons, modifiers):
-        '''Translate this event into a number of events:
+        """Translate this event into a number of events:
 
         First up, generate enter/leave events (replicating the behaviour of
         `on_mouse_move`).
 
         If already dragging (self.drag_element or self.mouse_drag_element
         are set) then continue that behaviour.
-        
+
         If the mouse button was pressed while over an element we attempt to
         pass an `on_mouse_drag` event to that element. If that event is
         handled and the handler returns EVENT_HANDLED then we set
         self.mouse_drag_element and the handler returns.
-        
+
         We then check a drag threshold to determine whether an on_drag
         should be generated. If the mouse has moved far enough (currently
         4 pixels) then we attempt to pass an `on_drag` event to the
@@ -470,22 +481,23 @@ class GUIEventDispatcher(EventDispatcher):
         handler returns EVENT_HANDLED we set self.drag_element and them
         attempt to pass on_drag_enter and on_drag_leave events on the
         element *under* the element being dragged.
-        '''
+        """
         element = self.determineHit(x, y)
         self.generateEnterLeave(x, y, element)
 
         if self.drag_element is not None:
             # continue to feed on_drag events
             element, handled = self.dispatch_event(self.drag_element,
-                'on_drag', x, y, dx, dy, buttons, modifiers)
+                                                   'on_drag', x, y, dx, dy,
+                                                   buttons, modifiers)
             self.drag_element = element
 
             # tell the element we've dragged over
             over = self.determineHit(x, y, exclude=element)
-            if (over is not self.drag_over_element and 
+            if (over is not self.drag_over_element and
                     self.drag_over_element is not None):
                 self.dispatch_event(self.drag_over_element, 'on_drag_leave',
-                    x, y, element)
+                                    x, y, element)
             if over is not None and over.isEnabled():
                 self.dispatch_event(over, 'on_drag_enter', x, y, element)
             self.drag_over_element = over
@@ -494,7 +506,8 @@ class GUIEventDispatcher(EventDispatcher):
         elif self.mouse_drag_element is not None:
             # continue to feed on_mouse_drag events
             element, handled = self.dispatch_event(self.mouse_drag_element,
-                'on_mouse_drag', x, y, dx, dy, buttons, modifiers)
+                                                   'on_mouse_drag', x, y, dx,
+                                                   dy, buttons, modifiers)
             self.mouse_drag_element = element
             return handled
 
@@ -505,14 +518,16 @@ class GUIEventDispatcher(EventDispatcher):
         # try an on_mouse_drag event if the element is enabled
         if self.mouse_press_element.isEnabled():
             element, handled = self.dispatch_event(self.mouse_press_element,
-                'on_mouse_drag', x, y, dx, dy, buttons, modifiers)
+                                                   'on_mouse_drag', x, y, dx,
+                                                   dy, buttons, modifiers)
             if handled == EVENT_HANDLED:
                 self.mouse_drag_element = element
                 return EVENT_HANDLED
 
         # check drag threshold
         cdx, cdy = self.cumulative_drag
-        cdx += abs(dx); cdy += abs(dy)
+        cdx += abs(dx)
+        cdy += abs(dy)
         self.cumulative_drag = (cdx, cdy)
         if cdx + cdy < 4:
             # less than 4 pixels, don't drag just yet
@@ -529,7 +544,7 @@ class GUIEventDispatcher(EventDispatcher):
 
         # now try an on_drag event
         element, handled = self.dispatch_event(element, 'on_drag',
-            x, y, dx, dy, buttons, modifiers)
+                                               x, y, dx, dy, buttons, modifiers)
         if handled == EVENT_UNHANDLED:
             return EVENT_UNHANDLED
 
@@ -541,21 +556,21 @@ class GUIEventDispatcher(EventDispatcher):
         if element is not self.drag_over_element:
             if self.drag_over_element is not None:
                 self.dispatch_event(self.drag_over_element,
-                    'on_drag_leave', x, y, self.drag_element)
+                                    'on_drag_leave', x, y, self.drag_element)
         if element is not None and element.isEnabled():
             self.dispatch_event(element, 'on_drag_enter', x, y,
-                self.drag_element)
+                                self.drag_element)
         self.drag_over_element = element
         return EVENT_HANDLED
 
-
     _last_click = 0
+
     def on_mouse_release(self, x, y, button, modifiers):
         # send release to the previously-pressed element
         if self.mouse_press_element is not None:
             if self.mouse_press_element.isEnabled():
                 self.dispatch_event(self.mouse_press_element,
-                    'on_mouse_release', x, y, button, modifiers)
+                                    'on_mouse_release', x, y, button, modifiers)
 
         if self.drag_element is not None:
             # the on_drop check will most likely alter the active element
@@ -564,13 +579,15 @@ class GUIEventDispatcher(EventDispatcher):
             # see if the element underneath wants the dragged element
             if drop is not None and drop.isEnabled():
                 ok = self.dispatch_event(drop, 'on_drop', x, y, button,
-                    modifiers, self.drag_element)[1] == EVENT_HANDLED
+                                         modifiers, self.drag_element)[
+                    1] == EVENT_HANDLED
             else:
                 ok = False
 
             # now tell the dragged element what's going on
             handled = self.dispatch_event(self.drag_element,
-                'on_drag_complete', x, y, button, modifiers, ok)[1]
+                                          'on_drag_complete', x, y, button,
+                                          modifiers, ok)[1]
 
             # clear state - we're done
             self.drag_element = self.mouse_press_element = \
@@ -579,7 +596,8 @@ class GUIEventDispatcher(EventDispatcher):
 
         # regular mouse press/release click
         element = self.determineHit(x, y)
-        if element is None: return EVENT_UNHANDLED
+        if element is None:
+            return EVENT_UNHANDLED
         if not element.isEnabled():
             return EVENT_UNHANDLED
 
@@ -593,14 +611,15 @@ class GUIEventDispatcher(EventDispatcher):
 
         if element is self.mouse_press_element:
             return self.dispatch_event(element, 'on_click', x, y, button,
-                modifiers, self._click_count)[1]
+                                       modifiers, self._click_count)[1]
         return EVENT_UNHANDLED
 
     def on_mouse_scroll(self, x, y, dx, dy):
         element = self.determineHit(x, y)
-        if element is None: return EVENT_UNHANDLED
+        if element is None:
+            return EVENT_UNHANDLED
         return self.dispatch_event(element, 'on_mouse_scroll', x, y,
-            dx, dy)[1]
+                                   dx, dy)[1]
 
     # the following are special -- they will be sent to the currently-focused
     # element rather than being dispatched
@@ -608,7 +627,7 @@ class GUIEventDispatcher(EventDispatcher):
         handled = EVENT_UNHANDLED
         if self.focused_element is not None:
             handled = self.dispatch_event(self.focused_element,
-                'on_key_press', symbol, modifiers)[1]
+                                          'on_key_press', symbol, modifiers)[1]
         if handled == EVENT_UNHANDLED and symbol == key.TAB:
             if modifiers & key.MOD_SHIFT:
                 self.focusNextElement(-1)
@@ -617,18 +636,21 @@ class GUIEventDispatcher(EventDispatcher):
         return handled
 
     def on_text(self, text):
-        if self.focused_element is None: return
+        if self.focused_element is None:
+            return
         return self.dispatch_event(self.focused_element, 'on_text', text)[1]
 
     def on_text_motion(self, motion):
-        if self.focused_element is None: return
+        if self.focused_element is None:
+            return
         return self.dispatch_event(self.focused_element, 'on_text_motion',
-            motion)[1]
+                                   motion)[1]
 
     def on_text_motion_select(self, motion):
-        if self.focused_element is None: return
+        if self.focused_element is None:
+            return
         return self.dispatch_event(self.focused_element,
-            'on_text_motion_select', motion)[1]
+                                   'on_text_motion_select', motion)[1]
 
 
 # EVENTS IN and OUT
@@ -659,19 +681,20 @@ GUIEventDispatcher.register_event_type('on_gain_focus')
 GUIEventDispatcher.register_event_type('on_lose_focus')
 GUIEventDispatcher.register_event_type('on_delete')
 GUIEventDispatcher.register_event_type('on_eos')
-        
+
 
 def select(rule, event_name=None):
-    # XXX assume passed an element with an id to select on
+    # TODO: assume passed an element with an id to select on
     if not isinstance(rule, str):
         rule = '#' + rule.id
 
     def decorate(func):
         func.selectors = [Selector.from_string(r.strip())
-            for r in rule.split(',')]
+                          for r in rule.split(',')]
         if event_name is not None:
             func.event_name = event_name
         return func
+
     return decorate
 
 
@@ -684,8 +707,8 @@ def default(rule, event_name=None):
             selector = Selector.from_string(r.strip())
             GUIEventDispatcher.set_default_handler(name, selector, func)
         return func
+
     return decorate
 
 
 universal_selector = Selector(SimpleSelector(None, None, (), (), ()), ())
-

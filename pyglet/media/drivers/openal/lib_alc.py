@@ -2,14 +2,14 @@
 # pyglet
 # Copyright (c) 2006-2008 Alex Holkner
 # All rights reserved.
-# 
+#
 # Redistribution and use in source and binary forms, with or without
-# modification, are permitted provided that the following conditions 
+# modification, are permitted provided that the following conditions
 # are met:
 #
 #  * Redistributions of source code must retain the above copyright
 #    notice, this list of conditions and the following disclaimer.
-#  * Redistributions in binary form must reproduce the above copyright 
+#  * Redistributions in binary form must reproduce the above copyright
 #    notice, this list of conditions and the following disclaimer in
 #    the documentation and/or other materials provided with the
 #    distribution.
@@ -31,15 +31,15 @@
 # ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 # ----------------------------------------------------------------------------
-'''Wrapper for openal
+"""Wrapper for openal
 
 Generated with:
 ../tools/wraptypes/wrap.py /usr/include/AL/alc.h -lopenal -olib_alc.py
 
 .. Hacked to fix ALCvoid argtypes.
-'''
+"""
 
-__docformat__ =  'restructuredtext'
+__docformat__ = 'restructuredtext'
 __version__ = '$Id$'
 
 import ctypes
@@ -49,7 +49,7 @@ import sys
 import pyglet.lib
 
 _lib = pyglet.lib.load_library('openal', win32='openal32',
-    framework='/System/Library/Frameworks/OpenAL.framework')
+                               framework='/System/Library/Frameworks/OpenAL.framework')
 
 _int_types = (c_int16, c_int32)
 if hasattr(ctypes, 'c_int64'):
@@ -61,6 +61,7 @@ for t in _int_types:
     if sizeof(t) == sizeof(c_size_t):
         c_ptrdiff_t = t
 
+
 class c_void(Structure):
     # c_void_p is a buggy return type, converting to int, so
     # POINTER(None) == c_void_p is actually written as
@@ -68,17 +69,19 @@ class c_void(Structure):
     _fields_ = [('dummy', c_int)]
 
 
-
 ALC_API = 0 	# /usr/include/AL/alc.h:19
 ALCAPI = 0 	# /usr/include/AL/alc.h:37
 ALC_INVALID = 0 	# /usr/include/AL/alc.h:39
 ALC_VERSION_0_1 = 1 	# /usr/include/AL/alc.h:42
+
+
 class struct_ALCdevice_struct(Structure):
     __slots__ = [
     ]
 struct_ALCdevice_struct._fields_ = [
     ('_opaque_struct', c_int)
 ]
+
 
 class struct_ALCdevice_struct(Structure):
     __slots__ = [
@@ -88,12 +91,15 @@ struct_ALCdevice_struct._fields_ = [
 ]
 
 ALCdevice = struct_ALCdevice_struct 	# /usr/include/AL/alc.h:44
+
+
 class struct_ALCcontext_struct(Structure):
     __slots__ = [
     ]
 struct_ALCcontext_struct._fields_ = [
     ('_opaque_struct', c_int)
 ]
+
 
 class struct_ALCcontext_struct(Structure):
     __slots__ = [
@@ -167,7 +173,7 @@ alcDestroyContext.argtypes = [POINTER(ALCcontext)]
 # /usr/include/AL/alc.h:190
 alcGetCurrentContext = _lib.alcGetCurrentContext
 alcGetCurrentContext.restype = POINTER(ALCcontext)
-alcGetCurrentContext.argtypes = []
+alcGetCurrentContext.argtypes = list()
 
 # /usr/include/AL/alc.h:192
 alcGetContextsDevice = _lib.alcGetContextsDevice
@@ -212,7 +218,8 @@ alcGetString.argtypes = [POINTER(ALCdevice), ALCenum]
 # /usr/include/AL/alc.h:227
 alcGetIntegerv = _lib.alcGetIntegerv
 alcGetIntegerv.restype = None
-alcGetIntegerv.argtypes = [POINTER(ALCdevice), ALCenum, ALCsizei, POINTER(ALCint)]
+alcGetIntegerv.argtypes = [
+    POINTER(ALCdevice), ALCenum, ALCsizei, POINTER(ALCint)]
 
 # /usr/include/AL/alc.h:233
 alcCaptureOpenDevice = _lib.alcCaptureOpenDevice
@@ -239,48 +246,68 @@ alcCaptureSamples = _lib.alcCaptureSamples
 alcCaptureSamples.restype = None
 alcCaptureSamples.argtypes = [POINTER(ALCdevice), POINTER(ALCvoid), ALCsizei]
 
-LPALCCREATECONTEXT = CFUNCTYPE(POINTER(ALCcontext), POINTER(ALCdevice), POINTER(ALCint)) 	# /usr/include/AL/alc.h:246
-LPALCMAKECONTEXTCURRENT = CFUNCTYPE(ALCboolean, POINTER(ALCcontext)) 	# /usr/include/AL/alc.h:247
-LPALCPROCESSCONTEXT = CFUNCTYPE(None, POINTER(ALCcontext)) 	# /usr/include/AL/alc.h:248
-LPALCSUSPENDCONTEXT = CFUNCTYPE(None, POINTER(ALCcontext)) 	# /usr/include/AL/alc.h:249
-LPALCDESTROYCONTEXT = CFUNCTYPE(None, POINTER(ALCcontext)) 	# /usr/include/AL/alc.h:250
-LPALCGETCURRENTCONTEXT = CFUNCTYPE(POINTER(ALCcontext)) 	# /usr/include/AL/alc.h:251
-LPALCGETCONTEXTSDEVICE = CFUNCTYPE(POINTER(ALCdevice), POINTER(ALCcontext)) 	# /usr/include/AL/alc.h:252
-LPALCOPENDEVICE = CFUNCTYPE(POINTER(ALCdevice), POINTER(ALCchar)) 	# /usr/include/AL/alc.h:253
-LPALCCLOSEDEVICE = CFUNCTYPE(ALCboolean, POINTER(ALCdevice)) 	# /usr/include/AL/alc.h:254
-LPALCGETERROR = CFUNCTYPE(ALCenum, POINTER(ALCdevice)) 	# /usr/include/AL/alc.h:255
-LPALCISEXTENSIONPRESENT = CFUNCTYPE(ALCboolean, POINTER(ALCdevice), POINTER(ALCchar)) 	# /usr/include/AL/alc.h:256
-LPALCGETPROCADDRESS = CFUNCTYPE(POINTER(c_void), POINTER(ALCdevice), POINTER(ALCchar)) 	# /usr/include/AL/alc.h:257
-LPALCGETENUMVALUE = CFUNCTYPE(ALCenum, POINTER(ALCdevice), POINTER(ALCchar)) 	# /usr/include/AL/alc.h:258
-LPALCGETSTRING = CFUNCTYPE(POINTER(ALCchar), POINTER(ALCdevice), ALCenum) 	# /usr/include/AL/alc.h:259
-LPALCGETINTEGERV = CFUNCTYPE(None, POINTER(ALCdevice), ALCenum, ALCsizei, POINTER(ALCint)) 	# /usr/include/AL/alc.h:260
-LPALCCAPTUREOPENDEVICE = CFUNCTYPE(POINTER(ALCdevice), POINTER(ALCchar), ALCuint, ALCenum, ALCsizei) 	# /usr/include/AL/alc.h:261
-LPALCCAPTURECLOSEDEVICE = CFUNCTYPE(ALCboolean, POINTER(ALCdevice)) 	# /usr/include/AL/alc.h:262
-LPALCCAPTURESTART = CFUNCTYPE(None, POINTER(ALCdevice)) 	# /usr/include/AL/alc.h:263
-LPALCCAPTURESTOP = CFUNCTYPE(None, POINTER(ALCdevice)) 	# /usr/include/AL/alc.h:264
-LPALCCAPTURESAMPLES = CFUNCTYPE(None, POINTER(ALCdevice), POINTER(ALCvoid), ALCsizei) 	# /usr/include/AL/alc.h:265
+LPALCCREATECONTEXT = CFUNCTYPE(POINTER(ALCcontext), POINTER(
+    ALCdevice), POINTER(ALCint)) 	# /usr/include/AL/alc.h:246
+LPALCMAKECONTEXTCURRENT = CFUNCTYPE(
+    ALCboolean, POINTER(ALCcontext)) 	# /usr/include/AL/alc.h:247
+# /usr/include/AL/alc.h:248
+LPALCPROCESSCONTEXT = CFUNCTYPE(None, POINTER(ALCcontext))
+# /usr/include/AL/alc.h:249
+LPALCSUSPENDCONTEXT = CFUNCTYPE(None, POINTER(ALCcontext))
+# /usr/include/AL/alc.h:250
+LPALCDESTROYCONTEXT = CFUNCTYPE(None, POINTER(ALCcontext))
+LPALCGETCURRENTCONTEXT = CFUNCTYPE(
+    POINTER(ALCcontext)) 	# /usr/include/AL/alc.h:251
+LPALCGETCONTEXTSDEVICE = CFUNCTYPE(
+    POINTER(ALCdevice), POINTER(ALCcontext)) 	# /usr/include/AL/alc.h:252
+# /usr/include/AL/alc.h:253
+LPALCOPENDEVICE = CFUNCTYPE(POINTER(ALCdevice), POINTER(ALCchar))
+# /usr/include/AL/alc.h:254
+LPALCCLOSEDEVICE = CFUNCTYPE(ALCboolean, POINTER(ALCdevice))
+# /usr/include/AL/alc.h:255
+LPALCGETERROR = CFUNCTYPE(ALCenum, POINTER(ALCdevice))
+LPALCISEXTENSIONPRESENT = CFUNCTYPE(
+    ALCboolean, POINTER(ALCdevice), POINTER(ALCchar)) 	# /usr/include/AL/alc.h:256
+LPALCGETPROCADDRESS = CFUNCTYPE(POINTER(c_void), POINTER(
+    ALCdevice), POINTER(ALCchar)) 	# /usr/include/AL/alc.h:257
+# /usr/include/AL/alc.h:258
+LPALCGETENUMVALUE = CFUNCTYPE(ALCenum, POINTER(ALCdevice), POINTER(ALCchar))
+# /usr/include/AL/alc.h:259
+LPALCGETSTRING = CFUNCTYPE(POINTER(ALCchar), POINTER(ALCdevice), ALCenum)
+LPALCGETINTEGERV = CFUNCTYPE(None, POINTER(
+    ALCdevice), ALCenum, ALCsizei, POINTER(ALCint)) 	# /usr/include/AL/alc.h:260
+LPALCCAPTUREOPENDEVICE = CFUNCTYPE(POINTER(ALCdevice), POINTER(
+    ALCchar), ALCuint, ALCenum, ALCsizei) 	# /usr/include/AL/alc.h:261
+LPALCCAPTURECLOSEDEVICE = CFUNCTYPE(
+    ALCboolean, POINTER(ALCdevice)) 	# /usr/include/AL/alc.h:262
+# /usr/include/AL/alc.h:263
+LPALCCAPTURESTART = CFUNCTYPE(None, POINTER(ALCdevice))
+# /usr/include/AL/alc.h:264
+LPALCCAPTURESTOP = CFUNCTYPE(None, POINTER(ALCdevice))
+LPALCCAPTURESAMPLES = CFUNCTYPE(None, POINTER(ALCdevice), POINTER(
+    ALCvoid), ALCsizei) 	# /usr/include/AL/alc.h:265
 
 __all__ = ['ALC_API', 'ALCAPI', 'ALC_INVALID', 'ALC_VERSION_0_1', 'ALCdevice',
-'ALCcontext', 'ALCboolean', 'ALCchar', 'ALCbyte', 'ALCubyte', 'ALCshort',
-'ALCushort', 'ALCint', 'ALCuint', 'ALCsizei', 'ALCenum', 'ALCfloat',
-'ALCdouble', 'ALCvoid', 'ALC_FALSE', 'ALC_TRUE', 'ALC_FREQUENCY',
-'ALC_REFRESH', 'ALC_SYNC', 'ALC_MONO_SOURCES', 'ALC_STEREO_SOURCES',
-'ALC_NO_ERROR', 'ALC_INVALID_DEVICE', 'ALC_INVALID_CONTEXT',
-'ALC_INVALID_ENUM', 'ALC_INVALID_VALUE', 'ALC_OUT_OF_MEMORY',
-'ALC_DEFAULT_DEVICE_SPECIFIER', 'ALC_DEVICE_SPECIFIER', 'ALC_EXTENSIONS',
-'ALC_MAJOR_VERSION', 'ALC_MINOR_VERSION', 'ALC_ATTRIBUTES_SIZE',
-'ALC_ALL_ATTRIBUTES', 'ALC_CAPTURE_DEVICE_SPECIFIER',
-'ALC_CAPTURE_DEFAULT_DEVICE_SPECIFIER', 'ALC_CAPTURE_SAMPLES',
-'alcCreateContext', 'alcMakeContextCurrent', 'alcProcessContext',
-'alcSuspendContext', 'alcDestroyContext', 'alcGetCurrentContext',
-'alcGetContextsDevice', 'alcOpenDevice', 'alcCloseDevice', 'alcGetError',
-'alcIsExtensionPresent', 'alcGetProcAddress', 'alcGetEnumValue',
-'alcGetString', 'alcGetIntegerv', 'alcCaptureOpenDevice',
-'alcCaptureCloseDevice', 'alcCaptureStart', 'alcCaptureStop',
-'alcCaptureSamples', 'LPALCCREATECONTEXT', 'LPALCMAKECONTEXTCURRENT',
-'LPALCPROCESSCONTEXT', 'LPALCSUSPENDCONTEXT', 'LPALCDESTROYCONTEXT',
-'LPALCGETCURRENTCONTEXT', 'LPALCGETCONTEXTSDEVICE', 'LPALCOPENDEVICE',
-'LPALCCLOSEDEVICE', 'LPALCGETERROR', 'LPALCISEXTENSIONPRESENT',
-'LPALCGETPROCADDRESS', 'LPALCGETENUMVALUE', 'LPALCGETSTRING',
-'LPALCGETINTEGERV', 'LPALCCAPTUREOPENDEVICE', 'LPALCCAPTURECLOSEDEVICE',
-'LPALCCAPTURESTART', 'LPALCCAPTURESTOP', 'LPALCCAPTURESAMPLES']
+           'ALCcontext', 'ALCboolean', 'ALCchar', 'ALCbyte', 'ALCubyte', 'ALCshort',
+           'ALCushort', 'ALCint', 'ALCuint', 'ALCsizei', 'ALCenum', 'ALCfloat',
+           'ALCdouble', 'ALCvoid', 'ALC_FALSE', 'ALC_TRUE', 'ALC_FREQUENCY',
+           'ALC_REFRESH', 'ALC_SYNC', 'ALC_MONO_SOURCES', 'ALC_STEREO_SOURCES',
+           'ALC_NO_ERROR', 'ALC_INVALID_DEVICE', 'ALC_INVALID_CONTEXT',
+           'ALC_INVALID_ENUM', 'ALC_INVALID_VALUE', 'ALC_OUT_OF_MEMORY',
+           'ALC_DEFAULT_DEVICE_SPECIFIER', 'ALC_DEVICE_SPECIFIER', 'ALC_EXTENSIONS',
+           'ALC_MAJOR_VERSION', 'ALC_MINOR_VERSION', 'ALC_ATTRIBUTES_SIZE',
+           'ALC_ALL_ATTRIBUTES', 'ALC_CAPTURE_DEVICE_SPECIFIER',
+           'ALC_CAPTURE_DEFAULT_DEVICE_SPECIFIER', 'ALC_CAPTURE_SAMPLES',
+           'alcCreateContext', 'alcMakeContextCurrent', 'alcProcessContext',
+           'alcSuspendContext', 'alcDestroyContext', 'alcGetCurrentContext',
+           'alcGetContextsDevice', 'alcOpenDevice', 'alcCloseDevice', 'alcGetError',
+           'alcIsExtensionPresent', 'alcGetProcAddress', 'alcGetEnumValue',
+           'alcGetString', 'alcGetIntegerv', 'alcCaptureOpenDevice',
+           'alcCaptureCloseDevice', 'alcCaptureStart', 'alcCaptureStop',
+           'alcCaptureSamples', 'LPALCCREATECONTEXT', 'LPALCMAKECONTEXTCURRENT',
+           'LPALCPROCESSCONTEXT', 'LPALCSUSPENDCONTEXT', 'LPALCDESTROYCONTEXT',
+           'LPALCGETCURRENTCONTEXT', 'LPALCGETCONTEXTSDEVICE', 'LPALCOPENDEVICE',
+           'LPALCCLOSEDEVICE', 'LPALCGETERROR', 'LPALCISEXTENSIONPRESENT',
+           'LPALCGETPROCADDRESS', 'LPALCGETENUMVALUE', 'LPALCGETSTRING',
+           'LPALCGETINTEGERV', 'LPALCCAPTUREOPENDEVICE', 'LPALCCAPTURECLOSEDEVICE',
+           'LPALCCAPTURESTART', 'LPALCCAPTURESTOP', 'LPALCCAPTURESAMPLES']

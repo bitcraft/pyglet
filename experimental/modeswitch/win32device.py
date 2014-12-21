@@ -11,6 +11,7 @@ from pyglet.window.win32.types import *
 WCHAR = ctypes.c_wchar
 BCHAR = ctypes.c_wchar
 
+
 class MONITORINFOEX(ctypes.Structure):
     _fields_ = (
         ('cbSize', DWORD),
@@ -19,6 +20,7 @@ class MONITORINFOEX(ctypes.Structure):
         ('dwFlags', DWORD),
         ('szDevice', WCHAR * CCHDEVICENAME)
     )
+
 
 class DEVMODE(ctypes.Structure):
     _fields_ = (
@@ -48,7 +50,7 @@ class DEVMODE(ctypes.Structure):
         ('dmBitsPerPel', DWORD),
         ('dmPelsWidth', DWORD),
         ('dmPelsHeight', DWORD),
-        ('dmDisplayFlags', DWORD), # union with dmNup
+        ('dmDisplayFlags', DWORD),  # union with dmNup
         ('dmDisplayFrequency', DWORD),
         ('dmICMMethod', DWORD),
         ('dmICMIntent', DWORD),
@@ -59,7 +61,9 @@ class DEVMODE(ctypes.Structure):
         ('dmPanningHeight', DWORD),
     )
 
-class Win32Mode(object):
+
+class Win32Mode:
+
     def __init__(self, devmode):
         self._devmode = devmode
         self.width = devmode.dmPelsWidth
@@ -73,15 +77,15 @@ for screen in screens:
     info = MONITORINFOEX()
     info.cbSize = ctypes.sizeof(MONITORINFOEX)
     _user32.GetMonitorInfoW(handle, ctypes.byref(info))
-    
+
     screen.device_name = info.szDevice
-    screen.modes = []
+    screen.modes = list()
 
     i = 0
     while True:
         mode = DEVMODE()
         mode.dmSize = ctypes.sizeof(DEVMODE)
-        r = _user32.EnumDisplaySettingsW(screen.device_name, i, 
+        r = _user32.EnumDisplaySettingsW(screen.device_name, i,
                                          ctypes.byref(mode))
         if not r:
             break
@@ -92,21 +96,21 @@ for screen in screens:
 
 def set_mode(screen, width, height, rate=None):
     # Find best matching mode.  Should factor out common with X11 mode select
-    
+
     best_mode = None
     for mode in screen.modes:
         if width > mode.width or height > mode.height:
             continue
-        
+
         if not best_mode:
             best_mode = mode
             continue
 
         if mode.width == best_mode.width:
             if mode.height < best_mode.height:
-                if (rate is not None and 
-                    abs(rate - mode.rate) < 
-                    abs(rate - best_mode.rate)):
+                if (rate is not None and
+                        abs(rate - mode.rate) <
+                        abs(rate - best_mode.rate)):
                     best_mode = mode
             elif mode.height < best_mode.height:
                 best_mode = mode
@@ -122,7 +126,7 @@ def set_mode(screen, width, height, rate=None):
                                      CDS_FULLSCREEN,
                                      None)
 
+
 window = pyglet.window.Window()
 set_mode(screens[1], 800, 600)
 pyglet.app.run()
-

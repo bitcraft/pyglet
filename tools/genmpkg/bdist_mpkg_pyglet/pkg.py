@@ -1,6 +1,6 @@
 import os
 import sys
-from cStringIO import StringIO
+from io import StringIO
 from distutils.dir_util import mkpath
 from distutils.file_util import copy_file
 
@@ -8,12 +8,14 @@ from bdist_mpkg_pyglet import tools, plists
 from bdist_mpkg_pyglet.util import copy_tree
 from bdist_mpkg_pyglet.templates import InstallationCheck
 
-def write_template((script, strings), dest, mkpath=mkpath):
+
+def write_template(xxx_todo_changeme, dest, mkpath=mkpath):
+    (script, strings) = xxx_todo_changeme
     spath = os.path.join(dest, 'InstallationCheck')
     f = open(spath, 'w')
     f.write(script.encode('utf8'))
     f.close()
-    os.chmod(spath, os.stat(spath)[0] | 0111)
+    os.chmod(spath, os.stat(spath)[0] | 0o111)
     lproj = os.path.join(dest, 'English.lproj')
     mkpath(lproj)
     spath = os.path.join(lproj, 'InstallationCheck.strings')
@@ -21,22 +23,26 @@ def write_template((script, strings), dest, mkpath=mkpath):
     f.write(strings.encode('utf16'))
     f.close()
 
+
 def write_sizes(count, size, compressed, pkgdir):
     f = open(
         os.path.join(pkgdir, 'Contents', 'Resources', 'Archive.sizes'),
         'w'
     )
     f.write('NumFiles %d\nInstalledSize %d\nCompressedSize %d'
-        % (count, size, compressed))
+            % (count, size, compressed))
     f.close()
+
 
 TEXT_EXTS = '.rtfd', '.rtf', '.html', '.txt'
 IMAGE_EXTS = '.tiff', '.png', '.jpg', '.pdf'
+
 
 def write_pkginfo(pkgdir):
     f = open(os.path.join(pkgdir, 'Contents', 'PkgInfo'), 'w')
     f.write('pmkrpkg1')
     f.close()
+
 
 def try_exts(path, exts=TEXT_EXTS):
     path = os.path.splitext(path)[0]
@@ -46,8 +52,9 @@ def try_exts(path, exts=TEXT_EXTS):
             return npath
     return None
 
+
 def copy_doc(path, name, pkgdir, exts=TEXT_EXTS, language=None, dry_run=0,
-        copy_tree=copy_tree, copy_file=copy_file, mkpath=mkpath):
+             copy_tree=copy_tree, copy_file=copy_file, mkpath=mkpath):
     if path is None:
         return
     is_string = hasattr(path, 'getvalue')
@@ -74,8 +81,9 @@ def copy_doc(path, name, pkgdir, exts=TEXT_EXTS, language=None, dry_run=0,
     else:
         copy_file(path, dest)
 
+
 def make_metapackage(cmd, name, version, packages, pkgdir,
-        info=(), description=None):
+                     info=(), description=None):
     license = cmd.license
     readme = cmd.readme
     welcome = cmd.welcome
@@ -90,7 +98,7 @@ def make_metapackage(cmd, name, version, packages, pkgdir,
     if description is None:
         description = dist.get_description()
     if not description:
-        description = u'%s %s' % (name, version)
+        description = '%s %s' % (name, version)
 
     mkpath(os.path.join(pkgdir, 'Contents', 'Resources'))
     if not dry_run:
@@ -101,7 +109,7 @@ def make_metapackage(cmd, name, version, packages, pkgdir,
     if not dry_run:
         plists.write(ninfo, os.path.join(pkgdir, 'Contents', 'Info.plist'))
 
-    desc = plists.common_description(name+' '+version, version)
+    desc = plists.common_description(name + ' ' + version, version)
     if description:
         desc['IFPkgDescriptionDescription'] = description
     if not dry_run:
@@ -113,7 +121,7 @@ def make_metapackage(cmd, name, version, packages, pkgdir,
     template_dest = os.path.join(pkgdir, 'Contents', 'Resources')
     if not os.path.exists(template) and template in InstallationCheck:
         write_template(InstallationCheck[template], template_dest,
-            mkpath=mkpath)
+                       mkpath=mkpath)
     else:
         copy_tree(template, template_dest)
 
@@ -124,16 +132,17 @@ def make_metapackage(cmd, name, version, packages, pkgdir,
 
     def doc(path, name, exts=TEXT_EXTS):
         copy_doc(path, name, pkgdir, exts=exts, dry_run=dry_run,
-            mkpath=mkpath, copy_tree=copy_tree, copy_file=copy_file,
-        )
+                 mkpath=mkpath, copy_tree=copy_tree, copy_file=copy_file,
+                 )
 
     doc(readme, 'ReadMe')
     doc(license, 'License')
     doc(welcome, 'Welcome')
     doc(background, 'background', exts=IMAGE_EXTS)
 
+
 def make_package(cmd, name, version, files, common, prefix, pkgdir,
-        info=(), description=None):
+                 info=(), description=None):
     license = cmd.license
     readme = cmd.readme
     welcome = cmd.welcome
@@ -154,16 +163,16 @@ def make_package(cmd, name, version, files, common, prefix, pkgdir,
 
     tools.mkbom(common, pkgdir)
     count = len(files)
-    admin = True #tools.admin_writable(prefix)
+    admin = True  # tools.admin_writable(prefix)
     size = tools.reduce_size(files)
     compressed = tools.pax(common, pkgdir)
     if not dry_run:
         write_sizes(count, size, compressed, pkgdir)
 
     if admin:
-        auth = u'AdminAuthorization'
+        auth = 'AdminAuthorization'
     else:
-        auth = u'RootAuthorization'
+        auth = 'RootAuthorization'
 
     ninfo = plists.pkg_info(name, version)
     ninfo.update(dict(
@@ -186,14 +195,14 @@ def make_package(cmd, name, version, files, common, prefix, pkgdir,
     template_dest = os.path.join(pkgdir, 'Contents', 'Resources')
     if not os.path.exists(template) and template in InstallationCheck:
         write_template(InstallationCheck[template], template_dest,
-            mkpath=mkpath)
+                       mkpath=mkpath)
     else:
         copy_tree(template, template_dest)
 
     def doc(path, name, exts=TEXT_EXTS):
         copy_doc(path, name, pkgdir, exts=exts, dry_run=dry_run,
-            mkpath=mkpath, copy_tree=copy_tree, copy_file=copy_file,
-        )
+                 mkpath=mkpath, copy_tree=copy_tree, copy_file=copy_file,
+                 )
 
     doc(readme, 'ReadMe')
     doc(license, 'License')

@@ -2,14 +2,14 @@
 # pyglet
 # Copyright (c) 2006-2008 Alex Holkner
 # All rights reserved.
-# 
+#
 # Redistribution and use in source and binary forms, with or without
-# modification, are permitted provided that the following conditions 
+# modification, are permitted provided that the following conditions
 # are met:
 #
 #  * Redistributions of source code must retain the above copyright
 #    notice, this list of conditions and the following disclaimer.
-#  * Redistributions in binary form must reproduce the above copyright 
+#  * Redistributions in binary form must reproduce the above copyright
 #    notice, this list of conditions and the following disclaimer in
 #    the documentation and/or other materials provided with the
 #    distribution.
@@ -39,15 +39,17 @@ __version__ = '$Id: $'
 import ctypes
 
 from pyglet import app
-from base import PlatformEventLoop
+from .base import PlatformEventLoop
 
 from pyglet.libs.win32 import _kernel32, _user32, types, constants
 from pyglet.libs.win32.constants import *
 from pyglet.libs.win32.types import *
 
+
 class Win32EventLoop(PlatformEventLoop):
+
     def __init__(self):
-        super(Win32EventLoop, self).__init__()
+        super().__init__()
 
         self._next_idle_time = None
 
@@ -56,12 +58,12 @@ class Win32EventLoop(PlatformEventLoop):
         # imports pyglet.app _must_ own the main run loop.
         msg = types.MSG()
         _user32.PeekMessageW(ctypes.byref(msg), 0,
-                             constants.WM_USER, constants.WM_USER, 
+                             constants.WM_USER, constants.WM_USER,
                              constants.PM_NOREMOVE)
 
         self._event_thread = _kernel32.GetCurrentThreadId()
 
-        self._wait_objects = []
+        self._wait_objects = list()
         self._recreate_wait_objects_array()
 
         self._timer_proc = types.TIMERPROC(self._timer_proc_func)
@@ -87,7 +89,8 @@ class Win32EventLoop(PlatformEventLoop):
 
         self._wait_objects_n = len(self._wait_objects)
         self._wait_objects_array = \
-            (HANDLE * self._wait_objects_n)(*[o for o, f in self._wait_objects])
+            (HANDLE * self._wait_objects_n)(*
+                                            [o for o, f in self._wait_objects])
 
     def start(self):
         if _kernel32.GetCurrentThreadId() != self._event_thread:
@@ -105,7 +108,7 @@ class Win32EventLoop(PlatformEventLoop):
         if timeout is None:
             timeout = constants.INFINITE
         else:
-            timeout = int(timeout * 1000) # milliseconds
+            timeout = int(timeout * 1000)  # milliseconds
 
         result = _user32.MsgWaitForMultipleObjects(
             self._wait_objects_n,
@@ -138,11 +141,11 @@ class Win32EventLoop(PlatformEventLoop):
         if func is None or interval is None:
             interval = constants.USER_TIMER_MAXIMUM
         else:
-            interval = int(interval * 1000) # milliseconds
-        
+            interval = int(interval * 1000)  # milliseconds
+
         self._timer_func = func
         _user32.SetTimer(0, self._timer, interval, self._timer_proc)
-     
+
     def _timer_proc_func(self, hwnd, msg, timer, t):
         if self._timer_func:
             self._timer_func()

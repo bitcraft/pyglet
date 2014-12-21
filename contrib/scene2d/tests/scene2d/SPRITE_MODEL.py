@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 
-'''Testing the sprite model.
+"""Testing the sprite model.
 
 This test should just run without failing.
-'''
+"""
 
 __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
@@ -14,13 +14,15 @@ from pyglet.window import Window
 from pyglet.image import SolidColorImagePattern
 from scene2d import Sprite, Image2d
 
+
 class SpriteModelTest(unittest.TestCase):
 
     def setUp(self):
         self.w = Window(width=1, height=1, visible=False)
         self.s = Sprite(10, 10, 10, 10,
-            Image2d.from_image(SolidColorImagePattern((0, 0, 0,
-                0)).create_image(1, 1)))
+                        Image2d.from_image(SolidColorImagePattern((0, 0, 0,
+                                                                   0)).create_image(
+                            1, 1)))
         assert (self.s.x, self.s.y) == (10, 10)
 
     def tearDown(self):
@@ -91,5 +93,4 @@ class SpriteModelTest(unittest.TestCase):
         self.s.bottomleft = (5, 5)
         assert (self.s.x, self.s.y) == (5, 5)
 
-if __name__ == '__main__':
     unittest.main()

@@ -34,7 +34,7 @@
 # shown below.
 #
 # Licensed under the terms of the Apache Software License 2.0:
-#  http://www.apache.org/licenses/LICENSE-2.0
+# http://www.apache.org/licenses/LICENSE-2.0
 #
 # Questions, comments, feature requests and patches are most welcome.
 # Please direct all of these to the Google Code users group:
@@ -45,7 +45,7 @@
 
 __author__ = 'danderson@google.com (David Anderson)'
 
-import httplib
+import http.client
 import os.path
 import optparse
 import getpass
@@ -53,146 +53,144 @@ import base64
 
 
 def upload(file, project_name, user_name, password, summary, labels=None):
-  """Upload a file to a Google Code project's file server.
+    """Upload a file to a Google Code project's file server.
 
-  Args:
-    file: The local path to the file.
-    project_name: The name of your project on Google Code.
-    user_name: Your Google account name.
-    password: The googlecode.com password for your account.
-              Note that this is NOT your global Google Account password!
-    summary: A small description for the file.
-    labels: an optional list of label strings with which to tag the file.
+    Args:
+      file: The local path to the file.
+      project_name: The name of your project on Google Code.
+      user_name: Your Google account name.
+      password: The googlecode.com password for your account.
+                Note that this is NOT your global Google Account password!
+      summary: A small description for the file.
+      labels: an optional list of label strings with which to tag the file.
 
-  Returns: a tuple:
-    http_status: 201 if the upload succeeded, something else if an
-                 error occured.
-    http_reason: The human-readable string associated with http_status
-    file_url: If the upload succeeded, the URL of the file on Google
-              Code, None otherwise.
-  """
-  # The login is the user part of user@gmail.com. If the login provided
-  # is in the full user@domain form, strip it down.
-  if '@' in user_name:
-    user_name = user_name[:user_name.index('@')]
+    Returns: a tuple:
+      http_status: 201 if the upload succeeded, something else if an
+                   error occured.
+      http_reason: The human-readable string associated with http_status
+      file_url: If the upload succeeded, the URL of the file on Google
+                Code, None otherwise.
+    """
+    # The login is the user part of user@gmail.com. If the login provided
+    # is in the full user@domain form, strip it down.
+    if '@' in user_name:
+        user_name = user_name[:user_name.index('@')]
 
-  form_fields = [('summary', summary)]
-  if labels is not None:
-    form_fields.extend([('label', l.strip()) for l in labels])
+    form_fields = [('summary', summary)]
+    if labels is not None:
+        form_fields.extend([('label', l.strip()) for l in labels])
 
-  content_type, body = encode_upload_request(form_fields, file)
+    content_type, body = encode_upload_request(form_fields, file)
 
-  upload_host = '%s.googlecode.com' % project_name
-  upload_uri = '/files'
-  auth_token = base64.b64encode('%s:%s'% (user_name, password))
-  headers = {
-    'Authorization': 'Basic %s' % auth_token,
-    'User-Agent': 'Googlecode.com uploader v0.9.4',
-    'Content-Type': content_type,
+    upload_host = '%s.googlecode.com' % project_name
+    upload_uri = '/files'
+    auth_token = base64.b64encode('%s:%s' % (user_name, password))
+    headers = {
+        'Authorization': 'Basic %s' % auth_token,
+        'User-Agent': 'Googlecode.com uploader v0.9.4',
+        'Content-Type': content_type,
     }
 
-  server = httplib.HTTPSConnection(upload_host)
-  server.request('POST', upload_uri, body, headers)
-  resp = server.getresponse()
-  server.close()
+    server = http.client.HTTPSConnection(upload_host)
+    server.request('POST', upload_uri, body, headers)
+    resp = server.getresponse()
+    server.close()
 
-  if resp.status == 201:
-    location = resp.getheader('Location', None)
-  else:
-    location = None
-  return resp.status, resp.reason, location
+    if resp.status == 201:
+        location = resp.getheader('Location', None)
+    else:
+        location = None
+    return resp.status, resp.reason, location
 
 
 def encode_upload_request(fields, file_path):
-  """Encode the given fields and file into a multipart form body.
+    """Encode the given fields and file into a multipart form body.
 
-  fields is a sequence of (name, value) pairs. file is the path of
-  the file to upload. The file will be uploaded to Google Code with
-  the same file name.
+    fields is a sequence of (name, value) pairs. file is the path of
+    the file to upload. The file will be uploaded to Google Code with
+    the same file name.
 
-  Returns: (content_type, body) ready for httplib.HTTP instance
-  """
-  BOUNDARY = '----------Googlecode_boundary_reindeer_flotilla'
-  CRLF = '\r\n'
+    Returns: (content_type, body) ready for httplib.HTTP instance
+    """
+    BOUNDARY = '----------Googlecode_boundary_reindeer_flotilla'
+    CRLF = '\r\n'
 
-  body = []
+    body = list()
 
-  # Add the metadata about the upload first
-  for key, value in fields:
+    # Add the metadata about the upload first
+    for key, value in fields:
+        body.extend(
+            ['--' + BOUNDARY,
+             'Content-Disposition: form-data; name="%s"' % key,
+             '',
+             value,
+             ])
+
+    # Now add the file itself
+    file_name = os.path.basename(file_path)
+    f = open(file_path)
+    file_content = f.read()
+    f.close()
+
     body.extend(
-      ['--' + BOUNDARY,
-       'Content-Disposition: form-data; name="%s"' % key,
-       '',
-       value,
-       ])
+        ['--' + BOUNDARY,
+         'Content-Disposition: form-data; name="filename"; filename="%s"'
+         % file_name,
+         # The upload server determines the mime-type, no need to set it.
+         'Content-Type: application/octet-stream',
+         '',
+         file_content,
+         ])
 
-  # Now add the file itself
-  file_name = os.path.basename(file_path)
-  f = open(file_path)
-  file_content = f.read()
-  f.close()
+    # Finalize the form body
+    body.extend(['--' + BOUNDARY + '--', ''])
 
-  body.extend(
-    ['--' + BOUNDARY,
-     'Content-Disposition: form-data; name="filename"; filename="%s"'
-     % file_name,
-     # The upload server determines the mime-type, no need to set it.
-     'Content-Type: application/octet-stream',
-     '',
-     file_content,
-     ])
-
-  # Finalize the form body
-  body.extend(['--' + BOUNDARY + '--', ''])
-
-  return 'multipart/form-data; boundary=%s' % BOUNDARY, CRLF.join(body)
+    return 'multipart/form-data; boundary=%s' % BOUNDARY, CRLF.join(body)
 
 
 def main():
-  parser = optparse.OptionParser(usage='googlecode-upload.py -s SUMMARY '
-                                 '-p PROJECT -u USERNAME FILE')
-  parser.add_option('-s', '--summary', dest='summary',
-                    help='Short description of the file')
-  parser.add_option('-p', '--project', dest='project',
-                    help='Google Code project name')
-  parser.add_option('-u', '--user', dest='user',
-                    help='Your Google Code username')
-  parser.add_option('-l', '--labels', dest='labels',
-                    help='An optional list of labels to attach to the file')
+    parser = optparse.OptionParser(usage='googlecode-upload.py -s SUMMARY '
+                                         '-p PROJECT -u USERNAME FILE')
+    parser.add_option('-s', '--summary', dest='summary',
+                      help='Short description of the file')
+    parser.add_option('-p', '--project', dest='project',
+                      help='Google Code project name')
+    parser.add_option('-u', '--user', dest='user',
+                      help='Your Google Code username')
+    parser.add_option('-l', '--labels', dest='labels',
+                      help='An optional list of labels to attach to the file')
 
-  options, args = parser.parse_args()
+    options, args = parser.parse_args()
 
-  if not options.summary:
-    parser.error('File summary is missing.')
-  elif not options.project:
-    parser.error('Project name is missing.')
-  elif not options.user:
-    parser.error('User name is missing.')
-  elif len(args) < 1:
-    parser.error('File to upload not provided.')
+    if not options.summary:
+        parser.error('File summary is missing.')
+    elif not options.project:
+        parser.error('Project name is missing.')
+    elif not options.user:
+        parser.error('User name is missing.')
+    elif len(args) < 1:
+        parser.error('File to upload not provided.')
 
-  print 'Please enter your googlecode.com password.'
-  print '** Note that this is NOT your Gmail account password! **'
-  print 'It is the password you use to access Subversion repositories,'
-  print 'and can be found here: http://code.google.com/hosting/settings'
-  password = getpass.getpass()
-  file_path = args[0]
+    print('Please enter your googlecode.com password.')
+    print('** Note that this is NOT your Gmail account password! **')
+    print('It is the password you use to access Subversion repositories,')
+    print('and can be found here: http://code.google.com/hosting/settings')
+    password = getpass.getpass()
+    file_path = args[0]
 
-  if options.labels:
-    labels = options.labels.split(',')
-  else:
-    labels = None
+    if options.labels:
+        labels = options.labels.split(',')
+    else:
+        labels = None
 
-  status, reason, url = upload(file_path, options.project,
-                               options.user, password,
-                               options.summary, labels)
-  if url:
-    print 'The file was uploaded successfully.'
-    print 'URL: %s' % url
-  else:
-    print 'An error occurred. Your file was not uploaded.'
-    print 'Google Code upload server said: %s (%s)' % (reason, status)
+    status, reason, url = upload(file_path, options.project,
+                                 options.user, password,
+                                 options.summary, labels)
+    if url:
+        print('The file was uploaded successfully.')
+        print('URL: %s' % url)
+    else:
+        print('An error occurred. Your file was not uploaded.')
+        print('Google Code upload server said: %s (%s)' % (reason, status))
 
-
-if __name__ == '__main__':
-  main()
+    main()

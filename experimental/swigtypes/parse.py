@@ -1,50 +1,54 @@
 #!/usr/bin/env python
 
-'''
-'''
+"""
+"""
 
 __docformat__ = 'restructuredtext'
 __version__ = '$Id: $'
 
 import gzip
-import cPickle as marshal
+import pickle as marshal
 import optparse
 import os
 import sys
 import xml.sax
 
+
 def parse_type(type_string):
-    '''Get a tuple of the type components for a SWIG-formatted type.
+    """Get a tuple of the type components for a SWIG-formatted type.
 
     For example, given the type "p.f(p.struct _XExtData).int",
     return ('int', ('f', ('struct _XExtData', 'p'),), 'p')
 
     Qualifiers are ignored (removed).
-    '''
+    """
     # Scan the type string left-to-right
     buf = ''
 
     stack = [()]
 
-    def flush(): # buf = flush()
+    def flush():  # buf = flush()
         if buf:
             stack[-1] = stack[-1] + (buf,)
         return ''
+
     def push():
         stack.append(())
+
     def pop():
         item = finalize(stack.pop())
         if item is not None:
             stack[-1] = stack[-1] + (item,)
+
     def finalize(item):
         assert type(item) is tuple
         if not item:
             # Empty tuple is dropped (empty param list)
             return
         elif item[0] == 'q':
-            # Discard qualifiers 
+            # Discard qualifiers
             return
-        
+
         # Reverse (puts pointers at end)
         item = item[::-1]
 
@@ -71,37 +75,39 @@ def parse_type(type_string):
         off = 0
         for i, j in enumerate(item):
             if type(j) is tuple and j and j[0] == 'f':
-                item = item[:i+1+off] + item[i+2+off:]
+                item = item[:i + 1 + off] + item[i + 2 + off:]
                 off -= 1
         return item
-    
+
     for c in type_string:
         if c == '.':
             buf = flush()
         elif c == '(':
-            push()              # Push param list
+            push()  # Push param list
             buf = flush()
-            push()              # Push item
+            push()  # Push item
         elif c == ',':
             buf = flush()
-            pop()               # Pop item
-            push()              # Push item
+            pop()  # Pop item
+            push()  # Push item
         elif c == ')':
             buf = flush()
-            pop()               # Pop item
-            pop()               # Pop param list
+            pop()  # Pop item
+            pop()  # Pop param list
         else:
             buf += c
     flush()
-            
+
     type_tuple = finalize(stack[0])
     return type_tuple
 
-class SwigInterfaceHandler(object):
+
+class SwigInterfaceHandler:
+
     def __init__(self):
         self.name = None
-        self.cdecls = []
-        self.constants = []
+        self.cdecls = list()
+        self.constants = list()
 
     def attribute(self, attrs):
         if attrs['name'] == 'name':
@@ -136,7 +142,7 @@ class SwigInterfaceHandler(object):
         return handler
 
     def get_map(self):
-        map = {}
+        map = dict()
         for cdecl in self.cdecls:
             # ('typedef', type)
             if cdecl.kind == 'typedef':
@@ -166,14 +172,17 @@ class SwigInterfaceHandler(object):
             map[constant.name] = ('constant', constant.get_value())
 
         import pprint
+
         pprint.pprint(map)
 
         return map
 
-class IgnoreElementHandler(object):
+
+class IgnoreElementHandler:
     pass
 
-class ConstantHandler(object):
+
+class ConstantHandler:
     name = None
     value = None
     type = None
@@ -197,14 +206,15 @@ class ConstantHandler(object):
             return int(eval(self.value))
         return self.value
 
-class EnumHandler(object):
+
+class EnumHandler:
     name = None
     tdname = None
     kind = 'enum'
     unnamed = False
 
     def __init__(self, attrs):
-        self.items = []
+        self.items = list()
 
     def attribute(self, attrs):
         name = attrs['name']
@@ -222,10 +232,10 @@ class EnumHandler(object):
         return handler
 
     def get_items(self):
-        items = []
+        items = list()
         index = 0
         for item in self.items:
-            try: 
+            try:
                 # TODO parse enumvalueex properly
                 index = int(item.value)
             except ValueError:
@@ -239,11 +249,12 @@ class EnumHandler(object):
         else:
             return self.name
 
-class EnumItemHandler(object):
+
+class EnumItemHandler:
     name = None
     value = None
     type = None
-    
+
     def __init__(self, attrs):
         pass
 
@@ -265,7 +276,8 @@ class EnumItemHandler(object):
             return int(eval(self.value))
         return self.value
 
-class CDeclHandler(object):
+
+class CDeclHandler:
     name = None
     kind = None
     type = None
@@ -287,7 +299,7 @@ class CDeclHandler(object):
             self.decl = str(attrs['value'])
 
     def parmlist(self, attrs):
-        self.params = []
+        self.params = list()
         handler = ParmListHandler(attrs, self.params)
         return handler
 
@@ -310,16 +322,19 @@ class CDeclHandler(object):
         else:
             return self.name + ' : ' + self.type
 
-class ParmListHandler(object):
+
+class ParmListHandler:
+
     def __init__(self, attrs, params):
         self.params = params
-    
+
     def parm(self, attrs):
         param = ParmHandler(attrs)
         self.params.append(param)
         return param
 
-class ParmHandler(object):
+
+class ParmHandler:
     name = ''
     type = None
 
@@ -339,14 +354,15 @@ class ParmHandler(object):
     def __str__(self):
         return self.name + ' : ' + self.type
 
-class ClassHandler(object):
+
+class ClassHandler:
     name = ''
     kind = None
     tdname = None
     unnamed = False
 
     def __init__(self, attrs):
-        self.cdecls = []
+        self.cdecls = list()
 
     def attribute(self, attrs):
         name = attrs['name']
@@ -368,7 +384,7 @@ class ClassHandler(object):
 
     def get_variables(self):
         # ((name, type), ...)
-        return tuple((cdecl.name,  cdecl.get_type(with_decl=True)) 
+        return tuple((cdecl.name, cdecl.get_type(with_decl=True))
                      for cdecl in self.cdecls if cdecl.kind == 'variable')
 
     def get_tdname(self):
@@ -377,7 +393,8 @@ class ClassHandler(object):
         else:
             return self.name
 
-class ClassForwardHandler(object):
+
+class ClassForwardHandler:
     name = ''
     kind = None
     tdname = None
@@ -404,7 +421,9 @@ class ClassForwardHandler(object):
         else:
             return self.name
 
+
 class FFIContentHandler(xml.sax.handler.ContentHandler):
+
     def __init__(self):
         self.swig_interface_handler = SwigInterfaceHandler()
         self.stack = [self.swig_interface_handler]
@@ -423,12 +442,15 @@ class FFIContentHandler(xml.sax.handler.ContentHandler):
     def endElement(self, name):
         del self.stack[-1]
 
+
 class KeepGoingErrorHandler(xml.sax.handler.ErrorHandler):
+
     def error(self, exception):
-        print exception
+        print(exception)
 
     def fatalError(self, exception):
-        print exception
+        print(exception)
+
 
 def parse(xml_filename, output_filename):
     handler = FFIContentHandler()
@@ -440,14 +462,13 @@ def parse(xml_filename, output_filename):
     output_file.write(data)
     output_file.close()
 
-if __name__ == '__main__':
     usage = 'usage: %prog [options] <module.xml>'
     op = optparse.OptionParser(usage=usage)
     op.add_option('-o', '--output')
     (options, args) = op.parse_args(sys.argv[1:])
 
     if len(args) < 1:
-        print >> sys.stderr, 'No input file given'
+        print('No input file given', file=sys.stderr)
         sys.exit(1)
 
     xml_filename = args[0]

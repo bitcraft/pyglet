@@ -1,12 +1,13 @@
 #!/usr/bin/env python
 
-'''
-'''
+"""
+"""
 
 __docformat__ = 'restructuredtext'
 __version__ = '$Id: //depot/task/DEV-99/client/tests.py#13 $'
 
 import sys
+
 sys.path.insert(0, '../../')
 sys.path.insert(0, '../layout/')
 
@@ -22,42 +23,47 @@ from wydget import event, dialogs, dragndrop, anim, layouts, widgets, loadxml
 
 if len(sys.argv) > 1:
     if '--help' in sys.argv:
-        print '%s [test_file.xml] [--dump] [--once]'%sys.argv[0]
-        print ' test_file.xml  -- a single XML file to display (see tests/)'
-        print ' --dump         -- text dump of constructed GUI objects'
-        print ' --once         -- render the GUI exactly once and exit'
+        print('%s [test_file.xml] [--dump] [--once]' % sys.argv[0])
+        print(' test_file.xml  -- a single XML file to display (see tests/)')
+        print(' --dump         -- text dump of constructed GUI objects')
+        print(' --once         -- render the GUI exactly once and exit')
         sys.exit(0)
-    print '-'*75
-    print 'To exit the test, hit <escape> or close the window'
-    print '-'*75
+    print('-' * 75)
+    print('To exit the test, hit <escape> or close the window')
+    print('-' * 75)
 else:
-    print '-'*75
-    print 'To move on to the next test, hit <escape>.'
-    print 'Close the window to exit the tests.'
-    print '-'*75
+    print('-' * 75)
+    print('To move on to the next test, hit <escape>.')
+    print('Close the window to exit the tests.')
+    print('-' * 75)
 
 window = Window(width=800, height=600, vsync=False, resizable=True)
 
-#clock.set_fps_limit(10)
+# clock.set_fps_limit(10)
 fps = clock.ClockDisplay(color=(1, .5, .5, 1))
 window.push_handlers(fps)
 
-class MyEscape(object):
+
+class MyEscape:
     has_exit = False
+
     def on_key_press(self, symbol, modifiers):
         if symbol == key.ESCAPE:
             self.has_exit = True
         return event.EVENT_HANDLED
+
+
 my_escape = MyEscape()
 window.push_handlers(my_escape)
+
 
 def run(xml_file):
     gui = GUI(window)
     loadxml.fromFile(gui, xml_file)
     if '--dump' in sys.argv:
-        print '-'*75
+        print('-' * 75)
         gui.dump()
-        print '-'*75
+        print('-' * 75)
 
     window.push_handlers(gui)
 
@@ -65,7 +71,7 @@ def run(xml_file):
 
     @gui.select('#press-me')
     def on_click(widget, *args):
-        print 'on_click', widget
+        print('on_click', widget)
         return event.EVENT_HANDLED
 
     @gui.select('#enable-other')
@@ -76,12 +82,12 @@ def run(xml_file):
 
     @gui.select('button, text-button')
     def on_click(widget, *args):
-        print 'DEBUG', widget, 'PRESSED'
+        print('DEBUG', widget, 'PRESSED')
         return event.EVENT_UNHANDLED
 
     @gui.select('.show-value')
     def on_change(widget, value):
-        print 'DEBUG', widget, 'VALUE CHANGED', `value`
+        print('DEBUG', widget, 'VALUE CHANGED', repr(value))
         return event.EVENT_UNHANDLED
 
     @gui.select('frame#menu-test', 'on_click')
@@ -93,31 +99,34 @@ def run(xml_file):
 
     @gui.select('.hover')
     def on_element_enter(widget, *args):
-        print 'ENTER ELEMENT', widget.id
+        print('ENTER ELEMENT', widget.id)
         return event.EVENT_HANDLED
+
     @gui.select('.hover')
     def on_element_leave(widget, *args):
-        print 'LEAVE ELEMENT', widget.id
+        print('LEAVE ELEMENT', widget.id)
         return event.EVENT_HANDLED
 
     @gui.select('.drawer-control')
     def on_click(widget, *args):
         id = widget.id.replace('drawer-control', 'test-drawer')
-        gui.get('#'+id).toggle_state()
+        gui.get('#' + id).toggle_state()
         return event.EVENT_HANDLED
 
     @gui.select('#question-dialog-test')
     def on_click(widget, *args):
         def f(*args):
-            print 'DIALOG SAYS', args
+            print('DIALOG SAYS', args)
+
         dialogs.Question(widget.getGUI(), 'Did this appear correctly?',
-            callback=f).run()
+                         callback=f).run()
         return event.EVENT_HANDLED
 
     @gui.select('#message-dialog-test')
     def on_click(widget, *args):
         def f(*args):
-            print 'DIALOG SAYS', args
+            print('DIALOG SAYS', args)
+
         dialogs.Message(widget.getGUI(), 'Hello, World!', callback=f).run()
         return event.EVENT_HANDLED
 
@@ -127,7 +136,8 @@ def run(xml_file):
             return event.EVENT_UNHANDLED
 
         def load_music(file=None):
-            if not file: return
+            if not file:
+                return
             gui.get('#music-test').delete()
             m = widgets.Music(gui, file, id='music-test', playing=True)
             m.gainFocus()
@@ -141,8 +151,9 @@ def run(xml_file):
             return event.EVENT_UNHANDLED
 
         def load_movie(file=None):
-            print 'DIALOG SELECTION:', file
-            if not file: return
+            print('DIALOG SELECTION:', file)
+            if not file:
+                return
             gui.get('#movie-test').delete()
             m = widgets.Movie(gui, file, id='movie-test', playing=True)
             m.gainFocus()
@@ -181,14 +192,16 @@ def run(xml_file):
     if sample:
         @layout.select('#click-me')
         def on_mouse_press(element, x, y, button, modifiers):
-            print 'CLICK ON', element
+            print('CLICK ON', element)
             return event.EVENT_HANDLED
+
         sample.label.push_handlers(on_mouse_press)
 
     if gui.has('.progress-me'):
         class Progress:
             progress = 0
             direction = 1
+
             def animate(self, dt):
                 self.progress += dt * self.direction
                 if self.progress > 5:
@@ -199,6 +212,7 @@ def run(xml_file):
                     self.direction = 1
                 for e in gui.get('.progress-me'):
                     e.value = self.progress / 5.
+
         animate_progress = Progress().animate
         clock.schedule(animate_progress)
 
@@ -218,9 +232,9 @@ def run(xml_file):
             sys.exit()
 
     if '--dump' in sys.argv:
-        print '-'*75
+        print('-' * 75)
         gui.dump()
-        print '-'*75
+        print('-' * 75)
 
     if gui.has('.progress-me'):
         clock.unschedule(animate_progress)
@@ -232,15 +246,19 @@ def run(xml_file):
 
     return window.has_exit
 
+
 if len(sys.argv) > 1:
     run(sys.argv[1])
 else:
     import os
+
     for file in os.listdir('tests'):
-        if not file.endswith('.xml'): continue
-        if not os.path.isfile(os.path.join('tests', file)): continue
-        print 'Running', file
-        if run(os.path.join('tests', file)): break
+        if not file.endswith('.xml'):
+            continue
+        if not os.path.isfile(os.path.join('tests', file)):
+            continue
+        print('Running', file)
+        if run(os.path.join('tests', file)):
+            break
 
 window.close()
-

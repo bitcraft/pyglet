@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 
-'''
+"""
 Ref: http://www.inb.uni-luebeck.de/~boehme/using_libavcodec.html
 
-'''
+"""
 
 __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
@@ -12,6 +12,7 @@ import ctypes
 from ctypes import util
 import os
 import time
+
 
 def get_library(name):
     path = util.find_library(name)
@@ -24,13 +25,16 @@ def get_library(name):
             raise ImportError('%s not found' % name)
     return ctypes.cdll.LoadLibrary(path)
 
+
 import lib_avformat as avformat
 import lib_avcodec as avcodec
 import lib_openal as al
 import lib_alc as alc
 
+
 def init():
     avformat.av_register_all()
+
 
 def open(filename):
     context = ctypes.POINTER(avformat.AVFormatContext)()
@@ -45,20 +49,23 @@ def open(filename):
 
     # Pretty
     avformat.dump_format(context, 0, filename, False)
-    
+
     return context
+
 
 CODEC_TYPE_UNKNOWN = -1
 CODEC_TYPE_VIDEO = 0
 CODEC_TYPE_AUDIO = 1
 CODEC_TYPE_DATA = 2
 
+
 def get_audio_stream(container):
     for i in range(container.contents.nb_streams):
         if (container.contents.streams[i].contents.codec.codec_type ==
-            CODEC_TYPE_AUDIO):
+                CODEC_TYPE_AUDIO):
             return i
     raise Exception('No audio stream in container')
+
 
 def get_codec(container, stream):
     context = container.contents.streams[stream].contents.codec
@@ -66,7 +73,7 @@ def get_codec(container, stream):
     if not codec:
         raise Exception('No codec found for stream ')
 
-    # XXX need to set truncated flag?
+    # TODO: need to set truncated flag?
 
     # TODO link lib_avcodec and lib_avformat
     context = ctypes.cast(ctypes.pointer(context),
@@ -77,7 +84,9 @@ def get_codec(container, stream):
 
     return context
 
+
 class BufferPool(list):
+
     def get_buffer(self):
         if not self:
             buffer = al.ALuint()
@@ -89,7 +98,9 @@ class BufferPool(list):
     def replace_buffer(self, buffer):
         self.insert(0, buffer)
 
-class AVCodecDecoder(object):
+
+class AVCodecDecoder:
+
     def __init__(self, container, stream):
         self.codec = get_codec(container, stream)
         if self.codec.contents.channels == 1:
@@ -104,7 +115,7 @@ class AVCodecDecoder(object):
         self.stream = stream
         self.packet = avformat.AVPacket()
         self.sample_buffer = \
-            (ctypes.c_int16 * (avcodec.AVCODEC_MAX_AUDIO_FRAME_SIZE/2))() 
+            (ctypes.c_int16 * (avcodec.AVCODEC_MAX_AUDIO_FRAME_SIZE / 2))()
 
         self.read_packet()
 
@@ -126,12 +137,12 @@ class AVCodecDecoder(object):
     def fill_buffer(self, buffer):
         if self.packet_size <= 0:
             self.read_packet()
-        
-        if self.packet_size == 0: # EOS
+
+        if self.packet_size == 0:  # EOS
             return False
 
         sample_buffer_size = ctypes.c_int()
-        len = avcodec.avcodec_decode_audio(self.codec, 
+        len = avcodec.avcodec_decode_audio(self.codec,
                                            self.sample_buffer,
                                            sample_buffer_size,
                                            self.packet_data,
@@ -141,18 +152,17 @@ class AVCodecDecoder(object):
             raise Exception('frame error TODO')
 
         if sample_buffer_size.value > 0:
-            al.alBufferData(buffer, self.buffer_format, 
+            al.alBufferData(buffer, self.buffer_format,
                             self.sample_buffer, sample_buffer_size.value,
                             self.sample_rate)
 
         # Advance buffer pointer
         self.packet_data = ctypes.c_uint8.from_address(
-                                ctypes.addressof(self.packet_data) + len)
+            ctypes.addressof(self.packet_data) + len)
         self.packet_size -= len
 
         return True
-        
-if __name__ == '__main__':
+
     import sys
 
     # openal
@@ -172,9 +182,9 @@ if __name__ == '__main__':
     init()
     container = open(sys.argv[1])
     stream = get_audio_stream(container)
-    
+
     decoder = AVCodecDecoder(container, stream)
-    
+
     while True:
         buffer = pool.get_buffer()
         if not decoder.fill_buffer(buffer):

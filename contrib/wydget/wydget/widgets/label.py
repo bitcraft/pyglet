@@ -12,17 +12,18 @@ LEFT = 'left'
 RIGHT = 'right'
 CENTER = 'center'
 
+
 class ImageCommon(element.Element):
     image = None
     blend_color = False
 
     def __init__(self, parent, x=None, y=None, z=None, width=None,
-            height=None, is_blended=False, valign='top', halign='left',
-            **kw):
+                 height=None, is_blended=False, valign='top', halign='left',
+                 **kw):
         self.is_blended = is_blended
         self.valign = valign
         self.halign = halign
-        super(ImageCommon, self).__init__(parent, x, y, z, width, height, **kw)
+        super().__init__(parent, x, y, z, width, height, **kw)
 
     def setImage(self, image):
         if hasattr(image, 'texture'):
@@ -32,6 +33,7 @@ class ImageCommon(element.Element):
 
     def intrinsic_width(self):
         return self.image.width + self.padding * 2
+
     def intrinsic_height(self):
         return self.image.height + self.padding * 2
 
@@ -43,7 +45,8 @@ class ImageCommon(element.Element):
         ir = util.Rect(image.x, image.y, image.width, image.height)
         if ir.clippedBy(rect):
             rect = ir.intersect(rect)
-            if rect is None: return
+            if rect is None:
+                return
 
             image = image.get_region(rect.x, rect.y, rect.width, rect.height)
 
@@ -69,7 +72,7 @@ class ImageCommon(element.Element):
             else:
                 glColor4f(*self.color)
 
-        # XXX alignment
+        # TODO: alignment
 
         # blit() handles enabling GL_TEXTURE_2D and binding
         image.blit(rect.x, rect.y, 0)
@@ -79,12 +82,12 @@ class ImageCommon(element.Element):
 
 
 class Image(ImageCommon):
-    name='image'
+    name = 'image'
     blend_color = True
 
     def __init__(self, parent, image, is_blended=True, color=None, **kw):
         if image is None and file is None:
-            raise ValueError, 'image or file required'
+            raise ValueError('image or file required')
 
         if isinstance(image, str):
             image = data.load_image(image)
@@ -95,31 +98,32 @@ class Image(ImageCommon):
 
         self.color = util.parse_color(color)
 
-        super(Image, self).__init__(parent, is_blended=is_blended, **kw)
+        super().__init__(parent, is_blended=is_blended, **kw)
 
         self.setImage(image)
 
 
 class LabelCommon(element.Element):
+
     def __init__(self, parent, text, x=None, y=None, z=None, width=None,
-            height=None, font_size=None, valign='top', halign='left',
-            color='black', rotate=0, **kw):
+                 height=None, font_size=None, valign='top', halign='left',
+                 color='black', rotate=0, **kw):
         self.valign = valign
         self.halign = halign
         self.font_size = int(font_size or parent.getStyle().font_size)
         self.color = util.parse_color(color)
         self.rotate = util.parse_value(rotate, 0)
         assert self.rotate in (0, 90, 180, 270), \
-            'rotate must be one of 0, 90, 180, 270, not %r'%(self.rotate, )
+            'rotate must be one of 0, 90, 180, 270, not %r' % (self.rotate, )
         # set parent now so style is available
         self.parent = parent
-        super(LabelCommon, self).__init__(parent, x, y, z, width, height, **kw)
+        super().__init__(parent, x, y, z, width, height, **kw)
         self.text = text
 
     @classmethod
     def fromXML(cls, element, parent):
-        '''Create the object from the XML element and attach it to the parent.
-        '''
+        """Create the object from the XML element and attach it to the parent.
+        """
         kw = loadxml.parseAttributes(element)
         text = xml.sax.saxutils.unescape(element.text)
         obj = cls(parent, text, **kw)
@@ -129,31 +133,34 @@ class LabelCommon(element.Element):
 
 
 class Label(LabelCommon):
-    name='label'
+    name = 'label'
 
     label = None
     unconstrained = None
 
     _text = None
+
     def set_text(self, text):
-        if text == self._text: return
+        if text == self._text:
+            return
         self._text = text
         self.label = None
         self.unconstrained = None
         if hasattr(self, 'parent'):
             self.setDirty()
+
     text = property(lambda self: self._text, set_text)
 
     def resetGeometry(self):
         self.label = None
         self.unconstrained = None
-        super(Label, self).resetGeometry()
+        super().resetGeometry()
 
     def _render(self):
         # get the unconstrained render first to determine intrinsic dimensions
         style = self.getStyle()
         self.unconstrained = style.text(self._text, font_size=self.font_size,
-            halign=self.halign, valign='top')
+                                        halign=self.halign, valign='top')
 
         if self.rotate in (0, 180):
             w = self.width or self.width_spec.specified()
@@ -164,8 +171,9 @@ class Label(LabelCommon):
             if w is not None:
                 w -= self.padding * 2
         self.label = style.text(self._text, color=self.color,
-            font_size=self.font_size, width=w, halign=self.halign,
-            valign='top')
+                                font_size=self.font_size, width=w,
+                                halign=self.halign,
+                                valign='top')
 
     def set_width(self, width):
         # TODO this doesn't cope with the text being wrapped when width <
@@ -174,6 +182,7 @@ class Label(LabelCommon):
         if self.rotate in (0, 180) and self.label is not None:
             self.label.width = width
         self.setDirty()
+
     width = property(lambda self: self._width, set_width)
 
     def set_height(self, height):
@@ -183,6 +192,7 @@ class Label(LabelCommon):
         if self.rotate in (90, 270) and self.label is not None:
             self.label.width = height
         self.setDirty()
+
     height = property(lambda self: self._height, set_height)
 
     def intrinsic_width(self):
@@ -204,7 +214,7 @@ class Label(LabelCommon):
     def getRects(self, *args):
         if self.label is None:
             self._render()
-        return super(Label, self).getRects(*args)
+        return super().getRects(*args)
 
     def render(self, rect):
         if self.label is None:
@@ -219,12 +229,12 @@ class Label(LabelCommon):
             glTranslatef(0, h, 0)
 
         if self.rotate == 270:
-            glTranslatef(-w+self.padding, h, 0)
+            glTranslatef(-w + self.padding, h, 0)
         elif self.rotate == 180:
-            glTranslatef(-w+self.padding, 0, 0)
+            glTranslatef(-w + self.padding, 0, 0)
 
         scissor = not (rect.x == rect.y == 0 and rect.width >= w and
-            rect.height >= h)
+                       rect.height >= h)
 
         if scissor:
             glPushAttrib(GL_SCISSOR_BIT)
@@ -239,8 +249,10 @@ class Label(LabelCommon):
 
         glPopMatrix()
 
+
 class XHTML(LabelCommon):
-    '''Render an XHTML layout.
+
+    """Render an XHTML layout.
 
     Note that layouts use a different coordinate system:
 
@@ -252,19 +264,19 @@ class XHTML(LabelCommon):
 
     The y coordinates start 0 at the *top* of the canvas and increase
     *down* the canvas.
-    '''
-    name='xhtml'
+    """
+    name = 'xhtml'
 
     def __init__(self, parent, text, style=None, **kw):
         assert 'width' in kw, 'XHTML requires a width specification'
         self.parent = parent
         self.style = style
-        super(XHTML, self).__init__(parent, text, **kw)
+        super().__init__(parent, text, **kw)
 
     @classmethod
     def fromXML(cls, element, parent):
-        '''Create the object from the XML element and attach it to the parent.
-        '''
+        """Create the object from the XML element and attach it to the parent.
+        """
         kw = loadxml.parseAttributes(element)
         children = element.getchildren()
         if children:
@@ -280,6 +292,7 @@ class XHTML(LabelCommon):
         self._render()
         if hasattr(self, 'parent'):
             self.setDirty()
+
     text = property(lambda self: self._text, set_text)
 
     def _render(self):
@@ -292,8 +305,8 @@ class XHTML(LabelCommon):
                 w = self.width = 512
         self._target_width = w
         w -= self.padding * 2
-        self.label = self.getStyle().xhtml('<p>%s</p>'%self._text, width=w,
-            style=self.style)
+        self.label = self.getStyle().xhtml('<p>%s</p>' % self._text, width=w,
+                                           style=self.style)
         self.height = self.label.canvas_height
 
     def intrinsic_width(self):
@@ -303,6 +316,7 @@ class XHTML(LabelCommon):
             else:
                 self._render()
         return self.width
+
     def intrinsic_height(self):
         if not self.height:
             if self.label is not None:
@@ -315,7 +329,8 @@ class XHTML(LabelCommon):
         # calculate the new width if necessary
         if self._width is None:
             w = self.width_spec.calculate()
-            if w is None: return False
+            if w is None:
+                return False
             self.width = w
             # and reshape the XHTML layout if width changed
             if w != self._target_width:
@@ -328,12 +343,12 @@ class XHTML(LabelCommon):
         return True
 
     def render(self, rect):
-        '''To render we need to:
+        """To render we need to:
 
         1. Translate the y position from our OpenGL-based y-increases-up
            value to the layout y-increases-down value.
         2. Set up a scissor to limit display to the pixel rect we specify.
-        '''
+        """
         # reposition the viewport based on visible rect
         label = self.label
         label.viewport_x = rect.x
@@ -344,10 +359,10 @@ class XHTML(LabelCommon):
         label.constrain_viewport()
 
         scissor = not (rect.x == rect.y == 0 and rect.width == self.width and
-            rect.height == self.height)
+                       rect.height == self.height)
 
         if scissor:
-            glPushAttrib(GL_CURRENT_BIT|GL_SCISSOR_BIT)
+            glPushAttrib(GL_CURRENT_BIT | GL_SCISSOR_BIT)
             glEnable(GL_SCISSOR_TEST)
             x, y = self.calculateAbsoluteCoords(rect.x, rect.y)
             glScissor(int(x), int(y), int(rect.width), int(rect.height))
@@ -369,15 +384,16 @@ def on_mouse_press(widget, x, y, button, modifiers):
     y -= widget.height
     return widget.label.on_mouse_press(x, y, button, modifiers)
 
+
 @event.default('xhtml')
 def on_element_leave(widget, x, y):
     x, y = widget.calculateRelativeCoords(x, y)
     y -= widget.height
     return widget.label.on_mouse_leave(x, y)
 
+
 @event.default('xhtml')
 def on_mouse_motion(widget, x, y, button, modifiers):
     x, y = widget.calculateRelativeCoords(x, y)
     y -= widget.height
     return widget.label.on_mouse_motion(x, y, button, modifiers)
-

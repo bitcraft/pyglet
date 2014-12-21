@@ -7,10 +7,12 @@ from wydget.widgets.frame import Frame
 from wydget.widgets.label import Image, Label
 from wydget.widgets.button import Button
 
+
 class Movie(Frame):
-    name='movie'
+    name = 'movie'
+
     def __init__(self, parent, file=None, source=None, playing=False,
-            x=0, y=0, z=0, width=None, height=None, scale=True, **kw):
+                 x=0, y=0, z=0, width=None, height=None, scale=True, **kw):
         self.parent = parent
         self.scale = scale
 
@@ -36,20 +38,21 @@ class Movie(Frame):
             if video_format.sample_aspect < 1:
                 height /= video_format.sample_aspect
 
-        super(Movie, self).__init__(parent, x, y, z, width, height, **kw)
+        super().__init__(parent, x, y, z, width, height, **kw)
 
         # control frame top-level
         c = self.control = Frame(self, bgcolor=(1, 1, 1, .5),
-            is_visible=False, width='100%', height=64)
+                                 is_visible=False, width='100%', height=64)
 
         # controls underlay
         f = Frame(c, is_transparent=True, width='100%', height='100%')
         f.layout = layouts.Horizontal(f, valign='center', halign='center',
-            padding=10)
+                                      padding=10)
         c.play = Image(f, data.load_gui_image('media-play.png'),
-            classes=('-play-button',), is_visible=not playing)
+                       classes=('-play-button',), is_visible=not playing)
         c.pause = Image(f, data.load_gui_image('media-pause.png'),
-            bgcolor=None, classes=('-pause-button',), is_visible=playing)
+                        bgcolor=None, classes=('-pause-button',),
+                        is_visible=playing)
         fi = Frame(f, is_transparent=True)
         c.range = Image(fi, data.load_gui_image('media-range.png'))
         im = data.load_gui_image('media-position.png')
@@ -82,17 +85,20 @@ class Movie(Frame):
         h = m // 60
         m %= 60
         s = s % 60
-        if h: text = '%d:%02d:%02d'%(h, m, s)
-        else: text = '%02d:%02d'%(m, s)
+        if h:
+            text = '%d:%02d:%02d' % (h, m, s)
+        else:
+            text = '%02d:%02d' % (m, s)
         if text != self.control.time.text:
             self.control.time.text = text
 
         # slider position
-        p = (t/self.player.source.duration)
+        p = (t / self.player.source.duration)
         self.control.position.x = int(p * self.control.range.width)
 
     def pause(self):
-        if not self.playing: return
+        if not self.playing:
+            return
         clock.unschedule(self.update)
         self.player.pause()
         self.control.play.setVisible(True)
@@ -100,7 +106,8 @@ class Movie(Frame):
         self.playing = False
 
     def play(self):
-        if self.playing: return
+        if self.playing:
+            return
         clock.schedule(self.update)
         self.player.play()
         self.control.play.setVisible(False)
@@ -109,7 +116,8 @@ class Movie(Frame):
 
     def render(self, rect):
         t = self.player.texture
-        if not t: return
+        if not t:
+            return
         x = float(self.width) / t.width
         y = float(self.height) / t.height
         s = min(x, y)
@@ -117,8 +125,10 @@ class Movie(Frame):
         h = int(t.height * s)
         x = rect.x
         y = rect.y
-        if w < self.width: x += self.width//2 - w//2
-        if h < self.height: y += self.height//2 - h//2
+        if w < self.width:
+            x += self.width // 2 - w // 2
+        if h < self.height:
+            y += self.height // 2 - h // 2
         t.blit(x, y, width=w, height=h)
 
     def on_eos(self):
@@ -133,15 +143,16 @@ class Movie(Frame):
         if self.control.anim is not None:
             self.control.anim.cancel()
         self.control = None
-        super(Movie, self).delete()
+        super().delete()
 
 
 @event.default('movie')
 def on_element_enter(widget, *args):
     widget.control.setVisible(True)
     widget.control.anim = anim.Delayed(widget.control.setVisible, False,
-        delay=5)
+                                       delay=5)
     return event.EVENT_HANDLED
+
 
 @event.default('movie')
 def on_mouse_motion(widget, *args):
@@ -149,8 +160,9 @@ def on_mouse_motion(widget, *args):
         widget.control.anim.cancel()
     widget.control.setVisible(True)
     widget.control.anim = anim.Delayed(widget.control.setVisible, False,
-        delay=5)
+                                       delay=5)
     return event.EVENT_HANDLED
+
 
 @event.default('movie')
 def on_element_leave(widget, *args):
@@ -159,37 +171,46 @@ def on_element_leave(widget, *args):
         widget.control.anim.cancel()
     return event.EVENT_HANDLED
 
+
 @event.default('movie .-play-button')
 def on_click(widget, x, y, buttons, modifiers, click_count):
-    if not buttons & mouse.LEFT: return event.EVENT_UNHANDLED
+    if not buttons & mouse.LEFT:
+        return event.EVENT_UNHANDLED
     widget.getParent('movie').play()
     return event.EVENT_HANDLED
+
 
 @event.default('movie .-pause-button')
 def on_click(widget, x, y, buttons, modifiers, click_count):
-    if not buttons & mouse.LEFT: return event.EVENT_UNHANDLED
+    if not buttons & mouse.LEFT:
+        return event.EVENT_UNHANDLED
     widget.getParent('movie').pause()
     return event.EVENT_HANDLED
+
 
 @event.default('movie .-position')
 def on_mouse_press(widget, x, y, buttons, modifiers):
-    if not buttons & mouse.LEFT: return event.EVENT_UNHANDLED
+    if not buttons & mouse.LEFT:
+        return event.EVENT_UNHANDLED
     widget.getParent('movie').pause()
     return event.EVENT_HANDLED
 
+
 @event.default('movie .-position')
 def on_mouse_release(widget, x, y, buttons, modifiers):
-    if not buttons & mouse.LEFT: return event.EVENT_UNHANDLED
+    if not buttons & mouse.LEFT:
+        return event.EVENT_UNHANDLED
     widget.getParent('movie').play()
     return event.EVENT_HANDLED
 
+
 @event.default('movie .-position')
 def on_drag(widget, x, y, dx, dy, buttons, modifiers):
-    if not buttons & mouse.LEFT: return event.EVENT_UNHANDLED
+    if not buttons & mouse.LEFT:
+        return event.EVENT_UNHANDLED
     movie = widget.getParent('movie')
     rw = movie.control.range.width
     widget.x = max(0, min(rw, widget.x + dx))
     p = float(widget.x) / rw
     movie.player.seek(p * movie.player.source.duration)
     return event.EVENT_HANDLED
-

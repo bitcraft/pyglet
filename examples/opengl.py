@@ -3,14 +3,14 @@
 # pyglet
 # Copyright (c) 2006-2008 Alex Holkner
 # All rights reserved.
-# 
+#
 # Redistribution and use in source and binary forms, with or without
-# modification, are permitted provided that the following conditions 
+# modification, are permitted provided that the following conditions
 # are met:
 #
-#  * Redistributions of source code must retain the above copyright
+# * Redistributions of source code must retain the above copyright
 #    notice, this list of conditions and the following disclaimer.
-#  * Redistributions in binary form must reproduce the above copyright 
+#  * Redistributions in binary form must reproduce the above copyright
 #    notice, this list of conditions and the following disclaimer in
 #    the documentation and/or other materials provided with the
 #    distribution.
@@ -33,7 +33,7 @@
 # POSSIBILITY OF SUCH DAMAGE.
 # ----------------------------------------------------------------------------
 
-'''Displays a rotating torus using OpenGL.
+"""Displays a rotating torus using OpenGL.
 
 This example demonstrates:
 
@@ -44,7 +44,7 @@ This example demonstrates:
  * Using a display list
  * Fixed-pipeline lighting
 
-'''
+"""
 
 from math import pi, sin, cos
 
@@ -53,12 +53,13 @@ import pyglet
 
 try:
     # Try and create a window with multisampling (antialiasing)
-    config = Config(sample_buffers=1, samples=4, 
-                    depth_size=16, double_buffer=True,)
+    config = Config(sample_buffers=1, samples=4,
+                    depth_size=16, double_buffer=True, )
     window = pyglet.window.Window(resizable=True, config=config)
 except pyglet.window.NoSuchConfigException:
     # Fall back to no multisampling for old hardware
     window = pyglet.window.Window(resizable=True)
+
 
 @window.event
 def on_resize(width, height):
@@ -70,6 +71,7 @@ def on_resize(width, height):
     glMatrixMode(GL_MODELVIEW)
     return pyglet.event.EVENT_HANDLED
 
+
 def update(dt):
     global rx, ry, rz
     rx += dt * 1
@@ -78,7 +80,10 @@ def update(dt):
     rx %= 360
     ry %= 360
     rz %= 360
+
+
 pyglet.clock.schedule(update)
+
 
 @window.event
 def on_draw():
@@ -89,6 +94,7 @@ def on_draw():
     glRotatef(ry, 0, 1, 0)
     glRotatef(rx, 1, 0, 0)
     torus.draw()
+
 
 def setup():
     # One-time GL setup
@@ -101,7 +107,7 @@ def setup():
     #glPolygonMode(GL_FRONT_AND_BACK, GL_LINE)
 
     # Simple light setup.  On Windows GL_LIGHT0 is enabled by default,
-    # but this is not the case on Linux or Mac, so remember to always 
+    # but this is not the case on Linux or Mac, so remember to always
     # include it.
     glEnable(GL_LIGHTING)
     glEnable(GL_LIGHT0)
@@ -118,15 +124,18 @@ def setup():
     glLightfv(GL_LIGHT1, GL_DIFFUSE, vec(.5, .5, .5, 1))
     glLightfv(GL_LIGHT1, GL_SPECULAR, vec(1, 1, 1, 1))
 
-    glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, vec(0.5, 0, 0.3, 1))
+    glMaterialfv(
+        GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, vec(0.5, 0, 0.3, 1))
     glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, vec(1, 1, 1, 1))
     glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, 50)
 
-class Torus(object):
+
+class Torus:
+
     def __init__(self, radius, inner_radius, slices, inner_slices):
         # Create the vertex and normal arrays.
-        vertices = []
-        normals = []
+        vertices = list()
+        normals = list()
 
         u_step = 2 * pi / (slices - 1)
         v_step = 2 * pi / (inner_slices - 1)
@@ -158,12 +167,12 @@ class Torus(object):
         normals = (GLfloat * len(normals))(*normals)
 
         # Create a list of triangle indices.
-        indices = []
+        indices = list()
         for i in range(slices - 1):
             for j in range(inner_slices - 1):
                 p = i * inner_slices + j
                 indices.extend([p, p + inner_slices, p + inner_slices + 1])
-                indices.extend([p,  p + inner_slices + 1, p + 1])
+                indices.extend([p, p + inner_slices + 1, p + 1])
         indices = (GLuint * len(indices))(*indices)
 
         # Compile a display list
@@ -182,6 +191,7 @@ class Torus(object):
 
     def draw(self):
         glCallList(self.list)
+
 
 setup()
 torus = Torus(1, 0.3, 50, 30)

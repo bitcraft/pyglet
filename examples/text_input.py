@@ -1,30 +1,35 @@
 #!/usr/bin/env python
 
-'''Demonstrates basic use of IncrementalTextLayout and Caret.
+"""Demonstrates basic use of IncrementalTextLayout and Caret.
 
 A simple widget-like system is created in this example supporting keyboard and
 mouse focus.
-'''
+"""
 
 __docformat__ = 'restructuredtext'
 __version__ = '$Id: $'
 
 import pyglet
 
-class Rectangle(object):
-    '''Draws a rectangle into a batch.'''
+
+class Rectangle:
+
+    """Draws a rectangle into a batch."""
+
     def __init__(self, x1, y1, x2, y2, batch):
         self.vertex_list = batch.add(4, pyglet.gl.GL_QUADS, None,
-            ('v2i', [x1, y1, x2, y1, x2, y2, x1, y2]),
-            ('c4B', [200, 200, 220, 255] * 4)
-        )
+                                     ('v2i', [x1, y1, x2, y1, x2, y2, x1, y2]),
+                                     ('c4B', [200, 200, 220, 255] * 4)
+                                     )
 
-class TextWidget(object):
+
+class TextWidget:
+
     def __init__(self, text, x, y, width, batch):
         self.document = pyglet.text.document.UnformattedDocument(text)
-        self.document.set_style(0, len(self.document.text), 
-            dict(color=(0, 0, 0, 255))
-        )
+        self.document.set_style(0, len(self.document.text),
+                                dict(color=(0, 0, 0, 255))
+                                )
         font = self.document.get_font()
         height = font.ascent - font.descent
 
@@ -37,16 +42,18 @@ class TextWidget(object):
 
         # Rectangular outline
         pad = 2
-        self.rectangle = Rectangle(x - pad, y - pad, 
+        self.rectangle = Rectangle(x - pad, y - pad,
                                    x + width + pad, y + height + pad, batch)
 
     def hit_test(self, x, y):
         return (0 < x - self.layout.x < self.layout.width and
                 0 < y - self.layout.y < self.layout.height)
 
+
 class Window(pyglet.window.Window):
+
     def __init__(self, *args, **kwargs):
-        super(Window, self).__init__(400, 140, caption='Text entry')
+        super().__init__(400, 140, caption='Text entry')
 
         self.batch = pyglet.graphics.Batch()
         self.labels = [
@@ -54,8 +61,8 @@ class Window(pyglet.window.Window):
                               color=(0, 0, 0, 255), batch=self.batch),
             pyglet.text.Label('Species', x=10, y=60, anchor_y='bottom',
                               color=(0, 0, 0, 255), batch=self.batch),
-            pyglet.text.Label('Special abilities', x=10, y=20, 
-                              anchor_y='bottom', color=(0, 0, 0, 255), 
+            pyglet.text.Label('Special abilities', x=10, y=20,
+                              anchor_y='bottom', color=(0, 0, 0, 255),
                               batch=self.batch)
         ]
         self.widgets = [
@@ -69,7 +76,7 @@ class Window(pyglet.window.Window):
         self.set_focus(self.widgets[0])
 
     def on_resize(self, width, height):
-        super(Window, self).on_resize(width, height)
+        super().on_resize(width, height)
         for widget in self.widgets:
             widget.width = width - 110
 
@@ -108,7 +115,7 @@ class Window(pyglet.window.Window):
     def on_text_motion(self, motion):
         if self.focus:
             self.focus.caret.on_text_motion(motion)
-      
+
     def on_text_motion_select(self, motion):
         if self.focus:
             self.focus.caret.on_text_motion_select(motion)
@@ -130,7 +137,7 @@ class Window(pyglet.window.Window):
 
         elif symbol == pyglet.window.key.ESCAPE:
             pyglet.app.exit()
-        
+
     def set_focus(self, focus):
         if self.focus:
             self.focus.caret.visible = False
@@ -141,6 +148,7 @@ class Window(pyglet.window.Window):
             self.focus.caret.visible = True
             self.focus.caret.mark = 0
             self.focus.caret.position = len(self.focus.document.text)
+
 
 window = Window(resizable=True)
 pyglet.app.run()

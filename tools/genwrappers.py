@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
-'''
-'''
+"""
+"""
 
 __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
@@ -11,14 +11,14 @@ import os.path
 import sys
 
 import pyglet
+
 pyglet.options['shadow_window'] = False
 
-if __name__ == '__main__':
     if not os.path.exists('pyglet/window'):
         assert False, 'Run with CWD = trunk root.'
     names = sys.argv[1:]
     if pyglet.compat_platform.startswith('linux'):
-        if 'xlib' in names:    
+        if 'xlib' in names:
             wrap('tools/wraptypes/wrap.py',
                  '-opyglet/libs/x11/xlib.py',
                  '-lX11',
@@ -32,10 +32,10 @@ if __name__ == '__main__':
                  '-mpyglet.libs.x11.xlib',
                  '/usr/include/X11/extensions/Xinerama.h')
         if 'xsync' in names:
-            print '------------------------------------'
-            print 'WARNING xsync requires import hacks.'
-            print ' ... copy over from current xsync.py'
-            print '------------------------------------'
+            print('------------------------------------')
+            print('WARNING xsync requires import hacks.')
+            print(' ... copy over from current xsync.py')
+            print('------------------------------------')
             wrap('tools/wraptypes/wrap.py',
                  '-opyglet/libs/x11/xsync.py',
                  '-lXext',

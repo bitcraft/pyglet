@@ -3,14 +3,14 @@
 # pyglet
 # Copyright (c) 2006-2008 Alex Holkner
 # All rights reserved.
-# 
+#
 # Redistribution and use in source and binary forms, with or without
-# modification, are permitted provided that the following conditions 
+# modification, are permitted provided that the following conditions
 # are met:
 #
-#  * Redistributions of source code must retain the above copyright
+# * Redistributions of source code must retain the above copyright
 #    notice, this list of conditions and the following disclaimer.
-#  * Redistributions in binary form must reproduce the above copyright 
+#  * Redistributions in binary form must reproduce the above copyright
 #    notice, this list of conditions and the following disclaimer in
 #    the documentation and/or other materials provided with the
 #    distribution.
@@ -53,7 +53,7 @@ import os
 script_file = 'astraea.py'
 
 # Create a list of data files.  Add everything in the 'res/' directory.
-data_files = []
+data_files = list()
 for file in os.listdir('res'):
     file = os.path.join('res', file)
     if os.path.isfile(file):
@@ -67,6 +67,7 @@ setup_args = dict(
 # py2exe options
 try:
     import py2exe
+
     setup_args.update(dict(
         windows=[dict(
             script=script_file,
@@ -79,6 +80,7 @@ except ImportError:
 # py2app options
 try:
     import py2app
+
     setup_args.update(dict(
         app=[script_file],
         options=dict(py2app=dict(

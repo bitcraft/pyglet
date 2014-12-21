@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
-'''
-'''
+"""
+"""
 
 __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
@@ -16,10 +16,13 @@ from pyglet.window import key
 
 from pyglet.gl import *
 
-class Console(object):
+
+class Console:
+
     def __init__(self, width, height, globals=None, locals=None):
-        self.font = pyglet.text.default_font_factory.get_font('bitstream vera sans mono', 12)
-        self.lines = []
+        self.font = pyglet.text.default_font_factory.get_font(
+            'bitstream vera sans mono', 12)
+        self.lines = list()
         self.buffer = ''
         self.pre_buffer = ''
         self.prompt = '>>> '
@@ -61,7 +64,7 @@ class Console(object):
             text = self.write_pending + text
             self.write_pending = ''
 
-        if type(text) in (str, unicode):
+        if type(text) in (str, str):
             text = text.split('\n')
 
         if text[-1] != '':
@@ -69,7 +72,7 @@ class Console(object):
         del text[-1]
 
         self.lines = [pyglet.text.layout_text(line.strip(), font=self.font)
-             for line in text] + self.lines
+                      for line in text] + self.lines
 
         if len(self.lines) > self.max_lines:
             del self.lines[-1]
@@ -98,6 +101,7 @@ class Console(object):
         return self.prompt
 
     __last = None
+
     def draw(self):
         pyglet.text.begin()
         glPushMatrix()
@@ -108,16 +112,16 @@ class Console(object):
         line = self.get_prompt() + self.buffer
         if self.__last is None or line != self.__last[0]:
             self.__last = (line, pyglet.text.layout_text(line.strip(),
-                font=self.font))
+                                                         font=self.font))
         self.__last[1].draw()
         glPopMatrix()
 
         pyglet.text.end()
 
-if __name__ == '__main__':
     from pyglet.window import *
     from pyglet.window.event import *
     from pyglet import clock
+
     w1 = Window(width=600, height=400)
     console = Console(w1.width, w1.height)
 
@@ -138,4 +142,3 @@ if __name__ == '__main__':
         glClear(GL_COLOR_BUFFER_BIT)
         console.draw()
         w1.flip()
-

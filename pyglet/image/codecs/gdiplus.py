@@ -2,14 +2,14 @@
 # pyglet
 # Copyright (c) 2006-2008 Alex Holkner
 # All rights reserved.
-# 
+#
 # Redistribution and use in source and binary forms, with or without
-# modification, are permitted provided that the following conditions 
+# modification, are permitted provided that the following conditions
 # are met:
 #
 #  * Redistributions of source code must retain the above copyright
 #    notice, this list of conditions and the following disclaimer.
-#  * Redistributions in binary form must reproduce the above copyright 
+#  * Redistributions in binary form must reproduce the above copyright
 #    notice, this list of conditions and the following disclaimer in
 #    the documentation and/or other materials provided with the
 #    distribution.
@@ -32,8 +32,8 @@
 # POSSIBILITY OF SUCH DAMAGE.
 # ----------------------------------------------------------------------------
 
-'''
-'''
+"""
+"""
 
 __docformat__ = 'restructuredtext'
 __version__ = '$Id: pil.py 163 2006-11-13 04:15:46Z Alex.Holkner $'
@@ -55,25 +55,26 @@ gdiplus = windll.gdiplus
 LPSTREAM = c_void_p
 REAL = c_float
 
-PixelFormat1bppIndexed    = 196865
-PixelFormat4bppIndexed    = 197634
-PixelFormat8bppIndexed    = 198659
+PixelFormat1bppIndexed = 196865
+PixelFormat4bppIndexed = 197634
+PixelFormat8bppIndexed = 198659
 PixelFormat16bppGrayScale = 1052676
-PixelFormat16bppRGB555    = 135173
-PixelFormat16bppRGB565    = 135174
-PixelFormat16bppARGB1555  = 397319
-PixelFormat24bppRGB       = 137224
-PixelFormat32bppRGB       = 139273
-PixelFormat32bppARGB      = 2498570
-PixelFormat32bppPARGB     = 925707
-PixelFormat48bppRGB       = 1060876
-PixelFormat64bppARGB      = 3424269
-PixelFormat64bppPARGB     = 29622286
-PixelFormatMax            = 15
+PixelFormat16bppRGB555 = 135173
+PixelFormat16bppRGB565 = 135174
+PixelFormat16bppARGB1555 = 397319
+PixelFormat24bppRGB = 137224
+PixelFormat32bppRGB = 139273
+PixelFormat32bppARGB = 2498570
+PixelFormat32bppPARGB = 925707
+PixelFormat48bppRGB = 1060876
+PixelFormat64bppARGB = 3424269
+PixelFormat64bppPARGB = 29622286
+PixelFormatMax = 15
 
 ImageLockModeRead = 1
 ImageLockModeWrite = 2
 ImageLockModeUserInputBuf = 4
+
 
 class GdiplusStartupInput(Structure):
     _fields_ = [
@@ -83,11 +84,13 @@ class GdiplusStartupInput(Structure):
         ('SuppressExternalCodecs', BOOL)
     ]
 
+
 class GdiplusStartupOutput(Structure):
     _fields = [
         ('NotificationHookProc', c_void_p),
         ('NotificationUnhookProc', c_void_p)
     ]
+
 
 class BitmapData(Structure):
     _fields_ = [
@@ -99,6 +102,7 @@ class BitmapData(Structure):
         ('Reserved', POINTER(c_uint))
     ]
 
+
 class Rect(Structure):
     _fields_ = [
         ('X', c_int),
@@ -109,6 +113,7 @@ class Rect(Structure):
 
 PropertyTagFrameDelay = 0x5100
 
+
 class PropertyItem(Structure):
     _fields_ = [
         ('id', c_uint),
@@ -116,20 +121,22 @@ class PropertyItem(Structure):
         ('type', c_short),
         ('value', c_void_p)
     ]
-    
+
 INT_PTR = POINTER(INT)
 UINT_PTR = POINTER(UINT)
 
 ole32.CreateStreamOnHGlobal.argtypes = [HGLOBAL, BOOL, LPSTREAM]
 
 gdiplus.GdipBitmapLockBits.restype = c_int
-gdiplus.GdipBitmapLockBits.argtypes = [c_void_p, c_void_p, UINT, c_int, c_void_p]
+gdiplus.GdipBitmapLockBits.argtypes = [
+    c_void_p, c_void_p, UINT, c_int, c_void_p]
 gdiplus.GdipBitmapUnlockBits.restype = c_int
 gdiplus.GdipBitmapUnlockBits.argtypes = [c_void_p, c_void_p]
 gdiplus.GdipCloneStringFormat.restype = c_int
 gdiplus.GdipCloneStringFormat.argtypes = [c_void_p, c_void_p]
 gdiplus.GdipCreateBitmapFromScan0.restype = c_int
-gdiplus.GdipCreateBitmapFromScan0.argtypes = [c_int, c_int, c_int, c_int, POINTER(BYTE), c_void_p]
+gdiplus.GdipCreateBitmapFromScan0.argtypes = [
+    c_int, c_int, c_int, c_int, POINTER(BYTE), c_void_p]
 gdiplus.GdipCreateBitmapFromStream.restype = c_int
 gdiplus.GdipCreateBitmapFromStream.argtypes = [c_void_p, c_void_p]
 gdiplus.GdipCreateFont.restype = c_int
@@ -143,11 +150,13 @@ gdiplus.GdipCreateSolidFill.argtypes = [c_int, c_void_p]  # ARGB
 gdiplus.GdipDisposeImage.restype = c_int
 gdiplus.GdipDisposeImage.argtypes = [c_void_p]
 gdiplus.GdipDrawString.restype = c_int
-gdiplus.GdipDrawString.argtypes = [c_void_p, c_wchar_p, c_int, c_void_p, c_void_p, c_void_p, c_void_p]
+gdiplus.GdipDrawString.argtypes = [
+    c_void_p, c_wchar_p, c_int, c_void_p, c_void_p, c_void_p, c_void_p]
 gdiplus.GdipFlush.restype = c_int
 gdiplus.GdipFlush.argtypes = [c_void_p, c_int]
 gdiplus.GdipGetImageDimension.restype = c_int
-gdiplus.GdipGetImageDimension.argtypes = [c_void_p, POINTER(REAL), POINTER(REAL)]
+gdiplus.GdipGetImageDimension.argtypes = [
+    c_void_p, POINTER(REAL), POINTER(REAL)]
 gdiplus.GdipGetImageGraphicsContext.restype = c_int
 gdiplus.GdipGetImageGraphicsContext.argtypes = [c_void_p, c_void_p]
 gdiplus.GdipGetImagePixelFormat.restype = c_int
@@ -167,7 +176,8 @@ gdiplus.GdipImageGetFrameDimensionsList.argtypes = [c_void_p, c_void_p, UINT]
 gdiplus.GdipImageSelectActiveFrame.restype = c_int
 gdiplus.GdipImageSelectActiveFrame.argtypes = [c_void_p, c_void_p, UINT]
 gdiplus.GdipMeasureString.restype = c_int
-gdiplus.GdipMeasureString.argtypes = [c_void_p, c_wchar_p, c_int, c_void_p, c_void_p, c_void_p, c_void_p, INT_PTR, INT_PTR]
+gdiplus.GdipMeasureString.argtypes = [
+    c_void_p, c_wchar_p, c_int, c_void_p, c_void_p, c_void_p, c_void_p, INT_PTR, INT_PTR]
 gdiplus.GdipNewPrivateFontCollection.restype = c_int
 gdiplus.GdipNewPrivateFontCollection.argtypes = [c_void_p]
 gdiplus.GdipPrivateAddMemoryFont.restype = c_int
@@ -187,8 +197,9 @@ gdiplus.GdiplusStartup.argtypes = [c_void_p, c_void_p, c_void_p]
 
 
 class GDIPlusDecoder(ImageDecoder):
+
     def get_file_extensions(self):
-        return ['.bmp', '.gif', '.jpg', '.jpeg', '.exif', '.png', '.tif', 
+        return ['.bmp', '.gif', '.jpg', '.jpeg', '.exif', '.png', '.tif',
                 '.tiff']
 
     def get_animation_file_extensions(self):
@@ -254,13 +265,13 @@ class GDIPlusDecoder(ImageDecoder):
         rect.Width = width
         rect.Height = height
         bitmap_data = BitmapData()
-        gdiplus.GdipBitmapLockBits(bitmap, 
-            byref(rect), ImageLockModeRead, pf, byref(bitmap_data))
-        
+        gdiplus.GdipBitmapLockBits(bitmap,
+                                   byref(rect), ImageLockModeRead, pf, byref(bitmap_data))
+
         # Create buffer for RawImage
         buffer = create_string_buffer(bitmap_data.Stride * height)
         memmove(buffer, bitmap_data.Scan0, len(buffer))
-        
+
         # Unlock data
         gdiplus.GdipBitmapUnlockBits(bitmap, byref(bitmap_data))
 
@@ -279,14 +290,15 @@ class GDIPlusDecoder(ImageDecoder):
 
     def decode_animation(self, file, filename):
         bitmap = self._load_bitmap(file, filename)
-        
+
         dimension_count = c_uint()
-        gdiplus.GdipImageGetFrameDimensionsCount(bitmap, byref(dimension_count))
+        gdiplus.GdipImageGetFrameDimensionsCount(
+            bitmap, byref(dimension_count))
         if dimension_count.value < 1:
             self._delete_bitmap(bitmap)
             raise ImageDecodeException('Image has no frame dimensions')
-        
-        # XXX Make sure this dimension is time?
+
+        # TODO: Make sure this dimension is time?
         dimensions = (c_void_p * dimension_count.value)()
         gdiplus.GdipImageGetFrameDimensionsList(bitmap, dimensions,
                                                 dimension_count.value)
@@ -299,15 +311,15 @@ class GDIPlusDecoder(ImageDecoder):
         gdiplus.GdipGetPropertyItemSize(bitmap, prop_id, byref(prop_size))
 
         prop_buffer = c_buffer(prop_size.value)
-        prop_item = cast(prop_buffer, POINTER(PropertyItem)).contents 
+        prop_item = cast(prop_buffer, POINTER(PropertyItem)).contents
         gdiplus.GdipGetPropertyItem(bitmap, prop_id, prop_size.value,
-            prop_buffer)
+                                    prop_buffer)
 
         n_delays = prop_item.length // sizeof(c_long)
         delays = cast(prop_item.value, POINTER(c_long * n_delays)).contents
 
-        frames = []
-        
+        frames = list()
+
         for i in range(frame_count.value):
             gdiplus.GdipImageSelectActiveFrame(bitmap, dimensions, i)
             image = self._get_image(bitmap)
@@ -315,17 +327,20 @@ class GDIPlusDecoder(ImageDecoder):
             delay = delays[i]
             if delay <= 1:
                 delay = 10
-            frames.append(AnimationFrame(image, delay/100.))
+            frames.append(AnimationFrame(image, delay / 100.))
 
         self._delete_bitmap(bitmap)
 
         return Animation(frames)
 
+
 def get_decoders():
     return [GDIPlusDecoder()]
 
+
 def get_encoders():
-    return []
+    return list()
+
 
 def init():
     token = c_ulong()

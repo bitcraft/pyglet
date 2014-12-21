@@ -4,7 +4,9 @@
 from pyglet.gl import *
 from pyglet import window
 
-class MoveWindow(object):
+
+class MoveWindow:
+
     def __init__(self, window, x, y):
         self.offset = x, y
         self.window = window
@@ -18,8 +20,8 @@ class MoveWindow(object):
         self.window.pop_handlers()
 
 
+class ResizeWindow:
 
-class ResizeWindow(object):
     def __init__(self, window, x, y):
         self.offset = window.width - x, y
         self.window = window
@@ -33,11 +35,13 @@ class ResizeWindow(object):
     def on_mouse_release(self, x, y, button, modifiers):
         self.window.pop_handlers()
 
+
 class Win(window.Window):
+
     def __init__(self, *args, **kwargs):
         kwargs.update(dict(
             style=self.WINDOW_STYLE_BORDERLESS))
-        super(Win, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     def draw(self):
         w, h = self.width, self.height
@@ -47,13 +51,13 @@ class Win(window.Window):
 
         glColor3f(.2, .2, .2)
         glRectf(3, 3, w - 3, h - 3)
-        
+
         glColor3f(.8, .8, .8)
         glRectf(w - 16, 3, w - 3, 16)
 
     def dispatch_events(self):
         self.next_loc = None
-        super(Win, self).dispatch_events()
+        super().dispatch_events()
         if self.next_loc:
             self.set_location(*self.next_loc)
 
@@ -62,10 +66,7 @@ class Win(window.Window):
             self.push_handlers(ResizeWindow(self, x, y))
         else:
             self.push_handlers(MoveWindow(self, x, y))
-        
 
-
-if __name__ == '__main__':
     win = Win()
     while not win.has_exit:
         win.dispatch_events()

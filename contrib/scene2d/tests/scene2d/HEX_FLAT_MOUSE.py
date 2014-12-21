@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-'''Testing mouse interaction
+"""Testing mouse interaction
 
 The cell the mouse is hovering over should highlight in red.
 
@@ -13,23 +13,25 @@ You may press the arrow keys to scroll the focus around the map (this
 will move the map eventually)
 
 Press escape or close the window to finish the test.
-'''
+"""
 
 __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
 
 import unittest
-from render_base import RenderBase
+from .render_base import RenderBase
 from scene2d import Tile, Sprite
 from pyglet.event import event
 from scene2d.event import for_cells, for_sprites
 from scene2d.image import TintEffect
 from scene2d.debug import gen_hex_map
 
+
 class RectFlatMouseTest(RenderBase):
+
     def test_main(self):
         self.init_window(256, 256)
-        self.set_map(gen_hex_map([[{}]*10]*10, 32))
+        self.set_map(gen_hex_map([[dict()] * 10] * 10, 32))
         self.w.push_handlers(self.view)
         self.view.allow_oob = False
 
@@ -64,6 +66,4 @@ class RectFlatMouseTest(RenderBase):
         self.show_focus()
         self.run_test()
 
-if __name__ == '__main__':
     unittest.main()
-

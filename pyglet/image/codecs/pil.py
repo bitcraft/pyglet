@@ -2,14 +2,14 @@
 # pyglet
 # Copyright (c) 2006-2008 Alex Holkner
 # All rights reserved.
-# 
+#
 # Redistribution and use in source and binary forms, with or without
-# modification, are permitted provided that the following conditions 
+# modification, are permitted provided that the following conditions
 # are met:
 #
 #  * Redistributions of source code must retain the above copyright
 #    notice, this list of conditions and the following disclaimer.
-#  * Redistributions in binary form must reproduce the above copyright 
+#  * Redistributions in binary form must reproduce the above copyright
 #    notice, this list of conditions and the following disclaimer in
 #    the documentation and/or other materials provided with the
 #    distribution.
@@ -32,10 +32,9 @@
 # POSSIBILITY OF SUCH DAMAGE.
 # ----------------------------------------------------------------------------
 
-'''
-'''
+"""
+"""
 
-from __future__ import absolute_import
 
 __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
@@ -51,7 +50,9 @@ try:
 except ImportError:
     from PIL import Image
 
+
 class PILImageDecoder(ImageDecoder):
+
     def get_file_extensions(self):
         # Only most common ones shown here
         return ['.bmp', '.cur', '.gif', '.ico', '.jpg', '.jpeg', '.pcx', '.png',
@@ -60,13 +61,13 @@ class PILImageDecoder(ImageDecoder):
     def decode(self, file, filename):
         try:
             image = Image.open(file)
-        except Exception, e:
+        except Exception as e:
             raise ImageDecodeException(
                 'PIL cannot read %r: %s' % (filename or file, e))
 
         try:
             image = image.transpose(Image.FLIP_TOP_BOTTOM)
-        except Exception, e:
+        except Exception as e:
             raise ImageDecodeException(
                 'PIL failed to transpose %r: %s' % (filename or file, e))
 
@@ -84,7 +85,9 @@ class PILImageDecoder(ImageDecoder):
         image_data_fn = getattr(image, "tobytes", getattr(image, "tostring"))
         return ImageData(width, height, image.mode, image_data_fn())
 
+
 class PILImageEncoder(ImageEncoder):
+
     def get_file_extensions(self):
         # Most common only
         return ['.bmp', '.eps', '.gif', '.jpg', '.jpeg',
@@ -107,17 +110,20 @@ class PILImageEncoder(ImageEncoder):
 
         # fromstring is deprecated, replaced by frombytes in Pillow (PIL fork)
         # (1.1.7) PIL still uses it
-        image_from_fn = getattr(Image, "frombytes", getattr(Image, "fromstring"))
+        image_from_fn = getattr(
+            Image, "frombytes", getattr(Image, "fromstring"))
         pil_image = image_from_fn(
             format, (image.width, image.height), image.get_data(format, pitch))
 
         try:
             pil_image.save(file, pil_format)
-        except Exception, e:
+        except Exception as e:
             raise ImageEncodeException(e)
+
 
 def get_decoders():
     return [PILImageDecoder()]
+
 
 def get_encoders():
     return [PILImageEncoder()]

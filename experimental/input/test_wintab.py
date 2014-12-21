@@ -7,19 +7,22 @@ import wintab
 
 window = pyglet.window.Window()
 
-class WintabLogger(object):
+
+class WintabLogger:
+
     def on_cursor_enter(self, cursor):
-        print 'on_cursor_enter(%r)' % cursor
+        print('on_cursor_enter(%r)' % cursor)
 
     def on_cursor_leave(self, cursor):
-        print 'on_cursor_leave(%r)' % cursor
+        print('on_cursor_leave(%r)' % cursor)
 
     def on_motion(self, cursor, x, y, pressure):
-        print 'on_motion(%r, %r, %r, %r)' % (cursor, x, y, pressure)
+        print('on_motion(%r, %r, %r, %r)' % (cursor, x, y, pressure))
+
 
 wintab.check_version()
 for device in wintab.get_devices():
-    print 'Opened device', device
+    print('Opened device', device)
     instance = device.open(window)
     instance.push_handlers(WintabLogger())
 

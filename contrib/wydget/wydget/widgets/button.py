@@ -8,31 +8,33 @@ from wydget import element, event, util, anim, data, loadxml
 from wydget.widgets.label import ImageCommon, Label
 
 
-class ButtonCommon(object):
+class ButtonCommon:
     is_focusable = True
     is_pressed = False
     is_over = False
 
+
 class Button(ButtonCommon, ImageCommon):
-    '''A button represented by one to three images.
+
+    """A button represented by one to three images.
 
         image         - the normal-state image to be displayed
         pressed_image - button is pressed
         over_image    - the mouse is over the button or the button is focused
 
     If text is supplied, it is rendered over the image, centered.
-    '''
+    """
     name = 'button'
 
     def __init__(self, parent, image, text=None, pressed_image=None,
-            over_image=None, is_blended=True, font_size=None,
-            color=(0, 0, 0, 1),
-            x=0, y=0, z=0, width=None, height=None, **kw):
-        super(Button, self).__init__(parent, x, y, z, width, height, 
-            is_blended=is_blended, **kw)
+                 over_image=None, is_blended=True, font_size=None,
+                 color=(0, 0, 0, 1),
+                 x=0, y=0, z=0, width=None, height=None, **kw):
+        super().__init__(parent, x, y, z, width, height,
+                         is_blended=is_blended, **kw)
 
         if image is None:
-            raise ValueError, 'image argument is required'
+            raise ValueError('image argument is required')
 
         self.setImage(image)
         self.setPressedImage(pressed_image)
@@ -44,14 +46,14 @@ class Button(ButtonCommon, ImageCommon):
             self.bg = self.base_image
             self.over_bg = self.over_image
             self.pressed_bg = self.pressed_image
-            # clear so we don't delete these 
+            # clear so we don't delete these
             self.base_image = self.over_image = self.pressed_image = None
         self.text = text
 
     @classmethod
     def fromXML(cls, element, parent):
-        '''Create the object from the XML element and attach it to the parent.
-        '''
+        """Create the object from the XML element and attach it to the parent.
+        """
         kw = loadxml.parseAttributes(element)
         if element.text:
             text = xml.sax.saxutils.unescape(element.text)
@@ -75,23 +77,27 @@ class Button(ButtonCommon, ImageCommon):
         if attribute == 'base_image':
             self.image = self.base_image
         self.setDirty()
+
     def setPressedImage(self, image):
         self.setImage(image, 'pressed_image')
+
     def setOverImage(self, image):
         self.setImage(image, 'over_image')
 
     _text = None
+
     def set_text(self, text):
-        if text == self._text: return
+        if text == self._text:
+            return
         self._text = text
 
         self.over_image = None
         self.pressed_image = None
 
-        # XXX restrict text width?
+        # TODO: restrict text width?
         label = self.getStyle().text(text, font_size=self.font_size,
-            color=self.color, valign='top')
-        label.width        # force clean
+                                     color=self.color, valign='top')
+        label.width  # force clean
         num_lines = len(label.lines)
 
         # size of resulting button images
@@ -103,7 +109,7 @@ class Button(ButtonCommon, ImageCommon):
 
         def f(bg):
             def _inner():
-                glPushAttrib(GL_CURRENT_BIT|GL_COLOR_BUFFER_BIT)
+                glPushAttrib(GL_CURRENT_BIT | GL_COLOR_BUFFER_BIT)
                 glClearColor(1, 1, 1, 0)
                 glClear(GL_COLOR_BUFFER_BIT)
                 glPushMatrix()
@@ -116,47 +122,51 @@ class Button(ButtonCommon, ImageCommon):
                 label.draw()
                 glPopMatrix()
                 glPopAttrib()
+
             return _inner
 
         self.setImage(util.renderToTexture(w, h, f(self.bg)))
 
         if self.over_bg is not None:
             self.setImage(util.renderToTexture(w, h, f(self.over_bg)),
-                'over_image')
+                          'over_image')
 
         if self.pressed_bg is not None:
             self.setImage(util.renderToTexture(w, h, f(self.pressed_bg)),
-                'pressed_image')
+                          'pressed_image')
+
     text = property(lambda self: self._text, set_text)
 
     def render(self, rect):
-        '''Select the correct image to render.
-        '''
+        """Select the correct image to render.
+        """
         if self.is_pressed and self.is_over and self.pressed_image:
             self.image = self.pressed_image
         elif self.is_over and self.over_image:
             self.image = self.over_image
         else:
             self.image = self.base_image
-        # XXX handle isFocused()
-        super(Button, self).render(rect)
+        # TODO: handle isFocused()
+        super().render(rect)
 
 
 class TextButton(ButtonCommon, Label):
-    '''A button with text on it.
+
+    """A button with text on it.
 
     Will be rendered over the standard Element rendering.
-    '''
+    """
     name = 'button'
 
-    _default = []
-    def __init__(self, parent, text, bgcolor='white', color='black',
-            border='black', focus_border=(.3, .3, .7, 1),
-            pressed_bgcolor=(1, .9, .9, 1), over_bgcolor=(.9, .9, 1, 1),
-            **kw):
+    _default = list()
 
-        super(TextButton, self).__init__(parent, text, bgcolor=bgcolor,
-            color=color, border=border, **kw)
+    def __init__(self, parent, text, bgcolor='white', color='black',
+                 border='black', focus_border=(.3, .3, .7, 1),
+                 pressed_bgcolor=(1, .9, .9, 1), over_bgcolor=(.9, .9, 1, 1),
+                 **kw):
+
+        super().__init__(parent, text, bgcolor=bgcolor,
+                         color=color, border=border, **kw)
 
         # colouring attributes
         self.base_bgcolor = self.bgcolor
@@ -170,11 +180,11 @@ class TextButton(ButtonCommon, Label):
             self.border = self.focus_border
         else:
             self.border = self.base_border
-        super(TextButton, self).renderBorder(clipped)
+        super().renderBorder(clipped)
 
     def renderBackground(self, clipped):
-        '''Select the correct image to render.
-        '''
+        """Select the correct image to render.
+        """
         if not self.isEnabled():
             self.bgcolor = (.7, .7, .7, 1)
         elif self.is_pressed and self.is_over and self.pressed_bgcolor:
@@ -183,11 +193,12 @@ class TextButton(ButtonCommon, Label):
             self.bgcolor = self.over_bgcolor
         else:
             self.bgcolor = self.base_bgcolor
-        super(TextButton, self).renderBackground(clipped)
+        super().renderBackground(clipped)
 
 
 class RepeaterButton(Button):
-    '''Generates on_click events periodically if the mouse button is held
+
+    """Generates on_click events periodically if the mouse button is held
     pressed over the button.
 
     on mouse press, schedule a timeout for .5 secs and after that time
@@ -199,16 +210,18 @@ class RepeaterButton(Button):
 
     on mouse enter, reinstate the second timer
 
-    '''
+    """
     name = 'repeater-button'
     is_focusable = False
 
     delay_timer = None
+
     def __init__(self, parent, delay=.5, **kw):
-        super(RepeaterButton, self).__init__(parent, **kw)
+        super().__init__(parent, **kw)
         self.delay = delay
 
     repeating = False
+
     def startRepeat(self):
         self.delay_timer = None
         self.repeat_time = 0
@@ -220,7 +233,7 @@ class RepeaterButton(Button):
         if self.repeat_time > .1:
             self.repeat_time -= .1
             self.getGUI().dispatch_event(self, 'on_click', 0, 0,
-                self.buttons, self.modifiers, 1)
+                                         self.buttons, self.modifiers, 1)
 
     def stopRepeat(self):
         if self.delay_timer is not None:
@@ -238,20 +251,24 @@ def on_gain_focus(self, source):
         return event.EVENT_UNHANDLED
     return event.EVENT_HANDLED
 
+
 @event.default('button')
 def on_element_enter(self, x, y):
     self.is_over = True
     return event.EVENT_HANDLED
+
 
 @event.default('button')
 def on_element_leave(self, x, y):
     self.is_over = False
     return event.EVENT_HANDLED
 
+
 @event.default('button')
 def on_mouse_press(self, x, y, button, modifiers):
     self.is_pressed = True
     return event.EVENT_UNHANDLED
+
 
 @event.default('button')
 def on_mouse_release(self, x, y, button, modifiers):
@@ -269,15 +286,17 @@ def on_mouse_press(self, x, y, buttons, modifiers):
     self.buttons = buttons
     self.modifiers = modifiers
     self.getGUI().dispatch_event(self, 'on_click', x, y, buttons,
-        modifiers, 1)
+                                 modifiers, 1)
     self.is_pressed = True
     return event.EVENT_HANDLED
+
 
 @event.default('repeater-button')
 def on_mouse_release(self, x, y, buttons, modifiers):
     self.is_pressed = False
     self.stopRepeat()
     return event.EVENT_HANDLED
+
 
 @event.default('repeater-button')
 def on_element_enter(self, x, y):
@@ -286,11 +305,13 @@ def on_element_enter(self, x, y):
     self.is_over = True
     return event.EVENT_HANDLED
 
+
 @event.default('repeater-button')
 def on_element_leave(self, x, y):
     self.is_over = False
     self.stopRepeat()
     return event.EVENT_HANDLED
+
 
 @event.default('button, repeater-button')
 def on_text(self, text):
@@ -298,4 +319,3 @@ def on_text(self, text):
         self.getGUI().dispatch_event(self, 'on_click', 0, 0, mouse.LEFT, 0, 1)
         return event.EVENT_HANDLED
     return event.EVENT_UNHANDLED
-

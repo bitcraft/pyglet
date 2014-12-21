@@ -18,7 +18,7 @@ else:
 SPRITE_IMAGE = 'examples/noisy/ball.png'
 
 # How many sprites to move each frame.  e.g.
-#   0 -- all sprites are static
+# 0 -- all sprites are static
 #   1 -- all sprites move every frame (all are dynamic)
 #   2 -- only 2 sprites move every frame
 #  50 -- 50 sprites move every frame
@@ -26,10 +26,11 @@ SPRITE_UPDATE_N = 1
 
 win = window.Window(vsync=False)
 
-class Sprite(object):
+
+class Sprite:
     width = 32
     height = 32
-    
+
     def __init__(self, domain):
         self.primitive = domain.create(4)
         self.x = win.width * random.random()
@@ -39,7 +40,7 @@ class Sprite(object):
 
         self.primitive.tex_coords = [
             0, 0,
-            1, 0, 
+            1, 0,
             1, 1,
             0, 1
         ]
@@ -53,10 +54,10 @@ class Sprite(object):
         if not 0 < self.x < win.width:
             self.dx = -self.dx
             self.x += self.dx * dt * 2
-        if not 0  < self.y < win.height:
+        if not 0 < self.y < win.height:
             self.dy = -self.dy
             self.y += self.dy * dt * 2
-        
+
         x = self.x
         y = self.y
         rx = self.width // 2
@@ -67,6 +68,7 @@ class Sprite(object):
             x + rx, y + rx,
             x - rx, y + rx
         ]
+
 
 def draw_sprites(domain, texture):
     glPushAttrib(GL_CURRENT_BIT | GL_ENABLE_BIT)
@@ -80,7 +82,6 @@ def draw_sprites(domain, texture):
 
     glPopAttrib()
 
-if __name__ == '__main__':
     domain = vertexdomain.create_domain('v2f/static', 't2f/static')
 
     sprites = [Sprite(domain) for i in range(SPRITES)]
@@ -90,7 +91,7 @@ if __name__ == '__main__':
 
     if SPRITE_UPDATE_N:
         update_n = 0
-    
+
     while not win.has_exit:
         dt = clock.tick()
         if dt == 0:
@@ -100,7 +101,7 @@ if __name__ == '__main__':
 
         if SPRITE_UPDATE_N > 1:
             # Update small number of sprites
-            for sprite in sprites[update_n:update_n+SPRITE_UPDATE_N]:
+            for sprite in sprites[update_n:update_n + SPRITE_UPDATE_N]:
                 sprite.update(dt)
             update_n = (update_n + SPRITE_UPDATE_N) % len(sprites)
         elif SPRITE_UPDATE_N:

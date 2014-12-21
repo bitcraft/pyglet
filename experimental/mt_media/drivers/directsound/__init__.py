@@ -8,21 +8,25 @@ import threading
 import time
 
 import pyglet
+
 _debug = pyglet.options['debug_media']
 
 import mt_media
 
-import lib_dsound as lib
+from . import lib_dsound as lib
 from pyglet.window.win32 import _user32, _kernel32
+
 
 class DirectSoundException(mt_media.MediaException):
     pass
 
+
 def _db(gain):
-    '''Convert linear gain in range [0.0, 1.0] to 100ths of dB.'''
+    """Convert linear gain in range [0.0, 1.0] to 100ths of dB."""
     if gain <= 0:
         return -10000
     return max(-10000, min(int(1000 * math.log(min(gain, 1))), 0))
+
 
 class DirectSoundWorker(mt_media.MediaThread):
     _min_write_size = 9600
@@ -34,7 +38,7 @@ class DirectSoundWorker(mt_media.MediaThread):
     _sleep_time = None
 
     def __init__(self):
-        super(DirectSoundWorker, self).__init__()
+        super().__init__()
         self.players = set()
 
     def run(self):
@@ -44,12 +48,12 @@ class DirectSoundWorker(mt_media.MediaThread):
             # player's methods that would otherwise have to check that it's
             # still alive.
             if _debug:
-                print 'DirectSoundWorker run attempt acquire'
+                print('DirectSoundWorker run attempt acquire')
 
             self.condition.acquire()
 
             if _debug:
-                print 'DirectSoundWorker run acquire'
+                print('DirectSoundWorker run acquire')
 
             if self.stopped:
                 self.condition.release()
@@ -74,27 +78,27 @@ class DirectSoundWorker(mt_media.MediaThread):
 
             self.condition.release()
             if _debug:
-                print 'DirectSoundWorker run release'
+                print('DirectSoundWorker run release')
 
             if sleep_time != -1:
                 self.sleep(sleep_time)
 
         if _debug:
-            print 'DirectSoundWorker exiting'
+            print('DirectSoundWorker exiting')
 
     def add(self, player):
         if _debug:
-            print 'DirectSoundWorker add', player
+            print('DirectSoundWorker add', player)
         self.condition.acquire()
         self.players.add(player)
         self.condition.notify()
         self.condition.release()
         if _debug:
-            print 'return DirectSoundWorker add', player
+            print('return DirectSoundWorker add', player)
 
     def remove(self, player):
         if _debug:
-            print 'DirectSoundWorker remove', player
+            print('DirectSoundWorker remove', player)
         self.condition.acquire()
         try:
             self.players.remove(player)
@@ -103,7 +107,8 @@ class DirectSoundWorker(mt_media.MediaThread):
         self.condition.notify()
         self.condition.release()
         if _debug:
-            print 'return DirectSoundWorker remove', player
+            print('return DirectSoundWorker remove', player)
+
 
 class DirectSoundAudioPlayer(mt_media.AbstractAudioPlayer):
     # How many bytes the ring buffer should be
@@ -115,7 +120,7 @@ class DirectSoundAudioPlayer(mt_media.AbstractAudioPlayer):
     _cone_outer_angle = 360
 
     def __init__(self, source_group, player):
-        super(DirectSoundAudioPlayer, self).__init__(source_group, player)
+        super().__init__(source_group, player)
 
         # Locking strategy:
         # All DirectSound calls should be locked.  All instance vars relating
@@ -150,11 +155,11 @@ class DirectSoundAudioPlayer(mt_media.AbstractAudioPlayer):
         self._write_cursor_ring = 0
 
         # List of (play_cursor, MediaEvent), in sort order
-        self._events = []
+        self._events = list()
 
         # List of (cursor, timestamp), in sort order (cursor gives expiry
         # place of the timestamp)
-        self._timestamps = []
+        self._timestamps = list()
 
         audio_format = source_group.audio_format
 
@@ -168,7 +173,7 @@ class DirectSoundAudioPlayer(mt_media.AbstractAudioPlayer):
 
         dsbdesc = lib.DSBUFFERDESC()
         dsbdesc.dwSize = ctypes.sizeof(dsbdesc)
-        dsbdesc.dwFlags = (lib.DSBCAPS_GLOBALFOCUS | 
+        dsbdesc.dwFlags = (lib.DSBCAPS_GLOBALFOCUS |
                            lib.DSBCAPS_GETCURRENTPOSITION2 |
                            lib.DSBCAPS_CTRLFREQUENCY |
                            lib.DSBCAPS_CTRLVOLUME)
@@ -179,21 +184,21 @@ class DirectSoundAudioPlayer(mt_media.AbstractAudioPlayer):
 
         # DSound buffer
         self._buffer = lib.IDirectSoundBuffer()
-        driver._dsound.CreateSoundBuffer(dsbdesc, 
-                                         ctypes.byref(self._buffer), 
+        driver._dsound.CreateSoundBuffer(dsbdesc,
+                                         ctypes.byref(self._buffer),
                                          None)
 
         if audio_format.channels == 1:
             self._buffer3d = lib.IDirectSound3DBuffer()
-            self._buffer.QueryInterface(lib.IID_IDirectSound3DBuffer, 
+            self._buffer.QueryInterface(lib.IID_IDirectSound3DBuffer,
                                         ctypes.byref(self._buffer3d))
         else:
             self._buffer3d = None
-        
+
         self._buffer.SetCurrentPosition(0)
 
         self.refill(self._buffer_size)
-            
+
     def __del__(self):
         try:
             self.delete()
@@ -220,10 +225,10 @@ class DirectSoundAudioPlayer(mt_media.AbstractAudioPlayer):
 
     def unlock(self):
         self._lock.release()
-        
+
     def play(self):
         if _debug:
-            print 'DirectSound play'
+            print('DirectSound play')
         driver.worker.add(self)
 
         self.lock()
@@ -233,11 +238,11 @@ class DirectSoundAudioPlayer(mt_media.AbstractAudioPlayer):
             self._buffer.Play(0, 0, lib.DSBPLAY_LOOPING)
         self.unlock()
         if _debug:
-            print 'return DirectSound play'
+            print('return DirectSound play')
 
     def stop(self):
         if _debug:
-            print 'DirectSound stop'
+            print('DirectSound stop')
         driver.worker.remove(self)
 
         self.lock()
@@ -247,15 +252,15 @@ class DirectSoundAudioPlayer(mt_media.AbstractAudioPlayer):
             self._buffer.Stop()
         self.unlock()
         if _debug:
-            print 'return DirectSound stop'
+            print('return DirectSound stop')
 
     def clear(self):
         if _debug:
-            print 'DirectSound clear'
+            print('DirectSound clear')
         self.lock()
         self._buffer.SetCurrentPosition(0)
         self._play_cursor_ring = self._write_cursor_ring = 0
-        self._play_cursor = self._write_cursor 
+        self._play_cursor = self._write_cursor
         self._eos_cursor = None
         self._next_audio_data = None
         del self._events[:]
@@ -266,7 +271,7 @@ class DirectSoundAudioPlayer(mt_media.AbstractAudioPlayer):
         self.lock()
         while write_size > 0:
             if _debug:
-                print 'refill, write_size =', write_size
+                print('refill, write_size =', write_size)
             # Get next audio packet (or remains of last one)
             if self._next_audio_data:
                 audio_data = self._next_audio_data
@@ -289,7 +294,7 @@ class DirectSoundAudioPlayer(mt_media.AbstractAudioPlayer):
 
                 # Write data
                 if _debug:
-                    print 'write', audio_data.length
+                    print('write', audio_data.length)
                 length = min(write_size, audio_data.length)
                 self.write(audio_data, length)
                 if audio_data.length:
@@ -300,10 +305,10 @@ class DirectSoundAudioPlayer(mt_media.AbstractAudioPlayer):
                 if self._eos_cursor is None:
                     self._eos_cursor = self._write_cursor
                     self._events.append(
-                        (self._eos_cursor, 
+                        (self._eos_cursor,
                          mt_media.MediaEvent(0, 'on_eos')))
                     self._events.append(
-                        (self._eos_cursor, 
+                        (self._eos_cursor,
                          mt_media.MediaEvent(0, 'on_source_group_eos')))
                     self._events.sort()
                 if self._write_cursor > self._eos_cursor + self._buffer_size:
@@ -326,13 +331,13 @@ class DirectSoundAudioPlayer(mt_media.AbstractAudioPlayer):
         self._play_cursor_ring = play_cursor_ring.value
 
         # Dispatch pending events
-        pending_events = []
+        pending_events = list()
         while self._events and self._events[0][0] <= self._play_cursor:
             _, event = self._events.pop(0)
             pending_events.append(event)
         if _debug:
-            print 'Dispatching pending events:', pending_events
-            print 'Remaining events:', self._events
+            print('Dispatching pending events:', pending_events)
+            print('Remaining events:', self._events)
 
         # Remove expired timestamps
         while self._timestamps and self._timestamps[0][0] < self._play_cursor:
@@ -342,7 +347,7 @@ class DirectSoundAudioPlayer(mt_media.AbstractAudioPlayer):
 
         for event in pending_events:
             event._sync_dispatch_to_player(self.player)
-            
+
     def get_write_size(self):
         self.update_play_cursor()
 
@@ -364,8 +369,8 @@ class DirectSoundAudioPlayer(mt_media.AbstractAudioPlayer):
         l1 = lib.DWORD()
         p2 = ctypes.c_void_p()
         l2 = lib.DWORD()
-        self._buffer.Lock(self._write_cursor_ring, length, 
-            ctypes.byref(p1), l1, ctypes.byref(p2), l2, 0)
+        self._buffer.Lock(self._write_cursor_ring, length,
+                          ctypes.byref(p1), l1, ctypes.byref(p2), l2, 0)
         assert length == l1.value + l2.value
 
         if audio_data:
@@ -396,7 +401,7 @@ class DirectSoundAudioPlayer(mt_media.AbstractAudioPlayer):
         self.unlock()
 
         return result
-        
+
     def set_volume(self, volume):
         volume = _db(volume)
         self.lock()
@@ -459,7 +464,9 @@ class DirectSoundAudioPlayer(mt_media.AbstractAudioPlayer):
             self._buffer3d.SetConeOutsideVolume(volume, lib.DS3D_IMMEDIATE)
             self.unlock()
 
+
 class DirectSoundDriver(mt_media.AbstractAudioDriver):
+
     def __init__(self):
         self._dsound = lib.IDirectSound()
         lib.DirectSoundCreate(None, ctypes.byref(self._dsound), None)
@@ -481,8 +488,8 @@ class DirectSoundDriver(mt_media.AbstractAudioDriver):
 
         # Create listener
         self._listener = lib.IDirectSound3DListener()
-        self._buffer.QueryInterface(lib.IID_IDirectSound3DListener, 
-                                    ctypes.byref(self._listener)) 
+        self._buffer.QueryInterface(lib.IID_IDirectSound3DListener,
+                                    ctypes.byref(self._listener))
 
         # Create worker thread
         self.worker = DirectSoundWorker()
@@ -504,9 +511,9 @@ class DirectSoundDriver(mt_media.AbstractAudioDriver):
         self._buffer = None
         self._listener.Release()
         self._listener = None
-        
+
     # Listener API
-      
+
     def _set_volume(self, volume):
         self._volume = volume
         self._buffer.SetVolume(_db(volume))
@@ -527,7 +534,9 @@ class DirectSoundDriver(mt_media.AbstractAudioDriver):
     def _set_orientation(self):
         x, y, z = self._forward_orientation
         ux, uy, uz = self._up_orientation
-        self._listener.SetOrientation(x, y, -z, ux, uy, -uz, lib.DS3D_IMMEDIATE)
+        self._listener.SetOrientation(
+            x, y, -z, ux, uy, -uz, lib.DS3D_IMMEDIATE)
+
 
 def create_audio_driver():
     global driver

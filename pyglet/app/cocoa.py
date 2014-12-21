@@ -32,8 +32,8 @@
 # POSSIBILITY OF SUCH DAMAGE.
 # ----------------------------------------------------------------------------
 
-'''
-'''
+"""
+"""
 __docformat__ = 'restructuredtext'
 __version__ = '$Id: $'
 
@@ -48,6 +48,7 @@ NSDate = ObjCClass('NSDate')
 NSEvent = ObjCClass('NSEvent')
 NSUserDefaults = ObjCClass('NSUserDefaults')
 
+
 def add_menu_item(menu, title, action, key):
     title = CFSTR(title)
     action = get_selector(action)
@@ -60,6 +61,7 @@ def add_menu_item(menu, title, action, key):
     title.release()
     key.release()
     menuItem.release()
+
 
 def create_menu():
     appMenu = NSMenu.alloc().init()
@@ -85,20 +87,20 @@ def create_menu():
 class CocoaEventLoop(PlatformEventLoop):
 
     def __init__(self):
-        super(CocoaEventLoop, self).__init__()
+        super().__init__()
         # Prepare the default application.
         self.NSApp = NSApplication.sharedApplication()
         # Create an autorelease pool for menu creation and finishLaunching
         self.pool = NSAutoreleasePool.alloc().init()
         create_menu()
         self.NSApp.setActivationPolicy_(NSApplicationActivationPolicyRegular)
-        # Prevent Lion / Mountain Lion from automatically saving application state.
-        # If we don't do this, new windows will not display on 10.8 after finishLaunching
-        # has been called.  
+        # Prevent Lion / Mountain Lion from automatically saving application
+        # state. If we don't do this, new windows will not display on 10.8 after
+        # finishLaunching has been called.
         defaults = NSUserDefaults.standardUserDefaults()
-        ignoreState = CFSTR("ApplePersistenceIgnoreState")
-        if not defaults.objectForKey_(ignoreState):
-            defaults.setBool_forKey_(True, ignoreState)
+        ignore_state = CFSTR("ApplePersistenceIgnoreState")
+        if not defaults.objectForKey_(ignore_state):
+            defaults.setBool_forKey_(True, ignore_state)
 
     def start(self):
         self.NSApp.finishLaunching()
@@ -134,20 +136,23 @@ class CocoaEventLoop(PlatformEventLoop):
                 # keyUp:, keyDown:, and flagsChanged: events.
                 self.NSApp.sendEvent_(event)
 
-                # Resend key events as special pyglet-specific messages
-                # which supplant the keyDown:, keyUp:, and flagsChanged: messages
+                # Resend key events as special pyglet-specific messages which
+                # supplant the keyDown:, keyUp:, and flagsChanged: messages
                 # because NSApplication translates multiple key presses into key
-                # equivalents before sending them on, which means that some keyUp:
-                # messages are never sent for individual keys.   Our pyglet-specific
-                # replacements ensure that we see all the raw key presses & releases.
-                # We also filter out key-down repeats since pyglet only sends one
-                # on_key_press event per key press.
+                # equivalents before sending them on, which means that some
+                # keyUp: messages are never sent for individual keys.   Our
+                # pyglet-specific replacements ensure that we see all the raw
+                # key presses & releases. We also filter out key-down repeats
+                # since pyglet only sends one on_key_press event per key press.
                 if event_type == NSKeyDown and not event.isARepeat():
-                    self.NSApp.sendAction_to_from_(get_selector("pygletKeyDown:"), None, event)
+                    self.NSApp.sendAction_to_from_(
+                        get_selector("pygletKeyDown:"), None, event)
                 elif event_type == NSKeyUp:
-                    self.NSApp.sendAction_to_from_(get_selector("pygletKeyUp:"), None, event)
+                    self.NSApp.sendAction_to_from_(
+                        get_selector("pygletKeyUp:"), None, event)
                 elif event_type == NSFlagsChanged:
-                    self.NSApp.sendAction_to_from_(get_selector("pygletFlagsChanged:"), None, event)
+                    self.NSApp.sendAction_to_from_(
+                        get_selector("pygletFlagsChanged:"), None, event)
 
             self.NSApp.updateWindows()
             did_time_out = False
@@ -157,7 +162,7 @@ class CocoaEventLoop(PlatformEventLoop):
         self._is_running.clear()
 
         # Destroy the autorelease pool used for this step.
-        #del pool
+        # del pool
 
         return did_time_out
 
@@ -167,7 +172,7 @@ class CocoaEventLoop(PlatformEventLoop):
     def notify(self):
         pool = NSAutoreleasePool.alloc().init()
         notifyEvent = NSEvent.otherEventWithType_location_modifierFlags_timestamp_windowNumber_context_subtype_data1_data2_(
-            NSApplicationDefined, # type
+            NSApplicationDefined,  # type
             NSPoint(0.0, 0.0),    # location
             0,                    # modifierFlags
             0,                    # timestamp
@@ -176,8 +181,7 @@ class CocoaEventLoop(PlatformEventLoop):
             0,                    # subtype
             0,                    # data1
             0,                    # data2
-            )
+        )
 
         self.NSApp.postEvent_atStart_(notifyEvent, False)
         pool.drain()
-

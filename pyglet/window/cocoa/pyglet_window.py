@@ -1,6 +1,7 @@
 from pyglet.libs.darwin.cocoapy import *
 
-class PygletWindow_Implementation(object):
+
+class PygletWindow_Implementation:
     PygletWindow = ObjCSubclass('NSWindow', 'PygletWindow')
 
     @PygletWindow.method('B')
@@ -19,15 +20,15 @@ class PygletWindow_Implementation(object):
     # method is being called instead of this one.  I don't really feel like
     # subclassing NSApplication just to fix this.  Also, to prevent white flashes
     # while resizing, we must also call idle() from the view's reshape method.
-    @PygletWindow.method(b'@'+NSUIntegerEncoding+b'@@B')
+    @PygletWindow.method(b'@' + NSUIntegerEncoding + b'@@B')
     def nextEventMatchingMask_untilDate_inMode_dequeue_(self, mask, date, mode, dequeue):
         if self.inLiveResize():
             # Call the idle() method while we're stuck in a live resize event.
             from pyglet import app
             if app.event_loop is not None:
                 app.event_loop.idle()
-         
-        event = send_super(self, 'nextEventMatchingMask:untilDate:inMode:dequeue:', 
+
+        event = send_super(self, 'nextEventMatchingMask:untilDate:inMode:dequeue:',
                            mask, date, mode, dequeue, argtypes=[NSUInteger, c_void_p, c_void_p, c_bool])
 
         if event.value == None:
@@ -35,25 +36,24 @@ class PygletWindow_Implementation(object):
         else:
             return event.value
 
-
     # Need this for set_size to not flash.
-    @PygletWindow.method(b'd'+NSRectEncoding)
+    @PygletWindow.method(b'd' + NSRectEncoding)
     def animationResizeTime_(self, newFrame):
         return 0.0
 
 
-class PygletToolWindow_Implementation(object):
+class PygletToolWindow_Implementation:
     PygletToolWindow = ObjCSubclass('NSPanel', 'PygletToolWindow')
 
-    @PygletToolWindow.method(b'@'+NSUIntegerEncoding+b'@@B')
+    @PygletToolWindow.method(b'@' + NSUIntegerEncoding + b'@@B')
     def nextEventMatchingMask_untilDate_inMode_dequeue_(self, mask, date, mode, dequeue):
         if self.inLiveResize():
             # Call the idle() method while we're stuck in a live resize event.
             from pyglet import app
             if app.event_loop is not None:
                 app.event_loop.idle()
-                
-        event = send_super(self, 'nextEventMatchingMask:untilDate:inMode:dequeue:', 
+
+        event = send_super(self, 'nextEventMatchingMask:untilDate:inMode:dequeue:',
                            mask, date, mode, dequeue, argtypes=[NSUInteger, c_void_p, c_void_p, c_bool])
 
         if event.value == None:
@@ -62,7 +62,7 @@ class PygletToolWindow_Implementation(object):
             return event.value
 
     # Need this for set_size to not flash.
-    @PygletToolWindow.method(b'd'+NSRectEncoding)
+    @PygletToolWindow.method(b'd' + NSRectEncoding)
     def animationResizeTime_(self, newFrame):
         return 0.0
 

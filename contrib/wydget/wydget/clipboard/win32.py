@@ -1,9 +1,9 @@
-'''Clipboard implementation for OS X using Win32
+"""Clipboard implementation for OS X using Win32
 
 Based on implementation from:
 
 http://aspn.activestate.com/ASPN/Mail/Message/ctypes-users/1771866
-'''
+"""
 from ctypes import *
 from pyglet.window.win32.constants import CF_TEXT, GHND
 
@@ -19,10 +19,10 @@ GlobalUnlock = windll.kernel32.GlobalUnlock
 memcpy = cdll.msvcrt.memcpy
 
 
-class Win32Clipboard(object):
+class Win32Clipboard:
 
     def get_text(self):
-        # XXX Doesn't handle CF_UNICODETEXT yet.
+        # TODO: Doesn't handle CF_UNICODETEXT yet.
         if not IsClipboardFormatAvailable(CF_TEXT):
             return ''
         if not OpenClipboard(c_int(0)):
@@ -37,7 +37,7 @@ class Win32Clipboard(object):
         return text.decode('windows-1252')
 
     def put_text(self, text):
-        # XXX Doesn't handle CF_UNICODETEXT yet.
+        # TODO: Doesn't handle CF_UNICODETEXT yet.
         buffer = c_buffer(text)
         bufferSize = sizeof(buffer)
         hGlobalMem = GlobalAlloc(c_int(GHND), c_int(bufferSize))
@@ -50,9 +50,7 @@ class Win32Clipboard(object):
             SetClipboardData(c_int(CF_TEXT), c_int(hGlobalMem))
             CloseClipboard()
 
-if __name__ == '__main__':
     cb = Win32Clipboard()
-    print 'GOT', `cb.get_text()`             # display last text clipped
-    cb.set_text("[Clipboard text replaced]") # replace it
-    print 'GOT', `cb.get_text()`             # display new clipboard
-
+    print('GOT', repr(cb.get_text()))  # display last text clipped
+    cb.set_text("[Clipboard text replaced]")  # replace it
+    print('GOT', repr(cb.get_text()))  # display new clipboard

@@ -2,14 +2,14 @@
 # pyglet
 # Copyright (c) 2006-2008 Alex Holkner
 # All rights reserved.
-# 
+#
 # Redistribution and use in source and binary forms, with or without
-# modification, are permitted provided that the following conditions 
+# modification, are permitted provided that the following conditions
 # are met:
 #
 #  * Redistributions of source code must retain the above copyright
 #    notice, this list of conditions and the following disclaimer.
-#  * Redistributions in binary form must reproduce the above copyright 
+#  * Redistributions in binary form must reproduce the above copyright
 #    notice, this list of conditions and the following disclaimer in
 #    the documentation and/or other materials provided with the
 #    distribution.
@@ -32,8 +32,8 @@
 # POSSIBILITY OF SUCH DAMAGE.
 # ----------------------------------------------------------------------------
 
-'''
-'''
+"""
+"""
 
 __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
@@ -89,7 +89,8 @@ FT_STYLE_FLAG_BOLD = 2
  FT_RENDER_MODE_LIGHT,
  FT_RENDER_MODE_MONO,
  FT_RENDER_MODE_LCD,
- FT_RENDER_MODE_LCD_V) = range(5)
+ FT_RENDER_MODE_LCD_V) = list(range(5))
+
 
 def FT_LOAD_TARGET_(x):
     return (x & 15) << 16
@@ -106,22 +107,23 @@ FT_LOAD_TARGET_LCD_V = FT_LOAD_TARGET_(FT_RENDER_MODE_LCD_V)
  FT_PIXEL_MODE_GRAY2,
  FT_PIXEL_MODE_GRAY4,
  FT_PIXEL_MODE_LCD,
- FT_PIXEL_MODE_LCD_V) = range(7)
+ FT_PIXEL_MODE_LCD_V) = list(range(7))
 
 (FcTypeVoid,
  FcTypeInteger,
- FcTypeDouble, 
- FcTypeString, 
+ FcTypeDouble,
+ FcTypeString,
  FcTypeBool,
  FcTypeMatrix,
  FcTypeCharSet,
  FcTypeFTFace,
- FcTypeLangSet) = range(9)
+ FcTypeLangSet) = list(range(9))
 FcType = c_int
 
 (FcMatchPattern,
- FcMatchFont) = range(2)
+ FcMatchFont) = list(range(2))
 FcMatchKind = c_int
+
 
 class _FcValueUnion(Union):
     _fields_ = [
@@ -136,6 +138,7 @@ class _FcValueUnion(Union):
         ('l', c_void_p),
     ]
 
+
 class FcValue(Structure):
     _fields_ = [
         ('type', FcType),
@@ -144,32 +147,38 @@ class FcValue(Structure):
 
 # End of library definitions
 
+
 def f16p16_to_float(value):
     return float(value) / (1 << 16)
+
 
 def float_to_f16p16(value):
     return int(value * (1 << 16))
 
+
 def f26p6_to_float(value):
     return float(value) / (1 << 6)
+
 
 def float_to_f26p6(value):
     return int(value * (1 << 6))
 
+
 class FreeTypeGlyphRenderer(base.GlyphRenderer):
+
     def __init__(self, font):
-        super(FreeTypeGlyphRenderer, self).__init__(font)
+        super().__init__(font)
         self.font = font
 
     def render(self, text):
         face = self.font.face
-        FT_Set_Char_Size(face, 0, self.font._face_size, 
+        FT_Set_Char_Size(face, 0, self.font._face_size,
                          self.font._dpi, self.font._dpi)
         glyph_index = fontconfig.FcFreeTypeCharIndex(byref(face), ord(text[0]))
         error = FT_Load_Glyph(face, glyph_index, FT_LOAD_RENDER)
         if error != 0:
             raise base.FontException(
-                'Could not load glyph for "%c"' % text[0], error) 
+                'Could not load glyph for "%c"' % text[0], error)
         glyph_slot = face.glyph.contents
         width = glyph_slot.bitmap.width
         height = glyph_slot.bitmap.rows
@@ -178,11 +187,11 @@ class FreeTypeGlyphRenderer(base.GlyphRenderer):
         advance = int(f26p6_to_float(glyph_slot.advance.x))
         mode = glyph_slot.bitmap.pixel_mode
         pitch = glyph_slot.bitmap.pitch
-        
+
         if mode == FT_PIXEL_MODE_MONO:
             # BCF fonts always render to 1 bit mono, regardless of render
             # flags. (freetype 2.3.5)
-            bitmap_data = cast(glyph_slot.bitmap.buffer, 
+            bitmap_data = cast(glyph_slot.bitmap.buffer,
                                POINTER(c_ubyte * (pitch * height))).contents
             data = (c_ubyte * (pitch * 8 * height))()
             data_i = 0
@@ -206,22 +215,24 @@ class FreeTypeGlyphRenderer(base.GlyphRenderer):
 
         # pitch should be negative, but much faster to just swap tex_coords
         img = image.ImageData(width, height, 'A', data, pitch)
-        glyph = self.font.create_glyph(img) 
+        glyph = self.font.create_glyph(img)
         glyph.set_bearings(baseline, lsb, advance)
         t = list(glyph.tex_coords)
         glyph.tex_coords = t[9:12] + t[6:9] + t[3:6] + t[:3]
 
         return glyph
 
-class FreeTypeMemoryFont(object):
+
+class FreeTypeMemoryFont:
+
     def __init__(self, data):
         self.buffer = (ctypes.c_byte * len(data))()
         ctypes.memmove(self.buffer, data, len(data))
 
         ft_library = ft_get_library()
         self.face = FT_Face()
-        r = FT_New_Memory_Face(ft_library, 
-            self.buffer, len(self.buffer), 0, self.face)
+        r = FT_New_Memory_Face(ft_library,
+                               self.buffer, len(self.buffer), 0, self.face)
         if r != 0:
             raise base.FontException('Could not load font data')
 
@@ -251,14 +262,15 @@ class FreeTypeMemoryFont(object):
         except:
             pass
 
+
 class FreeTypeFont(base.Font):
     glyph_renderer_class = FreeTypeGlyphRenderer
 
     # Map font (name, bold, italic) to FreeTypeMemoryFont
-    _memory_fonts = {}
+    _memory_fonts = dict()
 
     def __init__(self, name, size, bold=False, italic=False, dpi=None):
-        super(FreeTypeFont, self).__init__()
+        super().__init__()
 
         if dpi is None:
             dpi = 96  # as of pyglet 1.1; pyglet 1.0 had 72.
@@ -282,11 +294,11 @@ class FreeTypeFont(base.Font):
             value = FcValue()
             result = fontconfig.FcPatternGet(match, FC_FILE, 0, byref(value))
             if result != 0:
-                raise base.FontException('No filename or FT face for "%s"' % \
+                raise base.FontException('No filename or FT face for "%s"' %
                                          name)
             result = FT_New_Face(ft_library, value.u.s, 0, byref(f))
             if result:
-                raise base.FontException('Could not load "%s": %d' % \
+                raise base.FontException('Could not load "%s": %d' %
                                          (name, result))
 
         fontconfig.FcPatternDestroy(match)
@@ -329,7 +341,7 @@ class FreeTypeFont(base.Font):
 
         fontconfig.FcInit()
 
-        if isinstance(name, unicode):
+        if isinstance(name, str):
             name = name.encode('utf8')
 
         pattern = fontconfig.FcPatternCreate()
@@ -344,7 +356,7 @@ class FreeTypeFont(base.Font):
         result = FcResult()
         match = fontconfig.FcFontMatch(0, pattern, byref(result))
         fontconfig.FcPatternDestroy(pattern)
-        
+
         return match
 
     @classmethod
@@ -356,11 +368,11 @@ class FreeTypeFont(base.Font):
             return True
         else:
             name = name.lower()
-            for font in cls._memory_fonts.values():
+            for font in list(cls._memory_fonts.values()):
                 if font.name.lower() == name:
                     return True
         return False
-    
+
     @classmethod
     def add_font_data(cls, data):
         font = FreeTypeMemoryFont(data)

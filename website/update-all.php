@@ -1,6 +1,6 @@
 <?php
 $BASE_URL = 'http://groups.google.com';
-$FEED_URL = 
+$FEED_URL =
   'http://groups.google.com/group/pyglet-users/feed/atom_v1_0_msgs.xml';
 $MAX_DISCUSSION_ENTRIES = 3;
 
@@ -22,7 +22,7 @@ function get_pages()
     $image = get_page_image($url);
     if ($image)
     {
-      $pages[] = array($name, $url, $image);
+      $pageslist() = array($name, $url, $image);
     }
   }
   return $pages;
@@ -76,7 +76,7 @@ function update_discussion()
   $child_nodes = $doc_element->child_nodes();
   foreach ($child_nodes as $node)
   {
-    if ($node->node_type() == XML_ELEMENT_NODE && 
+    if ($node->node_type() == XML_ELEMENT_NODE &&
         $node->node_name() == 'entry')
     {
       $entry_count += 1;

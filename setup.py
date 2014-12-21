@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
-'''
-'''
+"""
+"""
 
 __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
@@ -11,11 +11,10 @@ import shutil
 import sys
 
 # Bump pyglet/__init__.py version as well.
-VERSION = '1.2alpha1'
+VERSION = '1.2alpha1-lt'
 
-long_description = '''pyglet provides an object-oriented programming
-interface for developing games and other visually-rich applications
-for Windows, Mac OS X and Linux.'''
+long_description = """pyglet provides an object-oriented programming
+interface for developing visually-rich games for Windows, Mac OS X and Linux."""
 
 setup_info = dict(
     # Metadata
@@ -36,7 +35,7 @@ setup_info = dict(
         'Intended Audience :: Developers',
         'License :: OSI Approved :: BSD License',
         'Operating System :: MacOS :: MacOS X',
-        'Operating System :: Microsoft :: Windows', # XP
+        'Operating System :: Microsoft :: Windows',  # XP
         'Operating System :: POSIX :: Linux',
         'Programming Language :: Python',
         'Topic :: Games/Entertainment',
@@ -86,29 +85,35 @@ setuptools_info = dict(
 
 if 'bdist_egg' in sys.argv or 'develop' in sys.argv:
     from setuptools import setup
+
     _have_setuptools = True
 
     # Don't walk SVN tree for default manifest
     from setuptools.command import egg_info
     from setuptools.command import sdist
-    egg_info.walk_revctrl = lambda: []
-    sdist.walk_revctrl = lambda: []
+
+    egg_info.walk_revctrl = lambda: list()
+    sdist.walk_revctrl = lambda: list()
 
     # Insert additional command-line arguments into install_lib when
     # bdist_egg calls it, to compile byte-code with optimizations.
     # This is a dirty hack.
     from setuptools.command import bdist_egg
+
     old_call_command = bdist_egg.bdist_egg.call_command
+
     def call_command(self, *args, **kwargs):
         if args[0] == 'install_lib':
             kwargs['optimize'] = 2
             kwargs['compile'] = False
         cmd = old_call_command(self, *args, **kwargs)
         return cmd
+
     bdist_egg.bdist_egg.call_command = call_command
 
 elif 'bdist_mpkg' in sys.argv:
     from setuptools import setup
+
     _have_setuptools = True
 
     from bdist_mpkg_pyglet import plists, pkg, cmd_bdist_mpkg, tools
@@ -117,7 +122,7 @@ elif 'bdist_mpkg' in sys.argv:
     def ctypes_requirement(pkgname, prefix):
         prefix = os.path.join(prefix, 'ctypes')
         title = '%s requires ctypes 1.0 or later to install with Python 2.4' \
-           % pkgname
+                % pkgname
         kw = dict(
             LabelKey='ctypes',
             TitleKey=title,
@@ -129,6 +134,7 @@ elif 'bdist_mpkg' in sys.argv:
     # Subclass bdist_mpkg
     class pyglet_bdist_mpkg(cmd_bdist_mpkg.bdist_mpkg):
         # Don't include platform or python version in mpkg name (aesthetics)
+
         def finalize_package_data(self):
             cmd_bdist_mpkg.bdist_mpkg.finalize_package_data(self)
             self.metapackagename = '-'.join([self.get_name(),
@@ -147,7 +153,7 @@ elif 'bdist_mpkg' in sys.argv:
                 IFPkgFlagBackgroundAlignment='topleft',
                 # Remove specific Python version requirement from metapackage,
                 # is per-package now.
-                IFRequirementDicts=[],
+                IFRequirementDicts=list(),
             ))
             return info
 
@@ -170,10 +176,10 @@ elif 'bdist_mpkg' in sys.argv:
             common = 'build/avbin'
             prefix = '/usr/local/lib'
             pkg.make_package(self,
-                pkgname, version,
-                files, common, prefix,
-                pkgdir,
-                info, description)
+                             pkgname, version,
+                             files, common, prefix,
+                             pkgdir,
+                             info, description)
 
             # pyglet packages
             files, common, prefix = self.get_scheme_root(scheme)
@@ -189,24 +195,24 @@ elif 'bdist_mpkg' in sys.argv:
 
                 requirements = [
                     plists.python_requirement(self.get_name(),
-                        prefix=python_dir,
-                        version=pyver)]
+                                              prefix=python_dir,
+                                              version=pyver)]
                 if pyver == '2.4':
                     requirements.append(ctypes_requirement(self.get_name(),
-                        prefix=scheme_prefix))
+                                                           prefix=scheme_prefix))
 
                 info = dict(self.get_scheme_info(scheme))
                 info.update(dict(
                     IFRequirementDicts=requirements,
-                    ))
+                ))
 
                 pkg.make_package(self,
-                    pkgname, version,
-                    files, common, scheme_prefix,
-                    pkgdir,
-                    info,
-                    description,
-                )
+                                 pkgname, version,
+                                 files, common, scheme_prefix,
+                                 pkgdir,
+                                 info,
+                                 description,
+                                 )
 
                 # Move the archive up to the metapackage and symlink to it
                 pkgfile = os.path.join(pkgdir, 'Contents/Archive.pax.gz')
@@ -220,7 +226,7 @@ elif 'bdist_mpkg' in sys.argv:
                 os.symlink('../../../Archive.bom', pkgfile)
 
                 self.scheme_hook(scheme, pkgname, version, files, common,
-                    prefix, pkgdir)
+                                 prefix, pkgdir)
 
             add_package(
                 '/System/Library/Frameworks/Python.framework/Versions/2.5',
@@ -234,20 +240,20 @@ elif 'bdist_mpkg' in sys.argv:
                 'pyglet for Python 2.6 in /System/Library')
             add_package(
                 '/Library/Frameworks/Python.framework/Versions/2.4',
-                '/Library/Frameworks/Python.framework/Versions/2.4' \
-                    '/lib/python2.4/site-packages',
+                '/Library/Frameworks/Python.framework/Versions/2.4'
+                '/lib/python2.4/site-packages',
                 '2.4', 'pyglet-py2.4',
                 'pyglet for Python 2.4 in /Library')
             add_package(
                 '/Library/Frameworks/Python.framework/Versions/2.5',
-                '/Library/Frameworks/Python.framework/Versions/2.5' \
-                    '/lib/python2.5/site-packages',
+                '/Library/Frameworks/Python.framework/Versions/2.5'
+                '/lib/python2.5/site-packages',
                 '2.5', 'pyglet-py2.5',
                 'pyglet for Python 2.5 in /Library')
             add_package(
                 '/Library/Frameworks/Python.framework/Versions/2.6',
-                '/Library/Frameworks/Python.framework/Versions/2.6' \
-                    '/lib/python2.6/site-packages',
+                '/Library/Frameworks/Python.framework/Versions/2.6'
+                '/lib/python2.6/site-packages',
                 '2.6', 'pyglet-py2.6',
                 'pyglet for Python 2.6 in /Library')
             add_package(
@@ -262,8 +268,8 @@ elif 'bdist_mpkg' in sys.argv:
                 'pyglet for MacPorts Python 2.5 in /opt/local')
             add_package(
                 '/opt/local/',
-                '/opt/local/Library/Frameworks/Python.framework/Versions/2.6' \
-                    '/lib/python2.6/site-packages',
+                '/opt/local/Library/Frameworks/Python.framework/Versions/2.6'
+                '/lib/python2.6/site-packages',
                 '2.6', 'pyglet-macports-py2.6',
                 'pyglet for MacPorts Python 2.6 in /opt/local')
 
@@ -277,20 +283,19 @@ elif 'bdist_mpkg' in sys.argv:
             pass
 
     setuptools_info.update(dict(
-        cmdclass={'bdist_mpkg': pyglet_bdist_mpkg,}
+        cmdclass={'bdist_mpkg': pyglet_bdist_mpkg, }
     ))
 
 else:
     from distutils.core import setup
+
     _have_setuptools = False
-
-
 
 if _have_setuptools:
     # Additional dict values for setuptools
     setup_info.update(setuptools_info)
 
-    install_requires = []
+    install_requires = list()
     if sys.version_info < (2, 5, 0):
         install_requires.append('ctypes')
     setup_info.update(dict(
@@ -303,6 +308,7 @@ if sys.version_info >= (3,):
         setup_info["use_2to3"] = True
     else:
         from distutils.command.build_py import build_py_2to3
-        setup_info["cmdclass"] = {"build_py" : build_py_2to3}
+
+        setup_info["cmdclass"] = {"build_py": build_py_2to3}
 
 setup(**setup_info)

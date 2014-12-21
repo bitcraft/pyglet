@@ -3,14 +3,14 @@
 # pyglet
 # Copyright (c) 2006-2008 Alex Holkner
 # All rights reserved.
-# 
+#
 # Redistribution and use in source and binary forms, with or without
-# modification, are permitted provided that the following conditions 
+# modification, are permitted provided that the following conditions
 # are met:
 #
-#  * Redistributions of source code must retain the above copyright
+# * Redistributions of source code must retain the above copyright
 #    notice, this list of conditions and the following disclaimer.
-#  * Redistributions in binary form must reproduce the above copyright 
+#  * Redistributions in binary form must reproduce the above copyright
 #    notice, this list of conditions and the following disclaimer in
 #    the documentation and/or other materials provided with the
 #    distribution.
@@ -33,11 +33,12 @@
 # POSSIBILITY OF SUCH DAMAGE.
 # ----------------------------------------------------------------------------
 
-'''Demonstrates how to manage OpenGL calls between two independent windows.
-'''
+"""Demonstrates how to manage OpenGL calls between two independent windows.
+"""
 
 import pyglet
 from pyglet.gl import *
+
 
 def on_resize(width, height):
     glViewport(0, 0, width, height)
@@ -46,9 +47,11 @@ def on_resize(width, height):
     gluPerspective(60., width / float(height), 1., 100.)
     glMatrixMode(GL_MODELVIEW)
 
+
 def setup():
     glClearColor(1, 1, 1, 1)
     glColor3f(.5, .5, .5)
+
 
 def on_draw():
     glClear(GL_COLOR_BUFFER_BIT)
@@ -57,13 +60,18 @@ def on_draw():
     glRotatef(r, 0, 0, 1)
     glRectf(-1, -1, 1, 1)
 
+
 r = 0
+
+
 def update(dt):
     global r
     r += 1
     if r > 360:
         r = 0
-pyglet.clock.schedule_interval(update, 1/20.)
+
+
+pyglet.clock.schedule_interval(update, 1 / 20.)
 
 w1 = pyglet.window.Window(200, 200, caption='First window', resizable=True)
 w1.on_resize = on_resize

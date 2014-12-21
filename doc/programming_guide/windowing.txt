@@ -234,7 +234,7 @@ icon sizes:
     Linux
         * No constraints, however most window managers will use a 16x16 and a
           32x32 icon in the same way as Windows XP.
-          
+
 The `Window.set_icon` method allows you to set any number of images as the
 icon.  pyglet will select the most appropriate ones to use and apply them to
 the window.  If an alternate size is required but not provided, pyglet will
@@ -296,7 +296,7 @@ in `Writing a pyglet application`, using a subclass of `Window`::
 
     class HelloWorldWindow(pyglet.window.Window):
         def __init__(self):
-            super(HelloWorldWindow, self).__init__()
+            super().__init__()
 
             self.label = pyglet.text.Label('Hello, world!')
 
@@ -304,7 +304,7 @@ in `Writing a pyglet application`, using a subclass of `Window`::
             self.clear()
             self.label.draw()
 
-    if __name__ == '__main__':
+
         window = HelloWorldWindow()
         pyglet.app.run()
 
@@ -364,7 +364,7 @@ example:
   which can throw off results.  You should disable vsync if you are measuring
   the performance of your application.
 * If you cannot afford for your application to block.  If your application run
-  loop needs to quickly poll a hardware device, for example, you may want to 
+  loop needs to quickly poll a hardware device, for example, you may want to
   avoid blocking with vsync.
 
 Note that some older video cards do not support the required extensions to

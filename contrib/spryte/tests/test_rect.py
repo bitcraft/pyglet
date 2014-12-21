@@ -4,7 +4,9 @@ import unittest
 
 import rect
 
+
 class RectTest(unittest.TestCase):
+
     def setUp(self):
         self.r = rect.Rect(10, 10, 10, 10)
 
@@ -73,5 +75,4 @@ class RectTest(unittest.TestCase):
         self.r.bottomleft = (5, 5)
         assert (self.r.x, self.r.y) == (5, 5)
 
-if __name__ == '__main__':
     unittest.main()

@@ -2,14 +2,14 @@
 # pyglet
 # Copyright (c) 2006-2008 Alex Holkner
 # All rights reserved.
-# 
+#
 # Redistribution and use in source and binary forms, with or without
-# modification, are permitted provided that the following conditions 
+# modification, are permitted provided that the following conditions
 # are met:
 #
 #  * Redistributions of source code must retain the above copyright
 #    notice, this list of conditions and the following disclaimer.
-#  * Redistributions in binary form must reproduce the above copyright 
+#  * Redistributions in binary form must reproduce the above copyright
 #    notice, this list of conditions and the following disclaimer in
 #    the documentation and/or other materials provided with the
 #    distribution.
@@ -32,8 +32,8 @@
 # POSSIBILITY OF SUCH DAMAGE.
 # ----------------------------------------------------------------------------
 
-'''
-'''
+"""
+"""
 
 __docformat__ = 'restructuredtext'
 __version__ = '$Id: lib_glx.py 597 2007-02-03 16:13:07Z Alex.Holkner $'
@@ -67,8 +67,10 @@ try:
 except AttributeError:
     _have_get_proc_address = False
 
-class WGLFunctionProxy(object):
+
+class WGLFunctionProxy:
     __slots__ = ['name', 'requires', 'suggestions', 'ftype', 'func']
+
     def __init__(self, name, ftype, requires, suggestions):
         assert _have_get_proc_address
         self.name = name
@@ -92,8 +94,9 @@ class WGLFunctionProxy(object):
         else:
             self.func = missing_function(
                 self.name, self.requires, self.suggestions)
-        result = self.func(*args, **kwargs) 
+        result = self.func(*args, **kwargs)
         return result
+
 
 def link_GL(name, restype, argtypes, requires=None, suggestions=None):
     try:
@@ -122,6 +125,7 @@ def link_GL(name, restype, argtypes, requires=None, suggestions=None):
             pass
 
         return missing_function(name, requires, suggestions)
+
 
 def link_GLU(name, restype, argtypes, requires=None, suggestions=None):
     try:

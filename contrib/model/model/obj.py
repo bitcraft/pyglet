@@ -4,7 +4,8 @@ import warnings
 from pyglet.gl import *
 from pyglet import image
 
-class Material(object):
+
+class Material:
     diffuse = [.8, .8, .8]
     ambient = [.2, .2, .2]
     specular = [0., 0., 0.]
@@ -24,27 +25,31 @@ class Material(object):
             glDisable(GL_TEXTURE_2D)
 
         glMaterialfv(face, GL_DIFFUSE,
-            (GLfloat * 4)(*(self.diffuse + [self.opacity])))
+                     (GLfloat * 4)(*(self.diffuse + [self.opacity])))
         glMaterialfv(face, GL_AMBIENT,
-            (GLfloat * 4)(*(self.ambient + [self.opacity])))
+                     (GLfloat * 4)(*(self.ambient + [self.opacity])))
         glMaterialfv(face, GL_SPECULAR,
-            (GLfloat * 4)(*(self.specular + [self.opacity])))
+                     (GLfloat * 4)(*(self.specular + [self.opacity])))
         glMaterialfv(face, GL_EMISSION,
-            (GLfloat * 4)(*(self.emission + [self.opacity])))
+                     (GLfloat * 4)(*(self.emission + [self.opacity])))
         glMaterialf(face, GL_SHININESS, self.shininess)
 
-class MaterialGroup(object):
+
+class MaterialGroup:
+
     def __init__(self, material):
         self.material = material
 
         # Interleaved array of floats in GL_T2F_N3F_V3F format
-        self.vertices = []
+        self.vertices = list()
         self.array = None
 
-class Mesh(object):
+
+class Mesh:
+
     def __init__(self, name):
         self.name = name
-        self.groups = []
+        self.groups = list()
 
         # Display list, created only if compile() is called, but used
         # automatically by draw()
@@ -77,11 +82,13 @@ class Mesh(object):
             glEndList()
             self.list = list
 
+
 class OBJ:
+
     def __init__(self, filename, file=None, path=None):
-        self.materials = {}
-        self.meshes = {}        # Name mapping
-        self.mesh_list = []     # Also includes anonymous meshes
+        self.materials = dict()
+        self.meshes = dict()  # Name mapping
+        self.mesh_list = list()  # Also includes anonymous meshes
 
         if file is None:
             file = open(filename, 'r')
@@ -99,18 +106,18 @@ class OBJ:
         tex_coords = [[0., 0.]]
 
         for line in open(filename, "r"):
-            if line.startswith('#'): 
+            if line.startswith('#'):
                 continue
             values = line.split()
-            if not values: 
+            if not values:
                 continue
 
             if values[0] == 'v':
-                vertices.append(map(float, values[1:4]))
+                vertices.append(list(map(float, values[1:4])))
             elif values[0] == 'vn':
-                normals.append(map(float, values[1:4]))
+                normals.append(list(map(float, values[1:4])))
             elif values[0] == 'vt':
-                tex_coords.append(map(float, values[1:3]))
+                tex_coords.append(list(map(float, values[1:3])))
             elif values[0] == 'mtllib':
                 self.load_material_library(values[1])
             elif values[0] in ('usemtl', 'usemat'):
@@ -138,10 +145,12 @@ class OBJ:
                 # For fan triangulation, remember first and latest vertices
                 v1 = None
                 vlast = None
-                points = []
+                points = list()
                 for i, v in enumerate(values[1:]):
                     v_index, t_index, n_index = \
-                        (map(int, [j or 0 for j in v.split('/')]) + [0, 0])[:3]
+                        (list(map(int, [j or 0 for j in v.split('/')])) + [0,
+                                                                           0])[
+                            :3]
                     if v_index < 0:
                         v_index += len(vertices) - 1
                     if t_index < 0:
@@ -149,8 +158,8 @@ class OBJ:
                     if n_index < 0:
                         n_index += len(normals) - 1
                     vertex = tex_coords[t_index] + \
-                             normals[n_index] + \
-                             vertices[v_index] 
+                        normals[n_index] + \
+                        vertices[v_index]
 
                     if i >= 3:
                         # Triangulate
@@ -160,9 +169,9 @@ class OBJ:
                     if i == 0:
                         v1 = vertex
                     vlast = vertex
-                    
+
     def open_material_file(self, filename):
-        '''Override for loading from archive/network etc.'''
+        """Override for loading from archive/network etc."""
         return open(os.path.join(self.path, filename), 'r')
 
     def load_material_library(self, filename):
@@ -185,13 +194,13 @@ class OBJ:
 
             try:
                 if values[0] == 'Kd':
-                    material.diffuse = map(float, values[1:])
+                    material.diffuse = list(map(float, values[1:]))
                 elif values[0] == 'Ka':
-                    material.ambient = map(float, values[1:])
+                    material.ambient = list(map(float, values[1:]))
                 elif values[0] == 'Ks':
-                    material.specular = map(float, values[1:])
+                    material.specular = list(map(float, values[1:]))
                 elif values[0] == 'Ke':
-                    material.emissive = map(float, values[1:])
+                    material.emissive = list(map(float, values[1:]))
                 elif values[0] == 'Ns':
                     material.shininess = float(values[1])
                 elif values[0] == 'd':
@@ -207,4 +216,3 @@ class OBJ:
     def draw(self):
         for mesh in self.mesh_list:
             mesh.draw()
-

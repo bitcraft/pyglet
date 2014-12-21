@@ -1,11 +1,10 @@
 #!/usr/bin/env python
 
-'''Event constants from /usr/include/linux/input.h
-'''
+"""Event constants from /usr/include/linux/input.h
+"""
 
 __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
-
 
 EV_SYN = 0x00
 EV_KEY = 0x01
@@ -528,4 +527,3 @@ BUS_HOST = 0x19
 FF_STATUS_STOPPED = 0x00
 FF_STATUS_PLAYING = 0x01
 FF_STATUS_MAX = 0x01
-

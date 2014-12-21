@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
-'''
-'''
+"""
+"""
 
 __docformat__ = 'restructuredtext'
 __version__ = '$Id: $'
@@ -23,7 +23,7 @@ NSOpenGLContext = ObjCClass('NSOpenGLContext')
 _gl_attributes = {
     'double_buffer': NSOpenGLPFADoubleBuffer,
     'stereo': NSOpenGLPFAStereo,
-    'buffer_size': NSOpenGLPFAColorSize, 
+    'buffer_size': NSOpenGLPFAColorSize,
     'sample_buffers': NSOpenGLPFASampleBuffers,
     'samples': NSOpenGLPFASamples,
     'aux_buffers': NSOpenGLPFAAuxBuffers,
@@ -36,7 +36,7 @@ _gl_attributes = {
     'fullscreen': NSOpenGLPFAFullScreen,
     'minimum_policy': NSOpenGLPFAMinimumPolicy,
     'maximum_policy': NSOpenGLPFAMaximumPolicy,
-    'screen_mask' : NSOpenGLPFAScreenMask,
+    'screen_mask': NSOpenGLPFAScreenMask,
 
     # Not supported in current pyglet API
     'color_float': NSOpenGLPFAColorFloat,
@@ -48,7 +48,7 @@ _gl_attributes = {
 
 # NSOpenGL constants which do not require a value.
 _boolean_gl_attributes = frozenset([
-    NSOpenGLPFAAllRenderers, 
+    NSOpenGLPFAAllRenderers,
     NSOpenGLPFADoubleBuffer,
     NSOpenGLPFAStereo,
     NSOpenGLPFAMinimumPolicy,
@@ -62,8 +62,8 @@ _boolean_gl_attributes = frozenset([
 ])
 
 # Attributes for which no NSOpenGLPixelFormatAttribute name exists.
-# We could probably compute actual values for these using 
-# NSOpenGLPFAColorSize / 4 and NSOpenGLFAAccumSize / 4, but I'm not that 
+# We could probably compute actual values for these using
+# NSOpenGLPFAColorSize / 4 and NSOpenGLFAAccumSize / 4, but I'm not that
 # confident I know what I'm doing.
 _fake_gl_attributes = {
     'red_size': 0,
@@ -75,11 +75,12 @@ _fake_gl_attributes = {
     'accum_alpha_size': 0
 }
 
+
 class CocoaConfig(Config):
 
     def match(self, canvas):
         # Construct array of attributes for NSOpenGLPixelFormat
-        attrs = []
+        attrs = list()
         for name, value in self.get_gl_attributes():
             attr = _gl_attributes.get(name)
             if not attr or not value:
@@ -98,24 +99,26 @@ class CocoaConfig(Config):
         # from fullscreen without losing the context.  Also must supply the
         # NSOpenGLPFAScreenMask attribute with appropriate display ID.
         # Note that these attributes aren't necessary to render in fullscreen
-        # on Mac OS X 10.6, because there we are simply rendering into a 
+        # on Mac OS X 10.6, because there we are simply rendering into a
         # screen sized window.  See:
         # http://developer.apple.com/library/mac/#documentation/GraphicsImaging/Conceptual/OpenGL-MacProgGuide/opengl_fullscreen/opengl_cgl.html%23//apple_ref/doc/uid/TP40001987-CH210-SW6
         attrs.append(NSOpenGLPFAFullScreen)
         attrs.append(NSOpenGLPFAScreenMask)
-        attrs.append(quartz.CGDisplayIDToOpenGLDisplayMask(quartz.CGMainDisplayID()))
-        
+        attrs.append(
+            quartz.CGDisplayIDToOpenGLDisplayMask(quartz.CGMainDisplayID()))
+
         # Terminate the list.
         attrs.append(0)
 
         # Create the pixel format.
         attrsArrayType = c_uint32 * len(attrs)
         attrsArray = attrsArrayType(*attrs)
-        pixel_format = NSOpenGLPixelFormat.alloc().initWithAttributes_(attrsArray)
-       
+        pixel_format = NSOpenGLPixelFormat.alloc().initWithAttributes_(
+            attrsArray)
+
         # Return the match list.
         if pixel_format is None:
-            return []
+            return list()
         else:
             return [CocoaCanvasConfig(canvas, self, pixel_format)]
 
@@ -123,20 +126,21 @@ class CocoaConfig(Config):
 class CocoaCanvasConfig(CanvasConfig):
 
     def __init__(self, canvas, config, pixel_format):
-        super(CocoaCanvasConfig, self).__init__(canvas, config)
+        super().__init__(canvas, config)
         self._pixel_format = pixel_format
 
         # Query values for the attributes of the pixel format, and then set the
         # corresponding attributes of the canvas config.
-        for name, attr in _gl_attributes.items():
+        for name, attr in list(_gl_attributes.items()):
             vals = c_int()
-            self._pixel_format.getValues_forAttribute_forVirtualScreen_(byref(vals), attr, 0)
+            self._pixel_format.getValues_forAttribute_forVirtualScreen_(
+                byref(vals), attr, 0)
             setattr(self, name, vals.value)
-        
+
         # Set these attributes so that we can run pyglet.info.
-        for name, value in _fake_gl_attributes.items():
+        for name, value in list(_fake_gl_attributes.items()):
             setattr(self, name, value)
- 
+
     def create_context(self, share):
         # Determine the shared NSOpenGLContext.
         if share:
@@ -158,24 +162,24 @@ class CocoaCanvasConfig(CanvasConfig):
 class CocoaContext(Context):
 
     def __init__(self, config, nscontext, share):
-        super(CocoaContext, self).__init__(config, share)
+        super().__init__(config, share)
         self.config = config
         self._nscontext = nscontext
 
     def attach(self, canvas):
-        super(CocoaContext, self).attach(canvas)
+        super().attach(canvas)
         # The NSView instance should be attached to a nondeferred window before calling
         # setView, otherwise you get an "invalid drawable" message.
         self._nscontext.setView_(canvas.nsview)
         self.set_current()
 
     def detach(self):
-        super(CocoaContext, self).detach()
+        super().detach()
         self._nscontext.clearDrawable()
 
     def set_current(self):
         self._nscontext.makeCurrentContext()
-        super(CocoaContext, self).set_current()
+        super().set_current()
 
     def update_geometry(self):
         # Need to call this method whenever the context drawable (an NSView)
@@ -187,18 +191,20 @@ class CocoaContext(Context):
         self._nscontext.setFullScreen()
 
     def destroy(self):
-        super(CocoaContext, self).destroy()
+        super().destroy()
         self._nscontext.release()
         self._nscontext = None
 
     def set_vsync(self, vsync=True):
         vals = c_int(vsync)
-        self._nscontext.setValues_forParameter_(byref(vals), NSOpenGLCPSwapInterval)
+        self._nscontext.setValues_forParameter_(
+            byref(vals), NSOpenGLCPSwapInterval)
 
     def get_vsync(self):
         vals = c_int()
-        self._nscontext.getValues_forParameter_(byref(vals), NSOpenGLCPSwapInterval)
+        self._nscontext.getValues_forParameter_(
+            byref(vals), NSOpenGLCPSwapInterval)
         return vals.value
-        
+
     def flip(self):
         self._nscontext.flushBuffer()

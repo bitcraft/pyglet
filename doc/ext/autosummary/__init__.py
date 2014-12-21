@@ -67,23 +67,25 @@ from sphinx import addnodes
 from sphinx.util.compat import Directive
 
 
-# -- autosummary_toc node ------------------------------------------------------
+# -- autosummary_toc node ------------------------------------------------
 
 class autosummary_toc(nodes.comment):
     pass
+
 
 def process_autosummary_toc(app, doctree):
     """Insert items described in autosummary:: to the TOC tree, but do
     not generate the toctree:: list.
     """
     env = app.builder.env
-    crawled = {}
+    crawled = dict()
+
     def crawl_toc(node, depth=1):
         crawled[node] = True
         for j, subnode in enumerate(node):
             try:
                 if (isinstance(subnode, autosummary_toc)
-                    and isinstance(subnode[0], addnodes.toctree)):
+                        and isinstance(subnode[0], addnodes.toctree)):
                     env.note_toctree(env.docname, subnode[0])
                     continue
             except IndexError:
@@ -91,21 +93,25 @@ def process_autosummary_toc(app, doctree):
             if not isinstance(subnode, nodes.section):
                 continue
             if subnode not in crawled:
-                crawl_toc(subnode, depth+1)
+                crawl_toc(subnode, depth + 1)
+
     crawl_toc(doctree)
+
 
 def autosummary_toc_visit_html(self, node):
     """Hide autosummary toctree list in HTML output."""
     raise nodes.SkipNode
 
+
 def autosummary_noop(self, node):
     pass
 
 
-# -- autosummary_table node ----------------------------------------------------
+# -- autosummary_table node ----------------------------------------------
 
 class autosummary_table(nodes.comment):
     pass
+
 
 def autosummary_table_visit_html(self, node):
     """Make the first column of the table non-breaking."""
@@ -116,18 +122,19 @@ def autosummary_table_visit_html(self, node):
             par = col1_entry[0]
             for j, subnode in enumerate(list(par)):
                 if isinstance(subnode, nodes.Text):
-                    new_text = unicode(subnode.astext())
-                    new_text = new_text.replace(u" ", u"\u00a0")
+                    new_text = str(subnode.astext())
+                    new_text = new_text.replace(" ", "\u00a0")
                     par[j] = nodes.Text(new_text)
     except IndexError:
         pass
 
 
-# -- autodoc integration -------------------------------------------------------
+# -- autodoc integration -------------------------------------------------
 
 class FakeDirective:
-    env = {}
-    genopt = {}
+    env = dict()
+    genopt = dict()
+
 
 def get_documenter(obj, parent):
     """Get an autodoc.Documenter class suitable for documenting the given
@@ -138,7 +145,7 @@ def get_documenter(obj, parent):
     belongs to.
     """
     from sphinx.ext.autodoc import AutoDirective, DataDocumenter, \
-         ModuleDocumenter
+        ModuleDocumenter
 
     if inspect.ismodule(obj):
         # ModuleDocumenter.can_document_member always returns False
@@ -156,7 +163,7 @@ def get_documenter(obj, parent):
         parent_doc = parent_doc_cls(FakeDirective(), "")
 
     # Get the corrent documenter class for *obj*
-    classes = [cls for cls in AutoDirective._registry.values()
+    classes = [cls for cls in list(AutoDirective._registry.values())
                if cls.can_document_member(obj, '', False, parent_doc)]
     if classes:
         classes.sort(key=lambda cls: cls.priority)
@@ -165,9 +172,10 @@ def get_documenter(obj, parent):
         return DataDocumenter
 
 
-# -- .. autosummary:: ----------------------------------------------------------
+# -- .. autosummary:: ----------------------------------------------------
 
 class Autosummary(Directive):
+
     """
     Pretty table containing short signatures and summaries of functions etc.
 
@@ -191,14 +199,14 @@ class Autosummary(Directive):
 
     def run(self):
         self.env = env = self.state.document.settings.env
-        self.genopt = {}
-        self.warnings = []
+        self.genopt = dict()
+        self.warnings = list()
 
         names = [x.strip().split()[0] for x in self.content
                  if x.strip() and re.search(r'^[~a-zA-Z_]', x.strip()[0])]
         items = self.get_items(names)
         if 'hidden' in self.options:
-            nodes = []
+            nodes = list()
         else:
             nodes = self.get_table(items)
 
@@ -207,7 +215,7 @@ class Autosummary(Directive):
             dirname = posixpath.dirname(env.docname)
 
             tree_prefix = self.options['toctree'].strip()
-            docnames = []
+            docnames = list()
             for name, sig, summary, real_name in items:
                 docname = posixpath.join(tree_prefix, real_name)
                 if docname.endswith(suffix):
@@ -238,7 +246,7 @@ class Autosummary(Directive):
 
         prefixes = get_import_prefixes_from_env(env)
 
-        items = []
+        items = list()
 
         max_item_chars = 50
 
@@ -249,14 +257,15 @@ class Autosummary(Directive):
                 display_name = name.split('.')[-1]
 
             try:
-                real_name, obj, parent = import_by_name(name, prefixes=prefixes)
+                real_name, obj, parent = import_by_name(
+                    name, prefixes=prefixes)
             except ImportError:
                 self.warn('failed to import %s' % name)
                 items.append((name, '', '', name))
                 continue
 
             # NB. using real_name here is important, since Documenters
-            #     handle module prefixes slightly differently
+            # handle module prefixes slightly differently
             documenter = get_documenter(obj, parent)(self, real_name)
             if not documenter.parse_name():
                 self.warn('failed to parse name %s' % real_name)
@@ -293,7 +302,7 @@ class Autosummary(Directive):
                 __doc = type(obj).__doc__
                 if isinstance(__doc, str):
                     if __doc.startswith(summary):
-                        summary = "Type: "+type(obj).__name__                    
+                        summary = "Type: " + type(obj).__name__
             else:
                 summary = ''
 
@@ -345,6 +354,7 @@ class Autosummary(Directive):
 
         return [table_spec, table]
 
+
 def mangle_signature(sig, max_chars=30):
     """Reformat a function signature to a more compact form."""
     s = re.sub(r"^\((.*)\)$", r"\1", sig).strip()
@@ -355,8 +365,8 @@ def mangle_signature(sig, max_chars=30):
     s = re.sub(r"'[^']*'", "", s)
 
     # Parse the signature to arguments + options
-    args = []
-    opts = []
+    args = list()
+    opts = list()
 
     opt_re = re.compile(r"^(.*, |)([a-zA-Z0-9_*]+)=")
     while s:
@@ -370,15 +380,17 @@ def mangle_signature(sig, max_chars=30):
         s = m.group(1)[:-2]
 
     # Produce a more compact signature
-    sig = limited_join(", ", args, max_chars=max_chars-2)
+    sig = limited_join(", ", args, max_chars=max_chars - 2)
     if opts:
         if not sig:
-            sig = "[%s]" % limited_join(", ", opts, max_chars=max_chars-4)
+            sig = "[%s]" % limited_join(", ", opts, max_chars=max_chars - 4)
         elif len(sig) < max_chars - 4 - 2 - 3:
             sig += "[, %s]" % limited_join(", ", opts,
-                                           max_chars=max_chars-len(sig)-4-2)
+                                           max_chars=max_chars - len(
+                                               sig) - 4 - 2)
 
-    return u"(%s)" % sig
+    return "(%s)" % sig
+
 
 def limited_join(sep, items, max_chars=30, overflow_marker="..."):
     """Join a number of strings to one, limiting the length to *max_chars*.
@@ -403,7 +415,8 @@ def limited_join(sep, items, max_chars=30, overflow_marker="..."):
 
     return sep.join(list(items[:n_items]) + [overflow_marker])
 
-# -- Importing items -----------------------------------------------------------
+
+# -- Importing items -----------------------------------------------------
 
 def get_import_prefixes_from_env(env):
     """
@@ -425,11 +438,12 @@ def get_import_prefixes_from_env(env):
 
     return prefixes
 
+
 def import_by_name(name, prefixes=[None]):
     """Import a Python object that has the given *name*, under one of the
     *prefixes*.  The first name that succeeds is used.
     """
-    tried = []
+    tried = list()
     for prefix in prefixes:
         try:
             if prefix:
@@ -441,6 +455,7 @@ def import_by_name(name, prefixes=[None]):
         except ImportError:
             tried.append(prefixed_name)
     raise ImportError('no module named %s' % ' or '.join(tried))
+
 
 def _import_by_name(name):
     """Import a Python object given its full name."""
@@ -460,12 +475,12 @@ def _import_by_name(name):
         # ... then as MODNAME, MODNAME.OBJ1, MODNAME.OBJ1.OBJ2, ...
         last_j = 0
         modname = None
-        for j in reversed(range(1, len(name_parts)+1)):
+        for j in reversed(list(range(1, len(name_parts) + 1))):
             last_j = j
             modname = '.'.join(name_parts[:j])
             try:
                 __import__(modname)
-            except:# ImportError:
+            except:  # ImportError:
                 continue
             if modname in sys.modules:
                 break
@@ -479,14 +494,14 @@ def _import_by_name(name):
             return obj, parent
         else:
             return sys.modules[modname], None
-    except (ValueError, ImportError, AttributeError, KeyError), e:
+    except (ValueError, ImportError, AttributeError, KeyError) as e:
         raise ImportError(*e.args)
 
 
-# -- :autolink: (smart default role) -------------------------------------------
+# -- :autolink: (smart default role) -------------------------------------
 
 def autolink_role(typ, rawtext, etext, lineno, inliner,
-                  options={}, content=[]):
+                  options=dict(), content=list()):
     """Smart linking role.
 
     Expands to ':obj:`text`' if `text` is an object that can be imported;
@@ -520,7 +535,7 @@ def process_generate_options(app):
     if not genfiles:
         return
 
-    from generate import generate_autosummary_docs
+    from .generate import generate_autosummary_docs
 
     genfiles = [genfile + (not genfile.endswith(ext) and ext or '')
                 for genfile in genfiles]
@@ -549,4 +564,4 @@ def setup(app):
     app.add_role('autolink', autolink_role)
     app.connect('doctree-read', process_autosummary_toc)
     app.connect('builder-inited', process_generate_options)
-    app.add_config_value('autosummary_generate', [], True)
+    app.add_config_value('autosummary_generate', list(), True)

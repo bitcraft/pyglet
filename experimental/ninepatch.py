@@ -1,10 +1,10 @@
 # Copyright 2009 Joe Wreschnig and others.
-# 
+#
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions
 # are met:
 # 1. Redistributions of source code must retain the above copyright
-#    notice, this list of conditions and the following disclaimer.
+# notice, this list of conditions and the following disclaimer.
 # 2. Redistributions in binary form must reproduce the above copyright
 #    notice, this list of conditions and the following disclaimer in the
 #    documentation and/or other materials provided with the distribution.
@@ -29,7 +29,9 @@ __all__ = ["NinePatch"]
 
 from pyglet.gl import *
 
-class PixelData(object):
+
+class PixelData:
+
     def __init__(self, image):
         image_data = image.get_image_data()
         self.has_alpha = 'A' in image_data.format
@@ -40,12 +42,14 @@ class PixelData(object):
     def is_black(self, x, y):
         p = (y * self.width + x) * 4
         if self.has_alpha:
-            if self.data[p+3] == '\x00':
-                return False # Fully transparent
+            if self.data[p + 3] == '\x00':
+                return False  # Fully transparent
 
-        return self.data[p:p+3] == '\x00\x00\x00'
+        return self.data[p:p + 3] == '\x00\x00\x00'
 
-class NinePatch(object):
+
+class NinePatch:
+
     """A scalable 9-patch image.
     """
 
@@ -146,9 +150,9 @@ class NinePatch(object):
 
         # Scale texture coordinates to match the tex_coords pyglet gives us
         # (these aren't necessarily 0-1 as the texture may have been packed)
-        (tu1, tv1, _, 
-         _, _, _, 
-         tu2, tv2, _, 
+        (tu1, tv1, _,
+         _, _, _,
+         tu2, tv2, _,
          _, _, _) = self.texture.tex_coords
         u_scale = tu2 - tu1
         u_bias = tu1
@@ -178,7 +182,7 @@ class NinePatch(object):
         )
 
         # Quad indices
-        self.indices = []
+        self.indices = list()
         for y in range(3):
             for x in range(3):
                 self.indices.extend([
@@ -243,16 +247,16 @@ class NinePatch(object):
                   width + self.padding_left + self.padding_right,
                   height + self.padding_bottom + self.padding_top)
 
-if __name__ == '__main__':
     import sys
+
     image = pyglet.image.load(sys.argv[1])
     ninepatch = NinePatch(image)
 
     window = pyglet.window.Window(resizable=True)
-    label = pyglet.text.Label('Hello, NinePatch', 
+    label = pyglet.text.Label('Hello, NinePatch',
                               font_size=16,
                               anchor_y='bottom',
-                              color=(0,0,0,255))
+                              color=(0, 0, 0, 255))
 
     @window.event
     def on_draw():
@@ -264,5 +268,5 @@ if __name__ == '__main__':
         label.y = window.height / 2 - height / 2
         ninepatch.draw_around(label.x, label.y, width, height)
         label.draw()
-        
+
     pyglet.app.run()

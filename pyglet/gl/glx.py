@@ -2,14 +2,14 @@
 # pyglet
 # Copyright (c) 2006-2008 Alex Holkner
 # All rights reserved.
-# 
+#
 # Redistribution and use in source and binary forms, with or without
-# modification, are permitted provided that the following conditions 
+# modification, are permitted provided that the following conditions
 # are met:
 #
 #  * Redistributions of source code must retain the above copyright
 #    notice, this list of conditions and the following disclaimer.
-#  * Redistributions in binary form must reproduce the above copyright 
+#  * Redistributions in binary form must reproduce the above copyright
 #    notice, this list of conditions and the following disclaimer in
 #    the documentation and/or other materials provided with the
 #    distribution.
@@ -31,10 +31,10 @@
 # ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 # ----------------------------------------------------------------------------
-'''Wrapper for /usr/include/GL/glx.h
+"""Wrapper for /usr/include/GL/glx.h
 
 Do not modify generated portions of this file.
-'''
+"""
 
 __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
@@ -143,12 +143,15 @@ GLX_COLOR_INDEX_BIT = 2 	# /usr/include/GL/glx.h:166
 GLX_PBUFFER_CLOBBER_MASK = 134217728 	# /usr/include/GL/glx.h:167
 GLX_SAMPLE_BUFFERS = 100000 	# /usr/include/GL/glx.h:173
 GLX_SAMPLES = 100001 	# /usr/include/GL/glx.h:174
+
+
 class struct___GLXcontextRec(Structure):
     __slots__ = [
     ]
 struct___GLXcontextRec._fields_ = [
     ('_opaque_struct', c_int)
 ]
+
 
 class struct___GLXcontextRec(Structure):
     __slots__ = [
@@ -161,12 +164,15 @@ GLXContext = POINTER(struct___GLXcontextRec) 	# /usr/include/GL/glx.h:178
 XID = pyglet.libs.x11.xlib.XID
 GLXPixmap = XID 	# /usr/include/GL/glx.h:179
 GLXDrawable = XID 	# /usr/include/GL/glx.h:180
+
+
 class struct___GLXFBConfigRec(Structure):
     __slots__ = [
     ]
 struct___GLXFBConfigRec._fields_ = [
     ('_opaque_struct', c_int)
 ]
+
 
 class struct___GLXFBConfigRec(Structure):
     __slots__ = [
@@ -183,151 +189,208 @@ GLXPbuffer = XID 	# /usr/include/GL/glx.h:186
 XVisualInfo = pyglet.libs.x11.xlib.XVisualInfo
 Display = pyglet.libs.x11.xlib.Display
 # /usr/include/GL/glx.h:190
-glXChooseVisual = _link_function('glXChooseVisual', POINTER(XVisualInfo), [POINTER(Display), c_int, POINTER(c_int)], 'H')
+glXChooseVisual = _link_function('glXChooseVisual', POINTER(
+    XVisualInfo), [POINTER(Display), c_int, POINTER(c_int)], 'H')
 
 # /usr/include/GL/glx.h:193
-glXCreateContext = _link_function('glXCreateContext', GLXContext, [POINTER(Display), POINTER(XVisualInfo), GLXContext, c_int], 'H')
+glXCreateContext = _link_function('glXCreateContext', GLXContext, [
+                                  POINTER(Display), POINTER(XVisualInfo), GLXContext, c_int], 'H')
 
 # /usr/include/GL/glx.h:196
-glXDestroyContext = _link_function('glXDestroyContext', None, [POINTER(Display), GLXContext], 'H')
+glXDestroyContext = _link_function(
+    'glXDestroyContext', None, [POINTER(Display), GLXContext], 'H')
 
 # /usr/include/GL/glx.h:198
-glXMakeCurrent = _link_function('glXMakeCurrent', c_int, [POINTER(Display), GLXDrawable, GLXContext], 'H')
+glXMakeCurrent = _link_function(
+    'glXMakeCurrent', c_int, [POINTER(Display), GLXDrawable, GLXContext], 'H')
 
 # /usr/include/GL/glx.h:201
-glXCopyContext = _link_function('glXCopyContext', None, [POINTER(Display), GLXContext, GLXContext, c_ulong], 'H')
+glXCopyContext = _link_function(
+    'glXCopyContext', None, [POINTER(Display), GLXContext, GLXContext, c_ulong], 'H')
 
 # /usr/include/GL/glx.h:204
-glXSwapBuffers = _link_function('glXSwapBuffers', None, [POINTER(Display), GLXDrawable], 'H')
+glXSwapBuffers = _link_function(
+    'glXSwapBuffers', None, [POINTER(Display), GLXDrawable], 'H')
 
 Pixmap = pyglet.libs.x11.xlib.Pixmap
 # /usr/include/GL/glx.h:206
-glXCreateGLXPixmap = _link_function('glXCreateGLXPixmap', GLXPixmap, [POINTER(Display), POINTER(XVisualInfo), Pixmap], 'H')
+glXCreateGLXPixmap = _link_function('glXCreateGLXPixmap', GLXPixmap, [
+                                    POINTER(Display), POINTER(XVisualInfo), Pixmap], 'H')
 
 # /usr/include/GL/glx.h:209
-glXDestroyGLXPixmap = _link_function('glXDestroyGLXPixmap', None, [POINTER(Display), GLXPixmap], 'H')
+glXDestroyGLXPixmap = _link_function(
+    'glXDestroyGLXPixmap', None, [POINTER(Display), GLXPixmap], 'H')
 
 # /usr/include/GL/glx.h:211
-glXQueryExtension = _link_function('glXQueryExtension', c_int, [POINTER(Display), POINTER(c_int), POINTER(c_int)], 'H')
+glXQueryExtension = _link_function(
+    'glXQueryExtension', c_int, [POINTER(Display), POINTER(c_int), POINTER(c_int)], 'H')
 
 # /usr/include/GL/glx.h:213
-glXQueryVersion = _link_function('glXQueryVersion', c_int, [POINTER(Display), POINTER(c_int), POINTER(c_int)], 'H')
+glXQueryVersion = _link_function(
+    'glXQueryVersion', c_int, [POINTER(Display), POINTER(c_int), POINTER(c_int)], 'H')
 
 # /usr/include/GL/glx.h:215
-glXIsDirect = _link_function('glXIsDirect', c_int, [POINTER(Display), GLXContext], 'H')
+glXIsDirect = _link_function(
+    'glXIsDirect', c_int, [POINTER(Display), GLXContext], 'H')
 
 # /usr/include/GL/glx.h:217
-glXGetConfig = _link_function('glXGetConfig', c_int, [POINTER(Display), POINTER(XVisualInfo), c_int, POINTER(c_int)], 'H')
+glXGetConfig = _link_function('glXGetConfig', c_int, [POINTER(
+    Display), POINTER(XVisualInfo), c_int, POINTER(c_int)], 'H')
 
 # /usr/include/GL/glx.h:220
-glXGetCurrentContext = _link_function('glXGetCurrentContext', GLXContext, [], 'H')
+glXGetCurrentContext = _link_function(
+    'glXGetCurrentContext', GLXContext, list(), 'H')
 
 # /usr/include/GL/glx.h:222
-glXGetCurrentDrawable = _link_function('glXGetCurrentDrawable', GLXDrawable, [], 'H')
+glXGetCurrentDrawable = _link_function(
+    'glXGetCurrentDrawable', GLXDrawable, list(), 'H')
 
 # /usr/include/GL/glx.h:224
-glXWaitGL = _link_function('glXWaitGL', None, [], 'H')
+glXWaitGL = _link_function('glXWaitGL', None, list(), 'H')
 
 # /usr/include/GL/glx.h:226
-glXWaitX = _link_function('glXWaitX', None, [], 'H')
+glXWaitX = _link_function('glXWaitX', None, list(), 'H')
 
 Font = pyglet.libs.x11.xlib.Font
 # /usr/include/GL/glx.h:228
-glXUseXFont = _link_function('glXUseXFont', None, [Font, c_int, c_int, c_int], 'H')
+glXUseXFont = _link_function(
+    'glXUseXFont', None, [Font, c_int, c_int, c_int], 'H')
 
 # /usr/include/GL/glx.h:233
-glXQueryExtensionsString = _link_function('glXQueryExtensionsString', c_char_p, [POINTER(Display), c_int], 'H')
+glXQueryExtensionsString = _link_function(
+    'glXQueryExtensionsString', c_char_p, [POINTER(Display), c_int], 'H')
 
 # /usr/include/GL/glx.h:235
-glXQueryServerString = _link_function('glXQueryServerString', c_char_p, [POINTER(Display), c_int, c_int], 'H')
+glXQueryServerString = _link_function(
+    'glXQueryServerString', c_char_p, [POINTER(Display), c_int, c_int], 'H')
 
 # /usr/include/GL/glx.h:237
-glXGetClientString = _link_function('glXGetClientString', c_char_p, [POINTER(Display), c_int], 'H')
+glXGetClientString = _link_function(
+    'glXGetClientString', c_char_p, [POINTER(Display), c_int], 'H')
 
 # /usr/include/GL/glx.h:241
-glXGetCurrentDisplay = _link_function('glXGetCurrentDisplay', POINTER(Display), [], 'H')
+glXGetCurrentDisplay = _link_function(
+    'glXGetCurrentDisplay', POINTER(Display), list(), 'H')
 
 # /usr/include/GL/glx.h:245
-glXChooseFBConfig = _link_function('glXChooseFBConfig', POINTER(GLXFBConfig), [POINTER(Display), c_int, POINTER(c_int), POINTER(c_int)], 'H')
+glXChooseFBConfig = _link_function('glXChooseFBConfig', POINTER(
+    GLXFBConfig), [POINTER(Display), c_int, POINTER(c_int), POINTER(c_int)], 'H')
 
 # /usr/include/GL/glx.h:248
-glXGetFBConfigAttrib = _link_function('glXGetFBConfigAttrib', c_int, [POINTER(Display), GLXFBConfig, c_int, POINTER(c_int)], 'H')
+glXGetFBConfigAttrib = _link_function('glXGetFBConfigAttrib', c_int, [
+                                      POINTER(Display), GLXFBConfig, c_int, POINTER(c_int)], 'H')
 
 # /usr/include/GL/glx.h:251
-glXGetFBConfigs = _link_function('glXGetFBConfigs', POINTER(GLXFBConfig), [POINTER(Display), c_int, POINTER(c_int)], 'H')
+glXGetFBConfigs = _link_function('glXGetFBConfigs', POINTER(
+    GLXFBConfig), [POINTER(Display), c_int, POINTER(c_int)], 'H')
 
 # /usr/include/GL/glx.h:254
-glXGetVisualFromFBConfig = _link_function('glXGetVisualFromFBConfig', POINTER(XVisualInfo), [POINTER(Display), GLXFBConfig], 'H')
+glXGetVisualFromFBConfig = _link_function('glXGetVisualFromFBConfig', POINTER(
+    XVisualInfo), [POINTER(Display), GLXFBConfig], 'H')
 
 Window = pyglet.libs.x11.xlib.Window
 # /usr/include/GL/glx.h:257
-glXCreateWindow = _link_function('glXCreateWindow', GLXWindow, [POINTER(Display), GLXFBConfig, Window, POINTER(c_int)], 'H')
+glXCreateWindow = _link_function('glXCreateWindow', GLXWindow, [
+                                 POINTER(Display), GLXFBConfig, Window, POINTER(c_int)], 'H')
 
 # /usr/include/GL/glx.h:260
-glXDestroyWindow = _link_function('glXDestroyWindow', None, [POINTER(Display), GLXWindow], 'H')
+glXDestroyWindow = _link_function(
+    'glXDestroyWindow', None, [POINTER(Display), GLXWindow], 'H')
 
 # /usr/include/GL/glx.h:262
-glXCreatePixmap = _link_function('glXCreatePixmap', GLXPixmap, [POINTER(Display), GLXFBConfig, Pixmap, POINTER(c_int)], 'H')
+glXCreatePixmap = _link_function('glXCreatePixmap', GLXPixmap, [
+                                 POINTER(Display), GLXFBConfig, Pixmap, POINTER(c_int)], 'H')
 
 # /usr/include/GL/glx.h:265
-glXDestroyPixmap = _link_function('glXDestroyPixmap', None, [POINTER(Display), GLXPixmap], 'H')
+glXDestroyPixmap = _link_function(
+    'glXDestroyPixmap', None, [POINTER(Display), GLXPixmap], 'H')
 
 # /usr/include/GL/glx.h:267
-glXCreatePbuffer = _link_function('glXCreatePbuffer', GLXPbuffer, [POINTER(Display), GLXFBConfig, POINTER(c_int)], 'H')
+glXCreatePbuffer = _link_function('glXCreatePbuffer', GLXPbuffer, [
+                                  POINTER(Display), GLXFBConfig, POINTER(c_int)], 'H')
 
 # /usr/include/GL/glx.h:270
-glXDestroyPbuffer = _link_function('glXDestroyPbuffer', None, [POINTER(Display), GLXPbuffer], 'H')
+glXDestroyPbuffer = _link_function(
+    'glXDestroyPbuffer', None, [POINTER(Display), GLXPbuffer], 'H')
 
 # /usr/include/GL/glx.h:272
-glXQueryDrawable = _link_function('glXQueryDrawable', None, [POINTER(Display), GLXDrawable, c_int, POINTER(c_uint)], 'H')
+glXQueryDrawable = _link_function('glXQueryDrawable', None, [
+                                  POINTER(Display), GLXDrawable, c_int, POINTER(c_uint)], 'H')
 
 # /usr/include/GL/glx.h:275
-glXCreateNewContext = _link_function('glXCreateNewContext', GLXContext, [POINTER(Display), GLXFBConfig, c_int, GLXContext, c_int], 'H')
+glXCreateNewContext = _link_function('glXCreateNewContext', GLXContext, [
+                                     POINTER(Display), GLXFBConfig, c_int, GLXContext, c_int], 'H')
 
 # /usr/include/GL/glx.h:279
-glXMakeContextCurrent = _link_function('glXMakeContextCurrent', c_int, [POINTER(Display), GLXDrawable, GLXDrawable, GLXContext], 'H')
+glXMakeContextCurrent = _link_function('glXMakeContextCurrent', c_int, [
+                                       POINTER(Display), GLXDrawable, GLXDrawable, GLXContext], 'H')
 
 # /usr/include/GL/glx.h:282
-glXGetCurrentReadDrawable = _link_function('glXGetCurrentReadDrawable', GLXDrawable, [], 'H')
+glXGetCurrentReadDrawable = _link_function(
+    'glXGetCurrentReadDrawable', GLXDrawable, list(), 'H')
 
 # /usr/include/GL/glx.h:284
-glXQueryContext = _link_function('glXQueryContext', c_int, [POINTER(Display), GLXContext, c_int, POINTER(c_int)], 'H')
+glXQueryContext = _link_function('glXQueryContext', c_int, [
+                                 POINTER(Display), GLXContext, c_int, POINTER(c_int)], 'H')
 
 # /usr/include/GL/glx.h:287
-glXSelectEvent = _link_function('glXSelectEvent', None, [POINTER(Display), GLXDrawable, c_ulong], 'H')
+glXSelectEvent = _link_function(
+    'glXSelectEvent', None, [POINTER(Display), GLXDrawable, c_ulong], 'H')
 
 # /usr/include/GL/glx.h:290
-glXGetSelectedEvent = _link_function('glXGetSelectedEvent', None, [POINTER(Display), GLXDrawable, POINTER(c_ulong)], 'H')
+glXGetSelectedEvent = _link_function(
+    'glXGetSelectedEvent', None, [POINTER(Display), GLXDrawable, POINTER(c_ulong)], 'H')
 
-PFNGLXGETFBCONFIGSPROC = CFUNCTYPE(POINTER(GLXFBConfig), POINTER(Display), c_int, POINTER(c_int)) 	# /usr/include/GL/glx.h:294
-PFNGLXCHOOSEFBCONFIGPROC = CFUNCTYPE(POINTER(GLXFBConfig), POINTER(Display), c_int, POINTER(c_int), POINTER(c_int)) 	# /usr/include/GL/glx.h:295
-PFNGLXGETFBCONFIGATTRIBPROC = CFUNCTYPE(c_int, POINTER(Display), GLXFBConfig, c_int, POINTER(c_int)) 	# /usr/include/GL/glx.h:296
-PFNGLXGETVISUALFROMFBCONFIGPROC = CFUNCTYPE(POINTER(XVisualInfo), POINTER(Display), GLXFBConfig) 	# /usr/include/GL/glx.h:297
-PFNGLXCREATEWINDOWPROC = CFUNCTYPE(GLXWindow, POINTER(Display), GLXFBConfig, Window, POINTER(c_int)) 	# /usr/include/GL/glx.h:298
-PFNGLXDESTROYWINDOWPROC = CFUNCTYPE(None, POINTER(Display), GLXWindow) 	# /usr/include/GL/glx.h:299
-PFNGLXCREATEPIXMAPPROC = CFUNCTYPE(GLXPixmap, POINTER(Display), GLXFBConfig, Pixmap, POINTER(c_int)) 	# /usr/include/GL/glx.h:300
-PFNGLXDESTROYPIXMAPPROC = CFUNCTYPE(None, POINTER(Display), GLXPixmap) 	# /usr/include/GL/glx.h:301
-PFNGLXCREATEPBUFFERPROC = CFUNCTYPE(GLXPbuffer, POINTER(Display), GLXFBConfig, POINTER(c_int)) 	# /usr/include/GL/glx.h:302
-PFNGLXDESTROYPBUFFERPROC = CFUNCTYPE(None, POINTER(Display), GLXPbuffer) 	# /usr/include/GL/glx.h:303
-PFNGLXQUERYDRAWABLEPROC = CFUNCTYPE(None, POINTER(Display), GLXDrawable, c_int, POINTER(c_uint)) 	# /usr/include/GL/glx.h:304
-PFNGLXCREATENEWCONTEXTPROC = CFUNCTYPE(GLXContext, POINTER(Display), GLXFBConfig, c_int, GLXContext, c_int) 	# /usr/include/GL/glx.h:305
-PFNGLXMAKECONTEXTCURRENTPROC = CFUNCTYPE(c_int, POINTER(Display), GLXDrawable, GLXDrawable, GLXContext) 	# /usr/include/GL/glx.h:306
-PFNGLXGETCURRENTREADDRAWABLEPROC = CFUNCTYPE(GLXDrawable) 	# /usr/include/GL/glx.h:307
-PFNGLXGETCURRENTDISPLAYPROC = CFUNCTYPE(POINTER(Display)) 	# /usr/include/GL/glx.h:308
-PFNGLXQUERYCONTEXTPROC = CFUNCTYPE(c_int, POINTER(Display), GLXContext, c_int, POINTER(c_int)) 	# /usr/include/GL/glx.h:309
-PFNGLXSELECTEVENTPROC = CFUNCTYPE(None, POINTER(Display), GLXDrawable, c_ulong) 	# /usr/include/GL/glx.h:310
-PFNGLXGETSELECTEDEVENTPROC = CFUNCTYPE(None, POINTER(Display), GLXDrawable, POINTER(c_ulong)) 	# /usr/include/GL/glx.h:311
+PFNGLXGETFBCONFIGSPROC = CFUNCTYPE(POINTER(GLXFBConfig), POINTER(
+    Display), c_int, POINTER(c_int)) 	# /usr/include/GL/glx.h:294
+PFNGLXCHOOSEFBCONFIGPROC = CFUNCTYPE(POINTER(GLXFBConfig), POINTER(
+    Display), c_int, POINTER(c_int), POINTER(c_int)) 	# /usr/include/GL/glx.h:295
+PFNGLXGETFBCONFIGATTRIBPROC = CFUNCTYPE(c_int, POINTER(
+    Display), GLXFBConfig, c_int, POINTER(c_int)) 	# /usr/include/GL/glx.h:296
+PFNGLXGETVISUALFROMFBCONFIGPROC = CFUNCTYPE(
+    POINTER(XVisualInfo), POINTER(Display), GLXFBConfig) 	# /usr/include/GL/glx.h:297
+PFNGLXCREATEWINDOWPROC = CFUNCTYPE(GLXWindow, POINTER(
+    Display), GLXFBConfig, Window, POINTER(c_int)) 	# /usr/include/GL/glx.h:298
+PFNGLXDESTROYWINDOWPROC = CFUNCTYPE(
+    None, POINTER(Display), GLXWindow) 	# /usr/include/GL/glx.h:299
+PFNGLXCREATEPIXMAPPROC = CFUNCTYPE(GLXPixmap, POINTER(
+    Display), GLXFBConfig, Pixmap, POINTER(c_int)) 	# /usr/include/GL/glx.h:300
+PFNGLXDESTROYPIXMAPPROC = CFUNCTYPE(
+    None, POINTER(Display), GLXPixmap) 	# /usr/include/GL/glx.h:301
+PFNGLXCREATEPBUFFERPROC = CFUNCTYPE(GLXPbuffer, POINTER(
+    Display), GLXFBConfig, POINTER(c_int)) 	# /usr/include/GL/glx.h:302
+PFNGLXDESTROYPBUFFERPROC = CFUNCTYPE(
+    None, POINTER(Display), GLXPbuffer) 	# /usr/include/GL/glx.h:303
+PFNGLXQUERYDRAWABLEPROC = CFUNCTYPE(None, POINTER(
+    Display), GLXDrawable, c_int, POINTER(c_uint)) 	# /usr/include/GL/glx.h:304
+PFNGLXCREATENEWCONTEXTPROC = CFUNCTYPE(GLXContext, POINTER(
+    Display), GLXFBConfig, c_int, GLXContext, c_int) 	# /usr/include/GL/glx.h:305
+PFNGLXMAKECONTEXTCURRENTPROC = CFUNCTYPE(c_int, POINTER(
+    Display), GLXDrawable, GLXDrawable, GLXContext) 	# /usr/include/GL/glx.h:306
+PFNGLXGETCURRENTREADDRAWABLEPROC = CFUNCTYPE(
+    GLXDrawable) 	# /usr/include/GL/glx.h:307
+PFNGLXGETCURRENTDISPLAYPROC = CFUNCTYPE(
+    POINTER(Display)) 	# /usr/include/GL/glx.h:308
+PFNGLXQUERYCONTEXTPROC = CFUNCTYPE(c_int, POINTER(
+    Display), GLXContext, c_int, POINTER(c_int)) 	# /usr/include/GL/glx.h:309
+PFNGLXSELECTEVENTPROC = CFUNCTYPE(
+    None, POINTER(Display), GLXDrawable, c_ulong) 	# /usr/include/GL/glx.h:310
+PFNGLXGETSELECTEDEVENTPROC = CFUNCTYPE(None, POINTER(
+    Display), GLXDrawable, POINTER(c_ulong)) 	# /usr/include/GL/glx.h:311
 # ARB_get_proc_address (/usr/include/GL/glx.h:317)
 GLX_ARB_get_proc_address = 1 	# /usr/include/GL/glx.h:318
 __GLXextFuncPtr = CFUNCTYPE(None) 	# /usr/include/GL/glx.h:320
 GLubyte = c_ubyte 	# /usr/include/GL/gl.h:160
 # /usr/include/GL/glx.h:321
-glXGetProcAddressARB = _link_function('glXGetProcAddressARB', __GLXextFuncPtr, [POINTER(GLubyte)], 'ARB_get_proc_address')
+glXGetProcAddressARB = _link_function(
+    'glXGetProcAddressARB', __GLXextFuncPtr, [POINTER(GLubyte)], 'ARB_get_proc_address')
 
 # /usr/include/GL/glx.h:328
-glXGetProcAddress = _link_function('glXGetProcAddress', POINTER(CFUNCTYPE(None)), [POINTER(GLubyte)], 'ARB_get_proc_address')
+glXGetProcAddress = _link_function('glXGetProcAddress', POINTER(
+    CFUNCTYPE(None)), [POINTER(GLubyte)], 'ARB_get_proc_address')
 
-PFNGLXGETPROCADDRESSPROC = CFUNCTYPE(__GLXextFuncPtr, POINTER(GLubyte)) 	# /usr/include/GL/glx.h:331
+PFNGLXGETPROCADDRESSPROC = CFUNCTYPE(
+    __GLXextFuncPtr, POINTER(GLubyte)) 	# /usr/include/GL/glx.h:331
 # GLXEXT_LEGACY (/usr/include/GL/glx.h:334)
 # VERSION_1_3 (/usr/include/GL/glxext.h:55)
 # VERSION_1_4 (/usr/include/GL/glxext.h:114)
@@ -426,70 +489,96 @@ PFNGLXGETPROCADDRESSPROC = CFUNCTYPE(__GLXextFuncPtr, POINTER(GLubyte)) 	# /usr/
 GLsizei = c_int 	# /usr/include/GL/gl.h:163
 GLfloat = c_float 	# /usr/include/GL/gl.h:164
 # /usr/include/GL/glx.h:352
-glXAllocateMemoryNV = _link_function('glXAllocateMemoryNV', POINTER(c_void), [GLsizei, GLfloat, GLfloat, GLfloat], 'NV_vertex_array_range')
+glXAllocateMemoryNV = _link_function('glXAllocateMemoryNV', POINTER(
+    c_void), [GLsizei, GLfloat, GLfloat, GLfloat], 'NV_vertex_array_range')
 
 GLvoid = None 	# /usr/include/GL/gl.h:156
 # /usr/include/GL/glx.h:353
-glXFreeMemoryNV = _link_function('glXFreeMemoryNV', None, [POINTER(GLvoid)], 'NV_vertex_array_range')
+glXFreeMemoryNV = _link_function(
+    'glXFreeMemoryNV', None, [POINTER(GLvoid)], 'NV_vertex_array_range')
 
-PFNGLXALLOCATEMEMORYNVPROC = CFUNCTYPE(POINTER(c_void), GLsizei, GLfloat, GLfloat, GLfloat) 	# /usr/include/GL/glx.h:354
-PFNGLXFREEMEMORYNVPROC = CFUNCTYPE(None, POINTER(GLvoid)) 	# /usr/include/GL/glx.h:355
+PFNGLXALLOCATEMEMORYNVPROC = CFUNCTYPE(
+    POINTER(c_void), GLsizei, GLfloat, GLfloat, GLfloat) 	# /usr/include/GL/glx.h:354
+PFNGLXFREEMEMORYNVPROC = CFUNCTYPE(
+    None, POINTER(GLvoid)) 	# /usr/include/GL/glx.h:355
 # MESA_allocate_memory (/usr/include/GL/glx.h:363)
 GLX_MESA_allocate_memory = 1 	# /usr/include/GL/glx.h:364
 # /usr/include/GL/glx.h:366
-glXAllocateMemoryMESA = _link_function('glXAllocateMemoryMESA', POINTER(c_void), [POINTER(Display), c_int, c_size_t, c_float, c_float, c_float], 'MESA_allocate_memory')
+glXAllocateMemoryMESA = _link_function('glXAllocateMemoryMESA', POINTER(c_void), [
+                                       POINTER(Display), c_int, c_size_t, c_float, c_float, c_float], 'MESA_allocate_memory')
 
 # /usr/include/GL/glx.h:367
-glXFreeMemoryMESA = _link_function('glXFreeMemoryMESA', None, [POINTER(Display), c_int, POINTER(None)], 'MESA_allocate_memory')
+glXFreeMemoryMESA = _link_function('glXFreeMemoryMESA', None, [
+                                   POINTER(Display), c_int, POINTER(None)], 'MESA_allocate_memory')
 
 GLuint = c_uint 	# /usr/include/GL/gl.h:162
 # /usr/include/GL/glx.h:368
-glXGetMemoryOffsetMESA = _link_function('glXGetMemoryOffsetMESA', GLuint, [POINTER(Display), c_int, POINTER(None)], 'MESA_allocate_memory')
+glXGetMemoryOffsetMESA = _link_function('glXGetMemoryOffsetMESA', GLuint, [
+                                        POINTER(Display), c_int, POINTER(None)], 'MESA_allocate_memory')
 
-PFNGLXALLOCATEMEMORYMESAPROC = CFUNCTYPE(POINTER(c_void), POINTER(Display), c_int, c_size_t, c_float, c_float, c_float) 	# /usr/include/GL/glx.h:369
-PFNGLXFREEMEMORYMESAPROC = CFUNCTYPE(None, POINTER(Display), c_int, POINTER(None)) 	# /usr/include/GL/glx.h:370
-PFNGLXGETMEMORYOFFSETMESAPROC = CFUNCTYPE(GLuint, POINTER(Display), c_int, POINTER(None)) 	# /usr/include/GL/glx.h:371
+PFNGLXALLOCATEMEMORYMESAPROC = CFUNCTYPE(POINTER(c_void), POINTER(
+    Display), c_int, c_size_t, c_float, c_float, c_float) 	# /usr/include/GL/glx.h:369
+PFNGLXFREEMEMORYMESAPROC = CFUNCTYPE(
+    None, POINTER(Display), c_int, POINTER(None)) 	# /usr/include/GL/glx.h:370
+PFNGLXGETMEMORYOFFSETMESAPROC = CFUNCTYPE(
+    GLuint, POINTER(Display), c_int, POINTER(None)) 	# /usr/include/GL/glx.h:371
 # ARB_render_texture (/usr/include/GL/glx.h:380)
 GLX_ARB_render_texture = 1 	# /usr/include/GL/glx.h:381
 # /usr/include/GL/glx.h:383
-glXBindTexImageARB = _link_function('glXBindTexImageARB', c_int, [POINTER(Display), GLXPbuffer, c_int], 'ARB_render_texture')
+glXBindTexImageARB = _link_function('glXBindTexImageARB', c_int, [
+                                    POINTER(Display), GLXPbuffer, c_int], 'ARB_render_texture')
 
 # /usr/include/GL/glx.h:384
-glXReleaseTexImageARB = _link_function('glXReleaseTexImageARB', c_int, [POINTER(Display), GLXPbuffer, c_int], 'ARB_render_texture')
+glXReleaseTexImageARB = _link_function('glXReleaseTexImageARB', c_int, [
+                                       POINTER(Display), GLXPbuffer, c_int], 'ARB_render_texture')
 
 # /usr/include/GL/glx.h:385
-glXDrawableAttribARB = _link_function('glXDrawableAttribARB', c_int, [POINTER(Display), GLXDrawable, POINTER(c_int)], 'ARB_render_texture')
+glXDrawableAttribARB = _link_function('glXDrawableAttribARB', c_int, [POINTER(
+    Display), GLXDrawable, POINTER(c_int)], 'ARB_render_texture')
 
 # NV_float_buffer (/usr/include/GL/glx.h:393)
 # MESA_swap_frame_usage (/usr/include/GL/glx.h:405)
 GLX_MESA_swap_frame_usage = 1 	# /usr/include/GL/glx.h:406
 # /usr/include/GL/glx.h:408
-glXGetFrameUsageMESA = _link_function('glXGetFrameUsageMESA', c_int, [POINTER(Display), GLXDrawable, POINTER(c_float)], 'MESA_swap_frame_usage')
+glXGetFrameUsageMESA = _link_function('glXGetFrameUsageMESA', c_int, [POINTER(
+    Display), GLXDrawable, POINTER(c_float)], 'MESA_swap_frame_usage')
 
 # /usr/include/GL/glx.h:409
-glXBeginFrameTrackingMESA = _link_function('glXBeginFrameTrackingMESA', c_int, [POINTER(Display), GLXDrawable], 'MESA_swap_frame_usage')
+glXBeginFrameTrackingMESA = _link_function('glXBeginFrameTrackingMESA', c_int, [
+                                           POINTER(Display), GLXDrawable], 'MESA_swap_frame_usage')
 
 # /usr/include/GL/glx.h:410
-glXEndFrameTrackingMESA = _link_function('glXEndFrameTrackingMESA', c_int, [POINTER(Display), GLXDrawable], 'MESA_swap_frame_usage')
+glXEndFrameTrackingMESA = _link_function('glXEndFrameTrackingMESA', c_int, [
+                                         POINTER(Display), GLXDrawable], 'MESA_swap_frame_usage')
 
 # /usr/include/GL/glx.h:411
-glXQueryFrameTrackingMESA = _link_function('glXQueryFrameTrackingMESA', c_int, [POINTER(Display), GLXDrawable, POINTER(c_int64), POINTER(c_int64), POINTER(c_float)], 'MESA_swap_frame_usage')
+glXQueryFrameTrackingMESA = _link_function('glXQueryFrameTrackingMESA', c_int, [POINTER(
+    Display), GLXDrawable, POINTER(c_int64), POINTER(c_int64), POINTER(c_float)], 'MESA_swap_frame_usage')
 
-PFNGLXGETFRAMEUSAGEMESAPROC = CFUNCTYPE(c_int, POINTER(Display), GLXDrawable, POINTER(c_float)) 	# /usr/include/GL/glx.h:413
-PFNGLXBEGINFRAMETRACKINGMESAPROC = CFUNCTYPE(c_int, POINTER(Display), GLXDrawable) 	# /usr/include/GL/glx.h:414
-PFNGLXENDFRAMETRACKINGMESAPROC = CFUNCTYPE(c_int, POINTER(Display), GLXDrawable) 	# /usr/include/GL/glx.h:415
-PFNGLXQUERYFRAMETRACKINGMESAPROC = CFUNCTYPE(c_int, POINTER(Display), GLXDrawable, POINTER(c_int64), POINTER(c_int64), POINTER(c_float)) 	# /usr/include/GL/glx.h:416
+PFNGLXGETFRAMEUSAGEMESAPROC = CFUNCTYPE(c_int, POINTER(
+    Display), GLXDrawable, POINTER(c_float)) 	# /usr/include/GL/glx.h:413
+PFNGLXBEGINFRAMETRACKINGMESAPROC = CFUNCTYPE(
+    c_int, POINTER(Display), GLXDrawable) 	# /usr/include/GL/glx.h:414
+PFNGLXENDFRAMETRACKINGMESAPROC = CFUNCTYPE(
+    c_int, POINTER(Display), GLXDrawable) 	# /usr/include/GL/glx.h:415
+PFNGLXQUERYFRAMETRACKINGMESAPROC = CFUNCTYPE(c_int, POINTER(Display), GLXDrawable, POINTER(
+    c_int64), POINTER(c_int64), POINTER(c_float)) 	# /usr/include/GL/glx.h:416
 # MESA_swap_control (/usr/include/GL/glx.h:425)
 GLX_MESA_swap_control = 1 	# /usr/include/GL/glx.h:426
 # /usr/include/GL/glx.h:428
-glXSwapIntervalMESA = _link_function('glXSwapIntervalMESA', c_int, [c_uint], 'MESA_swap_control')
+glXSwapIntervalMESA = _link_function(
+    'glXSwapIntervalMESA', c_int, [c_uint], 'MESA_swap_control')
 
 # /usr/include/GL/glx.h:429
-glXGetSwapIntervalMESA = _link_function('glXGetSwapIntervalMESA', c_int, [], 'MESA_swap_control')
+glXGetSwapIntervalMESA = _link_function(
+    'glXGetSwapIntervalMESA', c_int, list(), 'MESA_swap_control')
 
-PFNGLXSWAPINTERVALMESAPROC = CFUNCTYPE(c_int, c_uint) 	# /usr/include/GL/glx.h:431
+PFNGLXSWAPINTERVALMESAPROC = CFUNCTYPE(
+    c_int, c_uint) 	# /usr/include/GL/glx.h:431
 PFNGLXGETSWAPINTERVALMESAPROC = CFUNCTYPE(c_int) 	# /usr/include/GL/glx.h:432
 # EXT_texture_from_pixmap (/usr/include/GL/glx.h:442)
+
+
 class struct_anon_111(Structure):
     __slots__ = [
         'event_type',
@@ -523,6 +612,8 @@ struct_anon_111._fields_ = [
 ]
 
 GLXPbufferClobberEvent = struct_anon_111 	# /usr/include/GL/glx.h:508
+
+
 class struct___GLXEvent(Union):
     __slots__ = [
         'glxpbufferclobber',
@@ -536,66 +627,66 @@ struct___GLXEvent._fields_ = [
 GLXEvent = struct___GLXEvent 	# /usr/include/GL/glx.h:513
 
 __all__ = ['GLX_VERSION_1_1', 'GLX_VERSION_1_2', 'GLX_VERSION_1_3',
-'GLX_VERSION_1_4', 'GLX_USE_GL', 'GLX_BUFFER_SIZE', 'GLX_LEVEL', 'GLX_RGBA',
-'GLX_DOUBLEBUFFER', 'GLX_STEREO', 'GLX_AUX_BUFFERS', 'GLX_RED_SIZE',
-'GLX_GREEN_SIZE', 'GLX_BLUE_SIZE', 'GLX_ALPHA_SIZE', 'GLX_DEPTH_SIZE',
-'GLX_STENCIL_SIZE', 'GLX_ACCUM_RED_SIZE', 'GLX_ACCUM_GREEN_SIZE',
-'GLX_ACCUM_BLUE_SIZE', 'GLX_ACCUM_ALPHA_SIZE', 'GLX_BAD_SCREEN',
-'GLX_BAD_ATTRIBUTE', 'GLX_NO_EXTENSION', 'GLX_BAD_VISUAL', 'GLX_BAD_CONTEXT',
-'GLX_BAD_VALUE', 'GLX_BAD_ENUM', 'GLX_VENDOR', 'GLX_VERSION',
-'GLX_EXTENSIONS', 'GLX_CONFIG_CAVEAT', 'GLX_DONT_CARE', 'GLX_X_VISUAL_TYPE',
-'GLX_TRANSPARENT_TYPE', 'GLX_TRANSPARENT_INDEX_VALUE',
-'GLX_TRANSPARENT_RED_VALUE', 'GLX_TRANSPARENT_GREEN_VALUE',
-'GLX_TRANSPARENT_BLUE_VALUE', 'GLX_TRANSPARENT_ALPHA_VALUE', 'GLX_WINDOW_BIT',
-'GLX_PIXMAP_BIT', 'GLX_PBUFFER_BIT', 'GLX_AUX_BUFFERS_BIT',
-'GLX_FRONT_LEFT_BUFFER_BIT', 'GLX_FRONT_RIGHT_BUFFER_BIT',
-'GLX_BACK_LEFT_BUFFER_BIT', 'GLX_BACK_RIGHT_BUFFER_BIT',
-'GLX_DEPTH_BUFFER_BIT', 'GLX_STENCIL_BUFFER_BIT', 'GLX_ACCUM_BUFFER_BIT',
-'GLX_NONE', 'GLX_SLOW_CONFIG', 'GLX_TRUE_COLOR', 'GLX_DIRECT_COLOR',
-'GLX_PSEUDO_COLOR', 'GLX_STATIC_COLOR', 'GLX_GRAY_SCALE', 'GLX_STATIC_GRAY',
-'GLX_TRANSPARENT_RGB', 'GLX_TRANSPARENT_INDEX', 'GLX_VISUAL_ID', 'GLX_SCREEN',
-'GLX_NON_CONFORMANT_CONFIG', 'GLX_DRAWABLE_TYPE', 'GLX_RENDER_TYPE',
-'GLX_X_RENDERABLE', 'GLX_FBCONFIG_ID', 'GLX_RGBA_TYPE',
-'GLX_COLOR_INDEX_TYPE', 'GLX_MAX_PBUFFER_WIDTH', 'GLX_MAX_PBUFFER_HEIGHT',
-'GLX_MAX_PBUFFER_PIXELS', 'GLX_PRESERVED_CONTENTS', 'GLX_LARGEST_PBUFFER',
-'GLX_WIDTH', 'GLX_HEIGHT', 'GLX_EVENT_MASK', 'GLX_DAMAGED', 'GLX_SAVED',
-'GLX_WINDOW', 'GLX_PBUFFER', 'GLX_PBUFFER_HEIGHT', 'GLX_PBUFFER_WIDTH',
-'GLX_RGBA_BIT', 'GLX_COLOR_INDEX_BIT', 'GLX_PBUFFER_CLOBBER_MASK',
-'GLX_SAMPLE_BUFFERS', 'GLX_SAMPLES', 'GLXContext', 'GLXPixmap', 'GLXDrawable',
-'GLXFBConfig', 'GLXFBConfigID', 'GLXContextID', 'GLXWindow', 'GLXPbuffer',
-'glXChooseVisual', 'glXCreateContext', 'glXDestroyContext', 'glXMakeCurrent',
-'glXCopyContext', 'glXSwapBuffers', 'glXCreateGLXPixmap',
-'glXDestroyGLXPixmap', 'glXQueryExtension', 'glXQueryVersion', 'glXIsDirect',
-'glXGetConfig', 'glXGetCurrentContext', 'glXGetCurrentDrawable', 'glXWaitGL',
-'glXWaitX', 'glXUseXFont', 'glXQueryExtensionsString', 'glXQueryServerString',
-'glXGetClientString', 'glXGetCurrentDisplay', 'glXChooseFBConfig',
-'glXGetFBConfigAttrib', 'glXGetFBConfigs', 'glXGetVisualFromFBConfig',
-'glXCreateWindow', 'glXDestroyWindow', 'glXCreatePixmap', 'glXDestroyPixmap',
-'glXCreatePbuffer', 'glXDestroyPbuffer', 'glXQueryDrawable',
-'glXCreateNewContext', 'glXMakeContextCurrent', 'glXGetCurrentReadDrawable',
-'glXQueryContext', 'glXSelectEvent', 'glXGetSelectedEvent',
-'PFNGLXGETFBCONFIGSPROC', 'PFNGLXCHOOSEFBCONFIGPROC',
-'PFNGLXGETFBCONFIGATTRIBPROC', 'PFNGLXGETVISUALFROMFBCONFIGPROC',
-'PFNGLXCREATEWINDOWPROC', 'PFNGLXDESTROYWINDOWPROC', 'PFNGLXCREATEPIXMAPPROC',
-'PFNGLXDESTROYPIXMAPPROC', 'PFNGLXCREATEPBUFFERPROC',
-'PFNGLXDESTROYPBUFFERPROC', 'PFNGLXQUERYDRAWABLEPROC',
-'PFNGLXCREATENEWCONTEXTPROC', 'PFNGLXMAKECONTEXTCURRENTPROC',
-'PFNGLXGETCURRENTREADDRAWABLEPROC', 'PFNGLXGETCURRENTDISPLAYPROC',
-'PFNGLXQUERYCONTEXTPROC', 'PFNGLXSELECTEVENTPROC',
-'PFNGLXGETSELECTEDEVENTPROC', 'GLX_ARB_get_proc_address', '__GLXextFuncPtr',
-'glXGetProcAddressARB', 'glXGetProcAddress', 'PFNGLXGETPROCADDRESSPROC',
-'glXAllocateMemoryNV', 'glXFreeMemoryNV', 'PFNGLXALLOCATEMEMORYNVPROC',
-'PFNGLXFREEMEMORYNVPROC', 'GLX_MESA_allocate_memory', 'glXAllocateMemoryMESA',
-'glXFreeMemoryMESA', 'glXGetMemoryOffsetMESA', 'PFNGLXALLOCATEMEMORYMESAPROC',
-'PFNGLXFREEMEMORYMESAPROC', 'PFNGLXGETMEMORYOFFSETMESAPROC',
-'GLX_ARB_render_texture', 'glXBindTexImageARB', 'glXReleaseTexImageARB',
-'glXDrawableAttribARB', 'GLX_MESA_swap_frame_usage', 'glXGetFrameUsageMESA',
-'glXBeginFrameTrackingMESA', 'glXEndFrameTrackingMESA',
-'glXQueryFrameTrackingMESA', 'PFNGLXGETFRAMEUSAGEMESAPROC',
-'PFNGLXBEGINFRAMETRACKINGMESAPROC', 'PFNGLXENDFRAMETRACKINGMESAPROC',
-'PFNGLXQUERYFRAMETRACKINGMESAPROC', 'GLX_MESA_swap_control',
-'glXSwapIntervalMESA', 'glXGetSwapIntervalMESA', 'PFNGLXSWAPINTERVALMESAPROC',
-'PFNGLXGETSWAPINTERVALMESAPROC', 'GLXPbufferClobberEvent', 'GLXEvent']
+           'GLX_VERSION_1_4', 'GLX_USE_GL', 'GLX_BUFFER_SIZE', 'GLX_LEVEL', 'GLX_RGBA',
+           'GLX_DOUBLEBUFFER', 'GLX_STEREO', 'GLX_AUX_BUFFERS', 'GLX_RED_SIZE',
+           'GLX_GREEN_SIZE', 'GLX_BLUE_SIZE', 'GLX_ALPHA_SIZE', 'GLX_DEPTH_SIZE',
+           'GLX_STENCIL_SIZE', 'GLX_ACCUM_RED_SIZE', 'GLX_ACCUM_GREEN_SIZE',
+           'GLX_ACCUM_BLUE_SIZE', 'GLX_ACCUM_ALPHA_SIZE', 'GLX_BAD_SCREEN',
+           'GLX_BAD_ATTRIBUTE', 'GLX_NO_EXTENSION', 'GLX_BAD_VISUAL', 'GLX_BAD_CONTEXT',
+           'GLX_BAD_VALUE', 'GLX_BAD_ENUM', 'GLX_VENDOR', 'GLX_VERSION',
+           'GLX_EXTENSIONS', 'GLX_CONFIG_CAVEAT', 'GLX_DONT_CARE', 'GLX_X_VISUAL_TYPE',
+           'GLX_TRANSPARENT_TYPE', 'GLX_TRANSPARENT_INDEX_VALUE',
+           'GLX_TRANSPARENT_RED_VALUE', 'GLX_TRANSPARENT_GREEN_VALUE',
+           'GLX_TRANSPARENT_BLUE_VALUE', 'GLX_TRANSPARENT_ALPHA_VALUE', 'GLX_WINDOW_BIT',
+           'GLX_PIXMAP_BIT', 'GLX_PBUFFER_BIT', 'GLX_AUX_BUFFERS_BIT',
+           'GLX_FRONT_LEFT_BUFFER_BIT', 'GLX_FRONT_RIGHT_BUFFER_BIT',
+           'GLX_BACK_LEFT_BUFFER_BIT', 'GLX_BACK_RIGHT_BUFFER_BIT',
+           'GLX_DEPTH_BUFFER_BIT', 'GLX_STENCIL_BUFFER_BIT', 'GLX_ACCUM_BUFFER_BIT',
+           'GLX_NONE', 'GLX_SLOW_CONFIG', 'GLX_TRUE_COLOR', 'GLX_DIRECT_COLOR',
+           'GLX_PSEUDO_COLOR', 'GLX_STATIC_COLOR', 'GLX_GRAY_SCALE', 'GLX_STATIC_GRAY',
+           'GLX_TRANSPARENT_RGB', 'GLX_TRANSPARENT_INDEX', 'GLX_VISUAL_ID', 'GLX_SCREEN',
+           'GLX_NON_CONFORMANT_CONFIG', 'GLX_DRAWABLE_TYPE', 'GLX_RENDER_TYPE',
+           'GLX_X_RENDERABLE', 'GLX_FBCONFIG_ID', 'GLX_RGBA_TYPE',
+           'GLX_COLOR_INDEX_TYPE', 'GLX_MAX_PBUFFER_WIDTH', 'GLX_MAX_PBUFFER_HEIGHT',
+           'GLX_MAX_PBUFFER_PIXELS', 'GLX_PRESERVED_CONTENTS', 'GLX_LARGEST_PBUFFER',
+           'GLX_WIDTH', 'GLX_HEIGHT', 'GLX_EVENT_MASK', 'GLX_DAMAGED', 'GLX_SAVED',
+           'GLX_WINDOW', 'GLX_PBUFFER', 'GLX_PBUFFER_HEIGHT', 'GLX_PBUFFER_WIDTH',
+           'GLX_RGBA_BIT', 'GLX_COLOR_INDEX_BIT', 'GLX_PBUFFER_CLOBBER_MASK',
+           'GLX_SAMPLE_BUFFERS', 'GLX_SAMPLES', 'GLXContext', 'GLXPixmap', 'GLXDrawable',
+           'GLXFBConfig', 'GLXFBConfigID', 'GLXContextID', 'GLXWindow', 'GLXPbuffer',
+           'glXChooseVisual', 'glXCreateContext', 'glXDestroyContext', 'glXMakeCurrent',
+           'glXCopyContext', 'glXSwapBuffers', 'glXCreateGLXPixmap',
+           'glXDestroyGLXPixmap', 'glXQueryExtension', 'glXQueryVersion', 'glXIsDirect',
+           'glXGetConfig', 'glXGetCurrentContext', 'glXGetCurrentDrawable', 'glXWaitGL',
+           'glXWaitX', 'glXUseXFont', 'glXQueryExtensionsString', 'glXQueryServerString',
+           'glXGetClientString', 'glXGetCurrentDisplay', 'glXChooseFBConfig',
+           'glXGetFBConfigAttrib', 'glXGetFBConfigs', 'glXGetVisualFromFBConfig',
+           'glXCreateWindow', 'glXDestroyWindow', 'glXCreatePixmap', 'glXDestroyPixmap',
+           'glXCreatePbuffer', 'glXDestroyPbuffer', 'glXQueryDrawable',
+           'glXCreateNewContext', 'glXMakeContextCurrent', 'glXGetCurrentReadDrawable',
+           'glXQueryContext', 'glXSelectEvent', 'glXGetSelectedEvent',
+           'PFNGLXGETFBCONFIGSPROC', 'PFNGLXCHOOSEFBCONFIGPROC',
+           'PFNGLXGETFBCONFIGATTRIBPROC', 'PFNGLXGETVISUALFROMFBCONFIGPROC',
+           'PFNGLXCREATEWINDOWPROC', 'PFNGLXDESTROYWINDOWPROC', 'PFNGLXCREATEPIXMAPPROC',
+           'PFNGLXDESTROYPIXMAPPROC', 'PFNGLXCREATEPBUFFERPROC',
+           'PFNGLXDESTROYPBUFFERPROC', 'PFNGLXQUERYDRAWABLEPROC',
+           'PFNGLXCREATENEWCONTEXTPROC', 'PFNGLXMAKECONTEXTCURRENTPROC',
+           'PFNGLXGETCURRENTREADDRAWABLEPROC', 'PFNGLXGETCURRENTDISPLAYPROC',
+           'PFNGLXQUERYCONTEXTPROC', 'PFNGLXSELECTEVENTPROC',
+           'PFNGLXGETSELECTEDEVENTPROC', 'GLX_ARB_get_proc_address', '__GLXextFuncPtr',
+           'glXGetProcAddressARB', 'glXGetProcAddress', 'PFNGLXGETPROCADDRESSPROC',
+           'glXAllocateMemoryNV', 'glXFreeMemoryNV', 'PFNGLXALLOCATEMEMORYNVPROC',
+           'PFNGLXFREEMEMORYNVPROC', 'GLX_MESA_allocate_memory', 'glXAllocateMemoryMESA',
+           'glXFreeMemoryMESA', 'glXGetMemoryOffsetMESA', 'PFNGLXALLOCATEMEMORYMESAPROC',
+           'PFNGLXFREEMEMORYMESAPROC', 'PFNGLXGETMEMORYOFFSETMESAPROC',
+           'GLX_ARB_render_texture', 'glXBindTexImageARB', 'glXReleaseTexImageARB',
+           'glXDrawableAttribARB', 'GLX_MESA_swap_frame_usage', 'glXGetFrameUsageMESA',
+           'glXBeginFrameTrackingMESA', 'glXEndFrameTrackingMESA',
+           'glXQueryFrameTrackingMESA', 'PFNGLXGETFRAMEUSAGEMESAPROC',
+           'PFNGLXBEGINFRAMETRACKINGMESAPROC', 'PFNGLXENDFRAMETRACKINGMESAPROC',
+           'PFNGLXQUERYFRAMETRACKINGMESAPROC', 'GLX_MESA_swap_control',
+           'glXSwapIntervalMESA', 'glXGetSwapIntervalMESA', 'PFNGLXSWAPINTERVALMESAPROC',
+           'PFNGLXGETSWAPINTERVALMESAPROC', 'GLXPbufferClobberEvent', 'GLXEvent']
 # END GENERATED CONTENT (do not edit above this line)
 
 # From glxproto.h
@@ -614,11 +705,6 @@ GLXBadCurrentDrawable = 11
 GLXBadWindow = 12
 
 __all__ += ['GLXBadContext', 'GLXBadContextState', 'GLXBadDrawable',
-'GLXBadPixmap', 'GLXBadContextTag', 'GLXBadCurrentWindow',
-'GLXBadRenderRequest', 'GLXBadLargeRequest', 'GLXUnsupportedPrivateRequest',
-'GLXBadFBConfig', 'GLXBadPbuffer', 'GLXBadCurrentDrawable', 'GLXBadWindow']
-
-
-
-
-
+            'GLXBadPixmap', 'GLXBadContextTag', 'GLXBadCurrentWindow',
+            'GLXBadRenderRequest', 'GLXBadLargeRequest', 'GLXUnsupportedPrivateRequest',
+            'GLXBadFBConfig', 'GLXBadPbuffer', 'GLXBadCurrentDrawable', 'GLXBadWindow']

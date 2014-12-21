@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
-'''
-'''
+"""
+"""
 
 __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
@@ -13,11 +13,13 @@ from pyglet.window import *
 
 window = Window(visible=False)
 
+
 def print_time(start, msg):
     dt = time.time() - start
-    print '%f\t%s' % (dt, msg)
+    print('%f\t%s' % (dt, msg))
 
-def profile(xhtml, widths=[800,600,400,200,100], runs=3):
+
+def profile(xhtml, widths=[800, 600, 400, 200, 100], runs=3):
     for i in range(runs):
         start = time.time()
         layout = Layout()
@@ -33,15 +35,15 @@ def profile(xhtml, widths=[800,600,400,200,100], runs=3):
             start = time.time()
             layout.draw()
             print_time(start, 'draw width=%d' % width)
-            
 
-xhtml = '''<?xml version="1.0"?>
-<html>  
+
+xhtml = """<?xml version="1.0"?>
+<html>
   <head>
     <style>
-      h1 {border-bottom: 1px solid; 
+      h1 {border-bottom: 1px solid;
           background-image: url(examples/stripe.png)}
-      body {background-image: url(examples/paper.jpg); 
+      body {background-image: url(examples/paper.jpg);
             background-repeat: repeat}
     </style>
   </head>
@@ -67,7 +69,7 @@ xhtml = '''<?xml version="1.0"?>
       deep, so deep that the bottom could not be seen. At this she began to
       cry, and cried louder and louder, and could not be comforted. And as she
       thus lamented someone said to her, "What ails you, king's daughter? You
-      weep so that even a stone would show pity." 
+      weep so that even a stone would show pity."
     </p>
     <p>
       She looked round to the side from whence the voice came, and saw a
@@ -178,11 +180,9 @@ xhtml = '''<?xml version="1.0"?>
       well." Again and once again while they were on their way something
       cracked, and each time the king's son thought the carriage was
       breaking, but it was only the bands which were springing from the
-      heart of Faithful Henry because his master was set free and was happy.  
+      heart of Faithful Henry because his master was set free and was happy.
     </p>
 </body>
-</html> '''
+</html> """
 
-
-if __name__ == '__main__':
     profile(xhtml)

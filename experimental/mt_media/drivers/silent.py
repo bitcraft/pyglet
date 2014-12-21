@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
-'''
-'''
+"""
+"""
 
 __docformat__ = 'restructuredtext'
 __version__ = '$Id: $'
@@ -12,7 +12,9 @@ import time
 import mt_media
 
 import pyglet
+
 _debug = pyglet.options['debug_media']
+
 
 class SilentAudioPlayer(mt_media.AbstractAudioPlayer):
     # When playing video, length of audio (in secs) to buffer ahead.
@@ -22,7 +24,7 @@ class SilentAudioPlayer(mt_media.AbstractAudioPlayer):
     _min_update_bytes = 1024
 
     def __init__(self, source_group, player):
-        super(SilentAudioPlayer, self).__init__(source_group, player)
+        super().__init__(source_group, player)
 
         # Reference timestamp
         self._timestamp = 0.
@@ -34,7 +36,7 @@ class SilentAudioPlayer(mt_media.AbstractAudioPlayer):
         self._worker_timestamp = 0.
 
         # Queued events (used by worked exclusively except for clear).
-        self._events = []
+        self._events = list()
 
         # Lock required for changes to timestamp and events variables above.
         self._lock = threading.Lock()
@@ -43,7 +45,7 @@ class SilentAudioPlayer(mt_media.AbstractAudioPlayer):
         self._playing = False
 
         # Be nice to avoid creating this thread if user doesn't care about EOS
-        # events and there's no video format. XXX
+        # events and there's no video format. TODO:
         self._worker_thread = threading.Thread(target=self._worker_func)
         self._worker_thread.setDaemon(True)
         self._worker_thread.start()
@@ -75,7 +77,7 @@ class SilentAudioPlayer(mt_media.AbstractAudioPlayer):
 
     def clear(self):
         self._lock.acquire()
-        self._events = []
+        self._events = list()
         self._lock.release()
 
     def get_time(self):
@@ -101,10 +103,10 @@ class SilentAudioPlayer(mt_media.AbstractAudioPlayer):
             self._worker_timestamp = timestamp
 
             if _debug:
-                print 'timestamp: %f' % timestamp
+                print('timestamp: %f' % timestamp)
 
             # Dispatch events
-            events = self._events # local var ok within this lock
+            events = self._events  # local var ok within this lock
             while events and events[0].timestamp <= timestamp:
                 events[0]._sync_dispatch_to_player(self.player)
                 del events[0]
@@ -120,17 +122,17 @@ class SilentAudioPlayer(mt_media.AbstractAudioPlayer):
             secs = self._buffer_time - buffered_time
             bytes = secs * self.source_group.audio_format.bytes_per_second
             if _debug:
-                print 'need to get %d bytes (%f secs)' % (bytes, secs)
+                print('need to get %d bytes (%f secs)' % (bytes, secs))
 
             # No need to get data, sleep until next event or buffer update
             # time instead.
             if bytes < self._min_update_bytes:
                 sleep_time = buffered_time / 2
                 if next_event_timestamp is not None:
-                    sleep_time = min(sleep_time, 
+                    sleep_time = min(sleep_time,
                                      next_event_timestamp - timestamp)
                 if _debug:
-                    print 'sleeping for %f' % sleep_time
+                    print('sleeping for %f' % sleep_time)
                 time.sleep(sleep_time)
                 continue
 
@@ -138,7 +140,8 @@ class SilentAudioPlayer(mt_media.AbstractAudioPlayer):
             audio_data = self.source_group.get_audio_data(int(bytes))
             if not audio_data:
                 mt_media.MediaEvent(timestamp,
-                    'on_source_group_eos')._sync_dispatch_to_player(self.player)
+                                    'on_source_group_eos')._sync_dispatch_to_player(
+                    self.player)
                 break
 
             # Pretend to buffer audio data, collect events.
@@ -148,14 +151,16 @@ class SilentAudioPlayer(mt_media.AbstractAudioPlayer):
             self._lock.release()
 
             if _debug:
-                print 'got %s secs of audio data' % audio_data.duration
-                print 'now buffered to %f' % buffered_time
-                print 'events: %r' % events
+                print('got %s secs of audio data' % audio_data.duration)
+                print('now buffered to %f' % buffered_time)
+                print('events: %r' % events)
+
 
 class SilentAudioDriver(mt_media.AbstractAudioDriver):
+
     def create_audio_player(self, source_group, player):
         return SilentAudioPlayer(source_group, player)
 
+
 def create_audio_driver():
     return SilentAudioDriver()
-

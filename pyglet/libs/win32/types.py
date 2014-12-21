@@ -2,14 +2,14 @@
 # pyglet
 # Copyright (c) 2006-2008 Alex Holkner
 # All rights reserved.
-# 
+#
 # Redistribution and use in source and binary forms, with or without
-# modification, are permitted provided that the following conditions 
+# modification, are permitted provided that the following conditions
 # are met:
 #
 #  * Redistributions of source code must retain the above copyright
 #    notice, this list of conditions and the following disclaimer.
-#  * Redistributions in binary form must reproduce the above copyright 
+#  * Redistributions in binary form must reproduce the above copyright
 #    notice, this list of conditions and the following disclaimer in
 #    the documentation and/or other materials provided with the
 #    distribution.
@@ -32,8 +32,8 @@
 # POSSIBILITY OF SUCH DAMAGE.
 # ----------------------------------------------------------------------------
 
-'''
-'''
+"""
+"""
 
 __docformat__ = 'restructuredtext'
 __version__ = '$Id: $'
@@ -55,6 +55,8 @@ LPPOINT = POINTER(POINT)
 LPMSG = POINTER(MSG)
 UINT_PTR = HANDLE
 LONG_PTR = HANDLE
+HDROP = HANDLE
+LPTSTR = LPWSTR
 
 LF_FACESIZE = 32
 CCHDEVICENAME = 32
@@ -65,8 +67,9 @@ TIMERPROC = WINFUNCTYPE(None, HWND, UINT, POINTER(UINT), DWORD)
 TIMERAPCPROC = WINFUNCTYPE(None, PVOID, DWORD, DWORD)
 MONITORENUMPROC = WINFUNCTYPE(BOOL, HMONITOR, HDC, LPRECT, LPARAM)
 
+
 def MAKEINTRESOURCE(i):
-    return cast(c_void_p(i&0xFFFF), c_wchar_p)
+    return cast(c_void_p(i & 0xFFFF), c_wchar_p)
 
 
 class WNDCLASS(Structure):
@@ -83,6 +86,7 @@ class WNDCLASS(Structure):
         ('lpszClassName', c_wchar_p)
     ]
 
+
 class SECURITY_ATTRIBUTES(Structure):
     _fields_ = [
         ("nLength", DWORD),
@@ -90,6 +94,7 @@ class SECURITY_ATTRIBUTES(Structure):
         ("bInheritHandle", BOOL)
     ]
     __slots__ = [f[0] for f in _fields_]
+
 
 class PIXELFORMATDESCRIPTOR(Structure):
     _fields_ = [
@@ -121,6 +126,7 @@ class PIXELFORMATDESCRIPTOR(Structure):
         ('dwDamageMask', DWORD)
     ]
 
+
 class RGBQUAD(Structure):
     _fields_ = [
         ('rgbBlue', BYTE),
@@ -130,6 +136,7 @@ class RGBQUAD(Structure):
     ]
     __slots__ = [f[0] for f in _fields_]
 
+
 class CIEXYZ(Structure):
     _fields_ = [
         ('ciexyzX', DWORD),
@@ -138,6 +145,7 @@ class CIEXYZ(Structure):
     ]
     __slots__ = [f[0] for f in _fields_]
 
+
 class CIEXYZTRIPLE(Structure):
     _fields_ = [
         ('ciexyzRed', CIEXYZ),
@@ -145,6 +153,7 @@ class CIEXYZTRIPLE(Structure):
         ('ciexyzGreen', CIEXYZ),
     ]
     __slots__ = [f[0] for f in _fields_]
+
 
 class BITMAPINFOHEADER(Structure):
     _fields_ = [
@@ -160,6 +169,7 @@ class BITMAPINFOHEADER(Structure):
         ('biClrUsed', DWORD),
         ('biClrImportant', DWORD),
     ]
+
 
 class BITMAPV5HEADER(Structure):
     _fields_ = [
@@ -189,12 +199,14 @@ class BITMAPV5HEADER(Structure):
         ('bV5Reserved', DWORD),
     ]
 
+
 class BITMAPINFO(Structure):
     _fields_ = [
         ('bmiHeader', BITMAPINFOHEADER),
         ('bmiColors', RGBQUAD * 1)
     ]
     __slots__ = [f[0] for f in _fields_]
+
 
 class LOGFONT(Structure):
     _fields_ = [
@@ -214,6 +226,7 @@ class LOGFONT(Structure):
         ('lfFaceName', (c_char * LF_FACESIZE))  # Use ASCII
     ]
 
+
 class TRACKMOUSEEVENT(Structure):
     _fields_ = [
         ('cbSize', DWORD),
@@ -222,6 +235,7 @@ class TRACKMOUSEEVENT(Structure):
         ('dwHoverTime', DWORD)
     ]
     __slots__ = [f[0] for f in _fields_]
+
 
 class MINMAXINFO(Structure):
     _fields_ = [
@@ -233,6 +247,7 @@ class MINMAXINFO(Structure):
     ]
     __slots__ = [f[0] for f in _fields_]
 
+
 class ABC(Structure):
     _fields_ = [
         ('abcA', c_int),
@@ -240,6 +255,7 @@ class ABC(Structure):
         ('abcC', c_int)
     ]
     __slots__ = [f[0] for f in _fields_]
+
 
 class TEXTMETRIC(Structure):
     _fields_ = [
@@ -266,6 +282,7 @@ class TEXTMETRIC(Structure):
     ]
     __slots__ = [f[0] for f in _fields_]
 
+
 class MONITORINFOEX(Structure):
     _fields_ = [
         ('cbSize', DWORD),
@@ -275,6 +292,7 @@ class MONITORINFOEX(Structure):
         ('szDevice', WCHAR * CCHDEVICENAME)
     ]
     __slots__ = [f[0] for f in _fields_]
+
 
 class DEVMODE(Structure):
     _fields_ = [
@@ -304,7 +322,7 @@ class DEVMODE(Structure):
         ('dmBitsPerPel', DWORD),
         ('dmPelsWidth', DWORD),
         ('dmPelsHeight', DWORD),
-        ('dmDisplayFlags', DWORD), # union with dmNup
+        ('dmDisplayFlags', DWORD),  # union with dmNup
         ('dmDisplayFrequency', DWORD),
         ('dmICMMethod', DWORD),
         ('dmICMIntent', DWORD),
@@ -314,6 +332,7 @@ class DEVMODE(Structure):
         ('dmPanningWidth', DWORD),
         ('dmPanningHeight', DWORD),
     ]
+
 
 class ICONINFO(Structure):
     _fields_ = [

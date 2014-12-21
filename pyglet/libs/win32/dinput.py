@@ -128,6 +128,7 @@ DIDC_ALIAS = 0x00010000
 DIDC_PHANTOM = 0x00020000
 DIDC_HIDDEN = 0x00040000
 
+
 def DIDFT_GETINSTANCE(n):
     return (n >> 8) & 0xffff
 
@@ -210,7 +211,8 @@ DISCL_NOWINKEY = 0x00000010
 DIPROP_BUFFERSIZE = 1
 
 GUID_XAxis = \
-    com.GUID(0xA36D02E0,0xC9F3,0x11CF,0xBF,0xC7,0x44,0x45,0x53,0x54,0x00,0x00)
+    com.GUID(0xA36D02E0, 0xC9F3, 0x11CF, 0xBF, 0xC7,
+             0x44, 0x45, 0x53, 0x54, 0x00, 0x00)
 
 
 class DIDEVICEINSTANCE(ctypes.Structure):
@@ -228,8 +230,9 @@ class DIDEVICEINSTANCE(ctypes.Structure):
 LPDIDEVICEINSTANCE = ctypes.POINTER(DIDEVICEINSTANCE)
 LPDIENUMDEVICESCALLBACK = ctypes.WINFUNCTYPE(BOOL, LPDIDEVICEINSTANCE, LPVOID)
 
+
 class DIDEVICEOBJECTINSTANCE(ctypes.Structure):
-    _fields_ = (    
+    _fields_ = (
         ('dwSize', DWORD),
         ('guidType', com.GUID),
         ('dwOfs', DWORD),
@@ -248,7 +251,8 @@ class DIDEVICEOBJECTINSTANCE(ctypes.Structure):
     )
 LPDIDEVICEOBJECTINSTANCE = ctypes.POINTER(DIDEVICEOBJECTINSTANCE)
 LPDIENUMDEVICEOBJECTSCALLBACK = \
-    ctypes.WINFUNCTYPE( BOOL, LPDIDEVICEOBJECTINSTANCE, LPVOID)
+    ctypes.WINFUNCTYPE(BOOL, LPDIDEVICEOBJECTINSTANCE, LPVOID)
+
 
 class DIOBJECTDATAFORMAT(ctypes.Structure):
     _fields_ = (
@@ -259,6 +263,7 @@ class DIOBJECTDATAFORMAT(ctypes.Structure):
     )
     __slots__ = [n for n, t in _fields_]
 LPDIOBJECTDATAFORMAT = ctypes.POINTER(DIOBJECTDATAFORMAT)
+
 
 class DIDATAFORMAT(ctypes.Structure):
     _fields_ = (
@@ -272,6 +277,7 @@ class DIDATAFORMAT(ctypes.Structure):
     __slots__ = [n for n, t in _fields_]
 LPDIDATAFORMAT = ctypes.POINTER(DIDATAFORMAT)
 
+
 class DIDEVICEOBJECTDATA(ctypes.Structure):
     _fields_ = (
         ('dwOfs', DWORD),
@@ -282,6 +288,7 @@ class DIDEVICEOBJECTDATA(ctypes.Structure):
     )
 LPDIDEVICEOBJECTDATA = ctypes.POINTER(DIDEVICEOBJECTDATA)
 
+
 class DIPROPHEADER(ctypes.Structure):
     _fields_ = (
         ('dwSize', DWORD),
@@ -290,6 +297,7 @@ class DIPROPHEADER(ctypes.Structure):
         ('dwHow', DWORD)
     )
 LPDIPROPHEADER = ctypes.POINTER(DIPROPHEADER)
+
 
 class DIPROPDWORD(ctypes.Structure):
     _fields_ = (
@@ -302,6 +310,7 @@ class DIPROPDWORD(ctypes.Structure):
 # which point we can go in and fill them in.
 
 # IDirect* interfaces are all Unicode (e.g. IDirectInputDevice8W).
+
 
 class IDirectInputDevice8(com.IUnknown):
     _methods_ = [
@@ -363,12 +372,13 @@ class IDirectInputDevice8(com.IUnknown):
          com.STDMETHOD()),
         ('GetImageInfo',
          com.STDMETHOD()),
-     ]
+    ]
+
 
 class IDirectInput8(com.IUnknown):
     _methods_ = [
         ('CreateDevice',
-         com.STDMETHOD(ctypes.POINTER(com.GUID), 
+         com.STDMETHOD(ctypes.POINTER(com.GUID),
                        ctypes.POINTER(IDirectInputDevice8),
                        ctypes.c_void_p)),
         ('EnumDevices',
@@ -388,10 +398,10 @@ class IDirectInput8(com.IUnknown):
     ]
 
 IID_IDirectInput8W = \
-    com.GUID(0xBF798031,0x483A,0x4DA2,0xAA,0x99,0x5D,0x64,0xED,0x36,0x97,0x00)
+    com.GUID(0xBF798031, 0x483A, 0x4DA2, 0xAA, 0x99,
+             0x5D, 0x64, 0xED, 0x36, 0x97, 0x00)
 
 DIRECTINPUT_VERSION = 0x0800
 DirectInput8Create = lib.DirectInput8Create
 DirectInput8Create.argtypes = \
     (ctypes.c_void_p, DWORD, com.LPGUID, ctypes.c_void_p, ctypes.c_void_p)
-

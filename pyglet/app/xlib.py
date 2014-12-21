@@ -2,14 +2,14 @@
 # pyglet
 # Copyright (c) 2006-2008 Alex Holkner
 # All rights reserved.
-# 
+#
 # Redistribution and use in source and binary forms, with or without
-# modification, are permitted provided that the following conditions 
+# modification, are permitted provided that the following conditions
 # are met:
 #
 #  * Redistributions of source code must retain the above copyright
 #    notice, this list of conditions and the following disclaimer.
-#  * Redistributions in binary form must reproduce the above copyright 
+#  * Redistributions in binary form must reproduce the above copyright
 #    notice, this list of conditions and the following disclaimer in
 #    the documentation and/or other materials provided with the
 #    distribution.
@@ -32,8 +32,8 @@
 # POSSIBILITY OF SUCH DAMAGE.
 # ----------------------------------------------------------------------------
 
-'''
-'''
+"""
+"""
 
 __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
@@ -47,31 +47,35 @@ from pyglet import app
 from pyglet.app.base import PlatformEventLoop
 from pyglet.compat import asbytes
 
-class XlibSelectDevice(object):
+
+class XlibSelectDevice:
+
     def fileno(self):
-        '''Get the file handle for ``select()`` for this device.
+        """Get the file handle for ``select()`` for this device.
 
         :rtype: int
-        '''
+        """
         raise NotImplementedError('abstract')
 
     def select(self):
-        '''Perform event processing on the device.
+        """Perform event processing on the device.
 
         Called when ``select()`` returns this device in its list of active
         files.
-        '''
+        """
         raise NotImplementedError('abstract')
 
     def poll(self):
-        '''Check if the device has events ready to process.
+        """Check if the device has events ready to process.
 
         :rtype: bool
         :return: True if there are events to process, False otherwise.
-        '''
+        """
         return False
 
+
 class NotificationDevice(XlibSelectDevice):
+
     def __init__(self):
         self._sync_file_read, self._sync_file_write = os.pipe()
         self._event = threading.Event()
@@ -91,9 +95,11 @@ class NotificationDevice(XlibSelectDevice):
     def poll(self):
         return self._event.isSet()
 
+
 class XlibEventLoop(PlatformEventLoop):
+
     def __init__(self):
-        super(XlibEventLoop, self).__init__()
+        super().__init__()
         self._notification_device = NotificationDevice()
         self._select_devices = set()
         self._select_devices.add(self._notification_device)
@@ -102,7 +108,7 @@ class XlibEventLoop(PlatformEventLoop):
         self._notification_device.set()
 
     def step(self, timeout=None):
-        pending_devices = []
+        pending_devices = list()
 
         # Check for already pending events
         for device in self._select_devices:
@@ -126,7 +132,7 @@ class XlibEventLoop(PlatformEventLoop):
         for window in app.windows:
             if window._needs_resize:
                 window.switch_to()
-                window.dispatch_event('on_resize', 
+                window.dispatch_event('on_resize',
                                       window._width, window._height)
                 window.dispatch_event('on_expose')
                 window._needs_resize = False

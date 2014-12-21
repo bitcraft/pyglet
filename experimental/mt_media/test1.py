@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
-'''
-'''
+"""
+"""
 
 __docformat__ = 'restructuredtext'
 __version__ = '$Id: $'
@@ -12,6 +12,7 @@ import pyglet
 import mt_media
 
 import sys
+
 source = mt_media.load(sys.argv[1])
 
 player = mt_media.Player()

@@ -2,14 +2,14 @@
 # pyglet
 # Copyright (c) 2006-2008 Alex Holkner
 # All rights reserved.
-# 
+#
 # Redistribution and use in source and binary forms, with or without
-# modification, are permitted provided that the following conditions 
+# modification, are permitted provided that the following conditions
 # are met:
 #
 #  * Redistributions of source code must retain the above copyright
 #    notice, this list of conditions and the following disclaimer.
-#  * Redistributions in binary form must reproduce the above copyright 
+#  * Redistributions in binary form must reproduce the above copyright
 #    notice, this list of conditions and the following disclaimer in
 #    the documentation and/or other materials provided with the
 #    distribution.
@@ -31,10 +31,10 @@
 # ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 # ----------------------------------------------------------------------------
-'''Functions for loading dynamic libraries.
+"""Functions for loading dynamic libraries.
 
 These extend and correct ctypes functions.
-'''
+"""
 
 __docformat__ = 'restructuredtext'
 __version__ = '$Id: $'
@@ -53,11 +53,13 @@ _debug_trace = pyglet.options['debug_trace']
 
 if pyglet.options['search_local_libs']:
     script_path = pyglet.resource.get_script_home()
-    _local_lib_paths = [script_path, os.path.join(script_path, 'lib'),]
+    _local_lib_paths = [script_path, os.path.join(script_path, 'lib'), ]
 else:
     _local_lib_paths = None
 
-class _TraceFunction(object):
+
+class _TraceFunction:
+
     def __init__(self, func):
         self.__dict__['_func'] = func
 
@@ -73,35 +75,39 @@ class _TraceFunction(object):
     def __setattr__(self, name, value):
         setattr(self._func, name, value)
 
-class _TraceLibrary(object):
+
+class _TraceLibrary:
+
     def __init__(self, library):
         self._library = library
-        print library
+        print(library)
 
     def __getattr__(self, name):
         func = getattr(self._library, name)
         f = _TraceFunction(func)
         return f
 
-class LibraryLoader(object):
+
+class LibraryLoader:
     darwin_not_found_error = "image not found"
-    linux_not_found_error  = "No such file or directory"
+    linux_not_found_error = "No such file or directory"
+
     def load_library(self, *names, **kwargs):
-        '''Find and load a library.  
-        
+        """Find and load a library.
+
         More than one name can be specified, they will be tried in order.
         Platform-specific library names (given as kwargs) are tried first.
 
         Raises ImportError if library is not found.
-        '''
+        """
         if 'framework' in kwargs and self.platform == 'darwin':
             return self.load_framework(kwargs['framework'])
 
         if not names:
             raise ImportError("No library name specified")
-        
-        platform_names = kwargs.get(self.platform, [])
-        if type(platform_names) in (str, unicode):
+
+        platform_names = kwargs.get(self.platform, list())
+        if type(platform_names) in (str, str):
             platform_names = [platform_names]
         elif type(platform_names) is tuple:
             platform_names = list(platform_names)
@@ -116,24 +122,25 @@ class LibraryLoader(object):
             try:
                 lib = ctypes.cdll.LoadLibrary(name)
                 if _debug_lib:
-                    print name
+                    print(name)
                 if _debug_trace:
                     lib = _TraceLibrary(lib)
                 return lib
-            except OSError, o:
+            except OSError as o:
                 if ((self.platform == "win32" and o.winerror != 126) or
                     (self.platform.startswith("linux") and
                      self.linux_not_found_error not in o.args[0]) or
                     (self.platform == "darwin" and
                      self.darwin_not_found_error not in o.args[0])):
-                    print "Unexpected error loading library %s: %s" % (name, str(o))
+                    print("Unexpected error loading library %s: %s" %
+                          (name, str(o)))
                     raise
                 path = self.find_library(name)
                 if path:
                     try:
                         lib = ctypes.cdll.LoadLibrary(path)
                         if _debug_lib:
-                            print path
+                            print(path)
                         if _debug_trace:
                             lib = _TraceLibrary(lib)
                         return lib
@@ -151,12 +158,14 @@ class LibraryLoader(object):
     def load_framework(self, path):
         raise RuntimeError("Can't load framework on this platform.")
 
+
 class MachOLibraryLoader(LibraryLoader):
+
     def __init__(self):
         if 'LD_LIBRARY_PATH' in os.environ:
             self.ld_library_path = os.environ['LD_LIBRARY_PATH'].split(':')
         else:
-            self.ld_library_path = []
+            self.ld_library_path = list()
 
         if _local_lib_paths:
             # search first for local libs
@@ -166,7 +175,7 @@ class MachOLibraryLoader(LibraryLoader):
         if 'DYLD_LIBRARY_PATH' in os.environ:
             self.dyld_library_path = os.environ['DYLD_LIBRARY_PATH'].split(':')
         else:
-            self.dyld_library_path = []
+            self.dyld_library_path = list()
 
         if 'DYLD_FALLBACK_LIBRARY_PATH' in os.environ:
             self.dyld_fallback_library_path = \
@@ -176,19 +185,19 @@ class MachOLibraryLoader(LibraryLoader):
                 os.path.expanduser('~/lib'),
                 '/usr/local/lib',
                 '/usr/lib']
- 
+
     def find_library(self, path):
-        '''Implements the dylib search as specified in Apple documentation:
+        """Implements the dylib search as specified in Apple documentation:
 
         http://developer.apple.com/documentation/DeveloperTools/Conceptual/DynamicLibraries/100-Articles/DynamicLibraryUsageGuidelines.html
 
         Before commencing the standard search, the method first checks
         the bundle's ``Frameworks`` directory if the application is running
         within a bundle (OS X .app).
-        '''
+        """
 
         libname = os.path.basename(path)
-        search_path = []
+        search_path = list()
 
         if '.' not in libname:
             libname = 'lib' + libname + '.dylib'
@@ -210,42 +219,40 @@ class MachOLibraryLoader(LibraryLoader):
 
         if '/' in path:
             search_path.extend(
-                [os.path.join(p, libname) \
+                [os.path.join(p, libname)
                     for p in self.dyld_library_path])
             search_path.append(path)
             search_path.extend(
-                [os.path.join(p, libname) \
+                [os.path.join(p, libname)
                     for p in self.dyld_fallback_library_path])
         else:
             search_path.extend(
-                [os.path.join(p, libname) \
+                [os.path.join(p, libname)
                     for p in self.ld_library_path])
             search_path.extend(
-                [os.path.join(p, libname) \
+                [os.path.join(p, libname)
                     for p in self.dyld_library_path])
             search_path.append(path)
             search_path.extend(
-                [os.path.join(p, libname) \
+                [os.path.join(p, libname)
                     for p in self.dyld_fallback_library_path])
 
         for path in search_path:
             if os.path.exists(path):
                 return path
 
-        return None
-
     def find_framework(self, path):
-        '''Implement runtime framework search as described by:
+        """Implement runtime framework search as described by:
 
         http://developer.apple.com/documentation/MacOSX/Conceptual/BPFrameworks/Concepts/FrameworkBinding.html
-        '''
+        """
 
         # e.g. path == '/System/Library/Frameworks/OpenGL.framework'
         #      name == 'OpenGL'
         # return '/System/Library/Frameworks/OpenGL.framework/OpenGL'
         name = os.path.splitext(os.path.split(path)[1])[0]
 
-        realpath = os.path.join(path, name) 
+        realpath = os.path.join(path, name)
         if os.path.exists(realpath):
             return realpath
 
@@ -255,26 +262,25 @@ class MachOLibraryLoader(LibraryLoader):
             if os.path.exists(realpath):
                 return realpath
 
-        return None
-
     def load_framework(self, path):
         realpath = self.find_framework(path)
         if realpath:
             lib = ctypes.cdll.LoadLibrary(realpath)
             if _debug_lib:
-                print realpath
+                print(realpath)
             if _debug_trace:
                 lib = _TraceLibrary(lib)
             return lib
 
         raise ImportError("Can't find framework %s." % path)
 
+
 class LinuxLibraryLoader(LibraryLoader):
     _ld_so_cache = None
     _local_libs_cache = None
 
     def _find_libs(self, directories):
-        cache = {}
+        cache = dict()
         lib_re = re.compile('lib(.*)\.so(?:$|\.)')
         for dir in directories:
             try:
@@ -301,7 +307,7 @@ class LinuxLibraryLoader(LibraryLoader):
         #
         # We assume the DT_RPATH and DT_RUNPATH binary sections are omitted.
 
-        directories = []
+        directories = list()
         try:
             directories.extend(os.environ['LD_LIBRARY_PATH'].split(':'))
         except KeyError:

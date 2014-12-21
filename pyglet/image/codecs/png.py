@@ -2,14 +2,14 @@
 # pyglet
 # Copyright (c) 2006-2008 Alex Holkner
 # All rights reserved.
-# 
+#
 # Redistribution and use in source and binary forms, with or without
-# modification, are permitted provided that the following conditions 
+# modification, are permitted provided that the following conditions
 # are met:
 #
 #  * Redistributions of source code must retain the above copyright
 #    notice, this list of conditions and the following disclaimer.
-#  * Redistributions in binary form must reproduce the above copyright 
+#  * Redistributions in binary form must reproduce the above copyright
 #    notice, this list of conditions and the following disclaimer in
 #    the documentation and/or other materials provided with the
 #    distribution.
@@ -32,8 +32,8 @@
 # POSSIBILITY OF SUCH DAMAGE.
 # ----------------------------------------------------------------------------
 
-'''Encoder and decoder for PNG files, using PyPNG (pypng.py).
-'''
+"""Encoder and decoder for PNG files, using PyPNG (pypng.py).
+"""
 
 __docformat__ = 'restructuredtext'
 __version__ = '$Id: $'
@@ -46,7 +46,9 @@ from pyglet.image.codecs import *
 
 import pyglet.image.codecs.pypng
 
+
 class PNGImageDecoder(ImageDecoder):
+
     def get_file_extensions(self):
         return ['.png']
 
@@ -54,7 +56,7 @@ class PNGImageDecoder(ImageDecoder):
         try:
             reader = pyglet.image.codecs.pypng.Reader(file=file)
             width, height, pixels, metadata = reader.read()
-        except Exception, e:
+        except Exception as e:
             raise ImageDecodeException(
                 'PyPNG cannot read %r: %s' % (filename or file, e))
 
@@ -71,7 +73,9 @@ class PNGImageDecoder(ImageDecoder):
         pitch = len(format) * width
         return ImageData(width, height, format, pixels.tostring(), -pitch)
 
+
 class PNGImageEncoder(ImageEncoder):
+
     def get_file_extensions(self):
         return ['.png']
 
@@ -103,8 +107,10 @@ class PNGImageEncoder(ImageEncoder):
         data.fromstring(image.data)
         writer.write_array(file, data)
 
+
 def get_decoders():
     return [PNGImageDecoder()]
+
 
 def get_encoders():
     return [PNGImageEncoder()]

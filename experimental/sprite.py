@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
-'''
-'''
+"""
+"""
 
 __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
@@ -15,12 +15,13 @@ import pyglet.image
 try:
     from pyglet.gl.VERSION_1_5 import *
 except ImportError:
-    warnings.warn('OpenGL 1.5 or later is required collision detection. '\
+    warnings.warn('OpenGL 1.5 or later is required collision detection. '
                   'Please update your video card driver.')
 
-class Sprite(object):
+
+class Sprite:
     # <rj> slots buy us nothing
-    #__slots__ = ['texture', 'anchor', 'position', 'rotation', 'scale', 'color']
+    # __slots__ = ['texture', 'anchor', 'position', 'rotation', 'scale', 'color']
 
     _collision_stencil = 1
 
@@ -29,7 +30,7 @@ class Sprite(object):
             texture = pyglet.image.Texture.from_image(texture)
         self.texture = texture
 
-        self.position = (0,0)
+        self.position = (0, 0)
         self.anchor = (self.texture.size[0] / 2,
                        self.texture.size[1] / 2)
         self.rotation = 0.0
@@ -52,21 +53,21 @@ class Sprite(object):
         glPopMatrix()
 
     def translate(self, dx, dy):
-        '''Move the sprite by the given units, transformed by its current
+        """Move the sprite by the given units, transformed by its current
         rotation.  Useful for moving a sprite "forward" according to
-        its current direction.'''
+        its current direction."""
         r = math.pi * self.rotation / 180.0
         c = math.cos(r)
         s = math.sin(r)
         x = self.position[0]
         y = self.position[1]
-        self.position = x + c * dx + s * dy,  y + s * dx + c * dy
+        self.position = x + c * dx + s * dy, y + s * dx + c * dy
 
     def collide(self, other):
-        '''Get the number of pixels of overlap between self and other.
-        other can be a Sprite or list of Sprites.'''
-        glPushAttrib(GL_COLOR_BUFFER_BIT | \
-                     GL_STENCIL_BUFFER_BIT | \
+        """Get the number of pixels of overlap between self and other.
+        other can be a Sprite or list of Sprites."""
+        glPushAttrib(GL_COLOR_BUFFER_BIT |
+                     GL_STENCIL_BUFFER_BIT |
                      GL_ENABLE_BIT)
         glColorMask(0, 0, 0, 0)
         glEnable(GL_ALPHA_TEST)
@@ -75,7 +76,7 @@ class Sprite(object):
         # Draw collider into stencil
         glClear(GL_STENCIL_BUFFER_BIT)
         glStencilFunc(GL_ALWAYS, self._collision_stencil,
-            self._collision_stencil)
+                      self._collision_stencil)
         glStencilOp(GL_KEEP, GL_REPLACE, GL_REPLACE)
         glEnable(GL_STENCIL_TEST)
         if hasattr(other, '__len__'):
@@ -86,7 +87,7 @@ class Sprite(object):
 
         # Occlusion query self
         glStencilFunc(GL_EQUAL, self._collision_stencil,
-            self._collision_stencil)
+                      self._collision_stencil)
 
         query = c_uint()
         glGenQueries(1, byref(query))
@@ -102,9 +103,9 @@ class Sprite(object):
         return result.value
 
     def collide_list(self, others):
-        '''Get a list of Sprites in others that collide with self.'''
-        glPushAttrib(GL_COLOR_BUFFER_BIT | \
-                     GL_STENCIL_BUFFER_BIT | \
+        """Get a list of Sprites in others that collide with self."""
+        glPushAttrib(GL_COLOR_BUFFER_BIT |
+                     GL_STENCIL_BUFFER_BIT |
                      GL_ENABLE_BIT)
         glColorMask(0, 0, 0, 0)
         glEnable(GL_ALPHA_TEST)
@@ -113,21 +114,21 @@ class Sprite(object):
         # Draw self into stencil
         glClear(GL_STENCIL_BUFFER_BIT)
         glStencilFunc(GL_ALWAYS, self._collision_stencil,
-            self._collision_stencil)
+                      self._collision_stencil)
         glStencilOp(GL_KEEP, GL_REPLACE, GL_REPLACE)
         glEnable(GL_STENCIL_TEST)
         self.draw()
 
         # Occlusion query each other
         glStencilFunc(GL_EQUAL, self._collision_stencil,
-            self._collision_stencil)
+                      self._collision_stencil)
 
         # Using multiple queries is noticeably faster than reusing the
         # one query.
         n_query = len(others)
         query = (c_uint * n_query)()
         glGenQueries(n_query, query)
-        collisions = []
+        collisions = list()
         for i, other in enumerate(others):
             glBeginQuery(GL_SAMPLES_PASSED, query[i])
             other.draw()
@@ -142,4 +143,3 @@ class Sprite(object):
         glPopAttrib()
 
         return collisions
-

@@ -18,27 +18,30 @@ from pyglet.gl import gl_info
 c_float4 = c_float * 4
 
 
-class Failed(Exception): pass
+class Failed(Exception):
+    pass
 
-class TextureParam(object):
+
+class TextureParam:
     max_anisotropy = 0.0
 
-    FILTER   = 1
-    LOD      = 2
-    MIPMAP   = 4
-    WRAP     = 8
-    BORDER   = 16
+    FILTER = 1
+    LOD = 2
+    MIPMAP = 4
+    WRAP = 8
+    BORDER = 16
     PRIORITY = 32
-    ALL      = 63
+    ALL = 63
 
-    def __init__(self, wrap = GL_REPEAT, filter = GL_LINEAR, min_filter = None):
+    def __init__(self, wrap=GL_REPEAT, filter=GL_LINEAR, min_filter=None):
         if self.max_anisotropy == 0.0 and \
-           gl_info.have_extension('GL_EXT_texture_filter_anisotropic'):
+                gl_info.have_extension('GL_EXT_texture_filter_anisotropic'):
             v = c_float()
             glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, byref(v))
             self.max_anisotropy = v.value
 
-        if min_filter is None: min_filter = filter
+        if min_filter is None:
+            min_filter = filter
         self.min_filter = min_filter
         self.mag_filter = filter
         self.min_lod = -1000
@@ -52,62 +55,69 @@ class TextureParam(object):
         self.anisotropy = 1.0
         self.border_colour = c_float4(0.0, 0.0, 0.0, 0.0)
 
-    def applyToCurrentTexture(self, target, flags = ALL):
-      if flags & self.FILTER:
-          glTexParameteri(target, GL_TEXTURE_MIN_FILTER, self.min_filter)
-          glTexParameteri(target, GL_TEXTURE_MAG_FILTER, self.mag_filter)
-          if self.max_anisotropy > 0.0:
-              glTexParameterf(target, GL_TEXTURE_MAX_ANISOTROPY_EXT, self.anisotropy)
+    def applyToCurrentTexture(self, target, flags=ALL):
+        if flags & self.FILTER:
+            glTexParameteri(target, GL_TEXTURE_MIN_FILTER, self.min_filter)
+            glTexParameteri(target, GL_TEXTURE_MAG_FILTER, self.mag_filter)
+            if self.max_anisotropy > 0.0:
+                glTexParameterf(target, GL_TEXTURE_MAX_ANISOTROPY_EXT,
+                                self.anisotropy)
 
-      if flags & self.LOD:
-          glTexParameterf(target, GL_TEXTURE_MIN_LOD, self.min_lod)
-          glTexParameterf(target, GL_TEXTURE_MAX_LOD, self.max_lod)
+        if flags & self.LOD:
+            glTexParameterf(target, GL_TEXTURE_MIN_LOD, self.min_lod)
+            glTexParameterf(target, GL_TEXTURE_MAX_LOD, self.max_lod)
 
-      if flags & self.MIPMAP:
-          glTexParameteri(target, GL_TEXTURE_BASE_LEVEL, self.min_mipmap)
-          glTexParameteri(target, GL_TEXTURE_MAX_LEVEL, self.max_mipmap)
+        if flags & self.MIPMAP:
+            glTexParameteri(target, GL_TEXTURE_BASE_LEVEL, self.min_mipmap)
+            glTexParameteri(target, GL_TEXTURE_MAX_LEVEL, self.max_mipmap)
 
-      if flags & self.WRAP:
-          glTexParameteri(target, GL_TEXTURE_WRAP_S, self.wrap_s)
-          glTexParameteri(target, GL_TEXTURE_WRAP_T, self.wrap_t)
-          glTexParameteri(target, GL_TEXTURE_WRAP_R, self.wrap_r)
+        if flags & self.WRAP:
+            glTexParameteri(target, GL_TEXTURE_WRAP_S, self.wrap_s)
+            glTexParameteri(target, GL_TEXTURE_WRAP_T, self.wrap_t)
+            glTexParameteri(target, GL_TEXTURE_WRAP_R, self.wrap_r)
 
-      if flags & self.BORDER:
-          glTexParameterfv(target, GL_TEXTURE_BORDER_COLOR, self.border_colour)
+        if flags & self.BORDER:
+            glTexParameterfv(target, GL_TEXTURE_BORDER_COLOR,
+                             self.border_colour)
 
-      if flags & self.PRIORITY:
-        glTexParameterf(target, GL_TEXTURE_PRIORITY, self.priority)
+        if flags & self.PRIORITY:
+            glTexParameterf(target, GL_TEXTURE_PRIORITY, self.priority)
 
 
-class Surface(object):
-    SURF_NONE          = 0
-    SURF_COLOUR        = 2
-    SURF_DEPTH         = 3
-    SURF_STENCIL       = 4
+class Surface:
+    SURF_NONE = 0
+    SURF_COLOUR = 2
+    SURF_DEPTH = 3
+    SURF_STENCIL = 4
     SURF_DEPTH_STENCIL = 5
 
     DEFAULTS = {
         SURF_COLOUR:
-            (GL_RGBA,                 GL_TEXTURE_2D,       True,  False),
+            (GL_RGBA, GL_TEXTURE_2D, True, False),
         SURF_DEPTH:
-            (GL_DEPTH_COMPONENT24,    GL_RENDERBUFFER_EXT, False, False),
+            (GL_DEPTH_COMPONENT24, GL_RENDERBUFFER_EXT, False, False),
         SURF_STENCIL:
-            (GL_STENCIL_INDEX8_EXT,   GL_RENDERBUFFER_EXT, False, False),
+            (GL_STENCIL_INDEX8_EXT, GL_RENDERBUFFER_EXT, False, False),
         SURF_DEPTH_STENCIL:
             (GL_DEPTH24_STENCIL8_EXT, GL_RENDERBUFFER_EXT, False, False)
     }
 
-    def __init__(self, surface_type = SURF_NONE, gl_fmt = None,
-            gl_tgt = None, is_texture = None, is_mipmapped = None,
-            params = None):
+    def __init__(self, surface_type=SURF_NONE, gl_fmt=None,
+                 gl_tgt=None, is_texture=None, is_mipmapped=None,
+                 params=None):
         self.gl_id = 0
 
         d = self.DEFAULTS[surface_type]
-        if gl_fmt is None: gl_fmt = d[0]
-        if gl_tgt is None: gl_tgt = d[1]
-        if is_texture is None: is_texture = d[2]
-        if is_mipmapped is None: is_mipmapped = d[3]
-        if params is None: params = TextureParam()
+        if gl_fmt is None:
+            gl_fmt = d[0]
+        if gl_tgt is None:
+            gl_tgt = d[1]
+        if is_texture is None:
+            is_texture = d[2]
+        if is_mipmapped is None:
+            is_mipmapped = d[3]
+        if params is None:
+            params = TextureParam()
 
         self.surface_type = surface_type
         self.gl_fmt = gl_fmt
@@ -137,8 +147,9 @@ class Surface(object):
     # retain a reference to these objects so we can use them during GC
     # cleanup
     def destroy(self, c_uint=c_uint, glDeleteTextures=glDeleteTextures,
-            byref=byref, glDeleteRenderbuffersEXT=glDeleteRenderbuffersEXT):
-        if self.gl_id == 0: return
+                byref=byref, glDeleteRenderbuffersEXT=glDeleteRenderbuffersEXT):
+        if self.gl_id == 0:
+            return
         gl_id = c_uint(self.gl_id)
         if self.is_texture:
             glDeleteTextures(1, byref(gl_id))
@@ -146,10 +157,12 @@ class Surface(object):
             glDeleteRenderbuffersEXT(1, byref(gl_id))
         self.gl_id = 0
 
-    def init(self, w = 0, h = 0, d = 0):
-        if self.gl_id > 0: raise self.Failed('already initialised')
+    def init(self, w=0, h=0, d=0):
+        if self.gl_id > 0:
+            raise self.Failed('already initialised')
 
-        if self.surface_type == self.SURF_NONE: return 0
+        if self.surface_type == self.SURF_NONE:
+            return 0
         if self.surface_type == self.SURF_COLOUR and not self.is_texture:
             raise Failed('bad surface')
         if self.surface_type == self.SURF_STENCIL and self.is_texture:
@@ -160,9 +173,11 @@ class Surface(object):
         if self.is_texture:
             if self.gl_tgt not in (GL_TEXTURE_RECTANGLE_ARB,):
                 def _ceil_p2(x):
-                    if x == 0: return 0
+                    if x == 0:
+                        return 0
                     y = 1
-                    while y < x: y = y * 2
+                    while y < x:
+                        y = y * 2
                     return y
 
                 w, h, d = _ceil_p2(w), _ceil_p2(h), _ceil_p2(d)
@@ -173,15 +188,15 @@ class Surface(object):
             glGetError()
             fmt = GL_RGBA
             if self.gl_fmt in (
-                GL_DEPTH_COMPONENT16_ARB,
-                GL_DEPTH_COMPONENT24_ARB,
-                GL_DEPTH_COMPONENT32_ARB,
-                GL_TEXTURE_DEPTH_SIZE_ARB,
-                GL_DEPTH_TEXTURE_MODE_ARB):
+                    GL_DEPTH_COMPONENT16_ARB,
+                    GL_DEPTH_COMPONENT24_ARB,
+                    GL_DEPTH_COMPONENT32_ARB,
+                    GL_TEXTURE_DEPTH_SIZE_ARB,
+                    GL_DEPTH_TEXTURE_MODE_ARB):
                 fmt = GL_DEPTH_COMPONENT
 
             if self.gl_tgt == GL_TEXTURE_1D:
-                print >> sys.stderr, gl_id.value, '=> T(%d)' % (w,)
+                print(gl_id.value, '=> T(%d)' % (w,), file=sys.stderr)
                 glTexImage1D(self.gl_tgt,
                              0,
                              self.gl_fmt,
@@ -189,7 +204,7 @@ class Surface(object):
                              0,
                              fmt, GL_BYTE, None)
             elif self.gl_tgt in (GL_TEXTURE_2D, GL_TEXTURE_RECTANGLE_ARB):
-                print >> sys.stderr, gl_id.value, '=> T(%d,%d)' % (w,h)
+                print(gl_id.value, '=> T(%d,%d)' % (w, h), file=sys.stderr)
                 glTexImage2D(self.gl_tgt,
                              0,
                              self.gl_fmt,
@@ -197,7 +212,7 @@ class Surface(object):
                              0,
                              fmt, GL_BYTE, None)
             elif self.gl_tgt == GL_TEXTURE_CUBE_MAP_EXT:
-                print >> sys.stderr, gl_id.value, '=> C(%d,%d)' % (w,h)
+                print(gl_id.value, '=> C(%d,%d)' % (w, h), file=sys.stderr)
                 for i in range(6):
                     glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X_EXT + i,
                                  0,
@@ -206,7 +221,8 @@ class Surface(object):
                                  0,
                                  fmt, GL_BYTE, None)
             elif self.gl_tgt == GL_TEXTURE_3D:
-                print >> sys.stderr, gl_id.value, '=> T(%d,%d,%d)' % (w,h,d)
+                print(
+                    gl_id.value, '=> T(%d,%d,%d)' % (w, h, d), file=sys.stderr)
                 glTexImage3D(self.gl_tgt,
                              0,
                              self.gl_fmt,
@@ -222,8 +238,10 @@ class Surface(object):
             if self.gl_tgt == GL_TEXTURE_CUBE_MAP_EXT:
                 for i in range(6):
                     if self.is_mipmapped:
-                        glGenerateMipmapEXT(GL_TEXTURE_CUBE_MAP_POSITIVE_X_EXT + i)
-                    self.params.applyToCurrentTexture(GL_TEXTURE_CUBE_MAP_POSITIVE_X_EXT + i)
+                        glGenerateMipmapEXT(
+                            GL_TEXTURE_CUBE_MAP_POSITIVE_X_EXT + i)
+                    self.params.applyToCurrentTexture(
+                        GL_TEXTURE_CUBE_MAP_POSITIVE_X_EXT + i)
                 else:
                     if self.is_mipmapped:
                         glGenerateMipmapEXT(self.gl_tgt)
@@ -233,7 +251,7 @@ class Surface(object):
 
             glBindTexture(self.gl_tgt, 0)
         else:
-            print >> sys.stderr, gl_id.value, '=> R(%d,%d)' % (w,h)
+            print(gl_id.value, '=> R(%d,%d)' % (w, h), file=sys.stderr)
             glGenRenderbuffersEXT(1, byref(gl_id))
             glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, gl_id)
             glRenderbufferStorageEXT(GL_RENDERBUFFER_EXT, self.gl_fmt, w, h)
@@ -246,20 +264,20 @@ class Surface(object):
         self.width, self.height, self.depth = w, h, d
 
 
-
-class FrameBuffer(object):
-    bound_fbo = [ 0 ]
+class FrameBuffer:
+    bound_fbo = [0]
 
     def __init__(self, w, h, *surf):
         self.frame_buffer = 0
         self.width = w
         self.height = h
 
-        self.colour = []
+        self.colour = list()
         self.depth = None
         self.stencil = None
 
-        for s in surf: self.add(s)
+        for s in surf:
+            self.add(s)
 
     def add(self, surf):
         if type(surf) in (tuple, list):
@@ -267,11 +285,12 @@ class FrameBuffer(object):
         else:
             surf, gl_tgt = surf, surf.gl_tgt
 
-        if not (gl_tgt in (GL_TEXTURE_2D, GL_TEXTURE_RECTANGLE_ARB, GL_RENDERBUFFER_EXT) or
+        if not (gl_tgt in (
+                GL_TEXTURE_2D, GL_TEXTURE_RECTANGLE_ARB, GL_RENDERBUFFER_EXT) or
                 GL_TEXTURE_CUBE_MAP_POSITIVE_X_EXT <= gl_tgt < GL_TEXTURE_CUBE_MAP_POSITIVE_X_EXT + 6):
             raise Failed('invalid target: ' + hex(gl_tgt))
 
-        if   surf.surface_type == Surface.SURF_COLOUR:
+        if surf.surface_type == Surface.SURF_COLOUR:
             self.colour.append((surf, gl_tgt))
         elif surf.surface_type == Surface.SURF_DEPTH:
             self.depth = (surf, gl_tgt)
@@ -296,31 +315,35 @@ class FrameBuffer(object):
         if self.frame_buffer == 0:
             raise Failed('failed to init. glGetError(): ' + str(glGetError()))
 
-    def attach(self, mipmap_level = 0):
+    def attach(self, mipmap_level=0):
         if self.frame_buffer == 0:
             raise Failed('not initialised')
 
         self.bind()
 
-        R = zip(self.colour, range(GL_COLOR_ATTACHMENT0_EXT,
-            GL_COLOR_ATTACHMENT0_EXT + len(self.colour)))
+        R = list(zip(self.colour, list(range(GL_COLOR_ATTACHMENT0_EXT,
+                                             GL_COLOR_ATTACHMENT0_EXT + len(
+                                                 self.colour)))))
         R.extend(((self.depth, GL_DEPTH_ATTACHMENT_EXT),
-            (self.stencil, GL_STENCIL_ATTACHMENT_EXT)))
+                  (self.stencil, GL_STENCIL_ATTACHMENT_EXT)))
 
         for surf_info, attachment in R:
-            if surf_info is None: continue
+            if surf_info is None:
+                continue
             surf, tgt = surf_info
 
-            if surf.gl_id == 0: continue
+            if surf.gl_id == 0:
+                continue
 
             if surf.is_texture:
-                print >> sys.stderr, 'ATTACH: T:%d' % (surf.gl_id,)
+                print('ATTACH: T:%d' % (surf.gl_id,), file=sys.stderr)
                 glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT,
-                    attachment, tgt, surf.gl_id, mipmap_level)
+                                          attachment, tgt, surf.gl_id,
+                                          mipmap_level)
             else:
-                print >> sys.stderr, 'ATTACH: R:%d' % (surf.gl_id,)
+                print('ATTACH: R:%d' % (surf.gl_id,), file=sys.stderr)
                 glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT,
-                    attachment, tgt, surf.gl_id)
+                                             attachment, tgt, surf.gl_id)
 
         status = glCheckFramebufferStatusEXT(GL_FRAMEBUFFER_EXT)
 
@@ -328,7 +351,7 @@ class FrameBuffer(object):
             raise Failed('attach failed: ' + hex(status))
 
     def pushBind(self):
-        _bind  = FrameBuffer.bound_fbo[-1] != self.frame_buffer
+        _bind = FrameBuffer.bound_fbo[-1] != self.frame_buffer
         FrameBuffer.bound_fbo.append(self.frame_buffer)
         if _bind:
             glFlush()
@@ -341,7 +364,7 @@ class FrameBuffer(object):
             if fbo != FrameBuffer.bound_fbo[-1]:
                 glFlush()
                 glBindFramebufferEXT(GL_FRAMEBUFFER_EXT,
-                    FrameBuffer.bound_fbo[-1])
+                                     FrameBuffer.bound_fbo[-1])
 
     def bind(self):
         if len(FrameBuffer.bound_fbo) == 1:
@@ -378,9 +401,10 @@ class FrameBuffer(object):
     # retain a reference to these objects so we can use them during GC
     # cleanup
     def destroy(self, c_uint=c_uint, byref=byref,
-            glDeleteFramebuffersEXT=glDeleteFramebuffersEXT):
-        if self.frame_buffer == 0: return
-        self.colour = []
+                glDeleteFramebuffersEXT=glDeleteFramebuffersEXT):
+        if self.frame_buffer == 0:
+            return
+        self.colour = list()
         self.depth = None
         self.stencil = None
         if self.frame_buffer != 0:
@@ -390,6 +414,7 @@ class FrameBuffer(object):
 
 
 class GaussianFuncs(FragmentShader):
+
     def __init__(self):
         FragmentShader.__init__(self, "gaussian_rect_funcs_f", """\
 vec4 _blur3(in sampler2D tex, in vec2 base, in vec2 offset) {
@@ -473,7 +498,9 @@ vec4 _blur11_r(in sampler2DRect tex, in vec2 base, in vec2 offset) {
 }
 """)
 
+
 class RenderDOFPass1(ShaderProgram):
+
     def __init__(self):
         ShaderProgram.__init__(self)
         self.setShader(FragmentShader("dof_f", """\
@@ -498,7 +525,9 @@ void main() {
 }
 """))
 
+
 class RenderDOFPass2(ShaderProgram):
+
     def __init__(self):
         ShaderProgram.__init__(self)
         self.setShader(FragmentShader("dof_f", """\
@@ -542,7 +571,9 @@ void main() {
 }
 """))
 
+
 class DownsamplerRect(ShaderProgram):
+
     def __init__(self):
         ShaderProgram.__init__(self)
         self.setShader(FragmentShader("downsample_f", """\
@@ -558,7 +589,9 @@ void main() {
 }
 """))
 
+
 class Downsampler(ShaderProgram):
+
     def __init__(self):
         ShaderProgram.__init__(self)
         self.setShader(FragmentShader("downsample_rect_f", """\
@@ -574,7 +607,9 @@ void main() {
 }
 """))
 
+
 class Gaussian3(ShaderProgram):
+
     def __init__(self):
         ShaderProgram.__init__(self)
         self.setShader(FragmentShader("gaussian_f", """\
@@ -586,7 +621,9 @@ void main() {
 }
 """).addDependency(GaussianFuncs()))
 
+
 class GaussianRect3(ShaderProgram):
+
     def __init__(self):
         ShaderProgram.__init__(self)
         self.setShader(FragmentShader("gaussian_rect_f", """\
@@ -600,10 +637,11 @@ void main() {
 
 
 def gaussNoise(l):
-    noise = []
+    noise = list()
     while len(noise) < l:
         x = random.gauss(.5, .25)
-        if 0.0 <= x <= 1.0: noise.append(x)
+        if 0.0 <= x <= 1.0:
+            noise.append(x)
     return noise
 
 
@@ -614,7 +652,7 @@ def renderScene(r, object):
 
     glMatrixMode(GL_PROJECTION)
     glLoadIdentity()
-    gluPerspective(60.0, 8.0/6.0, 1.0, 60.0)
+    gluPerspective(60.0, 8.0 / 6.0, 1.0, 60.0)
 
     glMatrixMode(GL_MODELVIEW)
     glLoadIdentity()
@@ -638,7 +676,7 @@ def gaussianBlur(src, temp_fbo, tgt_fbo, px, py, pw, ph, blur):
     glDisable(GL_DEPTH_TEST)
 
     # blur horizonally.
-    #tx = 1.0 / src.width
+    # tx = 1.0 / src.width
     #ty = 1.0 / src.height
     tx = ty = 1.0
 
@@ -650,10 +688,14 @@ def gaussianBlur(src, temp_fbo, tgt_fbo, px, py, pw, ph, blur):
     blur.uset2F("texel", tx, 0.0)
 
     glBegin(GL_QUADS)
-    glTexCoord2f(tx * (     px), ty * (      py)); glVertex2f(     px,      py)
-    glTexCoord2f(tx * (px + pw), ty * (      py)); glVertex2f(px + pw,      py)
-    glTexCoord2f(tx * (px + pw), ty * ( py + ph)); glVertex2f(px + pw, py + ph)
-    glTexCoord2f(tx * (     px), ty * ( py + ph)); glVertex2f(     px, py + ph)
+    glTexCoord2f(tx * (px), ty * (py))
+    glVertex2f(px, py)
+    glTexCoord2f(tx * (px + pw), ty * (py))
+    glVertex2f(px + pw, py)
+    glTexCoord2f(tx * (px + pw), ty * (py + ph))
+    glVertex2f(px + pw, py + ph)
+    glTexCoord2f(tx * (px), ty * (py + ph))
+    glVertex2f(px, py + ph)
     glEnd()
 
     # blur vertically.
@@ -668,10 +710,14 @@ def gaussianBlur(src, temp_fbo, tgt_fbo, px, py, pw, ph, blur):
     blur.uset2F("texel", 0.0, ty)
 
     glBegin(GL_QUADS)
-    glTexCoord2f(tx * (     px), ty * (      py)); glVertex2f(     px,      py)
-    glTexCoord2f(tx * (px + pw), ty * (      py)); glVertex2f(px + pw,      py)
-    glTexCoord2f(tx * (px + pw), ty * ( py + ph)); glVertex2f(px + pw, py + ph)
-    glTexCoord2f(tx * (     px), ty * ( py + ph)); glVertex2f(     px, py + ph)
+    glTexCoord2f(tx * (px), ty * (py))
+    glVertex2f(px, py)
+    glTexCoord2f(tx * (px + pw), ty * (py))
+    glVertex2f(px + pw, py)
+    glTexCoord2f(tx * (px + pw), ty * (py + ph))
+    glVertex2f(px + pw, py + ph)
+    glTexCoord2f(tx * (px), ty * (py + ph))
+    glVertex2f(px, py + ph)
     glEnd()
 
     blur.uninstall()
@@ -685,7 +731,7 @@ def downsample(src, tgt_fbo, downsampler, noise):
     tgt_fbo.bind()
     setup2D(tgt_fbo.width, tgt_fbo.height)
 
-    #src_texel_x = 1.0 / src.width
+    # src_texel_x = 1.0 / src.width
     #tgt_texel_x = 1.0 / tgt_fbo.width
     src_texel_x = tgt_texel_x = 1.0
     downsamp_x = src.width / tgt_fbo.width
@@ -701,8 +747,10 @@ def downsample(src, tgt_fbo, downsampler, noise):
         for y in range(4):
             i = x + y * 4
             downsampler.uset2F("taps[" + str(i) + "]",
-                src_texel_x * downsamp_x * noise[i * 2] * 2.0 - 1.0,
-                src_texel_y * downsamp_y * noise[i * 2 + 1] * 2.0 - 1.0)
+                               src_texel_x * downsamp_x * noise[
+                                   i * 2] * 2.0 - 1.0,
+                               src_texel_y * downsamp_y * noise[
+                                   i * 2 + 1] * 2.0 - 1.0)
 
     downsampler.usetTex("src", 1, src)
 
@@ -730,10 +778,10 @@ def renderDOF(scene, alpha, blurred, pass1, pass2, noise):
     sy = scene.height
 
     pass1.install()
-    pass1.uset4F("dof", 15.0, 37.0, 60.0, 0.5);
-    pass1.uset1F("near", 1.0);
-    pass1.uset1F("far", 60.0);
-    pass1.usetTex("depth", 0, scene.depthBuffer());
+    pass1.uset4F("dof", 15.0, 37.0, 60.0, 0.5)
+    pass1.uset1F("near", 1.0)
+    pass1.uset1F("far", 60.0)
+    pass1.usetTex("depth", 0, scene.depthBuffer())
 
     glDisable(GL_DEPTH_TEST)
 
@@ -741,10 +789,14 @@ def renderDOF(scene, alpha, blurred, pass1, pass2, noise):
     setup2D(scene.width, scene.height)
 
     glBegin(GL_QUADS)
-    glTexCoord2f(0.0, 0.0); glVertex2f(0.0, 0.0)
-    glTexCoord2f( sx, 0.0); glVertex2f( sx, 0.0)
-    glTexCoord2f( sx,  sy); glVertex2f( sx,  sy)
-    glTexCoord2f(0.0,  sy); glVertex2f(0.0,  sy)
+    glTexCoord2f(0.0, 0.0)
+    glVertex2f(0.0, 0.0)
+    glTexCoord2f(sx, 0.0)
+    glVertex2f(sx, 0.0)
+    glTexCoord2f(sx, sy)
+    glVertex2f(sx, sy)
+    glTexCoord2f(0.0, sy)
+    glVertex2f(0.0, sy)
     glEnd()
 
     pass1.uninstall()
@@ -753,25 +805,30 @@ def renderDOF(scene, alpha, blurred, pass1, pass2, noise):
 
     # pass 2 goes to the display
     pass2.install()
-    for i in range(1,16):
+    for i in range(1, 16):
         pass2.uset2F("taps[0]", 0.0, 0.0)
         pass2.uset2F("taps[" + str(i) + "]", noise[i * 2] * 2.0 - 1.0,
-            noise[i * 2 + 1] * 2.0 - 1.0)
+                     noise[i * 2 + 1] * 2.0 - 1.0)
     pass2.usetTex("focus", 0, scene.colourBuffer(0))
     pass2.usetTex("blur", 1, blurred.colourBuffer(0))
     pass2.usetTex("alpha", 2, alpha.colourBuffer(0))
-    pass2.uset4F("scale", 1.0, 1.0, 0.25, 0.25);
+    pass2.uset4F("scale", 1.0, 1.0, 0.25, 0.25)
 
     setup2D(scene.width, scene.height)
 
     glBegin(GL_QUADS)
-    glTexCoord2f(0.0, 0.0); glVertex2f(0.0, 0.0)
-    glTexCoord2f( sx, 0.0); glVertex2f( sx, 0.0)
-    glTexCoord2f( sx,  sy); glVertex2f( sx,  sy)
-    glTexCoord2f(0.0,  sy); glVertex2f(0.0,  sy)
+    glTexCoord2f(0.0, 0.0)
+    glVertex2f(0.0, 0.0)
+    glTexCoord2f(sx, 0.0)
+    glVertex2f(sx, 0.0)
+    glTexCoord2f(sx, sy)
+    glVertex2f(sx, sy)
+    glTexCoord2f(0.0, sy)
+    glVertex2f(0.0, sy)
     glEnd()
 
     pass2.uninstall()
+
 
 def setup2D(w, h):
     glViewport(0, 0, w, h)
@@ -782,8 +839,9 @@ def setup2D(w, h):
     glMatrixMode(GL_MODELVIEW)
     glLoadIdentity()
 
+
 def blit(surf, x, y, w, h, mode):
-    glActiveTexture(GL_TEXTURE0);
+    glActiveTexture(GL_TEXTURE0)
     surf.enableAndBind()
 
     if surf.gl_tgt == GL_TEXTURE_RECTANGLE_ARB:
@@ -795,10 +853,14 @@ def blit(surf, x, y, w, h, mode):
     glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, mode)
 
     glBegin(GL_QUADS)
-    glTexCoord2f(0.0, 0.0); glVertex2f(    x,     y)
-    glTexCoord2f( sx, 0.0); glVertex2f(w + x,     y)
-    glTexCoord2f( sx,  sy); glVertex2f(w + x, h + y)
-    glTexCoord2f(0.0,  sy); glVertex2f(    x, h + y)
+    glTexCoord2f(0.0, 0.0)
+    glVertex2f(x, y)
+    glTexCoord2f(sx, 0.0)
+    glVertex2f(w + x, y)
+    glTexCoord2f(sx, sy)
+    glVertex2f(w + x, h + y)
+    glTexCoord2f(0.0, sy)
+    glVertex2f(x, h + y)
     glEnd()
 
     surf.unbindAndDisable()
@@ -809,48 +871,53 @@ def main():
     screen_height = 600
     window = pyglet.window.Window(screen_width, screen_height)
 
-    cparams = TextureParam(wrap = GL_CLAMP)
+    cparams = TextureParam(wrap=GL_CLAMP)
 
     buf = FrameBuffer(screen_width, screen_height,
-        Surface(Surface.SURF_COLOUR, gl_tgt=GL_TEXTURE_RECTANGLE_ARB,
-            params=cparams),
-        Surface(Surface.SURF_DEPTH, gl_tgt=GL_TEXTURE_RECTANGLE_ARB,
-            gl_fmt=GL_DEPTH_COMPONENT32_ARB, is_texture=True,
-            is_mipmapped=False, params=cparams))
+                      Surface(Surface.SURF_COLOUR,
+                              gl_tgt=GL_TEXTURE_RECTANGLE_ARB,
+                              params=cparams),
+                      Surface(Surface.SURF_DEPTH,
+                              gl_tgt=GL_TEXTURE_RECTANGLE_ARB,
+                              gl_fmt=GL_DEPTH_COMPONENT32_ARB, is_texture=True,
+                              is_mipmapped=False, params=cparams))
     buf.init()
     buf.attach()
     buf.unbind()
 
     alpha_buf = FrameBuffer(screen_width, screen_height,
-        Surface(Surface.SURF_COLOUR, gl_tgt=GL_TEXTURE_RECTANGLE_ARB,
-            params = cparams))
+                            Surface(Surface.SURF_COLOUR,
+                                    gl_tgt=GL_TEXTURE_RECTANGLE_ARB,
+                                    params=cparams))
     alpha_buf.init()
     alpha_buf.attach()
     alpha_buf.unbind()
 
     buf_subsampled = FrameBuffer(200, 150,
-        Surface(Surface.SURF_COLOUR, gl_tgt=GL_TEXTURE_RECTANGLE_ARB,
-            params=cparams),
-        Surface(Surface.SURF_DEPTH, params=cparams))
+                                 Surface(Surface.SURF_COLOUR,
+                                         gl_tgt=GL_TEXTURE_RECTANGLE_ARB,
+                                         params=cparams),
+                                 Surface(Surface.SURF_DEPTH, params=cparams))
     buf_subsampled.init()
     buf_subsampled.attach()
     buf_subsampled.unbind()
 
     buf_subsampled2 = FrameBuffer(200, 150,
-        Surface(Surface.SURF_COLOUR, gl_tgt=GL_TEXTURE_RECTANGLE_ARB,
-            params=cparams),
-        Surface(Surface.SURF_DEPTH, params=cparams))
+                                  Surface(Surface.SURF_COLOUR,
+                                          gl_tgt=GL_TEXTURE_RECTANGLE_ARB,
+                                          params=cparams),
+                                  Surface(Surface.SURF_DEPTH, params=cparams))
     buf_subsampled2.init()
     buf_subsampled2.attach()
     buf_subsampled2.unbind()
 
     object = cube_array_list()
 
-    downsampler=DownsamplerRect()
-    noise=gaussNoise(32)
-    blur=GaussianRect3()
-    pass1=RenderDOFPass1()
-    pass2=RenderDOFPass2()
+    downsampler = DownsamplerRect()
+    noise = gaussNoise(32)
+    blur = GaussianRect3()
+    pass1 = RenderDOFPass1()
+    pass2 = RenderDOFPass2()
 
     r = 0
     clk = clock.Clock(60)
@@ -862,12 +929,13 @@ def main():
         buf.bind()
         glViewport(0, 0, screen_width, screen_height)
         r += 1
-        if r > 360: r = 0
+        if r > 360:
+            r = 0
         renderScene(r, object)
         buf.unbind()
 
         downsample(buf.colourBuffer(0), buf_subsampled, downsampler, noise)
-        
+
         gaussianBlur(buf_subsampled.colourBuffer(0),
                      buf_subsampled2,
                      buf_subsampled,
@@ -879,11 +947,12 @@ def main():
 
         renderDOF(buf, alpha_buf, buf_subsampled, pass1, pass2, noise)
 
-        #fps.draw(window, clk)
+        # fps.draw(window, clk)
 
         window.flip()
 
     buf = None
     buf_subsampled = None
-main()
 
+
+main()

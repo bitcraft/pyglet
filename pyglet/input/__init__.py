@@ -2,14 +2,14 @@
 # pyglet
 # Copyright (c) 2006-2008 Alex Holkner
 # All rights reserved.
-# 
+#
 # Redistribution and use in source and binary forms, with or without
-# modification, are permitted provided that the following conditions 
+# modification, are permitted provided that the following conditions
 # are met:
 #
 #  * Redistributions of source code must retain the above copyright
 #    notice, this list of conditions and the following disclaimer.
-#  * Redistributions in binary form must reproduce the above copyright 
+#  * Redistributions in binary form must reproduce the above copyright
 #    notice, this list of conditions and the following disclaimer in
 #    the documentation and/or other materials provided with the
 #    distribution.
@@ -32,14 +32,14 @@
 # POSSIBILITY OF SUCH DAMAGE.
 # ----------------------------------------------------------------------------
 
-'''Joystick, tablet and USB HID device support.
+"""Joystick, tablet and USB HID device support.
 
 This module provides a unified interface to almost any input device, besides
 the regular mouse and keyboard support provided by `Window`.  At the lowest
 level, `get_devices` can be used to retrieve a list of all supported devices,
 including joysticks, tablets, space controllers, wheels, pedals, remote
 controls, keyboards and mice.  The set of returned devices varies greatly
-depending on the operating system (and, of course, what's plugged in).  
+depending on the operating system (and, of course, what's plugged in).
 
 At this level pyglet does not try to interpret *what* a particular device is,
 merely what controls it provides.  A `Control` can be either a button, whose
@@ -74,23 +74,19 @@ no control list is available; instead, calling `Tablet.open` returns a
 `TabletCanvas` onto which you should set your event handlers.
 
 :since: pyglet 1.2
-
-'''
+"""
 
 __docformat__ = 'restructuredtext'
 __version__ = '$Id: $'
 
-import sys
+from .base import Device, Control, RelativeAxis, AbsoluteAxis, Button,\
+    Joystick, AppleRemote, Tablet
+from .base import DeviceException, DeviceOpenException, DeviceExclusiveException
 
-from base import Device, Control, RelativeAxis, AbsoluteAxis, \
-                 Button, Joystick, AppleRemote, Tablet
-from base import DeviceException, DeviceOpenException, DeviceExclusiveException
-
-_is_epydoc = hasattr(sys, 'is_epydoc') and sys.is_epydoc
 
 def get_apple_remote(display=None):
-    '''Get the Apple remote control device.
-    
+    """Get the Apple remote control device.
+
     The Apple remote is the small white 6-button remote control that
     accompanies most recent Apple desktops and laptops.  The remote can only
     be used with Mac OS X.
@@ -102,75 +98,73 @@ def get_apple_remote(display=None):
     :rtype: `AppleRemote`
     :return: The remote device, or ``None`` if the computer does not support
         it.
-    '''
-    return None
+    """
+    pass
 
-if _is_epydoc:
+
+def get_devices(display=None):
+    """Get a list of all attached input devices.
+
+    :Parameters:
+        `display` : `Display`
+            The display device to query for input devices.  Ignored on Mac
+            OS X and Windows.  On Linux, defaults to the default display
+            device.
+
+    :rtype: list of `Device`
+    """
+    pass
+
+
+def get_joysticks(display=None):
+    """Get a list of attached joysticks.
+
+    :Parameters:
+        `display` : `Display`
+            The display device to query for input devices.  Ignored on Mac
+            OS X and Windows.  On Linux, defaults to the default display
+            device.
+
+    :rtype: list of `Joystick`
+    """
+    pass
+
+
+def get_tablets(display=None):
+    """Get a list of tablets.
+
+    This function may return a valid tablet device even if one is not
+    attached (for example, it is not possible on Mac OS X to determine if
+    a tablet device is connected).  Despite returning a list of tablets,
+    pyglet does not currently support multiple tablets, and the behaviour
+    is undefined if more than one is attached.
+
+    :Parameters:
+        `display` : `Display`
+            The display device to query for input devices.  Ignored on Mac
+            OS X and Windows.  On Linux, defaults to the default display
+            device.
+
+    :rtype: list of `Tablet`
+    """
+    return list()
+
+from pyglet import compat_platform
+
+if compat_platform.startswith('linux'):
+    from .x11_xinput import get_devices as xinput_get_devices
+    from .x11_xinput_tablet import get_tablets
+    from .evdev import get_devices as evdev_get_devices
+    from .evdev import get_joysticks
+
     def get_devices(display=None):
-        '''Get a list of all attached input devices.
-
-        :Parameters:
-            `display` : `Display`
-                The display device to query for input devices.  Ignored on Mac
-                OS X and Windows.  On Linux, defaults to the default display
-                device.
-
-        :rtype: list of `Device`
-        '''
-
-    def get_joysticks(display=None):
-        '''Get a list of attached joysticks.
-
-        :Parameters:
-            `display` : `Display`
-                The display device to query for input devices.  Ignored on Mac
-                OS X and Windows.  On Linux, defaults to the default display
-                device.
-
-        :rtype: list of `Joystick`
-        '''
-
-    def get_tablets(display=None):
-        '''Get a list of tablets.
-
-        This function may return a valid tablet device even if one is not
-        attached (for example, it is not possible on Mac OS X to determine if
-        a tablet device is connected).  Despite returning a list of tablets,
-        pyglet does not currently support multiple tablets, and the behaviour
-        is undefined if more than one is attached.
-
-        :Parameters:
-            `display` : `Display`
-                The display device to query for input devices.  Ignored on Mac
-                OS X and Windows.  On Linux, defaults to the default display
-                device.
-
-        :rtype: list of `Tablet`
-        '''
-else:
-    def get_tablets(display=None):
-        return []
-
-    from pyglet import compat_platform
-
-    if compat_platform.startswith('linux'):
-        from x11_xinput import get_devices as xinput_get_devices
-        from x11_xinput_tablet import get_tablets
-        from evdev import get_devices as evdev_get_devices
-        from evdev import get_joysticks
-        def get_devices(display=None):
-            return (evdev_get_devices(display) +
-                    xinput_get_devices(display))
-    elif compat_platform in ('cygwin', 'win32'):
-        from directinput import get_devices, get_joysticks
-        try:
-            from wintab import get_tablets
-        except:
-            pass
-    elif compat_platform == 'darwin':
-        from pyglet import options as pyglet_options
-        if pyglet_options['darwin_cocoa']:
-            from darwin_hid import get_devices, get_joysticks, get_apple_remote
-        else:
-            from carbon_hid import get_devices, get_joysticks, get_apple_remote
-            from carbon_tablet import get_tablets
+        return (evdev_get_devices(display) +
+                xinput_get_devices(display))
+elif compat_platform in ('cygwin', 'win32'):
+    from .directinput import get_devices, get_joysticks
+    try:
+        from .wintab import get_tablets
+    except:
+        pass
+elif compat_platform == 'darwin':
+    from .darwin_hid import get_devices, get_joysticks, get_apple_remote

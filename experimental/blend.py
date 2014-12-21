@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 
-'''Press R,G,B,S keys to alter target color and saturation.
-'''
+"""Press R,G,B,S keys to alter target color and saturation.
+"""
 
-print __doc__
+print(__doc__)
 
 __docformat__ = 'restructuredtext'
 __version__ = '$Id: $'
@@ -24,6 +24,7 @@ def on_resize(width, height):
     glOrtho(0, width, 0, height, -1, 1)
     glMatrixMode(GL_MODELVIEW)
 
+
 def on_key_press(symbol, modifiers):
     global target
     if symbol == key.R:
@@ -37,8 +38,10 @@ def on_key_press(symbol, modifiers):
 
     print_target()
 
+
 def print_target():
-    print 'Target color  %r saturation %f' % (target[:3], target[3])
+    print('Target color  %r saturation %f' % (target[:3], target[3]))
+
 
 # s is saturation, 0 = original image, 1 = solid color
 def blend_to_color(r, g, b, s):
@@ -48,9 +51,11 @@ def blend_to_color(r, g, b, s):
     # A = out alpha
     # Af = vertex alpha, As = texture alpha
     glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_BLEND)
-    glTexEnvfv(GL_TEXTURE_ENV, GL_TEXTURE_ENV_COLOR, 
-        (c_float * 4)(r + (1-s)*(1-r), g + (1-s)*(1-g), b + (1-s)*(1-b), 1))
-    glColor3f(s*r, s*g, s*b)
+    glTexEnvfv(GL_TEXTURE_ENV, GL_TEXTURE_ENV_COLOR,
+               (c_float * 4)(r + (1 - s) * (1 - r), g + (1 - s) * (1 - g),
+                             b + (1 - s) * (1 - b), 1))
+    glColor3f(s * r, s * g, s * b)
+
 
 w = Window()
 w.push_handlers(on_resize)
@@ -73,8 +78,8 @@ while not w.has_exit:
     dt = clock.tick() / 2
     if current != target:
         # hacky linear vector interpolation
-        current = [c + dt * ((t-c) and abs(t-c)/(t-c)) \
-                   for t,c in zip(target, current)]
+        current = [c + dt * ((t - c) and abs(t - c) / (t - c))
+                   for t, c in zip(target, current)]
 
     w.dispatch_events()
     glClear(GL_COLOR_BUFFER_BIT)

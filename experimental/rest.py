@@ -7,7 +7,8 @@ from docutils import nodes
 import pyglet
 from pyglet.text.formats import structured
 
-class Stylesheet(object):
+
+class Stylesheet:
     default = dict(
         font_name='Times New Roman',
         font_size=12,
@@ -15,7 +16,7 @@ class Stylesheet(object):
 
     emphasis = dict(
         italic=True)
-        
+
     strong = dict(
         bold=True)
 
@@ -26,7 +27,7 @@ class Stylesheet(object):
         font_name='Courier New',
         font_size=10,
         margin_left=20,
-        )
+    )
 
     def get_title(self, level):
         return {
@@ -43,13 +44,17 @@ class Stylesheet(object):
             3: dict(
                 font_size=12,
                 italic=True),
-        }.get(level, {})
+        }.get(level, dict())
 
-class Section(object):
+
+class Section:
+
     def __init__(self, level):
         self.level = level
 
+
 class DocutilsDecoder(structured.StructuredTextDecoder):
+
     def __init__(self, stylesheet=None):
         if not stylesheet:
             stylesheet = Stylesheet()
@@ -73,7 +78,7 @@ class DocutilsDecoder(structured.StructuredTextDecoder):
     def visit_Text(self, node):
         text = node.astext()
         if self.in_literal:
-            text = text.replace('\n', u'\u2028')
+            text = text.replace('\n', '\u2028')
         self.add_text(text)
 
     def visit_unknown(self, node):
@@ -116,7 +121,7 @@ class DocutilsDecoder(structured.StructuredTextDecoder):
 
     def visit_strong(self, node):
         self.push_style(node, self.stylesheet.strong)
-        
+
     def visit_literal(self, node):
         self.push_style(node, self.stylesheet.literal)
 
@@ -126,7 +131,9 @@ class DocutilsDecoder(structured.StructuredTextDecoder):
     def visit_subscript(self, node):
         self.push_style(node, self.stylesheet.subscript)
 
+
 class DocutilsVisitor(nodes.NodeVisitor):
+
     def __init__(self, document, decoder):
         nodes.NodeVisitor.__init__(self, document)
         self.decoder = decoder
@@ -141,7 +148,6 @@ class DocutilsVisitor(nodes.NodeVisitor):
         self.decoder.pop_style(node)
 
         node_name = node.__class__.__name__
-        method = getattr(self.decoder, 'depart_%s' % node_name, 
+        method = getattr(self.decoder, 'depart_%s' % node_name,
                          self.decoder.depart_unknown)
         method(node)
-

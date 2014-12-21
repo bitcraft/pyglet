@@ -2,14 +2,14 @@
 # pyglet
 # Copyright (c) 2006-2008 Alex Holkner
 # All rights reserved.
-# 
+#
 # Redistribution and use in source and binary forms, with or without
-# modification, are permitted provided that the following conditions 
+# modification, are permitted provided that the following conditions
 # are met:
 #
 #  * Redistributions of source code must retain the above copyright
 #    notice, this list of conditions and the following disclaimer.
-#  * Redistributions in binary form must reproduce the above copyright 
+#  * Redistributions in binary form must reproduce the above copyright
 #    notice, this list of conditions and the following disclaimer in
 #    the documentation and/or other materials provided with the
 #    distribution.
@@ -32,9 +32,9 @@
 # POSSIBILITY OF SUCH DAMAGE.
 # ----------------------------------------------------------------------------
 
-'''Extensible attributed text format for representing pyglet formatted
+"""Extensible attributed text format for representing pyglet formatted
 documents.
-'''
+"""
 
 __docformat__ = 'restructuredtext'
 __version__ = '$Id: $'
@@ -45,8 +45,9 @@ import re
 import token
 
 import pyglet
+from functools import reduce
 
-_pattern = re.compile(r'''
+_pattern = re.compile(r"""
     (?P<escape_hex>\{\#x(?P<escape_hex_val>[0-9a-fA-F]+)\})
   | (?P<escape_dec>\{\#(?P<escape_dec_val>[0-9]+)\})
   | (?P<escape_lbrace>\{\{)
@@ -59,14 +60,16 @@ _pattern = re.compile(r'''
   | (?P<nl_soft>\n(?=\S))
   | (?P<nl_para>\n\n+)
   | (?P<text>[^\{\}\n]+)
-    ''', re.VERBOSE | re.DOTALL)
+    """, re.VERBOSE | re.DOTALL)
+
 
 class AttributedTextDecoder(pyglet.text.DocumentDecoder):
+
     def decode(self, text, location=None):
         self.doc = pyglet.text.document.FormattedDocument()
 
         self.length = 0
-        self.attributes = {}
+        self.attributes = dict()
         next_trailing_space = True
         trailing_newline = True
 
@@ -86,7 +89,7 @@ class AttributedTextDecoder(pyglet.text.DocumentDecoder):
                 self.append('\n')
                 trailing_newline = True
             elif group == 'nl_para':
-                self.append(m.group('nl_para')[1:]) # ignore the first \n
+                self.append(m.group('nl_para')[1:])  # ignore the first \n
                 trailing_newline = True
             elif group == 'attr':
                 try:
@@ -102,14 +105,14 @@ class AttributedTextDecoder(pyglet.text.DocumentDecoder):
                     if trailing_newline:
                         self.attributes[name[1:]] = val
                     else:
-                        self.doc.set_paragraph_style(self.length, self.length, 
+                        self.doc.set_paragraph_style(self.length, self.length,
                                                      {name[1:]: val})
                 else:
                     self.attributes[name] = val
             elif group == 'escape_dec':
-                self.append(unichr(int(m.group('escape_dec_val'))))
+                self.append(chr(int(m.group('escape_dec_val'))))
             elif group == 'escape_hex':
-                self.append(unichr(int(m.group('escape_hex_val'), 16)))
+                self.append(chr(int(m.group('escape_hex_val'), 16)))
             elif group == 'escape_lbrace':
                 self.append('{')
             elif group == 'escape_rbrace':
@@ -131,7 +134,7 @@ class AttributedTextDecoder(pyglet.text.DocumentDecoder):
 
     def safe_node(self, node):
         if token.ISNONTERMINAL(node[0]):
-            return reduce(operator.and_, map(self.safe_node, node[1:]))
+            return reduce(operator.and_, list(map(self.safe_node, node[1:])))
         elif node[0] == token.NAME:
             return node[1] in self._safe_names
         else:

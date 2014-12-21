@@ -27,6 +27,7 @@ import logging
 from pyglet.gl import *
 from pyglet import image, resource, graphics
 
+
 class Material(graphics.Group):
     diffuse = [.8, .8, .8]
     ambient = [.2, .2, .2]
@@ -38,7 +39,7 @@ class Material(graphics.Group):
 
     def __init__(self, name, **kwargs):
         self.name = name
-        super(Material, self).__init__(**kwargs)
+        super().__init__(**kwargs)
 
     def set_state(self, face=GL_FRONT_AND_BACK):
         if self.texture:
@@ -48,13 +49,13 @@ class Material(graphics.Group):
             glDisable(GL_TEXTURE_2D)
 
         glMaterialfv(face, GL_DIFFUSE,
-            (GLfloat * 4)(*(self.diffuse + [self.opacity])))
+                     (GLfloat * 4)(*(self.diffuse + [self.opacity])))
         glMaterialfv(face, GL_AMBIENT,
-            (GLfloat * 4)(*(self.ambient + [self.opacity])))
+                     (GLfloat * 4)(*(self.ambient + [self.opacity])))
         glMaterialfv(face, GL_SPECULAR,
-            (GLfloat * 4)(*(self.specular + [self.opacity])))
+                     (GLfloat * 4)(*(self.specular + [self.opacity])))
         glMaterialfv(face, GL_EMISSION,
-            (GLfloat * 4)(*(self.emission + [self.opacity])))
+                     (GLfloat * 4)(*(self.emission + [self.opacity])))
         glMaterialf(face, GL_SHININESS, self.shininess)
 
     def unset_state(self):
@@ -64,7 +65,7 @@ class Material(graphics.Group):
 
     def __eq__(self, other):
         if self.texture is None:
-            return super(Material, self).__eq__(other)
+            return super().__eq__(other)
         return (self.__class__ is other.__class__ and
                 self.texture.id == other.texture.id and
                 self.texture.target == other.texture.target and
@@ -72,36 +73,41 @@ class Material(graphics.Group):
 
     def __hash__(self):
         if self.texture is None:
-            return super(Material, self).__hash__()
+            return super().__hash__()
         return hash((self.texture.id, self.texture.target))
 
-class MaterialGroup(object):
+
+class MaterialGroup:
+
     def __init__(self, material):
         self.material = material
 
         # Interleaved array of floats in GL_T2F_N3F_V3F format
-        self.vertices = []
-        self.normals = []
-        self.tex_coords = []
+        self.vertices = list()
+        self.normals = list()
+        self.tex_coords = list()
         self.array = None
 
-class Mesh(object):
+
+class Mesh:
+
     def __init__(self, name):
         self.name = name
-        self.groups = []
+        self.groups = list()
 
-class OBJ(object):
+
+class OBJ:
 
     @staticmethod
     def from_resource(filename):
-        '''Load an object using the resource framework'''
+        """Load an object using the resource framework"""
         loc = pyglet.resource.location(filename)
         return OBJ(filename, file=loc.open(filename), path=loc.path)
 
     def __init__(self, filename, file=None, path=None):
-        self.materials = {}
-        self.meshes = {}        # Name mapping
-        self.mesh_list = []     # Also includes anonymous meshes
+        self.materials = dict()
+        self.meshes = dict()  # Name mapping
+        self.mesh_list = list()  # Also includes anonymous meshes
 
         if file is None:
             file = open(filename, 'r')
@@ -126,11 +132,11 @@ class OBJ(object):
                 continue
 
             if values[0] == 'v':
-                vertices.append(map(float, values[1:4]))
+                vertices.append(list(map(float, values[1:4])))
             elif values[0] == 'vn':
-                normals.append(map(float, values[1:4]))
+                normals.append(list(map(float, values[1:4])))
             elif values[0] == 'vt':
-                tex_coords.append(map(float, values[1:3]))
+                tex_coords.append(list(map(float, values[1:3])))
             elif values[0] == 'mtllib':
                 self.load_material_library(values[1])
             elif values[0] in ('usemtl', 'usemat'):
@@ -163,17 +169,19 @@ class OBJ(object):
                 tlast = None
                 v1 = None
                 vlast = None
-                #points = []
+                # points = list()
                 for i, v in enumerate(values[1:]):
                     v_index, t_index, n_index = \
-                        (map(int, [j or 0 for j in v.split('/')]) + [0, 0])[:3]
+                        (list(map(int, [j or 0 for j in v.split('/')])) + [0,
+                                                                           0])[
+                            :3]
                     if v_index < 0:
                         v_index += len(vertices) - 1
                     if t_index < 0:
                         t_index += len(tex_coords) - 1
                     if n_index < 0:
                         n_index += len(normals) - 1
-                    #vertex = tex_coords[t_index] + \
+                    # vertex = tex_coords[t_index] + \
                     #         normals[n_index] + \
                     #         vertices[v_index]
 
@@ -196,10 +204,10 @@ class OBJ(object):
                     vlast = vertices[v_index]
 
     def add_to(self, batch):
-        '''Add the meshes to a batch'''
+        """Add the meshes to a batch"""
         for mesh in self.mesh_list:
             for group in mesh.groups:
-                batch.add(len(group.vertices)//3,
+                batch.add(len(group.vertices) // 3,
                           GL_TRIANGLES,
                           group.material,
                           ('v3f/static', tuple(group.vertices)),
@@ -208,7 +216,7 @@ class OBJ(object):
                           )
 
     def open_material_file(self, filename):
-        '''Override for loading from archive/network etc.'''
+        """Override for loading from archive/network etc."""
         return open(os.path.join(self.path, filename), 'r')
 
     def load_material_library(self, filename):
@@ -231,24 +239,27 @@ class OBJ(object):
 
             try:
                 if values[0] == 'Kd':
-                    material.diffuse = map(float, values[1:])
+                    material.diffuse = list(map(float, values[1:]))
                 elif values[0] == 'Ka':
-                    material.ambient = map(float, values[1:])
+                    material.ambient = list(map(float, values[1:]))
                 elif values[0] == 'Ks':
-                    material.specular = map(float, values[1:])
+                    material.specular = list(map(float, values[1:]))
                 elif values[0] == 'Ke':
-                    material.emissive = map(float, values[1:])
+                    material.emissive = list(map(float, values[1:]))
                 elif values[0] == 'Ns':
                     material.shininess = float(values[1])
                 elif values[0] == 'd':
                     material.opacity = float(values[1])
                 elif values[0] == 'map_Kd':
                     try:
-                        material.texture = pyglet.resource.image(values[1]).texture
+                        material.texture = pyglet.resource.image(
+                            values[1]).texture
                     except BaseException as ex:
-                        logging.warn('Could not load texture %s: %s' % (values[1], ex))
+                        logging.warn(
+                            'Could not load texture %s: %s' % (values[1], ex))
             except BaseException as ex:
                 logging.warn('Parse error in %s.' % (filename, ex))
+
 
 if __name__ == "__main__":
     import sys
@@ -272,7 +283,7 @@ if __name__ == "__main__":
         def on_resize(width, height):
             glMatrixMode(GL_PROJECTION)
             glLoadIdentity()
-            gluPerspective(60.0, float(width)/height, 1.0, 100.0)
+            gluPerspective(60.0, float(width) / height, 1.0, 100.0)
             glMatrixMode(GL_MODELVIEW)
             return True
 
@@ -282,19 +293,19 @@ if __name__ == "__main__":
             glLoadIdentity()
             gluLookAt(0, 3, 3, 0, 0, 0, 0, 1, 0)
             glRotatef(rot, 1, 0, 0)
-            glRotatef(rot/2, 0, 1, 0)
+            glRotatef(rot / 2, 0, 1, 0)
             batch.draw()
 
         rot = 0
+
         def update(dt):
             global rot
-            rot += dt*75
+            rot += dt * 75
 
-        pyglet.clock.schedule_interval(update, 1.0/60)
+        pyglet.clock.schedule_interval(update, 1.0 / 60)
 
         obj = OBJ(sys.argv[1])
         batch = pyglet.graphics.Batch()
         obj.add_to(batch)
 
         pyglet.app.run()
-

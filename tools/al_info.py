@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 
-'''Print OpenAL driver information.
+"""Print OpenAL driver information.
 
 Options:
   -d <device>   Optionally specify device to query.
-'''
+"""
 
 __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
@@ -16,6 +16,7 @@ import sys
 from pyglet.media.drivers import openal
 from pyglet.media.drivers.openal import al
 from pyglet.media.drivers.openal import alc
+
 
 def split_nul_strings(s):
     # NUL-separated list of strings, double-NUL-terminated.
@@ -33,7 +34,6 @@ def split_nul_strings(s):
     s = s[:i - 1]
     return s.split('\0')
 
-if __name__ == '__main__':
     op = optparse.OptionParser()
     op.add_option('-d', '--device', dest='device',
                   help='use device DEVICE', metavar='DEVICE')
@@ -46,8 +46,8 @@ if __name__ == '__main__':
         alc.alcGetString(None, alc.ALC_CAPTURE_DEFAULT_DEVICE_SPECIFIER),
         ctypes.c_char_p).value
 
-    print 'Default device:         %s' % default_device
-    print 'Default capture device: %s' % capture_default_device
+    print('Default device:         %s' % default_device)
+    print('Default capture device: %s' % capture_default_device)
 
     if alc.alcIsExtensionPresent(None, 'ALC_ENUMERATION_EXT'):
         # Hmm, actually not allowed to pass NULL to alcIsExtension present..
@@ -57,17 +57,16 @@ if __name__ == '__main__':
         capture_devices = split_nul_strings(
             alc.alcGetString(None, alc.ALC_CAPTURE_DEVICE_SPECIFIER))
 
-    print 'Devices:                %s' % ', '.join(devices)
-    print 'Capture devices:        %s' % ', '.join(capture_devices)
-    print
-
+    print('Devices:                %s' % ', '.join(devices))
+    print('Capture devices:        %s' % ', '.join(capture_devices))
+    print()
 
     if options.device:
-        print 'Using device "%s"...' % options.device
+        print('Using device "%s"...' % options.device)
         driver = openal.create_audio_driver(options.device)
     else:
-        print 'Using default device...'
+        print('Using default device...')
         driver = openal.create_audio_driver()
 
-    print 'OpenAL version %d.%d' % driver.get_version()
-    print 'Extensions:              %s' % ', '.join(driver.get_extensions())
+    print('OpenAL version %d.%d' % driver.get_version())
+    print('Extensions:              %s' % ', '.join(driver.get_extensions()))

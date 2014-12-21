@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # $Id:$
 
-'''OpenGL viewports and projections.
+"""OpenGL viewports and projections.
 
 This is a simplified interface for setting up projections, and viewports
 within projections.
@@ -55,14 +55,17 @@ a 3D scene can be created within a 2D user interface::
 
         w.flip()
 
-'''
+"""
 
 from pyglet.gl import *
 
-class Projection(object):
+
+class Projection:
     viewport = None
 
+
 class OrthographicProjection(Projection):
+
     def __init__(self, viewport, near=-1, far=1):
         self.viewport = viewport
         self.near = near
@@ -71,12 +74,14 @@ class OrthographicProjection(Projection):
     def apply(self):
         self.viewport.apply()
         glMatrixMode(GL_PROJECTION)
-        glOrtho(0, self.viewport.width, 
-                0, self.viewport.height, 
+        glOrtho(0, self.viewport.width,
+                0, self.viewport.height,
                 self.near, self.far)
         glMatrixMode(GL_MODELVIEW)
 
+
 class PerspectiveProjection(Projection):
+
     def __init__(self, viewport, fov=60, near=0.1, far=1000):
         self.viewport = viewport
         self.fov = fov
@@ -87,17 +92,20 @@ class PerspectiveProjection(Projection):
         self.viewport.apply()
         glMatrixMode(GL_PROJECTION)
         gluPerspective(self.fov,
-                      self.viewport.width/float(self.viewport.height),
-                      self.near,
-                      self.far)
+                       self.viewport.width / float(self.viewport.height),
+                       self.near,
+                       self.far)
         glMatrixMode(GL_MODELVIEW)
 
-class Viewport(object):
+
+class Viewport:
     projection = None
     width = 0
     height = 0
 
+
 class WindowViewport(Viewport):
+
     def __init__(self, window):
         self.window = window
 
@@ -116,7 +124,9 @@ class WindowViewport(Viewport):
     width = property(lambda self: self.window.width)
     height = property(lambda self: self.window.height)
 
+
 class OrthographicViewport(Viewport):
+
     def __init__(self, projection, x, y, width, height, near=-1, far=1):
         assert isinstance(projection, OrthographicProjection)
         self.projection = projection
@@ -138,20 +148,18 @@ class OrthographicViewport(Viewport):
         self.projection.apply()
         glMatrixMode(GL_PROJECTION)
         glMultMatrixf((GLfloat * 16)(
-            (r-l)/2, 0,       0,       0,
-            0,       (t-b)/2, 0,       0,
-            0,       0,       (f-n)/2, 0,
-            (r+l)/2, (t+b)/2, (f+n)/2, 1))
+            (r - l) / 2, 0, 0, 0,
+            0, (t - b) / 2, 0, 0,
+            0, 0, (f - n) / 2, 0,
+            (r + l) / 2, (t + b) / 2, (f + n) / 2, 1))
         glMatrixMode(GL_MODELVIEW)
 
         glClipPlane(GL_CLIP_PLANE0, (GLdouble * 4)(1, 0, 0, 0))
         glClipPlane(GL_CLIP_PLANE1, (GLdouble * 4)(-1, 0, 0, self.width))
         glClipPlane(GL_CLIP_PLANE2, (GLdouble * 4)(0, 1, 0, 0))
         glClipPlane(GL_CLIP_PLANE3, (GLdouble * 4)(0, -1, 0, self.height))
-      
+
         glEnable(GL_CLIP_PLANE0)
         glEnable(GL_CLIP_PLANE1)
         glEnable(GL_CLIP_PLANE2)
         glEnable(GL_CLIP_PLANE3)
-
-

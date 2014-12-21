@@ -1,17 +1,3 @@
-Principles
-----------
-
-* pyglet is an umbrella framework for games, multimedia and graphics
-  applications written in Python.
-* No required dependencies where possible.  Instead, core services provided
-  by Windows, OS X and X11 are used.  Some exceptions will have to apply (see
-  below)
-* It is not a game engine.  It's a set of modules that might be helpful,
-  and happen to work well together.
-* Not a single monolithic download.  Use .eggs to bundle related functionality
-  (core, audio, 2d, 3d, ...)
-
-
 The modules
 -----------
 
@@ -55,9 +41,9 @@ pyglet.image
 
 Optional modules, in approximate increasing pieness of sky:
 
-pyglet.font  
+pyglet.font
   Rendering and layout of fonts, using Freetype, Windows and OS X for
-  rasterisation.  Includes the Bitstream family of fonts.  
+  rasterisation.  Includes the Bitstream family of fonts.
 
   Basic interface will have:
 
@@ -69,30 +55,6 @@ pyglet.font
   Rendering will be done to a texture. We should try to pack >1 rendered
   glyph into a texture. Possibly pre-render the ASCII or latin-1 characters
   when the font is loaded? Possibly just use PackedTexture?
-  
-pyglet.gui (requires pyglet.font)
-  Buttons, sliders, text entry, scrollable text, menus and lists.  Widgets
-  can be decorated with a pluggable look-and-feel (useful for quick mockups,
-  level-editors, graphics applications), or with customized images for
-  each widget (game interfaces).  Widgets can be laid out by pixel coordinates
-  (in an editor?), or with simple layout managers.  Transition effects
-  can be applied for buttons sliding on/off screen, fading in/out, rollovers,
-  crossfading, etc.  Command events etc are pushed back through the
-  pyglet.window event queue?  
-
-  Status elements like progress bars:
-
-    straight horizontal / vertical bars (active/inactive colour)
-    image-based where the image is "filled"  (active/inactive image)
-
-     - <ah>: These are the same thing, and should be controlled by look-n-feel
-             object.
-
-  Graphical elements like boxes to put other elements in which have
-  padding, border, margin like CSS box model.
-
-    - <ah>: Border should be abstracted and controlled by look-n-feel.
-            CSS model possibly too complicated and obfuscated?
 
 pyglet.draw
   Draw ellipses, polygons, rectangles (using GLU?).
@@ -118,18 +80,5 @@ pyglet.audio
   gstreamer, DirectAudio, Windows Media Player, Quicktime, CoreAudio, etc.
   3D positional sound?
 
-pyglet.video
-  Play video (e.g., MPEG2) into a texture using gstreamer, Windows Media
-  Player, Quicktime, CoreVideo, etc.
-
 pyglet.joystick
   Include force feedback.
-
-pyglet.network
-  Network events handled in a similar manner to window events. Abstracted
-  interface to TCP and UDP, similar to nanotubes from FibraNet?
-  http://code.google.com/p/fibranet/
-
-pyglet.ai
-  A*, state machine, thoughts?  (no pun intended)
-

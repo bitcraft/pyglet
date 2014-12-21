@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
-'''
-'''
+"""
+"""
 
 __docformat__ = 'restructuredtext'
 __version__ = '$Id: $'
@@ -11,11 +11,13 @@ import gzip
 import marshal
 import sys
 
+
 class AnonymousStruct(c.Structure):
     __slots__ = ()
     _fields_ = (
         ('foo', c.c_int),
     )
+
 
 class AnonymousUnion(c.Union):
     __slots__ = ()
@@ -23,13 +25,15 @@ class AnonymousUnion(c.Union):
         ('foo', c.c_int),
     )
 
+
 class EnumType(type(c.c_int)):
+
     def __new__(metaclass, name, bases, dict):
         cls = type(c.c_int).__new__(metaclass, name, bases, dict)
         return cls
 
-class Enum(c.c_int):
-    __metaclass__ = EnumType
+
+class Enum(c.c_int, metaclass=EnumType):
     _values_ = ()
 
     @classmethod
@@ -37,13 +41,15 @@ class Enum(c.c_int):
         assert obj in cls._values_
         return cls(obj)
 
-class FFILibrary(object):
+
+class FFILibrary:
+
     def __init__(self, ffi_file, lib):
         data = gzip.GzipFile(mode='r', fileobj=ffi_file).read()
         self.lib = lib
         self.map = marshal.loads(data)
-        self.type_map = {}
-        self.forward_map = {}
+        self.type_map = dict()
+        self.forward_map = dict()
         self.builtin_type_map = {
             'void': None,
             'char': c.c_char,
@@ -64,18 +70,18 @@ class FFILibrary(object):
             'unsigned long long': c.c_ulonglong,
             'float': c.c_float,
             'double': c.c_double,
-            '...': c.c_int, # Sentinal for va_args list
+            '...': c.c_int,  # Sentinal for va_args list
         }
 
     def dump(self, name):
-        print self.map[name]
+        print(self.map[name])
 
     def __getattr__(self, name):
         kind, value = self.map[name]
         if kind == 'constant':
             result = value
         elif kind == 'typedef':
-            result = self.get_type(value) 
+            result = self.get_type(value)
         elif kind == 'enum':
             result = self.get_enum_type(name, value)
         elif kind == 'struct':
@@ -159,6 +165,7 @@ class FFILibrary(object):
     def get_enum_type(self, name, items):
         class _FFIEnum(Enum):
             pass
+
         _FFIEnum.__name__ = name
 
         for key, value in items:
@@ -172,16 +179,17 @@ class FFILibrary(object):
 
         class _FFIStruct(base):
             __slots__ = slots
+
         _FFIStruct.__name__ = name
 
         self.forward_map[name] = _FFIStruct
-        _FFIStruct._fields_ = tuple((name, self.get_type(type)) 
+        _FFIStruct._fields_ = tuple((name, self.get_type(type))
                                     for (name, type) in fields)
         del self.forward_map[name]
         return _FFIStruct
 
     def get_function_type(self, restype, params):
-        params = map(self.get_type, params)
+        params = list(map(self.get_type, params))
         return c.CFUNCTYPE(restype, *params)
 
     def get_array_type(self, element_type, dimensions):
@@ -191,7 +199,6 @@ class FFILibrary(object):
             result = element_type * d
         return result
 
-if __name__ == '__main__':
     ffi_filename = sys.argv[1]
     libname = sys.argv[2]
     lib = FFILibrary(open(ffi_filename, 'rb'), c.cdll.LoadLibrary(libname))
@@ -200,9 +207,8 @@ if __name__ == '__main__':
         lib.dump(sys.argv[3])
     else:
         for key in lib.map:
-            print key, getattr(lib, key)
+            print(key, getattr(lib, key))
             try:
                 getattr(lib, key)
-            except AttributeError, e:
-                print e
-
+            except AttributeError as e:
+                print(e)

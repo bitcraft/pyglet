@@ -24,6 +24,7 @@ from pyglet.text import layout
 click_time = 0
 click_count = 0
 
+
 def main():
     w = window.Window(vsync=False, resizable=True)
     w.set_mouse_cursor(w.get_system_mouse_cursor('text'))
@@ -68,6 +69,7 @@ def main():
         text.width = width - border * 2
         text.height = height - border * 2
         caret._update()
+
     w.push_handlers(on_resize)
 
     if len(sys.argv) > 1:
@@ -80,24 +82,26 @@ def main():
 
     batch = graphics.Batch()
     doc = attributed(content)
-    text = layout.IncrementalTextLayout(doc,  
-                    w.width-border*2, w.height-border*2, multiline=True,
-                    batch=batch) 
+    text = layout.IncrementalTextLayout(doc,
+                                        w.width - border * 2,
+                                        w.height - border * 2, multiline=True,
+                                        batch=batch)
     caret = caret_module.Caret(text)
     caret.color = (0, 0, 0)
     caret.visible = True
     caret.position = 0
     w.push_handlers(caret)
 
-    fps = clock.ClockDisplay(font=font.load('', 10, dpi=96), 
-        color=(0, 0, 0, 1), interval=1., format='FPS: %(fps)d')
+    fps = clock.ClockDisplay(font=font.load('', 10, dpi=96),
+                             color=(0, 0, 0, 1), interval=1.,
+                             format='FPS: %(fps)d')
     fps.label.x = 2
     fps.label.y = 15
-    stats_text = font.Text(font.load('', 10, dpi=96), '', 
-        x=2, y=2, color=(0, 0, 0, 1))
-   
+    stats_text = font.Text(font.load('', 10, dpi=96), '',
+                           x=2, y=2, color=(0, 0, 0, 1))
+
     def update_stats(dt):
-        states = batch.state_map.values()
+        states = list(batch.state_map.values())
         usage = 0.
         blocks = 0
         domains = 0
@@ -107,7 +111,7 @@ def main():
         capacity = 0.
 
         for state in states:
-            for domain in state.values():
+            for domain in list(state.values()):
                 domains += 1
                 free_space += domain.allocator.get_free_size()
                 fragmentation += domain.allocator.get_fragmented_free_size()
@@ -122,7 +126,8 @@ def main():
         stats_text.text = \
             'States: %d  Domains: %d  Blocks: %d  Usage: %d%%  Fragmentation: %d%%' % \
             (len(states), domains, blocks, usage * 100, fragmentation * 100)
-    clock.schedule_interval(update_stats, 1) 
+
+    clock.schedule_interval(update_stats, 1)
 
     glClearColor(1, 1, 1, 1)
     glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE)
@@ -137,12 +142,11 @@ def main():
         glPushAttrib(GL_CURRENT_BIT)
         glColor3f(0, 0, 0)
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE)
-        glRectf(border - 2, border - 2, 
+        glRectf(border - 2, border - 2,
                 w.width - border + 4, w.height - border + 4)
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL)
         glPopAttrib()
 
         w.flip()
 
-if __name__ == '__main__':
     main()

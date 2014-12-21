@@ -1,42 +1,43 @@
 #!/usr/bin/env python
 
-'''
-'''
+"""
+"""
 
 __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
 
-from cparser import *
+from .cparser import *
 
 ctypes_type_map = {
-     # typename signed  longs
-    ('void',    True,   0): 'None',
-    ('int',     True,   0): 'c_int',
-    ('int',     False,  0): 'c_uint',
-    ('int',     True,   1): 'c_long',
-    ('int',     False,  1): 'c_ulong',
-    ('int',     True,   2): 'c_longlong',
-    ('int',     False,  2): 'c_ulonglong',
-    ('char',    True,   0): 'c_char',
-    ('char',    False,  0): 'c_ubyte',
-    ('short',   True,   0): 'c_short',
-    ('short',   False,  0): 'c_ushort',
-    ('float',   True,   0): 'c_float',
-    ('double',  True,   0): 'c_double',
-    ('size_t',  True,   0): 'c_size_t',
-    ('int8_t',  True,   0): 'c_int8',
-    ('int16_t', True,   0): 'c_int16',
-    ('int32_t', True,   0): 'c_int32',
-    ('int64_t', True,   0): 'c_int64',
-    ('uint8_t', True,   0): 'c_uint8',
-    ('uint16_t',True,   0): 'c_uint16',
-    ('uint32_t',True,   0): 'c_uint32',
-    ('uint64_t',True,   0): 'c_uint64',
-    ('wchar_t', True,   0): 'c_wchar',
-    ('ptrdiff_t',True,  0): 'c_ptrdiff_t',  # Requires definition in preamble
+    # typename signed  longs
+    ('void', True, 0): 'None',
+    ('int', True, 0): 'c_int',
+    ('int', False, 0): 'c_uint',
+    ('int', True, 1): 'c_long',
+    ('int', False, 1): 'c_ulong',
+    ('int', True, 2): 'c_longlong',
+    ('int', False, 2): 'c_ulonglong',
+    ('char', True, 0): 'c_char',
+    ('char', False, 0): 'c_ubyte',
+    ('short', True, 0): 'c_short',
+    ('short', False, 0): 'c_ushort',
+    ('float', True, 0): 'c_float',
+    ('double', True, 0): 'c_double',
+    ('size_t', True, 0): 'c_size_t',
+    ('int8_t', True, 0): 'c_int8',
+    ('int16_t', True, 0): 'c_int16',
+    ('int32_t', True, 0): 'c_int32',
+    ('int64_t', True, 0): 'c_int64',
+    ('uint8_t', True, 0): 'c_uint8',
+    ('uint16_t', True, 0): 'c_uint16',
+    ('uint32_t', True, 0): 'c_uint32',
+    ('uint64_t', True, 0): 'c_uint64',
+    ('wchar_t', True, 0): 'c_wchar',
+    ('ptrdiff_t', True, 0): 'c_ptrdiff_t',  # Requires definition in preamble
 }
 
 reserved_names = ['None', 'True', 'False']
+
 
 def get_ctypes_type(typ, declarator):
     signed = True
@@ -83,7 +84,8 @@ def get_ctypes_type(typ, declarator):
             t = CtypesArray(t, a.size)
             a = a.array
     return t
-    
+
+
 # Remove one level of indirection from funtion pointer; needed for typedefs
 # and function parameters.
 def remove_function_pointer(t):
@@ -95,19 +97,23 @@ def remove_function_pointer(t):
     else:
         return t
 
-class CtypesTypeVisitor(object):
+
+class CtypesTypeVisitor:
+
     def visit_struct(self, struct):
         pass
 
     def visit_enum(self, enum):
         pass
 
-class CtypesType(object):
+
+class CtypesType:
+
     def __init__(self, name):
         self.name = name
 
     def get_required_type_names(self):
-        '''Return all type names defined or needed by this type'''
+        """Return all type names defined or needed by this type"""
         return (self.name,)
 
     def visit(self, visitor):
@@ -116,7 +122,9 @@ class CtypesType(object):
     def __str__(self):
         return self.name
 
+
 class CtypesPointer(CtypesType):
+
     def __init__(self, destination, qualifiers):
         self.destination = destination
         # ignore qualifiers, ctypes can't use them
@@ -134,17 +142,19 @@ class CtypesPointer(CtypesType):
     def __str__(self):
         return 'POINTER(%s)' % str(self.destination)
 
+
 class CtypesArray(CtypesType):
+
     def __init__(self, base, count):
         self.base = base
         self.count = count
-    
+
     def get_required_type_names(self):
-        # XXX Could be sizeofs within count expression
+        # TODO: Could be sizeofs within count expression
         return self.base.get_required_type_names()
- 
+
     def visit(self, visitor):
-        # XXX Could be sizeofs within count expression
+        # TODO: Could be sizeofs within count expression
         self.base.visit(visitor)
 
     def __str__(self):
@@ -155,13 +165,15 @@ class CtypesArray(CtypesType):
         else:
             return '%s * %s' % (str(self.base), str(self.count))
 
+
 class CtypesFunction(CtypesType):
+
     def __init__(self, restype, parameters):
         if parameters and parameters[-1] == '...':
-            # XXX Hmm, how to handle VARARGS with ctypes?  For now,
+            # TODO: Hmm, how to handle VARARGS with ctypes?  For now,
             # drop it off (will cause errors).
             parameters = parameters[:-1]
-            
+
         self.restype = restype
 
         # Don't allow POINTER(None) (c_void_p) as a restype... causes errors
@@ -169,13 +181,13 @@ class CtypesFunction(CtypesType):
         # Instead, convert to POINTER(c_void).  c_void is not a ctypes type,
         # you can make it any arbitrary type.
         if type(self.restype) == CtypesPointer and \
-           type(self.restype.destination) == CtypesType and \
-           self.restype.destination.name == 'None':
+                type(self.restype.destination) == CtypesType and \
+                self.restype.destination.name == 'None':
             self.restype = CtypesPointer(CtypesType('c_void'), ())
 
         self.argtypes = [remove_function_pointer(
-                            get_ctypes_type(p.type, p.declarator)) \
-                         for p in parameters]
+            get_ctypes_type(p.type, p.declarator))
+            for p in parameters]
 
     def get_required_type_names(self):
         lst = list(self.restype.get_required_type_names())
@@ -189,16 +201,21 @@ class CtypesFunction(CtypesType):
             a.visit(visitor)
 
     def __str__(self):
-        return 'CFUNCTYPE(%s)' % ', '.join([str(self.restype)] + \
-            [str(a) for a in self.argtypes])
+        return 'CFUNCTYPE(%s)' % ', '.join([str(self.restype)] +
+                                           [str(a) for a in self.argtypes])
+
 
 last_tagnum = 0
+
+
 def anonymous_struct_tag():
     global last_tagnum
     last_tagnum += 1
     return 'anon_%d' % last_tagnum
 
+
 class CtypesStruct(CtypesType):
+
     def __init__(self, specifier):
         self.is_union = specifier.is_union
         self.tag = specifier.tag
@@ -207,12 +224,13 @@ class CtypesStruct(CtypesType):
 
         if specifier.declarations:
             self.opaque = False
-            self.members = []
+            self.members = list()
             for declaration in specifier.declarations:
                 t = get_ctypes_type(declaration.type, declaration.declarator)
                 declarator = declaration.declarator
                 if declarator is None:
-                    # XXX TEMPORARY while struct with no typedef not filled in
+                    # TODO: TEMPORARY while struct with no typedef not filled
+                    # in
                     return
                 while declarator.pointer:
                     declarator = declarator.pointer
@@ -220,7 +238,7 @@ class CtypesStruct(CtypesType):
                 self.members.append((name, t))
         else:
             self.opaque = True
-            self.members = []
+            self.members = list()
 
     def get_required_type_names(self):
         lst = ['struct_%s' % self.tag]
@@ -234,13 +252,18 @@ class CtypesStruct(CtypesType):
     def __str__(self):
         return 'struct_%s' % self.tag
 
+
 last_tagnum = 0
+
+
 def anonymous_enum_tag():
     global last_tagnum
     last_tagnum += 1
     return 'anon_%d' % last_tagnum
 
+
 class CtypesEnum(CtypesType):
+
     def __init__(self, specifier):
         self.tag = specifier.tag
         if not self.tag:
@@ -248,7 +271,7 @@ class CtypesEnum(CtypesType):
 
         value = 0
         context = EvaluationContext()
-        self.enumerators = []
+        self.enumerators = list()
         for e in specifier.enumerators:
             if e.expression:
                 try:
@@ -259,7 +282,7 @@ class CtypesEnum(CtypesType):
             value += 1
 
     def get_required_type_names(self):
-        return []
+        return list()
 
     def visit(self, visitor):
         visitor.visit_enum(self)
@@ -267,14 +290,17 @@ class CtypesEnum(CtypesType):
     def __str__(self):
         return 'enum_%s' % self.tag
 
+
 class CtypesParser(CParser):
-    '''Parse a C file for declarations that can be used by ctypes.
-    
+
+    """Parse a C file for declarations that can be used by ctypes.
+
     Subclass and override the handle_ctypes_* methods.
-    '''
+    """
+
     def handle_define(self, name, value, filename, lineno):
         # Handle #define style of typedeffing.
-        # XXX At the moment, just a hack for `int`, which is used by
+        # TODO: At the moment, just a hack for `int`, which is used by
         # Status and Bool in Xlib.h.  More complete functionality would
         # parse value as a type (back into cparser).
         if value == 'int':
@@ -291,7 +317,7 @@ class CtypesParser(CParser):
         t = get_ctypes_type(declaration.type, declaration.declarator)
         declarator = declaration.declarator
         if declarator is None:
-            # XXX TEMPORARY while struct with no typedef not filled in
+            # TODO: TEMPORARY while struct with no typedef not filled in
             return
         while declarator.pointer:
             declarator = declarator.pointer
@@ -318,4 +344,3 @@ class CtypesParser(CParser):
 
     def handle_ctypes_variable(self, name, ctype, filename, lineno):
         pass
-

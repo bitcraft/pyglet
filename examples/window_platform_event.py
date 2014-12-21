@@ -3,14 +3,14 @@
 # pyglet
 # Copyright (c) 2006-2008 Alex Holkner
 # All rights reserved.
-# 
+#
 # Redistribution and use in source and binary forms, with or without
-# modification, are permitted provided that the following conditions 
+# modification, are permitted provided that the following conditions
 # are met:
 #
-#  * Redistributions of source code must retain the above copyright
+# * Redistributions of source code must retain the above copyright
 #    notice, this list of conditions and the following disclaimer.
-#  * Redistributions in binary form must reproduce the above copyright 
+#  * Redistributions in binary form must reproduce the above copyright
 #    notice, this list of conditions and the following disclaimer in
 #    the documentation and/or other materials provided with the
 #    distribution.
@@ -33,7 +33,7 @@
 # POSSIBILITY OF SUCH DAMAGE.
 # ----------------------------------------------------------------------------
 
-'''Demonstrates how to handle a platform-specific event not defined in
+"""Demonstrates how to handle a platform-specific event not defined in
 pyglet by subclassing Window.  This is not for the faint-hearted!
 
 A message will be printed to stdout when the following events are caught:
@@ -42,13 +42,14 @@ A message will be printed to stdout when the following events are caught:
  - On Windows, the display resolution is changed.
  - On Linux, the window properties are changed.
 
-'''
+"""
 
 import pyglet
 
 # Check for Carbon (OS X)
 try:
     from pyglet.window.carbon import *
+
     _have_carbon = True
 except ImportError:
     _have_carbon = False
@@ -57,6 +58,7 @@ except ImportError:
 try:
     from pyglet.window.win32 import *
     from pyglet.window.win32.constants import *
+
     _have_win32 = True
 except ImportError:
     _have_win32 = False
@@ -64,30 +66,32 @@ except ImportError:
 # Check for Xlib (Linux)
 try:
     from pyglet.window.xlib import *
+
     _have_xlib = True
 except ImportError:
     _have_xlib = False
 
 # Subclass Window
+
+
 class MyWindow(pyglet.window.Window):
     if _have_carbon:
         @CarbonEventHandler(kEventClassWindow, kEventWindowClickDragRgn)
         def _on_window_click_drag_rgn(self, next_handler, event, data):
-            print 'Clicked drag rgn.'
+            print('Clicked drag rgn.')
             carbon.CallNextEventHandler(next_handler, event)
             return noErr
 
     if _have_win32:
         @Win32EventHandler(WM_DISPLAYCHANGE)
         def _on_window_display_change(self, msg, lParam, wParam):
-            print 'Display resolution changed.'
+            print('Display resolution changed.')
             return 0
 
     if _have_xlib:
         @XlibEventHandler(xlib.PropertyNotify)
         def _on_window_property_notify(self, event):
-            print 'Property notify.'
+            print('Property notify.')
 
-if __name__ == '__main__':
     window = MyWindow()
     pyglet.app.run()

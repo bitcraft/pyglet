@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
-'''Event constants from /usr/include/linux/input.h
-'''
+"""Event constants from /usr/include/linux/input.h
+"""
 
 __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
@@ -529,10 +529,10 @@ FF_STATUS_STOPPED = 0x00
 FF_STATUS_PLAYING = 0x01
 FF_STATUS_MAX = 0x01
 
-_rel_raw_names = {}
-_abs_raw_names = {}
-_key_raw_names = {}
-for _name, _val in locals().copy().items():
+_rel_raw_names = dict()
+_abs_raw_names = dict()
+_key_raw_names = dict()
+for _name, _val in list(locals().copy().items()):
     if _name.startswith('REL_'):
         _rel_raw_names[_val] = _name
     elif _name.startswith('ABS_'):

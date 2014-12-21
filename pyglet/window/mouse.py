@@ -2,14 +2,14 @@
 # pyglet
 # Copyright (c) 2006-2008 Alex Holkner
 # All rights reserved.
-# 
+#
 # Redistribution and use in source and binary forms, with or without
-# modification, are permitted provided that the following conditions 
+# modification, are permitted provided that the following conditions
 # are met:
 #
 #  * Redistributions of source code must retain the above copyright
 #    notice, this list of conditions and the following disclaimer.
-#  * Redistributions in binary form must reproduce the above copyright 
+#  * Redistributions in binary form must reproduce the above copyright
 #    notice, this list of conditions and the following disclaimer in
 #    the documentation and/or other materials provided with the
 #    distribution.
@@ -32,14 +32,15 @@
 # POSSIBILITY OF SUCH DAMAGE.
 # ----------------------------------------------------------------------------
 
-'''Mouse constants and utilities for pyglet.window.
-'''
+"""Mouse constants and utilities for pyglet.window.
+"""
 
 __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
 
+
 def buttons_string(buttons):
-    '''Return a string describing a set of active mouse buttons.
+    """Return a string describing a set of active mouse buttons.
 
     Example::
 
@@ -51,8 +52,8 @@ def buttons_string(buttons):
             Bitwise combination of mouse button constants.
 
     :rtype: str
-    '''
-    button_names = []
+    """
+    button_names = list()
     if buttons & LEFT:
         button_names.append('LEFT')
     if buttons & MIDDLE:
@@ -62,6 +63,6 @@ def buttons_string(buttons):
     return '|'.join(button_names)
 
 # Symbolic names for the mouse buttons
-LEFT =   1 << 0
+LEFT = 1 << 0
 MIDDLE = 1 << 1
-RIGHT =  1 << 2
+RIGHT = 1 << 2

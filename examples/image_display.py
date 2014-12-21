@@ -3,14 +3,14 @@
 # pyglet
 # Copyright (c) 2006-2008 Alex Holkner
 # All rights reserved.
-# 
+#
 # Redistribution and use in source and binary forms, with or without
-# modification, are permitted provided that the following conditions 
+# modification, are permitted provided that the following conditions
 # are met:
 #
-#  * Redistributions of source code must retain the above copyright
+# * Redistributions of source code must retain the above copyright
 #    notice, this list of conditions and the following disclaimer.
-#  * Redistributions in binary form must reproduce the above copyright 
+#  * Redistributions in binary form must reproduce the above copyright
 #    notice, this list of conditions and the following disclaimer in
 #    the documentation and/or other materials provided with the
 #    distribution.
@@ -33,7 +33,7 @@
 # POSSIBILITY OF SUCH DAMAGE.
 # ----------------------------------------------------------------------------
 
-'''Display an image.
+"""Display an image.
 
 Usage::
 
@@ -41,7 +41,7 @@ Usage::
 
 A checkerboard background is visible behind any transparent areas of the
 image.
-'''
+"""
 
 import sys
 
@@ -50,16 +50,14 @@ from pyglet.gl import *
 
 window = pyglet.window.Window(visible=False, resizable=True)
 
+
 @window.event
 def on_draw():
     background.blit_tiled(0, 0, 0, window.width, window.height)
     img.blit(window.width // 2, window.height // 2, 0)
 
-        
-
-if __name__ == '__main__':
     if len(sys.argv) != 2:
-        print __doc__
+        print(__doc__)
         sys.exit(1)
 
     filename = sys.argv[1]

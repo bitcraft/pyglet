@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
-'''
-'''
+"""
+"""
 
 __docformat__ = 'restructuredtext'
 __version__ = '$Id: gl_tree_test.py 114 2006-10-22 09:46:11Z r1chardj0n3s $'
@@ -19,6 +19,7 @@ from pyglet.gl import *
 
 four_floats = c_float * 4
 
+
 def setup_scene():
     glEnable(GL_DEPTH_TEST)
     glMatrixMode(GL_PROJECTION)
@@ -27,7 +28,9 @@ def setup_scene():
     glMatrixMode(GL_MODELVIEW)
     glClearColor(1, 1, 1, 1)
 
-class Tree(object):
+
+class Tree:
+
     def __init__(self, n=2, r=False):
         self.tree = tree_list(n, r)
         self.x = self.y = 0
@@ -50,7 +53,7 @@ class Tree(object):
     def draw(self):
         glPushMatrix()
         glLoadIdentity()
-        glTranslatef(self.x/10., -self.y/10., self.zpos)
+        glTranslatef(self.x / 10., -self.y / 10., self.zpos)
         glRotatef(self.ry, 1., 0., 0.)
         glRotatef(self.rx, 0., 1., 0.)
         self.tree.draw()
@@ -87,4 +90,3 @@ while not (w1.has_exit or w2.has_exit):
     w2.dispatch_events()
     tree2.draw()
     w2.flip()
-

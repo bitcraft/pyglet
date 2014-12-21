@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
-'''
-'''
+"""
+"""
 
 __docformat__ = 'restructuredtext'
 __version__ = '$Id: obj_test.py 111 2006-10-20 06:39:12Z r1chardj0n3s $'
@@ -24,13 +24,15 @@ glEnable(GL_LIGHT0)
 glEnable(GL_LIGHTING)
 glEnable(GL_DEPTH_TEST)
 
+
 @w.event
 def on_resize(width, height):
     glMatrixMode(GL_PROJECTION)
     glLoadIdentity()
-    gluPerspective(60., float(width)/height, 1., 100.)
+    gluPerspective(60., float(width) / height, 1., 100.)
     glMatrixMode(GL_MODELVIEW)
     return True
+
 
 @w.event
 def on_draw():
@@ -38,15 +40,21 @@ def on_draw():
     glLoadIdentity()
     gluLookAt(0, 3, 3, 0, 0, 0, 0, 1, 0)
     glRotatef(r, 0, 1, 0)
-    glRotatef(r/2, 1, 0, 0)
+    glRotatef(r / 2, 1, 0, 0)
     bunny.draw()
     w.flip()
 
+
 r = 0
+
+
 def update(dt):
     global r
-    r += 90*dt
-    if r > 720: r = 0
+    r += 90 * dt
+    if r > 720:
+        r = 0
+
+
 pyglet.clock.schedule(update)
 
 if len(sys.argv) == 1:

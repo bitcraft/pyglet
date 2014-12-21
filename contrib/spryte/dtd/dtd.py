@@ -14,7 +14,7 @@ import spryte
 
 import path
 
-field_cells = '''
+field_cells = """
 +++++++++++EEEEE++++++++++++
 +##########.....###########+
 +#........................#+
@@ -43,7 +43,7 @@ S..........................E
 +#........................#+
 +##########.....###########+
 +++++++++++SSSSS++++++++++++
-'''.strip()
+""".strip()
 field_rows = [line.strip() for line in field_cells.splitlines()]
 
 cw = ch = 16
@@ -51,47 +51,51 @@ hw = hh = 8
 map_height = len(field_rows)
 map_width = len(field_rows[0])
 
-win = window.Window(map_width*cw, map_height*ch)
+win = window.Window(map_width * cw, map_height * ch)
 
 # load / create image resources
-blank_image = image.create(cw, ch, image.SolidColorImagePattern((200,)*4))
-wall_image = image.create(cw, ch, image.SolidColorImagePattern((100,)*4))
+blank_image = image.create(cw, ch, image.SolidColorImagePattern((200,) * 4))
+wall_image = image.create(cw, ch, image.SolidColorImagePattern((100,) * 4))
 highlight_image = image.create(cw, ch,
-    image.SolidColorImagePattern((255, 255, 255, 100)))
+                               image.SolidColorImagePattern(
+                                   (255, 255, 255, 100)))
 enemy_image = image.create(hw, hh,
-    image.SolidColorImagePattern((255, 50, 50, 255)))
-enemy_image.anchor_x = hw//2
-enemy_image.anchor_y = hh//2
+                           image.SolidColorImagePattern((255, 50, 50, 255)))
+enemy_image.anchor_x = hw // 2
+enemy_image.anchor_y = hh // 2
 turret_image = resource.image('basic-gun.png')
 turret_image.anchor_x = 8
 turret_image.anchor_y = 8
-bullet_image = image.create(3, 3, image.SolidColorImagePattern((0,0,0,255)))
+bullet_image = image.create(3, 3, image.SolidColorImagePattern((0, 0, 0, 255)))
 bullet_image.anchor_x = 1
 bullet_image.anchor_y = 1
 
-def distance(x1, y1, x2, y2):
-    return math.sqrt((x2-x1)**2 + (y2-y1)**2)
 
-class Game(object):
+def distance(x1, y1, x2, y2):
+    return math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2)
+
+
+class Game:
+
     def __init__(self):
         self.highlight = spryte.Sprite(highlight_image, 0, 0)
         self.show_highlight = False
 
         # CREATE THE MAP
         self.field = tilemap.Map()
-        self.play_field = {}
-        l = []
+        self.play_field = dict()
+        l = list()
         for y, line in enumerate(field_rows):
-            m = []
+            m = list()
             l.append(m)
             for x, cell in enumerate(line):
                 if cell == '#':
-                    m.append(spryte.Sprite(wall_image, x*cw, y*ch,
-                        batch=self.field))
+                    m.append(spryte.Sprite(wall_image, x * cw, y * ch,
+                                           batch=self.field))
                     content = path.Blocker
                 else:
-                    m.append(spryte.Sprite(blank_image, x*cw, y*ch,
-                        batch=self.field))
+                    m.append(spryte.Sprite(blank_image, x * cw, y * ch,
+                                           batch=self.field))
                     if cell == 'E':
                         content = path.End
                     elif cell == 'S':
@@ -100,16 +104,16 @@ class Game(object):
                         content = path.Blocker
                     else:
                         content = None
-                self.play_field[x*2, y*2] = content
-                self.play_field[x*2+1, y*2] = content
-                self.play_field[x*2, y*2+1] = content
-                self.play_field[x*2+1, y*2+1] = content
+                self.play_field[x * 2, y * 2] = content
+                self.play_field[x * 2 + 1, y * 2] = content
+                self.play_field[x * 2, y * 2 + 1] = content
+                self.play_field[x * 2 + 1, y * 2 + 1] = content
         self.field.set_cells(cw, ch, l)
 
         # PATH FOR ENEMIES
-        self.path = path.Path.determine_path(self.play_field, map_width*2,
-            map_height*2)
-        #self.path.dump()
+        self.path = path.Path.determine_path(self.play_field, map_width * 2,
+                                             map_height * 2)
+        # self.path.dump()
 
         self.constructions = spryte.SpriteBatch()
 
@@ -118,27 +122,27 @@ class Game(object):
 
     def spawn_enemies(self):
         # SOME ENEMIES
-        starts = []
+        starts = list()
         ends = set()
         for y, row in enumerate(field_rows):
             for x, cell in enumerate(row):
                 if cell == 'S':
-                    starts.append((x*2, y*2))
+                    starts.append((x * 2, y * 2))
                 elif cell == 'E':
-                    ends.add((x*2, y*2))
+                    ends.add((x * 2, y * 2))
 
         def create_enemy(dt):
             x, y = random.choice(starts)
             Enemy(x, y, self, ends)
-            
+
         for i in range(10):
-            clock.schedule_once(create_enemy, i+1) # +10
+            clock.schedule_once(create_enemy, i + 1)  # +10
 
     def create_construction(self, x, y):
-        x, y = (x // hw)*hw, (y // hh)*hh
-        cx, cy = x//hw, y//hh
+        x, y = (x // hw) * hw, (y // hh) * hh
+        cx, cy = x // hw, y // hh
 
-        cells = (cx, cy), (cx+1, cy), (cx, cy+1), (cx+1, cy+1)
+        cells = (cx, cy), (cx + 1, cy), (cx, cy + 1), (cx + 1, cy + 1)
 
         for cell in cells:
             if self.play_field[cell]:
@@ -152,9 +156,9 @@ class Game(object):
         Turret(x, y, self)
         for cell in cells:
             self.play_field[cell] = path.Blocker
-        self.path = path.Path.determine_path(self.play_field, map_width*2,
-            map_height*2)
-        #self.path.dump()
+        self.path = path.Path.determine_path(self.play_field, map_width * 2,
+                                             map_height * 2)
+        # self.path.dump()
         self.show_highlight = False
 
     def update(self, dt):
@@ -162,11 +166,11 @@ class Game(object):
             shooter.update(dt)
 
         # build a hash table of enemy positions in the grid
-        hit_hash = {}
+        hit_hash = dict()
         for enemy in self.enemies:
             enemy.update(dt)
             x, y = enemy.center
-            hpos = ((x // hw)*hw, (y // hh)*hh)
+            hpos = ((x // hw) * hw, (y // hh) * hh)
             hit_hash[hpos] = enemy
 
         # hit the enemies with the bullets
@@ -174,7 +178,7 @@ class Game(object):
             bullet.update(dt)
             # bullet position is its center
             x, y = bullet.position
-            hpos = ((x // hw)*hw, (y // hh)*hh)
+            hpos = ((x // hw) * hw, (y // hh) * hh)
             if hpos in hit_hash:
                 enemy = hit_hash[hpos]
                 bullet.hit(enemy)
@@ -190,17 +194,18 @@ class Game(object):
 
     # CONSTRUCTIONS
     def on_mouse_motion(self, x, y, dx, dy):
-        cx, cy = x//hw, y//hh
+        cx, cy = x // hw, y // hh
         try:
-            if (self.play_field[cx, cy] or self.play_field[cx+1, cy] or
-                    self.play_field[cx, cy+1] or self.play_field[cx+1, cy+1]):
+            if (self.play_field[cx, cy] or self.play_field[cx + 1, cy] or
+                    self.play_field[cx, cy + 1] or self.play_field[
+                    cx + 1, cy + 1]):
                 self.show_highlight = False
                 return True
         except KeyError:
             self.show_highlight = False
             return True
         self.show_highlight = True
-        self.highlight.position = cx*hw, cy*hh
+        self.highlight.position = cx * hw, cy * hh
         return True
 
     def on_key_press(self, symbol, modifiers):
@@ -212,16 +217,16 @@ class Game(object):
             return True
         return False
 
-class Turret(spryte.Sprite):
 
+class Turret(spryte.Sprite):
     range = 75
     reload = 0
     target = None
     rotation_speed = 5
 
     def __init__(self, x, y, game):
-        super(Turret, self).__init__(turret_image, x+8, y+8,
-            game=game, batch=game.constructions)
+        super().__init__(turret_image, x + 8, y + 8,
+                         game=game, batch=game.constructions)
 
     def update(self, dt):
         sx, sy = self.center
@@ -242,7 +247,7 @@ class Turret(spryte.Sprite):
         self.target = None
 
         # find a new target
-        l = []
+        l = list()
         for enemy in self.game.enemies:
             ex, ey = enemy.center
             d = distance(sx, sy, ex, ey)
@@ -272,7 +277,7 @@ class Turret(spryte.Sprite):
         # ok, now figure the vector to hit that spot
         dx = ex - sx
         dy = ey - sy
-        magnitude = math.sqrt(dx**2 + dy**2)
+        magnitude = math.sqrt(dx ** 2 + dy ** 2)
         dx = dx * projectile_speed / magnitude
         dy = dy * projectile_speed / magnitude
 
@@ -300,6 +305,7 @@ class Turret(spryte.Sprite):
             Bullet(bullet_image, sx, sy, dx=dx, dy=dy, batch=self.game.bullets)
             self.reload = 1
 
+
 class Bullet(spryte.Sprite):
     time_to_live = 1
 
@@ -322,6 +328,7 @@ class Bullet(spryte.Sprite):
     def hit(self, enemy):
         enemy.damage(1)
 
+
 class Enemy(spryte.Sprite):
     health = 10
 
@@ -331,29 +338,31 @@ class Enemy(spryte.Sprite):
         self.ends = ends
 
         if self.cell_x == 0:
-            x, y = ((self.cell_x-1) * hw + hw//2, self.cell_y * hh + hh//2)
+            x, y = (
+                (self.cell_x - 1) * hw + hw // 2, self.cell_y * hh + hh // 2)
         else:
-            x, y = (self.cell_x * hw + hw//2, (self.cell_y+1) * hh + hh//2)
+            x, y = (
+                self.cell_x * hw + hw // 2, (self.cell_y + 1) * hh + hh // 2)
         self.period = .5
 
-        super(Enemy, self).__init__(enemy_image, x, y, batch=game.enemies)
+        super().__init__(enemy_image, x, y, batch=game.enemies)
 
         self.position = (x, y)
         self.move_to(self.cell_x, self.cell_y)
 
     def damage(self, amount):
         self.health -= amount
-        if self.health <=0 :
+        if self.health <= 0:
             self.delete()
 
     def move_to(self, cx, cy):
-        '''Move to the indicated cell.
-        '''
+        """Move to the indicated cell.
+        """
         if (cx, cy) in self.ends:
             self.delete()
             return
         self.cell_x, self.cell_y = cx, cy
-        x, y = self.cell_x * hw + hw//2, self.cell_y * hh + hh//2
+        x, y = self.cell_x * hw + hw // 2, self.cell_y * hh + hh // 2
         self.start_x, self.start_y = self.x, self.y
         self.dest_x, self.dest_y = x, y
         self.anim_time = 0
@@ -370,6 +379,7 @@ class Enemy(spryte.Sprite):
             self.y = self.dest_y
             self.move_to(*self.game.path.next_step(self.cell_x, self.cell_y))
 
+
 game = Game()
 win.push_handlers(game)
 game.spawn_enemies()
@@ -384,4 +394,3 @@ while not win.has_exit:
     game.draw()
     fps.draw()
     win.flip()
-

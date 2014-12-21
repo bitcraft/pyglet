@@ -2,14 +2,14 @@
 # pyglet
 # Copyright (c) 2006-2008 Alex Holkner
 # All rights reserved.
-# 
+#
 # Redistribution and use in source and binary forms, with or without
-# modification, are permitted provided that the following conditions 
+# modification, are permitted provided that the following conditions
 # are met:
 #
 #  * Redistributions of source code must retain the above copyright
 #    notice, this list of conditions and the following disclaimer.
-#  * Redistributions in binary form must reproduce the above copyright 
+#  * Redistributions in binary form must reproduce the above copyright
 #    notice, this list of conditions and the following disclaimer in
 #    the documentation and/or other materials provided with the
 #    distribution.
@@ -39,7 +39,9 @@ import ctypes
 import os
 import math
 
+
 class ProceduralSource(Source):
+
     def __init__(self, duration, sample_rate=44800, sample_size=16):
         self._duration = float(duration)
         self.audio_format = AudioFormat(
@@ -51,7 +53,7 @@ class ProceduralSource(Source):
         self._bytes_per_sample = sample_size >> 3
         self._bytes_per_second = self._bytes_per_sample * sample_rate
         self._max_offset = int(self._bytes_per_second * self._duration)
-        
+
         if self._bytes_per_sample == 2:
             self._max_offset &= 0xfffffffe
 
@@ -59,7 +61,7 @@ class ProceduralSource(Source):
         bytes = min(bytes, self._max_offset - self._offset)
         if bytes <= 0:
             return None
-        
+
         timestamp = float(self._offset) / self._bytes_per_second
         duration = float(bytes) / self._bytes_per_second
         data = self._generate_data(bytes, self._offset)
@@ -68,14 +70,14 @@ class ProceduralSource(Source):
         return AudioData(data,
                          bytes,
                          timestamp,
-                         duration, 
-                         [])
+                         duration,
+                         list())
 
     def _generate_data(self, bytes, offset):
-        '''Generate `bytes` bytes of data.
+        """Generate `bytes` bytes of data.
 
         Return data as ctypes array or string.
-        '''
+        """
         raise NotImplementedError('abstract')
 
     def seek(self, timestamp):
@@ -88,22 +90,28 @@ class ProceduralSource(Source):
         if self._bytes_per_sample == 2:
             self._offset &= 0xfffffffe
 
+
 class Silence(ProceduralSource):
+
     def _generate_data(self, bytes, offset):
         if self._bytes_per_sample == 1:
             return '\127' * bytes
         else:
             return '\0' * bytes
 
+
 class WhiteNoise(ProceduralSource):
+
     def _generate_data(self, bytes, offset):
         return os.urandom(bytes)
 
+
 class Sine(ProceduralSource):
+
     def __init__(self, duration, frequency=440, **kwargs):
-        super(Sine, self).__init__(duration, **kwargs)
+        super().__init__(duration, **kwargs)
         self.frequency = frequency
-        
+
     def _generate_data(self, bytes, offset):
         if self._bytes_per_sample == 1:
             start = offset
@@ -122,13 +130,15 @@ class Sine(ProceduralSource):
             data[i] = int(math.sin(step * (i + start)) * amplitude + bias)
         return data
 
+
 class Saw(ProceduralSource):
+
     def __init__(self, duration, frequency=440, **kwargs):
-        super(Saw, self).__init__(duration, **kwargs)
+        super().__init__(duration, **kwargs)
         self.frequency = frequency
-        
+
     def _generate_data(self, bytes, offset):
-        # XXX TODO consider offset
+        # TODO: TODO consider offset
         if self._bytes_per_sample == 1:
             samples = bytes
             value = 127
@@ -153,13 +163,15 @@ class Saw(ProceduralSource):
             data[i] = value
         return data
 
+
 class Square(ProceduralSource):
+
     def __init__(self, duration, frequency=440, **kwargs):
-        super(Square, self).__init__(duration, **kwargs)
+        super().__init__(duration, **kwargs)
         self.frequency = frequency
-        
+
     def _generate_data(self, bytes, offset):
-        # XXX TODO consider offset
+        # TODO: TODO consider offset
         if self._bytes_per_sample == 1:
             samples = bytes
             value = 0

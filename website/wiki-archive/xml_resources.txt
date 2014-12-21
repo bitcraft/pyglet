@@ -29,13 +29,13 @@ In a single file:
     <image offset="50,50" id="horseimage" />
     <image offset="100,50", id="cowimage" />
   </imageatlas>
-  
+
   <!-- Images don't need to be in atlases -->
   <image file="player.png" id="playerimage" />
 
   <tileset id="animaltiles" />
     <property type="bool" name="isanimal" value="True" />
-  
+
     <tile id="horsetile">
       <image ref="horseimage" />
       <property type="bool" name="friendly" value="True" />
@@ -83,7 +83,7 @@ In several files (looks the same when loaded):
 
   <tileset id="animaltiles" />
     <property type="bool" name="isanimal" value="True" />
-  
+
     <tile id="horsetile">
       <image ref="animalatlas:horseimage" />
       <property type="bool" name="friendly" value="True" />
@@ -139,7 +139,7 @@ In several files (looks the same when loaded):
 <code python>
 class Resource:
     id = None
-    properties = {}
+    properties = dict()
     file = ''           # file that it came from, for saving data back
 
 class Image2D(Resource)

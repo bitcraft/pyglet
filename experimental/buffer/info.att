@@ -1,7 +1,7 @@
 {bold True}{font_name ["Georgia", "Times New Roman"]}{font_size 24}pyglet attributed
 text{bold False}{font_size 14}
 
-Forced line{}
+Forced linedict()
 break.
 
 Line breaks are also forced when

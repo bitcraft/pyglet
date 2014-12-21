@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
-'''
-'''
+"""
+"""
 
 __docformat__ = 'restructuredtext'
 __version__ = '$Id: $'
@@ -18,8 +18,10 @@ import usage
 # non-broken c_void_p
 void_p = ctypes.POINTER(ctypes.c_int)
 
+
 class CFUUIDBytes(ctypes.Structure):
     _fields_ = [('byte%d' % i, ctypes.c_uint8) for i in range(16)]
+
 
 mach_port_t = void_p
 io_iterator_t = void_p
@@ -34,13 +36,13 @@ HRESULT = ctypes.c_int
 REFIID = CFUUIDBytes
 
 IOHIDElementType = ctypes.c_int
-kIOHIDElementTypeInput_Misc        = 1
-kIOHIDElementTypeInput_Button      = 2
-kIOHIDElementTypeInput_Axis        = 3
-kIOHIDElementTypeInput_ScanCodes   = 4
-kIOHIDElementTypeOutput            = 129
-kIOHIDElementTypeFeature           = 257
-kIOHIDElementTypeCollection        = 513
+kIOHIDElementTypeInput_Misc = 1
+kIOHIDElementTypeInput_Button = 2
+kIOHIDElementTypeInput_Axis = 3
+kIOHIDElementTypeInput_ScanCodes = 4
+kIOHIDElementTypeOutput = 129
+kIOHIDElementTypeFeature = 257
+kIOHIDElementTypeCollection = 513
 
 IOHIDElementCookie = ctypes.c_void_p
 
@@ -55,15 +57,32 @@ kIOHIDOptionsTypeSeizeDevice = 1
 kIOReturnExclusiveAccess = 0xe00002c5
 
 carbon.CFUUIDGetConstantUUIDWithBytes.restype = CFUUIDRef
-kIOHIDDeviceUserClientTypeID = carbon.CFUUIDGetConstantUUIDWithBytes(None, 
-    0xFA, 0x12, 0xFA, 0x38, 0x6F, 0x1A, 0x11, 0xD4,
-    0xBA, 0x0C, 0x00, 0x05, 0x02, 0x8F, 0x18, 0xD5)
+kIOHIDDeviceUserClientTypeID = carbon.CFUUIDGetConstantUUIDWithBytes(None,
+                                                                     0xFA, 0x12,
+                                                                     0xFA, 0x38,
+                                                                     0x6F, 0x1A,
+                                                                     0x11, 0xD4,
+                                                                     0xBA, 0x0C,
+                                                                     0x00, 0x05,
+                                                                     0x02, 0x8F,
+                                                                     0x18, 0xD5)
 kIOCFPlugInInterfaceID = carbon.CFUUIDGetConstantUUIDWithBytes(None,
-    0xC2, 0x44, 0xE8, 0x58, 0x10, 0x9C, 0x11, 0xD4,
-    0x91, 0xD4, 0x00, 0x50, 0xE4, 0xC6, 0x42, 0x6F)
+                                                               0xC2, 0x44, 0xE8,
+                                                               0x58, 0x10, 0x9C,
+                                                               0x11, 0xD4,
+                                                               0x91, 0xD4, 0x00,
+                                                               0x50, 0xE4, 0xC6,
+                                                               0x42, 0x6F)
 kIOHIDDeviceInterfaceID = carbon.CFUUIDGetConstantUUIDWithBytes(None,
-    0x78, 0xBD, 0x42, 0x0C, 0x6F, 0x14, 0x11, 0xD4,
-    0x94, 0x74, 0x00, 0x05, 0x02, 0x8F, 0x18, 0xD5)
+                                                                0x78, 0xBD,
+                                                                0x42, 0x0C,
+                                                                0x6F, 0x14,
+                                                                0x11, 0xD4,
+                                                                0x94, 0x74,
+                                                                0x00, 0x05,
+                                                                0x02, 0x8F,
+                                                                0x18, 0xD5)
+
 
 class IOHIDEventStruct(ctypes.Structure):
     _fields_ = (
@@ -75,18 +94,21 @@ class IOHIDEventStruct(ctypes.Structure):
         ('longValue', ctypes.c_void_p)
     )
 
+
 Self = ctypes.c_void_p
+
 
 class IUnknown(ctypes.Structure):
     _fields_ = (
         ('_reserved', ctypes.c_void_p),
-        ('QueryInterface', 
+        ('QueryInterface',
          ctypes.CFUNCTYPE(HRESULT, Self, REFIID, ctypes.c_void_p)),
         ('AddRef',
          ctypes.CFUNCTYPE(ctypes.c_ulong, Self)),
         ('Release',
          ctypes.CFUNCTYPE(ctypes.c_ulong, Self)),
     )
+
 
 # Most of these function prototypes are not filled in yet because I haven't
 # bothered.
@@ -97,23 +119,26 @@ class IOHIDQueueInterface(ctypes.Structure):
         ('createAsyncPort', ctypes.c_void_p),
         ('getAsyncPort', ctypes.c_void_p),
         ('create', ctypes.CFUNCTYPE(IOReturn,
-            Self, ctypes.c_uint32, ctypes.c_uint32)),
+                                    Self, ctypes.c_uint32, ctypes.c_uint32)),
         ('dispose', ctypes.CFUNCTYPE(IOReturn,
-            Self)),
+                                     Self)),
         ('addElement', ctypes.CFUNCTYPE(IOReturn,
-            Self, IOHIDElementCookie)),
+                                        Self, IOHIDElementCookie)),
         ('removeElement', ctypes.c_void_p),
         ('hasElement', ctypes.c_void_p),
         ('start', ctypes.CFUNCTYPE(IOReturn,
-            Self)),
+                                   Self)),
         ('stop', ctypes.CFUNCTYPE(IOReturn,
-            Self)),
+                                  Self)),
         ('getNextEvent', ctypes.CFUNCTYPE(IOReturn,
-            Self, ctypes.POINTER(IOHIDEventStruct), AbsoluteTime,
-            ctypes.c_uint32)),
+                                          Self,
+                                          ctypes.POINTER(IOHIDEventStruct),
+                                          AbsoluteTime,
+                                          ctypes.c_uint32)),
         ('setEventCallout', ctypes.c_void_p),
         ('getEventCallout', ctypes.c_void_p),
     )
+
 
 class IOHIDDeviceInterface(ctypes.Structure):
     _fields_ = IUnknown._fields_ + (
@@ -122,28 +147,31 @@ class IOHIDDeviceInterface(ctypes.Structure):
         ('createAsyncPort', ctypes.c_void_p),
         ('getAsyncPort', ctypes.c_void_p),
         ('open', ctypes.CFUNCTYPE(IOReturn,
-            Self, ctypes.c_uint32)),
+                                  Self, ctypes.c_uint32)),
         ('close', ctypes.CFUNCTYPE(IOReturn,
-            Self)),
+                                   Self)),
         ('setRemovalCallback', ctypes.c_void_p),
         ('getElementValue', ctypes.CFUNCTYPE(IOReturn,
-            Self, IOHIDElementCookie, ctypes.POINTER(IOHIDEventStruct))),
+                                             Self, IOHIDElementCookie,
+                                             ctypes.POINTER(IOHIDEventStruct))),
         ('setElementValue', ctypes.c_void_p),
         ('queryElementValue', ctypes.c_void_p),
         ('startAllQueues', ctypes.c_void_p),
         ('stopAllQueues', ctypes.c_void_p),
         ('allocQueue', ctypes.CFUNCTYPE(
-            ctypes.POINTER(ctypes.POINTER(IOHIDQueueInterface)), 
+            ctypes.POINTER(ctypes.POINTER(IOHIDQueueInterface)),
             Self)),
         ('allocOutputTransaction', ctypes.c_void_p),
         # 1.2.1 (10.2.3)
         ('setReport', ctypes.c_void_p),
         ('getReport', ctypes.c_void_p),
-        # 1.2.2 (10.3) 
+        # 1.2.2 (10.3)
         ('copyMatchingElements', ctypes.CFUNCTYPE(IOReturn,
-            Self, CFDictionaryRef, ctypes.POINTER(CFArrayRef))),
+                                                  Self, CFDictionaryRef,
+                                                  ctypes.POINTER(CFArrayRef))),
         ('setInterruptReportHandlerCallback', ctypes.c_void_p),
     )
+
 
 def get_master_port():
     master_port = mach_port_t()
@@ -152,20 +180,22 @@ def get_master_port():
     )
     return master_port
 
+
 def get_matching_dictionary():
     carbon.IOServiceMatching.restype = CFMutableDictionaryRef
     matching_dictionary = carbon.IOServiceMatching(kIOHIDDeviceKey)
     return matching_dictionary
 
+
 def get_existing_devices(master_port, matching_dictionary):
     # Consumes reference to matching_dictionary
     iterator = io_iterator_t()
     _oscheck(
-        carbon.IOServiceGetMatchingServices(master_port, 
+        carbon.IOServiceGetMatchingServices(master_port,
                                             matching_dictionary,
                                             ctypes.byref(iterator))
     )
-    devices = []
+    devices = list()
     while carbon.IOIteratorIsValid(iterator):
         device = carbon.IOIteratorNext(iterator)
         if not device:
@@ -174,23 +204,26 @@ def get_existing_devices(master_port, matching_dictionary):
     carbon.IOObjectRelease(iterator)
     return devices
 
+
 def cfstring_to_string(value_string):
     value_length = carbon.CFStringGetLength(value_string)
     buffer_length = carbon.CFStringGetMaximumSizeForEncoding(
         value_length, kCFStringEncodingUTF8)
     buffer = ctypes.c_buffer(buffer_length + 1)
-    result = carbon.CFStringGetCString(value_string, 
-                                       buffer, 
+    result = carbon.CFStringGetCString(value_string,
+                                       buffer,
                                        len(buffer),
                                        kCFStringEncodingUTF8)
     if not result:
         return
     return buffer.value
 
+
 def cfnumber_to_int(value):
     result = ctypes.c_int()
     carbon.CFNumberGetValue(value, kCFNumberIntType, ctypes.byref(result))
     return result.value
+
 
 def cfvalue_to_value(value):
     if not value:
@@ -203,6 +236,7 @@ def cfvalue_to_value(value):
     else:
         return None
 
+
 def get_property_value(properties, key):
     key_string = create_cfstring(key)
     value = ctypes.c_void_p()
@@ -214,25 +248,33 @@ def get_property_value(properties, key):
         return None
 
     return value
- 
+
+
 def get_property(properties, key):
     return cfvalue_to_value(get_property_value(properties, key))
 
+
 def dump_properties(properties):
     def func(key, value, context):
-        print '%s = %s' % (cfstring_to_string(key), cfvalue_to_value(value))
-    CFDictionaryApplierFunction = ctypes.CFUNCTYPE(None, 
-        ctypes.c_void_p, ctypes.c_void_p, ctypes.c_void_p)
-    carbon.CFDictionaryApplyFunction(properties,
-        CFDictionaryApplierFunction(func), None)
+        print('%s = %s' % (cfstring_to_string(key), cfvalue_to_value(value)))
 
-class Device(object):
-    '''
+    CFDictionaryApplierFunction = ctypes.CFUNCTYPE(None,
+                                                   ctypes.c_void_p,
+                                                   ctypes.c_void_p,
+                                                   ctypes.c_void_p)
+    carbon.CFDictionaryApplyFunction(properties,
+                                     CFDictionaryApplierFunction(func), None)
+
+
+class Device:
+
+    """
     :IVariables:
         `name` : str
         `manufacturer` : str
 
-    '''
+    """
+
     def __init__(self, generic_device):
         self._init_properties(generic_device)
         self._device = self._get_device_interface(generic_device)
@@ -240,7 +282,7 @@ class Device(object):
 
         self._open = False
         self._queue = None
-        self._queue_depth = 8 # Number of events queue can buffer
+        self._queue_depth = 8  # Number of events queue can buffer
 
     def _init_properties(self, generic_device):
         properties = CFMutableDictionaryRef()
@@ -279,18 +321,20 @@ class Device(object):
         )
 
         plug_in_interface.contents.contents.Release(plug_in_interface)
-        
+
         return hid_device_interface
 
     def _get_elements(self):
         elements_array = CFArrayRef()
         _oscheck(
             self._device.contents.contents.copyMatchingElements(self._device,
-                None, ctypes.byref(elements_array))
+                                                                None,
+                                                                ctypes.byref(
+                                                                    elements_array))
         )
 
-        self._element_cookies = {}
-        elements = []
+        self._element_cookies = dict()
+        elements = list()
         n_elements = carbon.CFArrayGetCount(elements_array)
         for i in range(n_elements):
             properties = carbon.CFArrayGetValueAtIndex(elements_array, i)
@@ -319,7 +363,7 @@ class Device(object):
         # Create event queue
         self._queue = self._device.contents.contents.allocQueue(self._device)
         _oscheck(
-            self._queue.contents.contents.create(self._queue, 
+            self._queue.contents.contents.create(self._queue,
                                                  0, self._queue_depth)
         )
         # Add all elements into queue
@@ -328,20 +372,20 @@ class Device(object):
             r = self._queue.contents.contents.addElement(self._queue,
                                                          element._cookie, 0)
             if r != 0:
-                print 'error adding %r' % element
+                print('error adding %r' % element)
 
         _oscheck(
             self._queue.contents.contents.start(self._queue)
         )
 
-        # HACK XXX
+        # HACK TODO:
         pyglet.clock.schedule(self.dispatch_events)
 
     def close(self):
         if not self._open:
             return
 
-        # HACK XXX
+        # HACK TODO:
         pyglet.clock.unschedule(self.dispatch_events)
 
         _oscheck(
@@ -357,14 +401,15 @@ class Device(object):
         )
         self._open = False
 
-    # XXX TEMP/HACK
+    # TODO: TEMP/HACK
     def dispatch_events(self, dt=None):
         if not self._open:
             return
 
         event = IOHIDEventStruct()
         r = self._queue.contents.contents.getNextEvent(self._queue,
-                ctypes.byref(event), 0, 0)
+                                                       ctypes.byref(event), 0,
+                                                       0)
         if r != 0:
             # Undocumented behaviour?  returns 3758097127L when no events are
             # in queue (is documented to block)
@@ -376,7 +421,9 @@ class Device(object):
         except KeyError:
             pass
 
-class DeviceElement(object):
+
+class DeviceElement:
+
     def __init__(self, device, properties):
         self.device = device
 
@@ -391,14 +438,14 @@ class DeviceElement(object):
     def get_value(self):
         return self.value
 
-    '''
+    """
     def get_value(self):
         event = IOHIDEventStruct()
         self.device._device.contents.contents.getElementValue(
             self.device._device, self._cookie, ctypes.byref(event))
         return event.value
-    '''
+    """
+
 
 def get_devices():
     return get_existing_devices(get_master_port(), get_matching_dictionary())
-

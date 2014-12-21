@@ -2,14 +2,14 @@
 # pyglet
 # Copyright (c) 2006-2008 Alex Holkner
 # All rights reserved.
-# 
+#
 # Redistribution and use in source and binary forms, with or without
-# modification, are permitted provided that the following conditions 
+# modification, are permitted provided that the following conditions
 # are met:
 #
 #  * Redistributions of source code must retain the above copyright
 #    notice, this list of conditions and the following disclaimer.
-#  * Redistributions in binary form must reproduce the above copyright 
+#  * Redistributions in binary form must reproduce the above copyright
 #    notice, this list of conditions and the following disclaimer in
 #    the documentation and/or other materials provided with the
 #    distribution.
@@ -32,8 +32,8 @@
 # POSSIBILITY OF SUCH DAMAGE.
 # ----------------------------------------------------------------------------
 
-'''
-'''
+"""
+"""
 
 __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
@@ -48,7 +48,9 @@ _debug_gl = pyglet.options['debug_gl']
 _debug_gl_trace = pyglet.options['debug_gl_trace']
 _debug_gl_trace_args = pyglet.options['debug_gl_trace_args']
 
+
 class MissingFunctionException(Exception):
+
     def __init__(self, name, requires=None, suggestions=None):
         msg = '%s is not exported by the available OpenGL driver.' % name
         if requires:
@@ -56,6 +58,7 @@ class MissingFunctionException(Exception):
         if suggestions:
             msg += '  Consider alternative(s) %s.' % ', '.join(suggestions)
         Exception.__init__(self, msg)
+
 
 def missing_function(name, requires=None, suggestions=None):
     def MissingFunction(*args, **kwargs):
@@ -72,14 +75,17 @@ for t in _int_types:
     if ctypes.sizeof(t) == ctypes.sizeof(ctypes.c_size_t):
         c_ptrdiff_t = t
 
+
 class c_void(ctypes.Structure):
     # c_void_p is a buggy return type, converting to int, so
     # POINTER(None) == c_void_p is actually written as
     # POINTER(c_void), so it can be treated as a real pointer.
     _fields_ = [('dummy', ctypes.c_int)]
 
+
 class GLException(Exception):
     pass
+
 
 def errcheck(result, func, arguments):
     if _debug_gl_trace:
@@ -89,9 +95,9 @@ def errcheck(result, func, arguments):
             name = repr(func)
         if _debug_gl_trace_args:
             trace_args = ', '.join([repr(arg)[:20] for arg in arguments])
-            print '%s(%s)' % (name, trace_args)
+            print('%s(%s)' % (name, trace_args))
         else:
-            print name
+            print(name)
 
     from pyglet import gl
     context = gl.current_context
@@ -104,6 +110,7 @@ def errcheck(result, func, arguments):
             raise GLException(msg)
         return result
 
+
 def errcheck_glbegin(result, func, arguments):
     from pyglet import gl
     context = gl.current_context
@@ -111,6 +118,7 @@ def errcheck_glbegin(result, func, arguments):
         raise GLException('No GL context; create a Window first')
     context._gl_begin = True
     return result
+
 
 def errcheck_glend(result, func, arguments):
     from pyglet import gl
@@ -120,6 +128,7 @@ def errcheck_glend(result, func, arguments):
     context._gl_begin = False
     return errcheck(result, func, arguments)
 
+
 def decorate_function(func, name):
     if _debug_gl:
         if name == 'glBegin':
@@ -127,7 +136,7 @@ def decorate_function(func, name):
         elif name == 'glEnd':
             func.errcheck = errcheck_glend
         elif name not in ('glGetError', 'gluErrorString') and \
-             name[:3] not in ('glX', 'agl', 'wgl'):
+                name[:3] not in ('glX', 'agl', 'wgl'):
             func.errcheck = errcheck
 
 link_AGL = None
@@ -140,4 +149,3 @@ elif pyglet.compat_platform == 'darwin':
     from pyglet.gl.lib_agl import link_GL, link_GLU, link_AGL
 else:
     from pyglet.gl.lib_glx import link_GL, link_GLU, link_GLX
-

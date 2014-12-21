@@ -2,14 +2,14 @@
 # pyglet
 # Copyright (c) 2006-2008 Alex Holkner
 # All rights reserved.
-# 
+#
 # Redistribution and use in source and binary forms, with or without
-# modification, are permitted provided that the following conditions 
+# modification, are permitted provided that the following conditions
 # are met:
 #
 #  * Redistributions of source code must retain the above copyright
 #    notice, this list of conditions and the following disclaimer.
-#  * Redistributions in binary form must reproduce the above copyright 
+#  * Redistributions in binary form must reproduce the above copyright
 #    notice, this list of conditions and the following disclaimer in
 #    the documentation and/or other materials provided with the
 #    distribution.
@@ -32,8 +32,8 @@
 # POSSIBILITY OF SUCH DAMAGE.
 # ----------------------------------------------------------------------------
 
-'''
-'''
+"""
+"""
 
 __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
@@ -60,13 +60,16 @@ gdkpixbuf.gdk_pixbuf_loader_get_animation.restype = c_void_p
 gdkpixbuf.gdk_pixbuf_animation_get_iter.restype = c_void_p
 gdkpixbuf.gdk_pixbuf_animation_iter_get_pixbuf.restype = GdkPixbuf
 
+
 class GTimeVal(Structure):
     _fields_ = [
         ('tv_sec', c_long),
         ('tv_usec', c_long)
     ]
 
+
 class GdkPixbuf2ImageDecoder(ImageDecoder):
+
     def get_file_extensions(self):
         return ['.png', '.xpm', '.jpg', '.jpeg', '.tif', '.tiff', '.pnm',
                 '.ras', '.bmp', '.gif']
@@ -110,9 +113,9 @@ class GdkPixbuf2ImageDecoder(ImageDecoder):
         return ImageData(width, height, format, buffer, -rowstride)
 
     def decode(self, file, filename):
-        pixbuf = self._load(file, filename, 
+        pixbuf = self._load(file, filename,
                             gdkpixbuf.gdk_pixbuf_loader_get_pixbuf)
-       
+
         return self._pixbuf_to_image(pixbuf)
 
     def decode_animation(self, file, filename):
@@ -123,14 +126,14 @@ class GdkPixbuf2ImageDecoder(ImageDecoder):
 
         # Get GDK animation iterator
         file.seek(0)
-        anim = self._load(file, filename, 
+        anim = self._load(file, filename,
                           gdkpixbuf.gdk_pixbuf_loader_get_animation)
         time = GTimeVal(0, 0)
         iter = gdkpixbuf.gdk_pixbuf_animation_get_iter(anim, byref(time))
 
-        frames = []
+        frames = list()
 
-        # Extract each image   
+        # Extract each image
         for control_delay in delays:
             pixbuf = gdkpixbuf.gdk_pixbuf_animation_iter_get_pixbuf(iter)
             # When attempting to load animated gifs with an alpha channel on
@@ -142,23 +145,26 @@ class GdkPixbuf2ImageDecoder(ImageDecoder):
             if pixbuf == None:
                 file.seek(0)
                 anim = self._load(file, filename,
-                                gdkpixbuf.gdk_pixbuf_loader_get_animation)
+                                  gdkpixbuf.gdk_pixbuf_loader_get_animation)
                 temptime = GTimeVal(0, 0)
-                iter = gdkpixbuf.gdk_pixbuf_animation_get_iter(anim, byref(temptime))
+                iter = gdkpixbuf.gdk_pixbuf_animation_get_iter(
+                    anim, byref(temptime))
                 gdkpixbuf.gdk_pixbuf_animation_iter_advance(iter, byref(time))
                 pixbuf = gdkpixbuf.gdk_pixbuf_animation_iter_get_pixbuf(iter)
             image = self._pixbuf_to_image(pixbuf)
             frames.append(AnimationFrame(image, control_delay))
 
-            gdk_delay = gdkpixbuf.gdk_pixbuf_animation_iter_get_delay_time(iter)
+            gdk_delay = gdkpixbuf.gdk_pixbuf_animation_iter_get_delay_time(
+                iter)
 
             if gdk_delay == -1:
                 break
 
-            gdk_delay = gdkpixbuf.gdk_pixbuf_animation_iter_get_delay_time(iter)
-            gdk_delay *= 1000 # milliseconds to microseconds
+            gdk_delay = gdkpixbuf.gdk_pixbuf_animation_iter_get_delay_time(
+                iter)
+            gdk_delay *= 1000  # milliseconds to microseconds
             # Compare gdk_delay to control_delay for interest only.
-            #print control_delay, gdk_delay / 1000000.
+            # print control_delay, gdk_delay / 1000000.
 
             us = time.tv_usec + gdk_delay
             time.tv_sec += us // 1000000
@@ -167,14 +173,16 @@ class GdkPixbuf2ImageDecoder(ImageDecoder):
 
         return Animation(frames)
 
+
 def get_decoders():
     return [GdkPixbuf2ImageDecoder()]
 
+
 def get_encoders():
-    return []
+    return list()
+
 
 def init():
     gdk.g_type_init()
 
 init()
-

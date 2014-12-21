@@ -1,34 +1,40 @@
 from wydget import anim
 from wydget.widgets.frame import Frame
 
-class Drawer(Frame):
-    '''A *transparent container* that may hide and expose its contents.
-    '''
-    name='drawer'
 
-    HIDDEN='hidden'
-    EXPOSED='exposed'
-    LEFT='left'
-    RIGHT='right'
-    TOP='top'
-    BOTTOM='bottom'
+class Drawer(Frame):
+
+    """A *transparent container* that may hide and expose its contents.
+    """
+    name = 'drawer'
+
+    HIDDEN = 'hidden'
+    EXPOSED = 'exposed'
+    LEFT = 'left'
+    RIGHT = 'right'
+    TOP = 'top'
+    BOTTOM = 'bottom'
 
     def __init__(self, parent, state=HIDDEN, side=LEFT,
-            is_transparent=True, **kw):
-        super(Drawer, self).__init__(parent, is_transparent=is_transparent,
-            **kw)
+                 is_transparent=True, **kw):
+        super().__init__(parent, is_transparent=is_transparent,
+                         **kw)
         self.state = state
         self.side = side
         if state == self.HIDDEN:
             self.setVisible(False)
 
     def toggle_state(self):
-        if self.state == self.EXPOSED: self.hide()
-        else: self.expose()
+        if self.state == self.EXPOSED:
+            self.hide()
+        else:
+            self.expose()
 
     _anim = None
+
     def expose(self):
-        if self.state == self.EXPOSED: return
+        if self.state == self.EXPOSED:
+            return
         if self._anim is not None and self._anim.is_running:
             self._anim.cancel()
         self._anim = ExposeAnimation(self)
@@ -36,13 +42,16 @@ class Drawer(Frame):
         self.state = self.EXPOSED
 
     def hide(self):
-        if self.state == self.HIDDEN: return
+        if self.state == self.HIDDEN:
+            return
         if self._anim is not None and self._anim.is_running:
             self._anim.cancel()
         self._anim = HideAnimation(self)
         self.state = self.HIDDEN
 
+
 class HideAnimation(anim.Animation):
+
     def __init__(self, drawer, duration=.25, function=anim.cosine90):
         self.drawer = drawer
         self.duration = duration
@@ -67,19 +76,19 @@ class HideAnimation(anim.Animation):
             self.ey = int(drawer.y + drawer.height)
             self.sh = int(drawer.height)
             self.eh = 0
-        super(HideAnimation, self).__init__()
+        super().__init__()
 
     def cancel(self):
         self.drawer.setVisible(False)
         if self.drawer.side in (Drawer.LEFT, Drawer.RIGHT):
             self.drawer.setViewClip((self.sx, 0, self.ew,
-                self.drawer.height))
+                                     self.drawer.height))
             self.drawer.x = self.ex
         else:
             self.drawer.setViewClip((0, self.sy, self.drawer.width,
-                self.eh))
+                                     self.eh))
             self.drawer.y = self.ey
-        super(HideAnimation, self).cancel()
+        super().cancel()
 
     def animate(self, dt):
         self.anim_time += dt
@@ -106,7 +115,9 @@ class HideAnimation(anim.Animation):
                 self.drawer.setViewClip((0, vcy, self.drawer.width, h))
                 self.drawer.y = y
 
+
 class ExposeAnimation(anim.Animation):
+
     def __init__(self, drawer, duration=.25, function=anim.cosine90):
         self.drawer = drawer
         self.duration = duration
@@ -131,7 +142,7 @@ class ExposeAnimation(anim.Animation):
             self.ey = int(drawer.y - drawer.height)
             self.sh = 0
             self.eh = int(drawer.height)
-        super(ExposeAnimation, self).__init__()
+        super().__init__()
 
     def cancel(self):
         if self.drawer.side in (Drawer.LEFT, Drawer.RIGHT):
@@ -140,7 +151,7 @@ class ExposeAnimation(anim.Animation):
         else:
             self.drawer.setViewClip((0, 0, self.drawer.width, self.eh))
             self.drawer.y = self.ey
-        super(ExposeAnimation, self).cancel()
+        super().cancel()
 
     def animate(self, dt):
         self.anim_time += dt
@@ -166,4 +177,3 @@ class ExposeAnimation(anim.Animation):
                     vcy = 0
                 self.drawer.setViewClip((0, vcy, self.drawer.width, h))
                 self.drawer.y = y
-

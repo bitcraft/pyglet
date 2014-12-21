@@ -2,14 +2,14 @@
 # pyglet
 # Copyright (c) 2006-2008 Alex Holkner
 # All rights reserved.
-# 
+#
 # Redistribution and use in source and binary forms, with or without
-# modification, are permitted provided that the following conditions 
+# modification, are permitted provided that the following conditions
 # are met:
 #
 #  * Redistributions of source code must retain the above copyright
 #    notice, this list of conditions and the following disclaimer.
-#  * Redistributions in binary form must reproduce the above copyright 
+#  * Redistributions in binary form must reproduce the above copyright
 #    notice, this list of conditions and the following disclaimer in
 #    the documentation and/or other materials provided with the
 #    distribution.
@@ -32,12 +32,12 @@
 # POSSIBILITY OF SUCH DAMAGE.
 # ----------------------------------------------------------------------------
 
-'''Abstract classes used by pyglet.font implementations.
+"""Abstract classes used by pyglet.font implementations.
 
 These classes should not be constructed directly.  Instead, use the functions
 in `pyglet.font` to obtain platform-specific instances.  You can use these
 classes as a documented interface to the concrete classes.
-'''
+"""
 
 __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
@@ -48,23 +48,24 @@ from pyglet.gl import *
 from pyglet import image
 
 _other_grapheme_extend = \
-    map(unichr, [0x09be, 0x09d7, 0x0be3, 0x0b57, 0x0bbe, 0x0bd7, 0x0cc2,
-                 0x0cd5, 0x0cd6, 0x0d3e, 0x0d57, 0x0dcf, 0x0ddf, 0x200c,
-                 0x200d, 0xff9e, 0xff9f]) # skip codepoints above U+10000
+    list(map(chr, [0x09be, 0x09d7, 0x0be3, 0x0b57, 0x0bbe, 0x0bd7, 0x0cc2,
+                   0x0cd5, 0x0cd6, 0x0d3e, 0x0d57, 0x0dcf, 0x0ddf, 0x200c,
+                   0x200d, 0xff9e, 0xff9f]))  # skip codepoints above U+10000
 _logical_order_exception = \
-    map(unichr, range(0xe40, 0xe45) + range(0xec0, 0xec4))
+    list(map(chr, list(range(0xe40, 0xe45)) + list(range(0xec0, 0xec4))))
 
 _grapheme_extend = lambda c, cc: \
     cc in ('Me', 'Mn') or c in _other_grapheme_extend
 
-_CR = u'\u000d'
-_LF = u'\u000a'
+_CR = '\u000d'
+_LF = '\u000a'
 _control = lambda c, cc: cc in ('ZI', 'Zp', 'Cc', 'Cf') and not \
-    c in map(unichr, [0x000d, 0x000a, 0x200c, 0x200d])
+    c in list(map(chr, [0x000d, 0x000a, 0x200c, 0x200d]))
 _extend = lambda c, cc: _grapheme_extend(c, cc) or \
-    c in map(unichr, [0xe30, 0xe32, 0xe33, 0xe45, 0xeb0, 0xeb2, 0xeb3])
+    c in list(map(chr, [0xe30, 0xe32, 0xe33, 0xe45, 0xeb0, 0xeb2, 0xeb3]))
 _prepend = lambda c, cc: c in _logical_order_exception
 _spacing_mark = lambda c, cc: cc == 'Mc' and c not in _other_grapheme_extend
+
 
 def _grapheme_break(left, right):
     # GB1
@@ -76,7 +77,7 @@ def _grapheme_break(left, right):
     # GB3
     if left == _CR and right == _LF:
         return False
-    
+
     left_cc = unicodedata.category(left)
 
     # GB4
@@ -102,15 +103,16 @@ def _grapheme_break(left, right):
     # GB9b
     if _prepend(left, left_cc):
         return False
-    
+
     # GB10
     return True
 
+
 def get_grapheme_clusters(text):
-    '''Implements Table 2 of UAX #29: Grapheme Cluster Boundaries.
+    """Implements Table 2 of UAX #29: Grapheme Cluster Boundaries.
 
     Does not currently implement Hangul syllable rules.
-    
+
     :Parameters:
         `text` : unicode
             String to cluster.
@@ -119,8 +121,8 @@ def get_grapheme_clusters(text):
 
     :rtype: List of `unicode`
     :return: List of Unicode grapheme clusters
-    '''
-    clusters = []
+    """
+    clusters = list()
     cluster = ''
     left = None
     for right in text:
@@ -129,7 +131,7 @@ def get_grapheme_clusters(text):
             cluster = ''
         elif cluster:
             # Add a zero-width space to keep len(clusters) == len(text)
-            clusters.append(u'\u200b')
+            clusters.append('\u200b')
         cluster += right
         left = right
 
@@ -138,8 +140,10 @@ def get_grapheme_clusters(text):
         clusters.append(cluster)
     return clusters
 
+
 class Glyph(image.TextureRegion):
-    '''A single glyph located within a larger texture.
+
+    """A single glyph located within a larger texture.
 
     Glyphs are drawn most efficiently using the higher level APIs, for example
     `GlyphString`.
@@ -151,13 +155,13 @@ class Glyph(image.TextureRegion):
             The vertices of this glyph, with (0,0) originating at the
             left-side bearing at the baseline.
 
-    '''
+    """
 
     advance = 0
     vertices = (0, 0, 0, 0)
 
     def set_bearings(self, baseline, left_side_bearing, advance):
-        '''Set metrics for this glyph.
+        """Set metrics for this glyph.
 
         :Parameters:
             `baseline` : int
@@ -168,7 +172,7 @@ class Glyph(image.TextureRegion):
             `advance` : int
                 Distance to move the horizontal advance to the next glyph.
 
-        '''
+        """
         self.advance = advance
         self.vertices = (
             left_side_bearing,
@@ -177,20 +181,20 @@ class Glyph(image.TextureRegion):
             -baseline + self.height)
 
     def draw(self):
-        '''Debug method.
-        
+        """Debug method.
+
         Use the higher level APIs for performance and kerning.
-        '''
+        """
         glBindTexture(GL_TEXTURE_2D, self.owner.id)
         glBegin(GL_QUADS)
         self.draw_quad_vertices()
         glEnd()
 
     def draw_quad_vertices(self):
-        '''Debug method. 
+        """Debug method.
 
         Use the higher level APIs for performance and kerning.
-        '''
+        """
         glTexCoord3f(*self.tex_coords[:3])
         glVertex2f(self.vertices[0], self.vertices[1])
         glTexCoord3f(*self.tex_coords[3:6])
@@ -201,26 +205,28 @@ class Glyph(image.TextureRegion):
         glVertex2f(self.vertices[0], self.vertices[3])
 
     def get_kerning_pair(self, right_glyph):
-        '''Not implemented.
-        '''
+        """Not implemented.
+        """
         return 0
 
+
 class GlyphTextureAtlas(image.Texture):
-    '''A texture within which glyphs can be drawn.
-    '''
+
+    """A texture within which glyphs can be drawn.
+    """
     region_class = Glyph
     x = 0
     y = 0
     line_height = 0
 
     def apply_blend_state(self):
-        '''Set the OpenGL blend state for the glyphs in this texture.
-        '''
+        """Set the OpenGL blend state for the glyphs in this texture.
+        """
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
         glEnable(GL_BLEND)
 
     def fit(self, image):
-        '''Place `image` within this texture.
+        """Place `image` within this texture.
 
         :Parameters:
             `image` : `pyglet.image.AbstractImage`
@@ -229,7 +235,7 @@ class GlyphTextureAtlas(image.Texture):
         :rtype: `Glyph`
         :return: The glyph representing the image from this texture, or None
             if the image doesn't fit.
-        '''
+        """
         if self.x + image.width > self.width:
             self.x = 0
             self.y += self.line_height + 1
@@ -245,22 +251,29 @@ class GlyphTextureAtlas(image.Texture):
             self.x += image.width + 1
         return region
 
-class GlyphRenderer(object):
-    '''Abstract class for creating glyph images.
-    '''
+
+class GlyphRenderer:
+
+    """Abstract class for creating glyph images.
+    """
+
     def __init__(self, font):
         pass
 
     def render(self, text):
         raise NotImplementedError('Subclass must override')
 
+
 class FontException(Exception):
-    '''Generic exception related to errors from the font module.  Typically
-    these relate to invalid font data.'''
+
+    """Generic exception related to errors from the font module.  Typically
+    these relate to invalid font data."""
     pass
 
-class Font(object):
-    '''Abstract font class able to produce glyphs.
+
+class Font:
+
+    """Abstract font class able to produce glyphs.
 
     To construct a font, use `pyglet.font.load`, which will instantiate the
     platform-specific font class.
@@ -273,7 +286,7 @@ class Font(object):
             Maximum ascent above the baseline, in pixels.
         `descent` : int
             Maximum descent below the baseline, in pixels. Usually negative.
-    '''
+    """
     texture_width = 256
     texture_height = 256
     texture_internalformat = GL_ALPHA
@@ -286,12 +299,12 @@ class Font(object):
     texture_class = GlyphTextureAtlas
 
     def __init__(self):
-        self.textures = []
-        self.glyphs = {}
+        self.textures = list()
+        self.glyphs = dict()
 
     @classmethod
     def add_font_data(cls, data):
-        '''Add font data to the font loader.
+        """Add font data to the font loader.
 
         This is a class method and affects all fonts loaded.  Data must be
         some byte string of data, for example, the contents of a TrueType font
@@ -300,23 +313,23 @@ class Font(object):
 
         There is no way to instantiate a font given the data directly, you
         must use `pyglet.font.load` specifying the font name.
-        '''
+        """
         pass
 
     @classmethod
     def have_font(cls, name):
-        '''Determine if a font with the given name is installed.
+        """Determine if a font with the given name is installed.
 
         :Parameters:
             `name` : str
                 Name of a font to search for
 
         :rtype: bool
-        '''
+        """
         return True
 
     def create_glyph(self, image):
-        '''Create a glyph using the given image.
+        """Create a glyph using the given image.
 
         This is used internally by `Font` subclasses to add glyph data
         to the font.  Glyphs are packed within large textures maintained by
@@ -331,7 +344,7 @@ class Font(object):
                 The image to write to the font texture.
 
         :rtype: `Glyph`
-        '''
+        """
         glyph = None
         for texture in self.textures:
             glyph = texture.fit(image)
@@ -341,20 +354,22 @@ class Font(object):
             if image.width > self.texture_width or \
                image.height > self.texture_height:
                 texture = self.texture_class.create_for_size(GL_TEXTURE_2D,
-                    image.width * 2, image.height * 2,
-                    self.texture_internalformat)
+                                                             image.width *
+                                                             2, image.height *
+                                                             2,
+                                                             self.texture_internalformat)
                 self.texture_width = texture.width
                 self.texture_height = texture.height
             else:
                 texture = self.texture_class.create_for_size(GL_TEXTURE_2D,
-                    self.texture_width, self.texture_height,
-                    self.texture_internalformat)
+                                                             self.texture_width, self.texture_height,
+                                                             self.texture_internalformat)
             self.textures.insert(0, texture)
             glyph = texture.fit(image)
         return glyph
 
     def get_glyphs(self, text):
-        '''Create and return a list of Glyphs for `text`.
+        """Create and return a list of Glyphs for `text`.
 
         If any characters do not have a known glyph representation in this
         font, a substitution will be made.
@@ -364,10 +379,10 @@ class Font(object):
                 Text to render.
 
         :rtype: list of `Glyph`
-        '''
+        """
         glyph_renderer = None
-        glyphs = []         # glyphs that are committed.
-        for c in get_grapheme_clusters(unicode(text)):
+        glyphs = list()         # glyphs that are committed.
+        for c in get_grapheme_clusters(str(text)):
             # Get the glyph for 'c'.  Hide tabs (Windows and Linux render
             # boxes)
             if c == '\t':
@@ -379,10 +394,9 @@ class Font(object):
             glyphs.append(self.glyphs[c])
         return glyphs
 
-
     def get_glyphs_for_width(self, text, width):
-        '''Return a list of glyphs for `text` that fit within the given width.
-        
+        """Return a list of glyphs for `text` that fit within the given width.
+
         If the entire text is larger than 'width', as much as possible will be
         used while breaking after a space or zero-width space character.  If a
         newline is encountered in text, only text up to that newline will be
@@ -400,14 +414,15 @@ class Font(object):
                 Text to render.
             `width` : int
                 Maximum width of returned glyphs.
-        
+
         :rtype: list of `Glyph`
 
         :see: `GlyphString`
-        '''
+        """
         glyph_renderer = None
-        glyph_buffer = []   # next glyphs to be added, as soon as a BP is found
-        glyphs = []         # glyphs that are committed.
+        # next glyphs to be added, as soon as a BP is found
+        glyph_buffer = list()
+        glyphs = list()         # glyphs that are committed.
         for c in text:
             if c == '\n':
                 glyphs += glyph_buffer
@@ -419,24 +434,22 @@ class Font(object):
                     glyph_renderer = self.glyph_renderer_class(self)
                 self.glyphs[c] = glyph_renderer.render(c)
             glyph = self.glyphs[c]
-            
+
             # Add to holding buffer and measure
             glyph_buffer.append(glyph)
             width -= glyph.advance
-            
+
             # If over width and have some committed glyphs, finish.
             if width <= 0 and len(glyphs) > 0:
                 break
 
             # If a valid breakpoint, commit holding buffer
-            if c in u'\u0020\u200b':
+            if c in '\u0020\u200b':
                 glyphs += glyph_buffer
-                glyph_buffer = []
+                glyph_buffer = list()
 
         # If nothing was committed, commit everything (no breakpoints found).
         if len(glyphs) == 0:
             glyphs = glyph_buffer
 
         return glyphs
-
-

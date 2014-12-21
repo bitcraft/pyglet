@@ -1,8 +1,8 @@
-'''
+"""
 Code by Richard Jones, released into the public domain.
 
 Beginnings of something like http://en.wikipedia.org/wiki/Thrust_(video_game)
-'''
+"""
 import sys
 import math
 
@@ -18,11 +18,15 @@ window = pyglet.window.Window(fullscreen='-fs' in sys.argv)
 
 GRAVITY = -200
 
-class Game(object):
+
+class Game:
+
     def __init__(self):
         self.batch = pyglet.graphics.Batch()
-        self.ship = Ship(window.width//2, window.height//2, self.batch)
-        self.debug_text = pyglet.text.Label('debug text', x=10, y=window.height-40, batch=self.batch)
+        self.ship = Ship(window.width // 2, window.height // 2, self.batch)
+        self.debug_text = pyglet.text.Label('debug text', x=10,
+                                            y=window.height - 40,
+                                            batch=self.batch)
 
     def on_draw(self):
         window.clear()
@@ -32,20 +36,22 @@ class Game(object):
         self.ship.update(dt)
 
 
-class Ship(object):
+class Ship:
+
     def __init__(self, x, y, batch):
         self.position = euclid.Point2(x, y)
         self.velocity = euclid.Point2(0, 0)
-        self.angle = math.pi/2
+        self.angle = math.pi / 2
 
         self.batch = batch
         self.lines = batch.add(6, GL_LINES, primitives.SmoothLineGroup(),
-            ('v2f', (0, 0) * 6),
-            ('c4B', (255, 255, 255, 255) * 6))
+                               ('v2f', (0, 0) * 6),
+                               ('c4B', (255, 255, 255, 255) * 6))
 
-        self.ball_position = euclid.Point2(window.width/2, window.height/4)
+        self.ball_position = euclid.Point2(window.width / 2, window.height / 4)
         self.ball_velocity = euclid.Point2(0, 0)
-        self.ball_lines = primitives.add_circle(batch, 0, 0, 20, (255, 255, 255, 255), 20)
+        self.ball_lines = primitives.add_circle(batch, 0, 0, 20,
+                                                (255, 255, 255, 255), 20)
         self._ball_verts = list(self.ball_lines.vertices)
         self._update_ball_verts()
 
@@ -92,7 +98,7 @@ class Ship(object):
             self.cog += self.velocity * dt
 
             # now the angular acceleration
-            r90 = euclid.Matrix3.new_rotate(math.pi/2)
+            r90 = euclid.Matrix3.new_rotate(math.pi / 2)
             r_n_t = r90 * n_t
             rd = n_v.dot(r_n_t)
             self.ang_velocity -= abs(abs(thrust)) * rd * 0.0001
@@ -100,7 +106,7 @@ class Ship(object):
 
             # vector from center of gravity our to either end
             ar = euclid.Matrix3.new_rotate(self.join_angle)
-            a_r = ar * euclid.Vector2(self.join_length/2, 0)
+            a_r = ar * euclid.Vector2(self.join_length / 2, 0)
 
             # set the ship & ball positions
             self.position = self.cog + a_r
@@ -119,8 +125,8 @@ class Ship(object):
                 # mass just doubled, so slow linear velocity down
                 self.velocity /= 2
 
-                # XXX and generate some initial angular velocity based on
-                # XXX ship current velocity
+                # TODO: and generate some initial angular velocity based on
+                # TODO: ship current velocity
                 self.ang_velocity = 0
 
             # render the join line
@@ -131,8 +137,10 @@ class Ship(object):
             if self.join_line:
                 self.join_line.vertices[:] = l
             else:
-                self.join_line = self.batch.add(2, GL_LINES, primitives.SmoothLineGroup(),
-                    ('v2f', l), ('c4B', (255, 255, 255, 255) * 2))
+                self.join_line = self.batch.add(2, GL_LINES,
+                                                primitives.SmoothLineGroup(),
+                                                ('v2f', l), ('c4B', (
+                                                    255, 255, 255, 255) * 2))
 
         # update the ship verts
         bl = r * euclid.Point2(-25, 25)
@@ -140,14 +148,14 @@ class Ship(object):
         br = r * euclid.Point2(-25, -25)
         x, y = self.position
         self.lines.vertices[:] = [
-            x+bl.x, y+bl.y, x+t.x, y+t.y,
-            x+t.x, y+t.y, x+br.x, y+br.y,
-            x+br.x, y+br.y, x+bl.x, y+bl.y,
+            x + bl.x, y + bl.y, x + t.x, y + t.y,
+            x + t.x, y + t.y, x + br.x, y + br.y,
+            x + br.x, y + br.y, x + bl.x, y + bl.y,
         ]
 
     def _update_ball_verts(self):
         # update the ball for its position
-        l = []
+        l = list()
         x, y = self.ball_position
         for i, v in enumerate(self._ball_verts):
             if i % 2:
@@ -155,6 +163,7 @@ class Ship(object):
             else:
                 l.append(int(v + x))
         self.ball_lines.vertices[:] = l
+
 
 g = Game()
 
@@ -165,4 +174,3 @@ keyboard = key.KeyStateHandler()
 window.push_handlers(keyboard)
 
 pyglet.app.run()
-

@@ -3,14 +3,14 @@
 # pyglet
 # Copyright (c) 2006-2008 Alex Holkner
 # All rights reserved.
-# 
+#
 # Redistribution and use in source and binary forms, with or without
-# modification, are permitted provided that the following conditions 
+# modification, are permitted provided that the following conditions
 # are met:
 #
-#  * Redistributions of source code must retain the above copyright
+# * Redistributions of source code must retain the above copyright
 #    notice, this list of conditions and the following disclaimer.
-#  * Redistributions in binary form must reproduce the above copyright 
+#  * Redistributions in binary form must reproduce the above copyright
 #    notice, this list of conditions and the following disclaimer in
 #    the documentation and/or other materials provided with the
 #    distribution.
@@ -33,14 +33,14 @@
 # POSSIBILITY OF SUCH DAMAGE.
 # ----------------------------------------------------------------------------
 
-'''Load and display a GIF animation.
+"""Load and display a GIF animation.
 
 Usage::
 
     animation.py [<filename>]
 
 If the filename is omitted, a sample animation is loaded
-'''
+"""
 
 __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
@@ -67,9 +67,11 @@ window = pyglet.window.Window(width=sprite.width, height=sprite.height)
 # Set window background color to white.
 pyglet.gl.glClearColor(1, 1, 1, 1)
 
+
 @window.event
 def on_draw():
     window.clear()
     sprite.draw()
+
 
 pyglet.app.run()

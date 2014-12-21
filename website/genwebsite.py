@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
-'''
-'''
+"""
+"""
 
 __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
@@ -17,16 +17,19 @@ try:
 except ImportError:
     from elementtree import ElementTree
 
+
 def get_elem_by_id(doc, name, id):
     for element in doc.getElementsByTagName(name):
         if element.getAttribute('id') == id:
             return element
 
+
 def element_children(parent, name):
     for child in parent.childNodes:
         if (child.nodeType == child.ELEMENT_NODE and
-            child.nodeName == name):
+                child.nodeName == name):
             yield child
+
 
 def element_text(elem):
     if elem.nodeType == elem.TEXT_NODE:
@@ -37,7 +40,6 @@ def element_text(elem):
             s += element_text(child)
         return s
 
-if __name__ == '__main__':
     input_dir = os.path.normpath(os.path.dirname(__file__))
     output_dir = os.path.join(input_dir, 'dist')
     template_filename = os.path.join(input_dir, 'template.xhtml')
@@ -49,12 +51,12 @@ if __name__ == '__main__':
     try:
         os.makedirs(output_dir)
     except OSError:
-        pass #exists
+        pass  # exists
 
     print '..read news items'
     news_items_doc = parse(news_items_filename)
     news_items = [item for item in element_children(
-                                    news_items_doc.documentElement, 'item')]
+        news_items_doc.documentElement, 'item')]
 
     print '..write ATOM feed (news.xml)'
     atom_filename = os.path.join(output_dir, 'news.xml')
@@ -81,7 +83,7 @@ if __name__ == '__main__':
         SE(entry, 'summary').text = content
         SE(entry, 'content').text = content
         SE(entry, 'updated').text = "%sT00:00:00Z" % date
-        SE(entry, 'id').text='http://www.pyglet.org/news/' + date
+        SE(entry, 'id').text = 'http://www.pyglet.org/news/' + date
     s = open(atom_filename, 'w')
     s.write('<?xml version="1.0" encoding="UTF-8" ?>\n')
     ElementTree.ElementTree(root).write(s, 'utf-8')
@@ -128,7 +130,6 @@ if __name__ == '__main__':
                 p.appendChild(attribution)
                 news_elem.parentNode.insertBefore(p, news_elem)
             news_elem.parentNode.removeChild(news_elem)
-
 
         # Write body content
         output_content = get_elem_by_id(output_doc, 'div', 'content')

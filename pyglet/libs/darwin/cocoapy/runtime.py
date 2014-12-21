@@ -38,7 +38,7 @@ from ctypes import util
 
 from .cocoatypes import *
 
-__LP64__ = (8*struct.calcsize("P") == 64)
+__LP64__ = (8 * struct.calcsize("P") == 64)
 __i386__ = (platform.machine() == 'i386')
 
 if sizeof(c_void_p) == 4:
@@ -52,7 +52,8 @@ objc = cdll.LoadLibrary(util.find_library('objc'))
 
 ######################################################################
 
-# BOOL class_addIvar(Class cls, const char *name, size_t size, uint8_t alignment, const char *types)
+# BOOL class_addIvar(Class cls, const char *name, size_t size, uint8_t
+# alignment, const char *types)
 objc.class_addIvar.restype = c_bool
 objc.class_addIvar.argtypes = [c_void_p, c_char_p, c_size_t, c_uint8, c_char_p]
 
@@ -243,7 +244,8 @@ objc.method_setImplementation.argtypes = [c_void_p, c_void_p]
 
 ######################################################################
 
-# Class objc_allocateClassPair(Class superclass, const char *name, size_t extraBytes)
+# Class objc_allocateClassPair(Class superclass, const char *name, size_t
+# extraBytes)
 objc.objc_allocateClassPair.restype = c_void_p
 objc.objc_allocateClassPair.argtypes = [c_void_p, c_char_p, c_size_t]
 
@@ -284,7 +286,8 @@ objc.objc_msgSendSuper_stret.restype = None
 # double objc_msgSend_fpret(id self, SEL op, ...)
 # objc.objc_msgSend_fpret.restype = c_double
 
-# void objc_msgSend_stret(void * stretAddr, id theReceiver, SEL theSelector,  ...)
+# void objc_msgSend_stret(void * stretAddr, id theReceiver, SEL
+# theSelector,  ...)
 objc.objc_msgSend_stret.restype = None
 
 # void objc_registerClassPair(Class cls)
@@ -295,7 +298,8 @@ objc.objc_registerClassPair.argtypes = [c_void_p]
 objc.objc_removeAssociatedObjects.restype = None
 objc.objc_removeAssociatedObjects.argtypes = [c_void_p]
 
-# void objc_setAssociatedObject(id object, void *key, id value, objc_AssociationPolicy policy)
+# void objc_setAssociatedObject(id object, void *key, id value,
+# objc_AssociationPolicy policy)
 objc.objc_setAssociatedObject.restype = None
 objc.objc_setAssociatedObject.argtypes = [c_void_p, c_void_p, c_void_p, c_int]
 
@@ -319,7 +323,7 @@ objc.object_getClassName.argtypes = [c_void_p]
 
 # Ivar object_getInstanceVariable(id obj, const char *name, void **outValue)
 objc.object_getInstanceVariable.restype = c_void_p
-objc.object_getInstanceVariable.argtypes=[c_void_p, c_char_p, c_void_p]
+objc.object_getInstanceVariable.argtypes = [c_void_p, c_char_p, c_void_p]
 
 # id object_getIvar(id object, Ivar ivar)
 objc.object_getIvar.restype = c_void_p
@@ -353,15 +357,19 @@ objc.property_getName.argtypes = [c_void_p]
 objc.protocol_conformsToProtocol.restype = c_bool
 objc.protocol_conformsToProtocol.argtypes = [c_void_p, c_void_p]
 
+
 class OBJC_METHOD_DESCRIPTION(Structure):
-    _fields_ = [ ("name", c_void_p), ("types", c_char_p) ]
+    _fields_ = [("name", c_void_p), ("types", c_char_p)]
 
 # struct objc_method_description *protocol_copyMethodDescriptionList(Protocol *p, BOOL isRequiredMethod, BOOL isInstanceMethod, unsigned int *outCount)
 # You must free() the returned array.
-objc.protocol_copyMethodDescriptionList.restype = POINTER(OBJC_METHOD_DESCRIPTION)
-objc.protocol_copyMethodDescriptionList.argtypes = [c_void_p, c_bool, c_bool, POINTER(c_uint)]
+objc.protocol_copyMethodDescriptionList.restype = POINTER(
+    OBJC_METHOD_DESCRIPTION)
+objc.protocol_copyMethodDescriptionList.argtypes = [
+    c_void_p, c_bool, c_bool, POINTER(c_uint)]
 
-# objc_property_t * protocol_copyPropertyList(Protocol *protocol, unsigned int *outCount)
+# objc_property_t * protocol_copyPropertyList(Protocol *protocol, unsigned
+# int *outCount)
 objc.protocol_copyPropertyList.restype = c_void_p
 objc.protocol_copyPropertyList.argtypes = [c_void_p, POINTER(c_uint)]
 
@@ -369,9 +377,11 @@ objc.protocol_copyPropertyList.argtypes = [c_void_p, POINTER(c_uint)]
 objc.protocol_copyProtocolList = POINTER(c_void_p)
 objc.protocol_copyProtocolList.argtypes = [c_void_p, POINTER(c_uint)]
 
-# struct objc_method_description protocol_getMethodDescription(Protocol *p, SEL aSel, BOOL isRequiredMethod, BOOL isInstanceMethod)
+# struct objc_method_description protocol_getMethodDescription(Protocol
+# *p, SEL aSel, BOOL isRequiredMethod, BOOL isInstanceMethod)
 objc.protocol_getMethodDescription.restype = OBJC_METHOD_DESCRIPTION
-objc.protocol_getMethodDescription.argtypes = [c_void_p, c_void_p, c_bool, c_bool]
+objc.protocol_getMethodDescription.argtypes = [
+    c_void_p, c_void_p, c_bool, c_bool]
 
 # const char *protocol_getName(Protocol *p)
 objc.protocol_getName.restype = c_char_p
@@ -396,6 +406,7 @@ objc.sel_registerName.argtypes = [c_char_p]
 
 ######################################################################
 
+
 def ensure_bytes(x):
     if isinstance(x, bytes):
         return x
@@ -403,17 +414,22 @@ def ensure_bytes(x):
 
 ######################################################################
 
+
 def get_selector(name):
     return c_void_p(objc.sel_registerName(ensure_bytes(name)))
+
 
 def get_class(name):
     return c_void_p(objc.objc_getClass(ensure_bytes(name)))
 
+
 def get_object_class(obj):
     return c_void_p(objc.object_getClass(obj))
 
+
 def get_metaclass(name):
     return c_void_p(objc.objc_getMetaClass(ensure_bytes(name)))
+
 
 def get_superclass_of_object(obj):
     cls = c_void_p(objc.object_getClass(obj))
@@ -434,9 +450,11 @@ def x86_should_use_stret(restype):
     return True
 
 # http://www.sealiesoftware.com/blog/archive/2008/11/16/objc_explain_objc_msgSend_fpret.html
+
+
 def should_use_fpret(restype):
     """Determine if objc_msgSend_fpret is required to return a floating point type."""
-    if not __i386__: 
+    if not __i386__:
         # Unneeded on non-intel processors
         return False
     if __LP64__ and restype == c_longdouble:
@@ -448,24 +466,27 @@ def should_use_fpret(restype):
 
 # By default, assumes that restype is c_void_p
 # and that all arguments are wrapped inside c_void_p.
-# Use the restype and argtypes keyword arguments to 
+# Use the restype and argtypes keyword arguments to
 # change these values.  restype should be a ctypes type
 # and argtypes should be a list of ctypes types for
 # the arguments of the message only.
+
+
 def send_message(receiver, selName, *args, **kwargs):
     if isinstance(receiver, str):
         receiver = get_class(receiver)
     selector = get_selector(selName)
     restype = kwargs.get('restype', c_void_p)
-    #print 'send_message', receiver, selName, args, kwargs
-    argtypes = kwargs.get('argtypes', [])
+    # print 'send_message', receiver, selName, args, kwargs
+    argtypes = kwargs.get('argtypes', list())
     # Choose the correct version of objc_msgSend based on return type.
     if should_use_fpret(restype):
         objc.objc_msgSend_fpret.restype = restype
         objc.objc_msgSend_fpret.argtypes = [c_void_p, c_void_p] + argtypes
         result = objc.objc_msgSend_fpret(receiver, selector, *args)
     elif x86_should_use_stret(restype):
-        objc.objc_msgSend_stret.argtypes = [POINTER(restype), c_void_p, c_void_p] + argtypes
+        objc.objc_msgSend_stret.argtypes = [
+            POINTER(restype), c_void_p, c_void_p] + argtypes
         result = restype()
         objc.objc_msgSend_stret(byref(result), receiver, selector, *args)
     else:
@@ -476,14 +497,17 @@ def send_message(receiver, selName, *args, **kwargs):
             result = c_void_p(result)
     return result
 
+
 class OBJC_SUPER(Structure):
-    _fields_ = [ ('receiver', c_void_p), ('class', c_void_p) ]
+    _fields_ = [('receiver', c_void_p), ('class', c_void_p)]
 
 OBJC_SUPER_PTR = POINTER(OBJC_SUPER)
 
-#http://stackoverflow.com/questions/3095360/what-exactly-is-super-in-objective-c
+# http://stackoverflow.com/questions/3095360/what-exactly-is-super-in-objective-c
+
+
 def send_super(receiver, selName, *args, **kwargs):
-    #print 'send_super', receiver, selName, args
+    # print 'send_super', receiver, selName, args
     if hasattr(receiver, '_as_parameter_'):
         receiver = receiver._as_parameter_
     superclass = get_superclass_of_object(receiver)
@@ -503,7 +527,8 @@ def send_super(receiver, selName, *args, **kwargs):
 
 ######################################################################
 
-cfunctype_table = {}
+cfunctype_table = dict()
+
 
 def parse_type_encoding(encoding):
     """Takes a type encoding string and outputs a list of the separated type codes.
@@ -515,7 +540,7 @@ def parse_type_encoding(encoding):
     parse_type_encoding('^v16@0:8') --> ['^v', '@', ':']
     parse_type_encoding('{CGSize=dd}40@0:8{CGSize=dd}16Q32') --> ['{CGSize=dd}', '@', ':', '{CGSize=dd}', 'Q']
     """
-    type_encodings = []
+    type_encodings = list()
     brace_count = 0    # number of unclosed curly braces
     bracket_count = 0  # number of unclosed square brackets
     typecode = b''
@@ -524,7 +549,7 @@ def parse_type_encoding(encoding):
         # To fix the disparity, we convert c to a bytes object if necessary.
         if isinstance(c, int):
             c = bytes([c])
-            
+
         if c == b'{':
             # Check if this marked the end of previous type code.
             if typecode and typecode[-1:] != b'^' and brace_count == 0 and bracket_count == 0:
@@ -548,7 +573,8 @@ def parse_type_encoding(encoding):
             bracket_count -= 1
             assert(bracket_count >= 0)
         elif brace_count or bracket_count:
-            # Anything encountered while inside braces or brackets gets stuck on.
+            # Anything encountered while inside braces or brackets gets stuck
+            # on.
             typecode += c
         elif c in b'0123456789':
             # Ignore field width specifiers for now.
@@ -566,7 +592,7 @@ def parse_type_encoding(encoding):
                     type_encodings.append(typecode)
                 # Start a new type code.
                 typecode = c
-            
+
     # Add the last type code to the list
     if typecode:
         type_encodings.append(typecode)
@@ -584,13 +610,13 @@ def cfunctype_for_encoding(encoding):
         return cfunctype_table[encoding]
 
     # Otherwise, create a new CFUNCTYPE for the encoding.
-    typecodes = {b'c':c_char, b'i':c_int, b's':c_short, b'l':c_long, b'q':c_longlong, 
-                 b'C':c_ubyte, b'I':c_uint, b'S':c_ushort, b'L':c_ulong, b'Q':c_ulonglong, 
-                 b'f':c_float, b'd':c_double, b'B':c_bool, b'v':None, b'*':c_char_p,
-                 b'@':c_void_p, b'#':c_void_p, b':':c_void_p, NSPointEncoding:NSPoint,
-                 NSSizeEncoding:NSSize, NSRectEncoding:NSRect, NSRangeEncoding:NSRange,
-                 PyObjectEncoding:py_object}
-    argtypes = []
+    typecodes = {b'c': c_char, b'i': c_int, b's': c_short, b'l': c_long, b'q': c_longlong,
+                 b'C': c_ubyte, b'I': c_uint, b'S': c_ushort, b'L': c_ulong, b'Q': c_ulonglong,
+                 b'f': c_float, b'd': c_double, b'B': c_bool, b'v': None, b'*': c_char_p,
+                 b'@': c_void_p, b'#': c_void_p, b':': c_void_p, NSPointEncoding: NSPoint,
+                 NSSizeEncoding: NSSize, NSRectEncoding: NSRect, NSRangeEncoding: NSRange,
+                 PyObjectEncoding: py_object}
+    argtypes = list()
     for code in parse_type_encoding(encoding):
         if code in typecodes:
             argtypes.append(typecodes[code])
@@ -602,7 +628,7 @@ def cfunctype_for_encoding(encoding):
     cfunctype = CFUNCTYPE(*argtypes)
 
     # Cache the new CFUNCTYPE in the cfunctype_table.
-    # We do this mainly because it prevents the CFUNCTYPE 
+    # We do this mainly because it prevents the CFUNCTYPE
     # from being garbage-collected while we need it.
     cfunctype_table[encoding] = cfunctype
     return cfunctype
@@ -613,10 +639,13 @@ def cfunctype_for_encoding(encoding):
 # it with register_subclass before you may use it.
 # You can add new methods after the class is registered,
 # but you cannot add any new ivars.
+
+
 def create_subclass(superclass, name):
     if isinstance(superclass, str):
         superclass = get_class(superclass)
     return c_void_p(objc.objc_allocateClassPair(superclass, ensure_bytes(name), 0))
+
 
 def register_subclass(subclass):
     objc.objc_registerClassPair(subclass)
@@ -626,6 +655,8 @@ def register_subclass(subclass):
 # The second type code must be '@' for id self.
 # The third type code must be ':' for SEL cmd.
 # Additional type codes are for types of other arguments if any.
+
+
 def add_method(cls, selName, method, types):
     type_encodings = parse_type_encoding(types)
     assert(type_encodings[1] == b'@')  # ensure id self typecode
@@ -637,36 +668,42 @@ def add_method(cls, selName, method, types):
     objc.class_addMethod(cls, selector, imp, types)
     return imp
 
+
 def add_ivar(cls, name, vartype):
     return objc.class_addIvar(cls, ensure_bytes(name), sizeof(vartype), alignment(vartype), encoding_for_ctype(vartype))
+
 
 def set_instance_variable(obj, varname, value, vartype):
     objc.object_setInstanceVariable.argtypes = [c_void_p, c_char_p, vartype]
     objc.object_setInstanceVariable(obj, ensure_bytes(varname), value)
-    
+
+
 def get_instance_variable(obj, varname, vartype):
     variable = vartype()
-    objc.object_getInstanceVariable(obj, ensure_bytes(varname), byref(variable))
+    objc.object_getInstanceVariable(
+        obj, ensure_bytes(varname), byref(variable))
     return variable.value
 
 ######################################################################
 
-class ObjCMethod(object):
+
+class ObjCMethod:
+
     """This represents an unbound Objective-C method (really an IMP)."""
 
     # Note, need to map 'c' to c_byte rather than c_char, because otherwise
     # ctypes converts the value into a one-character string which is generally
     # not what we want at all, especially when the 'c' represents a bool var.
-    typecodes = {b'c':c_byte, b'i':c_int, b's':c_short, b'l':c_long, b'q':c_longlong, 
-                 b'C':c_ubyte, b'I':c_uint, b'S':c_ushort, b'L':c_ulong, b'Q':c_ulonglong, 
-                 b'f':c_float, b'd':c_double, b'B':c_bool, b'v':None, b'Vv':None, b'*':c_char_p,
-                 b'@':c_void_p, b'#':c_void_p, b':':c_void_p, b'^v':c_void_p, b'?':c_void_p, 
-                 NSPointEncoding:NSPoint, NSSizeEncoding:NSSize, NSRectEncoding:NSRect,
-                 NSRangeEncoding:NSRange,
-                 PyObjectEncoding:py_object}
+    typecodes = {b'c': c_byte, b'i': c_int, b's': c_short, b'l': c_long, b'q': c_longlong,
+                 b'C': c_ubyte, b'I': c_uint, b'S': c_ushort, b'L': c_ulong, b'Q': c_ulonglong,
+                 b'f': c_float, b'd': c_double, b'B': c_bool, b'v': None, b'Vv': None, b'*': c_char_p,
+                 b'@': c_void_p, b'#': c_void_p, b':': c_void_p, b'^v': c_void_p, b'?': c_void_p,
+                 NSPointEncoding: NSPoint, NSSizeEncoding: NSSize, NSRectEncoding: NSRect,
+                 NSRangeEncoding: NSRange,
+                 PyObjectEncoding: py_object}
 
-    cfunctype_table = {}
-    
+    cfunctype_table = dict()
+
     def __init__(self, method):
         """Initialize with an Objective-C Method pointer.  We then determine
         the return type and argument type information of the method."""
@@ -677,16 +714,18 @@ class ObjCMethod(object):
         self.return_type = objc.method_copyReturnType(method)
         self.nargs = objc.method_getNumberOfArguments(method)
         self.imp = c_void_p(objc.method_getImplementation(method))
-        self.argument_types = []
+        self.argument_types = list()
         for i in range(self.nargs):
             buffer = c_buffer(512)
             objc.method_getArgumentType(method, i, buffer, len(buffer))
             self.argument_types.append(buffer.value)
         # Get types for all the arguments.
         try:
-            self.argtypes = [self.ctype_for_encoding(t) for t in self.argument_types]
+            self.argtypes = [
+                self.ctype_for_encoding(t) for t in self.argument_types]
         except:
-            #print 'no argtypes encoding for %s (%s)' % (self.name, self.argument_types)
+            # print 'no argtypes encoding for %s (%s)' % (self.name,
+            # self.argument_types)
             self.argtypes = None
         # Get types for the return type.
         try:
@@ -697,7 +736,8 @@ class ObjCMethod(object):
             else:
                 self.restype = self.ctype_for_encoding(self.return_type)
         except:
-            #print 'no restype encoding for %s (%s)' % (self.name, self.return_type)
+            # print 'no restype encoding for %s (%s)' % (self.name,
+            # self.return_type)
             self.restype = None
         self.func = None
 
@@ -717,20 +757,22 @@ class ObjCMethod(object):
             # const pointer, also don't care
             return POINTER(self.typecodes[encoding[2:]])
         else:
-            raise Exception('unknown encoding for %s: %s' % (self.name, encoding))
-        
+            raise Exception('unknown encoding for %s: %s' %
+                            (self.name, encoding))
+
     def get_prototype(self):
         """Returns a ctypes CFUNCTYPE for the method."""
         if self.restype == ObjCInstance or self.restype == ObjCClass:
             # Some hacky stuff to get around ctypes issues on 64-bit.  Can't let
             # ctypes convert the return value itself, because it truncates the pointer
-            # along the way.  So instead, we must do set the return type to c_void_p to 
-            # ensure we get 64-bit addresses and then convert the return value manually.
+            # along the way.  So instead, we must do set the return type to c_void_p to
+            # ensure we get 64-bit addresses and then convert the return value
+            # manually.
             self.prototype = CFUNCTYPE(c_void_p, *self.argtypes)
         else:
             self.prototype = CFUNCTYPE(self.restype, *self.argtypes)
         return self.prototype
-    
+
     def __repr__(self):
         return "<ObjCMethod: %s %s>" % (self.name, self.encoding)
 
@@ -745,15 +787,16 @@ class ObjCMethod(object):
                 self.func.restype = self.restype
             self.func.argtypes = self.argtypes
         return self.func
-   
+
     def __call__(self, objc_id, *args):
         """Call the method with the given id and arguments.  You do not need
-        to pass in the selector as an argument since it will be automatically 
+        to pass in the selector as an argument since it will be automatically
         provided."""
         f = self.get_callable()
         try:
             result = f(objc_id, self.selector, *args)
-            # Convert result to python type if it is a instance or class pointer.
+            # Convert result to python type if it is a instance or class
+            # pointer.
             if self.restype == ObjCInstance:
                 result = ObjCInstance(result)
             elif self.restype == ObjCClass:
@@ -768,8 +811,10 @@ class ObjCMethod(object):
 
 ######################################################################
 
-class ObjCBoundMethod(object):
-    """This represents an Objective-C method (an IMP) which has been bound 
+
+class ObjCBoundMethod:
+
+    """This represents an Objective-C method (an IMP) which has been bound
     to some id which will be passed as the first parameter to the method."""
 
     def __init__(self, method, objc_id):
@@ -785,8 +830,10 @@ class ObjCBoundMethod(object):
         return self.method(self.objc_id, *args)
 
 ######################################################################
- 
-class ObjCClass(object):
+
+
+class ObjCClass:
+
     """Python wrapper for an Objective-C class."""
 
     # We only create one Python object for each Objective-C class.
@@ -794,7 +841,7 @@ class ObjCClass(object):
     # created Python object.  Note that these aren't weak references.
     # After you create an ObjCClass, it will exist until the end of the
     # program.
-    _registered_classes = {}
+    _registered_classes = dict()
 
     def __new__(cls, class_name_or_ptr):
         """Create a new ObjCClass instance or return a previously created
@@ -811,18 +858,20 @@ class ObjCClass(object):
             if not isinstance(ptr, c_void_p):
                 ptr = c_void_p(ptr)
             name = objc.class_getName(ptr)
-            
+
         # Check if we've already created a Python object for this class
         # and if so, return it rather than making a new one.
         if name in cls._registered_classes:
             return cls._registered_classes[name]
 
         # Otherwise create a new Python object and then initialize it.
-        objc_class = super(ObjCClass, cls).__new__(cls)
+        objc_class = super().__new__(cls)
         objc_class.ptr = ptr
         objc_class.name = name
-        objc_class.instance_methods = {}   # mapping of name -> instance method
-        objc_class.class_methods = {}      # mapping of name -> class method
+        # mapping of name -> instance method
+        objc_class.instance_methods = dict()
+        # mapping of name -> class method
+        objc_class.class_methods = dict()
         objc_class._as_parameter_ = ptr    # for ctypes argument passing
 
         # Store the new class in dictionary of registered classes.
@@ -836,9 +885,9 @@ class ObjCClass(object):
 
     def __repr__(self):
         return "<ObjCClass: %s at %s>" % (self.name, str(self.ptr.value))
-        
+
     def cache_instance_methods(self):
-        """Create and store python representations of all instance methods 
+        """Create and store python representations of all instance methods
         implemented by this class (but does not find methods of superclass)."""
         count = c_uint()
         method_array = objc.class_copyMethodList(self.ptr, byref(count))
@@ -848,17 +897,18 @@ class ObjCClass(object):
             self.instance_methods[objc_method.pyname] = objc_method
 
     def cache_class_methods(self):
-        """Create and store python representations of all class methods 
+        """Create and store python representations of all class methods
         implemented by this class (but does not find methods of superclass)."""
         count = c_uint()
-        method_array = objc.class_copyMethodList(objc.object_getClass(self.ptr), byref(count))
+        method_array = objc.class_copyMethodList(
+            objc.object_getClass(self.ptr), byref(count))
         for i in range(count.value):
             method = c_void_p(method_array[i])
             objc_method = ObjCMethod(method)
             self.class_methods[objc_method.pyname] = objc_method
 
     def get_instance_method(self, name):
-        """Returns a python representation of the named instance method, 
+        """Returns a python representation of the named instance method,
         either by looking it up in the cached list of methods or by searching
         for and creating a new method object."""
         if name in self.instance_methods:
@@ -872,10 +922,9 @@ class ObjCClass(object):
                 objc_method = ObjCMethod(method)
                 self.instance_methods[name] = objc_method
                 return objc_method
-        return None
 
     def get_class_method(self, name):
-        """Returns a python representation of the named class method, 
+        """Returns a python representation of the named class method,
         either by looking it up in the cached list of methods or by searching
         for and creating a new method object."""
         if name in self.class_methods:
@@ -889,8 +938,7 @@ class ObjCClass(object):
                 objc_method = ObjCMethod(method)
                 self.class_methods[name] = objc_method
                 return objc_method
-        return None
-        
+
     def __getattr__(self, name):
         """Returns a callable method object with the given name."""
         # If name refers to a class method, then return a callable object
@@ -902,17 +950,20 @@ class ObjCClass(object):
         # If name refers to an instance method, then simply return the method.
         # The caller will need to supply an instance as the first parameter.
         method = self.get_instance_method(name)
-        if method: 
+        if method:
             return method
         # Otherwise, raise an exception.
-        raise AttributeError('ObjCClass %s has no attribute %s' % (self.name, name))
+        raise AttributeError(
+            'ObjCClass %s has no attribute %s' % (self.name, name))
 
 ######################################################################
 
-class ObjCInstance(object):
+
+class ObjCInstance:
+
     """Python wrapper for an Objective-C instance."""
 
-    _cached_objects = {} 
+    _cached_objects = dict()
 
     def __new__(cls, object_ptr):
         """Create a new ObjCInstance or return a previously created one
@@ -920,7 +971,7 @@ class ObjCInstance(object):
         # Make sure that object_ptr is wrapped in a c_void_p.
         if not isinstance(object_ptr, c_void_p):
             object_ptr = c_void_p(object_ptr)
-        
+
         # If given a nil pointer, return None.
         if not object_ptr.value:
             return None
@@ -928,13 +979,13 @@ class ObjCInstance(object):
         # Check if we've already created an python ObjCInstance for this
         # object_ptr id and if so, then return it.  A single ObjCInstance will
         # be created for any object pointer when it is first encountered.
-        # This same ObjCInstance will then persist until the object is 
+        # This same ObjCInstance will then persist until the object is
         # deallocated.
         if object_ptr.value in cls._cached_objects:
             return cls._cached_objects[object_ptr.value]
 
         # Otherwise, create a new ObjCInstance.
-        objc_instance = super(ObjCInstance, cls).__new__(cls)
+        objc_instance = super().__new__(cls)
         objc_instance.ptr = object_ptr
         objc_instance._as_parameter_ = object_ptr
         # Determine class of this object.
@@ -949,7 +1000,8 @@ class ObjCInstance(object):
         # When the Objective-C object is deallocated, the observer will remove
         # the ObjCInstance corresponding to the object from the cached objects
         # dictionary, effectively destroying the ObjCInstance.
-        observer = send_message(send_message('DeallocationObserver', 'alloc'), 'initWithObject:', objc_instance)
+        observer = send_message(
+            send_message('DeallocationObserver', 'alloc'), 'initWithObject:', objc_instance)
         objc.objc_setAssociatedObject(objc_instance, observer, observer, 0x301)
         # The observer is retained by the object we associate it to.  We release
         # the observer now so that it will be deallocated when the associated
@@ -971,29 +1023,31 @@ class ObjCInstance(object):
         """Returns a callable method object with the given name."""
         # Search for named instance method in the class object and if it
         # exists, return callable object with self as hidden argument.
-        # Note: you should give self and not self.ptr as a parameter to 
+        # Note: you should give self and not self.ptr as a parameter to
         # ObjCBoundMethod, so that it will be able to keep the ObjCInstance
-        # alive for chained calls like MyClass.alloc().init() where the 
+        # alive for chained calls like MyClass.alloc().init() where the
         # object created by alloc() is not assigned to a variable.
         name = ensure_bytes(name)
         method = self.objc_class.get_instance_method(name)
         if method:
             return ObjCBoundMethod(method, self)
         # Else, search for class method with given name in the class object.
-        # If it exists, return callable object with a pointer to the class 
+        # If it exists, return callable object with a pointer to the class
         # as a hidden argument.
         method = self.objc_class.get_class_method(name)
         if method:
             return ObjCBoundMethod(method, self.objc_class.ptr)
         # Otherwise raise an exception.
-        raise AttributeError('ObjCInstance %s has no attribute %s' % (self.objc_class.name, name))
+        raise AttributeError(
+            'ObjCInstance %s has no attribute %s' % (self.objc_class.name, name))
 
 ######################################################################
+
 
 def convert_method_arguments(encoding, args):
     """Used by ObjCSubclass to convert Objective-C method arguments to
     Python values before passing them on to the Python-defined method."""
-    new_args = []
+    new_args = list()
     arg_encodings = parse_type_encoding(encoding)[3:]
     for e, a in zip(arg_encodings, args):
         if e == b'@':
@@ -1040,7 +1094,7 @@ def convert_method_arguments(encoding, args):
 # But rather than creating the ivars in Objective-C land, it is easier
 # to just define python-based instance variables in your subclass's init
 # method.
-# 
+#
 # This class is used only to *define* the interface and implementation
 # of an Objective-C subclass from python.  It should not be used in
 # any other way.  If you want a python representation of the resulting
@@ -1056,13 +1110,16 @@ def convert_method_arguments(encoding, args):
 #     myclass = ObjCClass('MySubclassName')
 #     myinstance = myclass.alloc().init()
 #
-class ObjCSubclass(object):
+
+
+class ObjCSubclass:
+
     """Use this to create a subclass of an existing Objective-C class.
     It consists primarily of function decorators which you use to add methods
     to the subclass."""
 
     def __init__(self, superclass, name, register=True):
-        self._imp_table = {}
+        self._imp_table = dict()
         self.name = name
         self.objc_cls = create_subclass(superclass, name)
         self._as_parameter_ = self.objc_cls
@@ -1100,12 +1157,13 @@ class ObjCSubclass(object):
         typecodes = parse_type_encoding(encoding)
         typecodes.insert(1, b'@:')
         encoding = b''.join(typecodes)
+
         def decorator(f):
             name = f.__name__.replace('_', ':')
             self.add_method(f, name, encoding)
             return f
         return decorator
-     
+
     def method(self, encoding):
         """Function decorator for instance methods."""
         # Add encodings for hidden self and cmd arguments.
@@ -1113,6 +1171,7 @@ class ObjCSubclass(object):
         typecodes = parse_type_encoding(encoding)
         typecodes.insert(1, b'@:')
         encoding = b''.join(typecodes)
+
         def decorator(f):
             def objc_method(objc_self, objc_cmd, *args):
                 py_self = ObjCInstance(objc_self)
@@ -1128,7 +1187,7 @@ class ObjCSubclass(object):
             self.add_method(objc_method, name, encoding)
             return objc_method
         return decorator
-                  
+
     def classmethod(self, encoding):
         """Function decorator for class methods."""
         # Add encodings for hidden self and cmd arguments.
@@ -1136,6 +1195,7 @@ class ObjCSubclass(object):
         typecodes = parse_type_encoding(encoding)
         typecodes.insert(1, b'@:')
         encoding = b''.join(typecodes)
+
         def decorator(f):
             def objc_class_method(objc_cls, objc_cmd, *args):
                 py_cls = ObjCClass(objc_cls)
@@ -1154,20 +1214,23 @@ class ObjCSubclass(object):
 
 ######################################################################
 
-# Instances of DeallocationObserver are associated with every 
+# Instances of DeallocationObserver are associated with every
 # Objective-C object that gets wrapped inside an ObjCInstance.
 # Their sole purpose is to watch for when the Objective-C object
 # is deallocated, and then remove the object from the dictionary
 # of cached ObjCInstance objects kept by the ObjCInstance class.
 #
-# The methods of the class defined below are decorated with 
+# The methods of the class defined below are decorated with
 # rawmethod() instead of method() because DeallocationObservers
 # are created inside of ObjCInstance's __new__ method and we have
 # to be careful to not create another ObjCInstance here (which
 # happens when the usual method decorator turns the self argument
 # into an ObjCInstance), or else get trapped in an infinite recursion.
-class DeallocationObserver_Implementation(object):
-    DeallocationObserver = ObjCSubclass('NSObject', 'DeallocationObserver', register=False)
+
+
+class DeallocationObserver_Implementation:
+    DeallocationObserver = ObjCSubclass(
+        'NSObject', 'DeallocationObserver', register=False)
     DeallocationObserver.add_ivar('observed_object', c_void_p)
     DeallocationObserver.register()
 
@@ -1177,18 +1240,18 @@ class DeallocationObserver_Implementation(object):
         self = self.value
         set_instance_variable(self, 'observed_object', anObject, c_void_p)
         return self
-    
+
     @DeallocationObserver.rawmethod('v')
     def dealloc(self, cmd):
         anObject = get_instance_variable(self, 'observed_object', c_void_p)
         ObjCInstance._cached_objects.pop(anObject, None)
         send_super(self, 'dealloc')
 
-    @DeallocationObserver.rawmethod('v')    
+    @DeallocationObserver.rawmethod('v')
     def finalize(self, cmd):
-        # Called instead of dealloc if using garbage collection.  
-        # (which would have to be explicitly started with 
-        # objc_startCollectorThread(), so probably not too much reason 
+        # Called instead of dealloc if using garbage collection.
+        # (which would have to be explicitly started with
+        # objc_startCollectorThread(), so probably not too much reason
         # to have this here, but I guess it can't hurt.)
         anObject = get_instance_variable(self, 'observed_object', c_void_p)
         ObjCInstance._cached_objects.pop(anObject, None)

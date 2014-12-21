@@ -1,0 +1,17 @@
+"""Test RGB save using PIL.  You should see rgb.png reference image
+on the left, and saved (and reloaded) image on the right.  The saved image
+may have larger dimensions due to texture size restrictions.
+"""
+
+__docformat__ = 'restructuredtext'
+__version__ = '$Id: $'
+
+import unittest
+from . import base_save
+
+from pyglet.image.codecs.pil import PILImageEncoder
+
+
+class TEST_PNG_RGB_SAVE(base_save.TestSave):
+    texture_file = 'rgb.png'
+    encoder = PILImageEncoder()

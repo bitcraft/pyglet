@@ -2,14 +2,14 @@
 # pyglet
 # Copyright (c) 2006-2008 Alex Holkner
 # All rights reserved.
-# 
+#
 # Redistribution and use in source and binary forms, with or without
-# modification, are permitted provided that the following conditions 
+# modification, are permitted provided that the following conditions
 # are met:
 #
 #  * Redistributions of source code must retain the above copyright
 #    notice, this list of conditions and the following disclaimer.
-#  * Redistributions in binary form must reproduce the above copyright 
+#  * Redistributions in binary form must reproduce the above copyright
 #    notice, this list of conditions and the following disclaimer in
 #    the documentation and/or other materials provided with the
 #    distribution.
@@ -32,13 +32,13 @@
 # POSSIBILITY OF SUCH DAMAGE.
 # ----------------------------------------------------------------------------
 
-'''Decode HTML into attributed text.
+"""Decode HTML into attributed text.
 
 A subset of HTML 4.01 Transitional is implemented.  The following elements are
 supported fully::
 
     B BLOCKQUOTE BR CENTER CODE DD DIR DL EM FONT H1 H2 H3 H4 H5 H6 I IMG KBD
-    LI MENU OL P PRE Q SAMP STRONG SUB SUP TT U UL VAR 
+    LI MENU OL P PRE Q SAMP STRONG SUB SUP TT U UL VAR
 
 The mark (bullet or number) of a list item is separated from the body of the
 list item with a tab, as the pyglet document model does not allow
@@ -46,17 +46,18 @@ out-of-stream text.  This means lists display as expected, but behave a little
 oddly if edited.
 
 No CSS styling is supported.
-'''
+"""
 
 __docformat__ = 'restructuredtext'
 __version__ = '$Id: $'
 
-import HTMLParser
-import htmlentitydefs
+import html.parser
+import html.entities
 import re
 
 import pyglet
 from pyglet.text.formats import structured
+
 
 def _hex_color(val):
     return [(val >> 16) & 0xff, (val >> 8) & 0xff, val & 0xff, 255]
@@ -80,6 +81,7 @@ _color_names = {
     'aqua':     _hex_color(0x00ffff),
 }
 
+
 def _parse_color(value):
     if value.startswith('#'):
         return _hex_color(int(value[1:], 16))
@@ -89,20 +91,20 @@ def _parse_color(value):
         except KeyError:
             raise ValueError()
 
-_whitespace_re = re.compile(u'[\u0020\u0009\u000c\u200b\r\n]+', re.DOTALL)
+_whitespace_re = re.compile('[\u0020\u0009\u000c\u200b\r\n]+', re.DOTALL)
 
 _metadata_elements = ['head', 'title']
 
-_block_elements = ['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 
-                   'ul', 'ol', 'dir', 'menu', 
-                   'pre', 'dl', 'div', 'center', 
+_block_elements = ['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
+                   'ul', 'ol', 'dir', 'menu',
+                   'pre', 'dl', 'div', 'center',
                    'noscript', 'noframes', 'blockquote', 'form',
                    'isindex', 'hr', 'table', 'fieldset', 'address',
-                    # Incorrect, but we treat list items as blocks:
+                   # Incorrect, but we treat list items as blocks:
                    'li', 'dd', 'dt', ]
-                  
 
-_block_containers = ['_top_block', 
+
+_block_containers = ['_top_block',
                      'body', 'div', 'center', 'object', 'applet',
                      'blockquote', 'ins', 'del', 'dd', 'li', 'form',
                      'fieldset', 'button', 'th', 'td', 'iframe', 'noscript',
@@ -111,9 +113,10 @@ _block_containers = ['_top_block',
                      'ul', 'ol', 'dir', 'menu', 'dl']
 
 
-class HTMLDecoder(HTMLParser.HTMLParser, structured.StructuredTextDecoder):
-    '''Decoder for HTML documents.
-    '''
+class HTMLDecoder(html.parser.HTMLParser, structured.StructuredTextDecoder):
+
+    """Decoder for HTML documents.
+    """
     #: Default style attributes for unstyled text in the HTML document.
     #:
     #: :type: dict
@@ -124,7 +127,7 @@ class HTMLDecoder(HTMLParser.HTMLParser, structured.StructuredTextDecoder):
     }
 
     #: Map HTML font sizes to actual font sizes, in points.
-    #: 
+    #:
     #: :type: dict
     font_sizes = {
         1: 8,
@@ -139,7 +142,7 @@ class HTMLDecoder(HTMLParser.HTMLParser, structured.StructuredTextDecoder):
     def decode_structured(self, text, location):
         self.location = location
         self._font_size_stack = [3]
-        self.list_stack.append(structured.UnorderedListBuilder({}))
+        self.list_stack.append(structured.UnorderedListBuilder(dict()))
         self.strip_leading_space = True
         self.block_begin = True
         self.need_block_begin = False
@@ -182,7 +185,7 @@ class HTMLDecoder(HTMLParser.HTMLParser, structured.StructuredTextDecoder):
             return
 
         element = tag.lower()
-        attrs = {}
+        attrs = dict()
         for key, value in case_attrs:
             attrs[key.lower()] = value
 
@@ -198,7 +201,7 @@ class HTMLDecoder(HTMLParser.HTMLParser, structured.StructuredTextDecoder):
                 self.need_block_begin = False
         self.element_stack.append(element)
 
-        style = {}
+        style = dict()
         if element in ('b', 'strong'):
             style['bold'] = True
         elif element in ('i', 'em', 'var'):
@@ -207,7 +210,7 @@ class HTMLDecoder(HTMLParser.HTMLParser, structured.StructuredTextDecoder):
             style['font_name'] = 'Courier New'
         elif element == 'u':
             color = self.current_style.get('color')
-            if color is None: 
+            if color is None:
                 color = [0, 0, 0, 255]
             style['underline'] = color
         elif element == 'font':
@@ -262,7 +265,7 @@ class HTMLDecoder(HTMLParser.HTMLParser, structured.StructuredTextDecoder):
             style['font_size'] = 12
             style['italic'] = True
         elif element == 'br':
-            self.add_text(u'\u2028')
+            self.add_text('\u2028')
             self.strip_leading_space = True
         elif element == 'p':
             if attrs.get('align') in ('left', 'center', 'right'):
@@ -279,7 +282,7 @@ class HTMLDecoder(HTMLParser.HTMLParser, structured.StructuredTextDecoder):
             style['margin_left'] = left_margin + 60
             style['margin_right'] = right_margin + 60
         elif element == 'q':
-            self.handle_data(u'\u201c')
+            self.handle_data('\u201c')
         elif element == 'ol':
             try:
                 start = int(attrs.get('start', 1))
@@ -292,11 +295,11 @@ class HTMLDecoder(HTMLParser.HTMLParser, structured.StructuredTextDecoder):
         elif element in ('ul', 'dir', 'menu'):
             type = attrs.get('type', 'disc').lower()
             if type == 'circle':
-                mark = u'\u25cb'
+                mark = '\u25cb'
             elif type == 'square':
-                mark = u'\u25a1'
+                mark = '\u25a1'
             else:
-                mark = u'\u25cf'
+                mark = '\u25cf'
             builder = structured.UnorderedListBuilder(mark)
             builder.begin(self, style)
             self.list_stack.append(builder)
@@ -343,21 +346,21 @@ class HTMLDecoder(HTMLParser.HTMLParser, structured.StructuredTextDecoder):
         elif element == 'pre':
             self.in_pre = False
         elif element == 'q':
-            self.handle_data(u'\u201d')
+            self.handle_data('\u201d')
         elif element in ('ul', 'ol'):
             if len(self.list_stack) > 1:
                 self.list_stack.pop()
 
     def handle_entityref(self, name):
-        if name in htmlentitydefs.name2codepoint:
-            self.handle_data(unichr(htmlentitydefs.name2codepoint[name]))
-    
+        if name in html.entities.name2codepoint:
+            self.handle_data(chr(html.entities.name2codepoint[name]))
+
     def handle_charref(self, name):
         name = name.lower()
         try:
             if name.startswith('x'):
-                self.handle_data(unichr(int(name[1:], 16)))
+                self.handle_data(chr(int(name[1:], 16)))
             else:
-                self.handle_data(unichr(int(name)))
+                self.handle_data(chr(int(name)))
         except ValueError:
             pass

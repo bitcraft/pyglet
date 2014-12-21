@@ -32,18 +32,16 @@
 # POSSIBILITY OF SUCH DAMAGE.
 # ----------------------------------------------------------------------------
 
-'''pyglet is a cross-platform games and multimedia package.
+"""pyglet is a cross-platform games and multimedia package.
 
 Detailed documentation is available at http://www.pyglet.org
-'''
+"""
 
 __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
 
 import os
 import sys
-
-_is_epydoc = hasattr(sys, 'is_epydoc') and sys.is_epydoc
 
 #: The release version of this pyglet installation.
 #:
@@ -63,6 +61,7 @@ version = '1.2alpha1'
 compat_platform = sys.platform
 if "bsd" in compat_platform:
     compat_platform = "linux-compat"
+
 
 def _require_ctypes_version(version):
     # Check ctypes version
@@ -138,13 +137,6 @@ if getattr(sys, 'frozen', None):
 #:     that implements the _NET_WM_SYNC_REQUEST protocol.
 #:
 #:     **Since:** pyglet 1.1
-#: darwin_cocoa
-#:     If True, the Cocoa-based pyglet implementation is used as opposed to
-#:     the 32-bit Carbon implementation.  When python is running in 64-bit mode
-#:     on Mac OS X 10.6 or later, this option is set to True by default.
-#:     Otherwise the Carbon implementation is preferred.
-#:
-#:     **Since:** pyglet 1.2
 #:
 #: search_local_libs
 #:     If False, pyglet won't try to search for libraries in the script
@@ -156,7 +148,7 @@ if getattr(sys, 'frozen', None):
 #:
 options = {
     'audio': ('directsound', 'pulse', 'openal', 'silent'),
-    'font': ('gdiplus', 'win32'), # ignored outside win32; win32 is deprecated
+    'font': ('gdiplus', 'win32'),  # ignored outside win32; win32 is deprecated
     'debug_font': False,
     'debug_gl': not _enable_optimisations,
     'debug_gl_trace': False,
@@ -205,24 +197,31 @@ _option_types = {
     'darwin_cocoa': bool,
 }
 
+
 def _choose_darwin_platform():
     """Choose between Darwin's Carbon and Cocoa implementations."""
     if compat_platform != 'darwin':
         return
     import struct
-    numbits = 8*struct.calcsize("P")
+    numbits = 8 * struct.calcsize("P")
     if numbits == 64:
         import platform
-        osx_version = platform.mac_ver()[0].split(".")
-        if int(osx_version[0]) == 10 and int(osx_version[1]) < 6:
-            raise Exception('pyglet is not compatible with 64-bit Python for versions of Mac OS X prior to 10.6.')
-        options['darwin_cocoa'] = True
+        osx_version = [int(i) for i in platform.mac_ver()[0].split(".")]
+        if osx_version[0] == 10 and osx_version[1] < 6:
+            raise Exception(
+                'pyglet is not compatible with 64-bit Python for versions of Mac OS X prior to 10.6.')
+    elif numbits == 32:
+        raise Exception(
+            'pyglet is not compatible with 32-bit Python of Mac OS X')
     else:
-        options['darwin_cocoa'] = False
+        raise Exception(
+            'pyglet is not compatible with this version of Python')
+
 _choose_darwin_platform()  # can be overridden by an environment variable below
 
+
 def _read_environment():
-    '''Read defaults for options from environment'''
+    """Read defaults for options from environment"""
     for key in options:
         env = 'PYGLET_%s' % key.upper()
         try:
@@ -250,17 +249,19 @@ if compat_platform == 'cygwin':
 # Call tracing
 # ------------
 
-_trace_filename_abbreviations = {}
+_trace_filename_abbreviations = dict()
+
 
 def _trace_repr(value, size=40):
     value = repr(value)
     if len(value) > size:
-        value = value[:size//2-2] + '...' + value[-size//2-1:]
+        value = value[:size // 2 - 2] + '...' + value[-size // 2 - 1:]
     return value
+
 
 def _trace_frame(thread, frame, indent):
     from pyglet import lib
-    if frame.f_code is lib._TraceFunction.__call__.func_code:
+    if frame.f_code is lib._TraceFunction.__call__.__code__:
         is_ctypes = True
         func = frame.f_locals['self']._func
         name = func.__name__
@@ -292,22 +293,23 @@ def _trace_frame(thread, frame, indent):
 
     if indent:
         name = 'Called from %s' % name
-    print '[%d] %s%s %s' % (thread, indent, name, location)
+    print('[%d] %s%s %s' % (thread, indent, name, location))
 
     if _trace_args:
         if is_ctypes:
             args = [_trace_repr(arg) for arg in frame.f_locals['args']]
-            print '  %sargs=(%s)' % (indent, ', '.join(args))
+            print('  %sargs=(%s)' % (indent, ', '.join(args)))
         else:
             for argname in code.co_varnames[:code.co_argcount]:
                 try:
                     argvalue = _trace_repr(frame.f_locals[argname])
-                    print '  %s%s=%s' % (indent, argname, argvalue)
+                    print('  %s%s=%s' % (indent, argname, argvalue))
                 except:
                     pass
 
     if _trace_flush:
         sys.stdout.flush()
+
 
 def _thread_trace_func(thread):
     def _trace_func(frame, event, arg):
@@ -322,8 +324,9 @@ def _thread_trace_func(thread):
 
         elif event == 'exception':
             (exception, value, traceback) = arg
-            print 'First chance exception raised:', repr(exception)
+            print('First chance exception raised:', repr(exception))
     return _trace_func
+
 
 def _install_trace():
     global _trace_thread_count
@@ -340,7 +343,8 @@ if options['debug_trace']:
 # Lazy loading
 # ------------
 
-class _ModuleProxy(object):
+
+class _ModuleProxy:
     _module = None
 
     def __init__(self, name):
@@ -395,23 +399,23 @@ if True:
 # Fool py2exe, py2app into including all top-level modules (doesn't understand
 # lazy loading)
 if False:
-    import app
-    import canvas
-    import clock
-    import com
-    import event
-    import font
-    import gl
-    import graphics
-    import input
-    import image
-    import lib
-    import media
-    import resource
-    import sprite
-    import text
-    import window
+    from . import app
+    from . import canvas
+    from . import clock
+    from . import com
+    from . import event
+    from . import font
+    from . import gl
+    from . import graphics
+    from . import input
+    from . import image
+    from . import lib
+    from . import media
+    from . import resource
+    from . import sprite
+    from . import text
+    from . import window
 
 # Hack around some epydoc bug that causes it to think pyglet.window is None.
 if False:
-    import window
+    from . import window
