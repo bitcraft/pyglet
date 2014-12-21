@@ -272,8 +272,6 @@ class AudioFormat:
         self.channels = channels
         self.sample_size = sample_size
         self.sample_rate = sample_rate
-
-        # Convenience
         self.bytes_per_sample = (sample_size >> 3) * channels
         self.bytes_per_second = self.bytes_per_sample * sample_rate
 
@@ -489,7 +487,7 @@ class Source:
     def play(self):
         """Play the source.
 
-        This is a convenience method which creates a ManagedSoundPlayer for
+        This is a convenience method which creates a SoundPlayer for
         this source and plays it immediately.
 
         :rtype: `ManagedSoundPlayer`
@@ -556,13 +554,11 @@ class Source:
         """
         pass
 
-    # Internal methods that SourceGroup calls on the source:
-
     def seek(self, timestamp):
         """Seek to given timestamp."""
         raise CannotSeekException()
 
-    def _get_queue_source(self):
+    def get_queue_source(self):
         """Return the `Source` to be used as the queue source for a player.
 
         Default implementation returns self."""
@@ -599,7 +595,7 @@ class StreamingSource(Source):
         """
         return self._is_queued
 
-    def _get_queue_source(self):
+    def get_queue_source(self):
         """Return the `Source` to be used as the queue source for a player.
 
         Default implementation returns self."""
@@ -623,7 +619,7 @@ class StaticSource(Source):
                 The source to read and decode audio and video data from.
 
         """
-        source = source._get_queue_source()
+        source = source.get_queue_source()
         if source.video_format:
             raise NotImplementedError(
                 'Static sources not supported for video yet.')
@@ -648,7 +644,7 @@ class StaticSource(Source):
         self._duration = len(self._data) / \
             float(self.audio_format.bytes_per_second)
 
-    def _get_queue_source(self):
+    def get_queue_source(self):
         return StaticMemorySource(self._data, self.audio_format)
 
     def get_audio_data(self, bytes):
@@ -726,7 +722,7 @@ class SourceGroup:
             self._sources[0].seek(time)
 
     def queue(self, source):
-        source = source._get_queue_source()
+        source = source.get_queue_source()
         assert(source.audio_format == self.audio_format)
         self._sources.append(source)
         self.duration += source.duration
@@ -980,8 +976,7 @@ class Player(pyglet.event.EventDispatcher):
     _cone_outer_gain = 1.
 
     def __init__(self):
-        # List of queued source groups
-        self._groups = list()
+        self._group_queue = list()
         self._audio_player = None
         self._paused_time = 0.0
         # Desired play state (not an indication of actual state).
@@ -989,17 +984,17 @@ class Player(pyglet.event.EventDispatcher):
 
     def queue(self, source):
         if isinstance(source, SourceGroup):
-            self._groups.append(source)
+            self._group_queue.append(source)
         else:
-            if (self._groups and
-                    source.audio_format == self._groups[-1].audio_format and
-                    source.video_format == self._groups[-1].video_format):
-                self._groups[-1].queue(source)
+            if (self._group_queue and
+                    source.audio_format == self._group_queue[-1].audio_format and
+                    source.video_format == self._group_queue[-1].video_format):
+                self._group_queue[-1].queue(source)
             else:
                 group = SourceGroup(source.audio_format, source.video_format)
                 group.advance_after_eos = True
                 group.queue(source)
-                self._groups.append(group)
+                self._group_queue.append(group)
 
         self._set_playing(self._playing)
 
@@ -1039,7 +1034,7 @@ class Player(pyglet.event.EventDispatcher):
 
         if self._audio_player:
             time = self._audio_player.get_time()
-            time = self._groups[0].translate_timestamp(time)
+            time = self._group_queue[0].translate_timestamp(time)
             if time is not None:
                 self._paused_time = time
             self._audio_player.stop()
@@ -1051,14 +1046,14 @@ class Player(pyglet.event.EventDispatcher):
             self._audio_player.delete()
             self._audio_player = None
 
-        while self._groups:
-            del self._groups[0]
+        while self._group_queue:
+            del self._group_queue[0]
 
     def next_source(self):
-        if not self._groups:
+        if not self._group_queue:
             return
 
-        group = self._groups[0]
+        group = self._group_queue[0]
         if group.has_next():
             group.next_source()
             return
@@ -1072,8 +1067,8 @@ class Player(pyglet.event.EventDispatcher):
             self._audio_player.delete()
             self._audio_player = None
 
-        del self._groups[0]
-        if self._groups:
+        del self._group_queue[0]
+        if self._group_queue:
             self._set_playing(self._playing)
             return
 
@@ -1094,9 +1089,9 @@ class Player(pyglet.event.EventDispatcher):
 
     def _create_audio_player(self):
         assert not self._audio_player
-        assert self._groups
+        assert self._group_queue
 
-        group = self._groups[0]
+        group = self._group_queue[0]
         audio_format = group.audio_format
         if audio_format:
             audio_driver = get_audio_driver()
@@ -1104,28 +1099,28 @@ class Player(pyglet.event.EventDispatcher):
             audio_driver = get_silent_audio_driver()
         self._audio_player = audio_driver.create_audio_player(group, self)
 
-        _class = self.__class__
+        class_ = self.__class__
 
-        def _set(name):
+        def set_(name):
             private_name = '_' + name
             value = getattr(self, private_name)
-            if value != getattr(_class, private_name):
+            if value != getattr(class_, private_name):
                 getattr(self._audio_player, 'set_' + name)(value)
-        _set('volume')
-        _set('min_distance')
-        _set('max_distance')
-        _set('position')
-        _set('pitch')
-        _set('cone_orientation')
-        _set('cone_inner_angle')
-        _set('cone_outer_angle')
-        _set('cone_outer_gain')
+        set_('volume')
+        set_('min_distance')
+        set_('max_distance')
+        set_('position')
+        set_('pitch')
+        set_('cone_orientation')
+        set_('cone_inner_angle')
+        set_('cone_outer_angle')
+        set_('cone_outer_gain')
 
     @property
     def source(self):
-        if not self._groups:
+        if not self._group_queue:
             return None
-        return self._groups[0].get_current_source()
+        return self._group_queue[0].get_current_source()
 
     @property
     def playing(self):
@@ -1136,7 +1131,7 @@ class Player(pyglet.event.EventDispatcher):
         time = None
         if self._playing and self._audio_player:
             time = self._audio_player.get_time()
-            time = self._groups[0].translate_timestamp(time)
+            time = self._group_queue[0].translate_timestamp(time)
 
         if time is None:
             return self._paused_time
@@ -1156,7 +1151,7 @@ class Player(pyglet.event.EventDispatcher):
     def seek_next_frame(self):
         """Step forwards one video frame in the current Source.
         """
-        time = self._groups[0].get_next_video_timestamp()
+        time = self._group_queue[0].get_next_video_timestamp()
         if time is None:
             return
         self.seek(time)
@@ -1171,16 +1166,16 @@ class Player(pyglet.event.EventDispatcher):
                 time <= self._last_video_timestamp):
             return
 
-        ts = self._groups[0].get_next_video_timestamp()
+        ts = self._group_queue[0].get_next_video_timestamp()
         while ts is not None and ts < time:
-            self._groups[0].get_next_video_frame()  # Discard frame
-            ts = self._groups[0].get_next_video_timestamp()
+            self._group_queue[0].get_next_video_frame()  # Discard frame
+            ts = self._group_queue[0].get_next_video_timestamp()
 
         if ts is None:
             self._last_video_timestamp = None
             return
 
-        image = self._groups[0].get_next_video_frame()
+        image = self._group_queue[0].get_next_video_frame()
         if image is not None:
             if self._texture is None:
                 self._create_texture()
@@ -1273,8 +1268,8 @@ class PlayerGroup:
     def play(self):
         """Begin playing all players in the group simultaneously.
         """
-        audio_players = [p._audio_player
-                         for p in self.players if p._audio_player]
+        audio_players = [p._audio_player for p in self.players
+                         if p._audio_player]
         if audio_players:
             audio_players[0]._play_group(audio_players)
         for player in self.players:

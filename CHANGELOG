@@ -10,6 +10,7 @@
       change assertTrue(z==y) to assertEquals(z, y)
     * converted many getter/setters to decorated methods
     * sprites x/y axis can be scaled (issue #481)
+    * merge patch #751: Minor event loop optimization
     * merge patch #454: Utilize ARB_texture_non_power_of_two when present
     * merge patch #620: drag and drop on windows
     * fix #668: merge upstream pypng (https://github.com/drj11/pypng)

@@ -4,7 +4,7 @@ import importlib
 import pyglet
 
 
-class OSXTests(unittest.TestCase):
+class OSXImportTestCase(unittest.TestCase):
 
     @mock.patch("sys.platform", "darwin")
     @mock.patch("platform.mac_ver", lambda: ['10.5.0'])

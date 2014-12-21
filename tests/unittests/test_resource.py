@@ -5,7 +5,7 @@ import pyglet
 
 
 # TODO: Fill in some meaningful tests for this test case
-class TestResource(unittest.TestCase):
+class SettingsPathTestCase(unittest.TestCase):
     name = 'pyglet'
 
     @mock.patch("sys.platform", "linux")
@@ -46,3 +46,5 @@ class TestResource(unittest.TestCase):
         with mock.patch("os.environ", dict()) as p:
             path = pyglet.resource.get_settings_path(self.name)
             self.assertFalse(path.startswith(bogus_path))
+
+

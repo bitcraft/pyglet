@@ -148,9 +148,10 @@ class EventLoop(event.EventDispatcher):
         for well-behaving platforms (Mac, Linux and some Windows).
         """
         platform_event_loop = app.platform_event_loop
+        idle = self.idle
+        step = platform_event_loop.step
         while not self.has_exit:
-            timeout = self.idle()
-            platform_event_loop.step(timeout)
+            step(idle())
 
     def _run_estimated(self):
         """Run-loop that continually estimates function mapping requested
@@ -163,8 +164,12 @@ class EventLoop(event.EventDispatcher):
         gradient, offset = next(predictor)
 
         time = self.clock.time
+        idle = self.idle
+        step = platform_event_loop.step
+        send = predictor.send
+
         while not self.has_exit:
-            timeout = self.idle()
+            timeout = idle()
             if timeout is None:
                 estimate = None
             else:
@@ -174,10 +179,10 @@ class EventLoop(event.EventDispatcher):
                 print('Timeout = %f, Estimate = %f' % (timeout, estimate))
 
             t = time()
-            if not platform_event_loop.step(estimate) and estimate != 0.0 and \
+            if not step(estimate) and estimate != 0.0 and \
                     estimate is not None:
                 dt = time() - t
-                gradient, offset = predictor.send((dt, estimate))
+                gradient, offset = send((dt, estimate))
 
     @staticmethod
     def _least_squares(gradient=1, offset=0):

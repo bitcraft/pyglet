@@ -17,7 +17,7 @@ import pyglet
 from pyglet.gl import *
 
 
-class TEST_CASE(unittest.TestCase):
+class MultitextureTests(unittest.TestCase):
 
     def test_multitexture(self):
         window = pyglet.window.Window(width=64, height=64)

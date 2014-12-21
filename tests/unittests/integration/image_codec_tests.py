@@ -34,7 +34,7 @@ class TestImageCodecs(unittest.TestCase):
     def _test_load(self, filenames, decoder, convert=False):
         for filename in filenames:
             filename = abspath(join(dirname(__file__),
-                                    '../../../data/images', filename))
+                                    '../../data/images', filename))
             try:
                 data = image.load(filename, decoder=decoder)
                 if convert:

@@ -1,5 +1,6 @@
 from abc import abstractmethod
 import random
+import unittest
 from collections import deque
 
 from pyglet.gl import *
@@ -232,3 +233,26 @@ class GraphicsIndexedGenericTestCase(GraphicsGenericTestCase):
         for i in self.index_data:
             ordered.extend(data[i * dimensions:(i + 1) * dimensions])
         return ordered
+
+
+class GraphicsImmediateTestCase(GraphicsGenericTestCase, unittest.TestCase):
+    def get_feedback(self, data):
+        return get_feedback(
+            lambda: pyglet.graphics.draw(self.n_vertices, GL_TRIANGLES, *data))
+
+
+class GraphicsVertexListTestCase(GraphicsGenericTestCase, unittest.TestCase):
+
+    def get_feedback(self, data):
+        vertex_list = pyglet.graphics.vertex_list(self.n_vertices, *data)
+        return get_feedback(lambda: vertex_list.draw(GL_TRIANGLES))
+
+
+class GraphicsIndexedVertexListTestCase(GraphicsIndexedGenericTestCase,
+                                        unittest.TestCase):
+
+    def get_feedback(self, data):
+        vertex_list = pyglet.graphics.vertex_list_indexed(self.n_vertices,
+                                                          self.index_data,
+                                                          *data)
+        return get_feedback(lambda: vertex_list.draw(GL_TRIANGLES))
