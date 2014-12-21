@@ -10,7 +10,7 @@ import time
 from . import lib_dsound as lib
 from pyglet.media import MediaException, MediaThread, AbstractAudioDriver, \
     AbstractAudioPlayer, MediaEvent
-from pyglet.window.win32 import _user32, _kernel32
+from pyglet.window.win32 import user32, kernel32
 
 import pyglet
 _debug = pyglet.options['debug_media']
@@ -472,7 +472,7 @@ class DirectSoundDriver(AbstractAudioDriver):
         # A trick used by mplayer.. use desktop as window handle since it
         # would be complex to use pyglet window handles (and what to do when
         # application is audio only?).
-        hwnd = _user32.GetDesktopWindow()
+        hwnd = user32.GetDesktopWindow()
         self._dsound.SetCooperativeLevel(hwnd, lib.DSSCL_NORMAL)
 
         # Create primary buffer with 3D and volume capabilities

@@ -41,7 +41,7 @@ import ctypes
 from pyglet import app
 from .base import PlatformEventLoop
 
-from pyglet.libs.win32 import _kernel32, _user32, types, constants
+from pyglet.libs.win32 import kernel32, user32, types, constants
 from pyglet.libs.win32.constants import *
 from pyglet.libs.win32.types import *
 
@@ -57,17 +57,17 @@ class Win32EventLoop(PlatformEventLoop):
         # that since event loop is created on pyglet.app import, whatever
         # imports pyglet.app _must_ own the main run loop.
         msg = types.MSG()
-        _user32.PeekMessageW(ctypes.byref(msg), 0,
+        user32.PeekMessageW(ctypes.byref(msg), 0,
                              constants.WM_USER, constants.WM_USER,
                              constants.PM_NOREMOVE)
 
-        self._event_thread = _kernel32.GetCurrentThreadId()
+        self._event_thread = kernel32.GetCurrentThreadId()
 
         self._wait_objects = list()
         self._recreate_wait_objects_array()
 
         self._timer_proc = types.TIMERPROC(self._timer_proc_func)
-        self._timer = _user32.SetTimer(
+        self._timer = user32.SetTimer(
             0, 0, constants.USER_TIMER_MAXIMUM, self._timer_proc)
 
     def add_wait_object(self, object, func):
@@ -93,7 +93,7 @@ class Win32EventLoop(PlatformEventLoop):
                                             [o for o, f in self._wait_objects])
 
     def start(self):
-        if _kernel32.GetCurrentThreadId() != self._event_thread:
+        if kernel32.GetCurrentThreadId() != self._event_thread:
             raise RuntimeError('EventLoop.run() must be called from the same ' +
                                'thread that imports pyglet.app')
 
@@ -110,7 +110,7 @@ class Win32EventLoop(PlatformEventLoop):
         else:
             timeout = int(timeout * 1000)  # milliseconds
 
-        result = _user32.MsgWaitForMultipleObjects(
+        result = user32.MsgWaitForMultipleObjects(
             self._wait_objects_n,
             self._wait_objects_array,
             False,
@@ -119,10 +119,10 @@ class Win32EventLoop(PlatformEventLoop):
         result -= constants.WAIT_OBJECT_0
 
         if result == self._wait_objects_n:
-            while _user32.PeekMessageW(ctypes.byref(msg),
+            while user32.PeekMessageW(ctypes.byref(msg),
                                        0, 0, 0, constants.PM_REMOVE):
-                _user32.TranslateMessage(ctypes.byref(msg))
-                _user32.DispatchMessageW(ctypes.byref(msg))
+                user32.TranslateMessage(ctypes.byref(msg))
+                user32.DispatchMessageW(ctypes.byref(msg))
         elif 0 <= result < self._wait_objects_n:
             object, func = self._wait_objects[result]
             func()
@@ -135,7 +135,7 @@ class Win32EventLoop(PlatformEventLoop):
         # user events are actually posted.  The posted event will not
         # interrupt the window move/size drag loop -- it seems there's no way
         # to do this.
-        _user32.PostThreadMessageW(self._event_thread, constants.WM_USER, 0, 0)
+        user32.PostThreadMessageW(self._event_thread, constants.WM_USER, 0, 0)
 
     def set_timer(self, func, interval):
         if func is None or interval is None:
@@ -144,7 +144,7 @@ class Win32EventLoop(PlatformEventLoop):
             interval = int(interval * 1000)  # milliseconds
 
         self._timer_func = func
-        _user32.SetTimer(0, self._timer, interval, self._timer_proc)
+        user32.SetTimer(0, self._timer, interval, self._timer_proc)
 
     def _timer_proc_func(self, hwnd, msg, timer, t):
         if self._timer_func:

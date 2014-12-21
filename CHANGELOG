@@ -10,13 +10,27 @@
       change assertTrue(z==y) to assertEquals(z, y)
     * converted many getter/setters to decorated methods
     * sprites x/y axis can be scaled (issue #481)
-    * merge patch #454 (Utilize ARB_texture_non_power_of_two when present)
-    * merge patch #620 (drag and drop on windows)
+    * merge patch #454: Utilize ARB_texture_non_power_of_two when present
+    * merge patch #620: drag and drop on windows
+    * fix #668: merge upstream pypng (https://github.com/drj11/pypng)
+      commit: 6a2e594e5aac701cd0d710047925aee087060606
     * moved TextureGroup to text, since it was only used there, and not meant to
       be used.  Docstrings said "don't use, just an example"
     * tests are now split between unit tests and integration tests;
       the benefit will be easier entry point into mocked tests and reduced
-      burden on the developer to rull the full interactive test suite
+      burden on the developer to run the full interactive test suite
+    * removed leading underscores in win32._kernel32, _gdi32, _user32, _shell32
+    * removed the global clock.  use pyglet.app.event_loop.clock instead
+    * removed custom sphinx parsing.  will use vanilla spinx for modern look
+    * updated many docstrings
+    * rename euclid to pyglet/math.py
+    * removed any classes/methods/functions with 'depreciated' in docstring
+      and provided a fix using new api in occasions where the pyglet lib was
+      internally still using depreciated api
+    * condensed many tests into one test file and removed the need for a window
+      to be opened in many cases
+    * updated astraea demo to modern pyglet
+    * removed _eos_XXX attributes and associated legacy functions from media
 
 1.2beta1
     + new API: font.have_font(name) return True if named font is installed

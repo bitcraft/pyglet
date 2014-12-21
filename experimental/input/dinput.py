@@ -5,7 +5,7 @@ import ctypes
 
 import pyglet
 from pyglet import com
-from pyglet.window.win32 import _kernel32
+from pyglet.window.win32 import kernel32
 
 lib = ctypes.oledll.dinput8
 
@@ -545,7 +545,7 @@ def get_devices():
 def _init_directinput():
     global dinput
     dinput = IDirectInput8()
-    module = _kernel32.GetModuleHandleW(None)
+    module = kernel32.GetModuleHandleW(None)
     DIRECTINPUT_VERSION = 0x0800
     lib.DirectInput8Create(module, DIRECTINPUT_VERSION,
                            IID_IDirectInput8W, ctypes.byref(dinput), None)

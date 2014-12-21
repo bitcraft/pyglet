@@ -119,9 +119,9 @@ class ContextException(Exception):
 class ConfigException(Exception):
     pass
 
-import pyglet as _pyglet
+import pyglet as pyglet_
 
-if _pyglet.options['debug_texture']:
+if pyglet_.options['debug_texture']:
     _debug_texture_total = 0
     _debug_texture_sizes = dict()
     _debug_texture = None
@@ -216,5 +216,5 @@ _shadow_window = None
 # the shadow window).
 # trickery is for circular import
 import sys
-_pyglet.gl = sys.modules[__name__]
+pyglet_.gl = sys.modules[__name__]
 import pyglet.window

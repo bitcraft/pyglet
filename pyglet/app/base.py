@@ -115,7 +115,7 @@ class EventLoop(event.EventDispatcher):
 
     def __init__(self):
         self._has_exit_condition = threading.Condition()
-        self.clock = clock.get_default()
+        self.clock = clock.Clock()
         self.is_running = False
 
     def run(self):

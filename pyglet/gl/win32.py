@@ -10,7 +10,7 @@ from pyglet.gl import wgl
 from pyglet.gl import wglext_arb
 from pyglet.gl import wgl_info
 
-from pyglet.libs.win32 import _gdi32
+from pyglet.libs.win32 import gdi32
 from pyglet.libs.win32.constants import *
 from pyglet.libs.win32.types import *
 
@@ -70,7 +70,7 @@ class Win32Config(Config):
         pfd.cStencilBits = self.stencil_size or 0
         pfd.cAuxBuffers = self.aux_buffers or 0
 
-        pf = _gdi32.ChoosePixelFormat(canvas.hdc, byref(pfd))
+        pf = gdi32.ChoosePixelFormat(canvas.hdc, byref(pfd))
         if pf:
             return [Win32CanvasConfig(canvas, pf, self)]
         else:
@@ -110,7 +110,7 @@ class Win32CanvasConfig(CanvasConfig):
         super().__init__(canvas, config)
         self._pf = pf
         self._pfd = PIXELFORMATDESCRIPTOR()
-        _gdi32.DescribePixelFormat(canvas.hdc,
+        gdi32.DescribePixelFormat(canvas.hdc,
                                    self._pf, sizeof(PIXELFORMATDESCRIPTOR), byref(self._pfd))
 
         self.double_buffer = bool(self._pfd.dwFlags & PFD_DOUBLEBUFFER)
@@ -138,7 +138,7 @@ class Win32CanvasConfig(CanvasConfig):
         return Win32Context(self, share)
 
     def _set_pixel_format(self, canvas):
-        _gdi32.SetPixelFormat(canvas.hdc, self._pf, byref(self._pfd))
+        gdi32.SetPixelFormat(canvas.hdc, self._pf, byref(self._pfd))
 
 
 class Win32CanvasConfigARB(CanvasConfig):
@@ -188,7 +188,7 @@ class Win32CanvasConfigARB(CanvasConfig):
             return Win32Context(self, share)
 
     def _set_pixel_format(self, canvas):
-        _gdi32.SetPixelFormat(canvas.hdc, self._pf, None)
+        gdi32.SetPixelFormat(canvas.hdc, self._pf, None)
 
 
 class Win32Context(Context):

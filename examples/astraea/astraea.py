@@ -333,7 +333,7 @@ class Banner(Overlay):
         self.dismiss_func = dismiss_func
         self.timeout = timeout
         if timeout and dismiss_func:
-            pyglet.clock.schedule_once(dismiss_func, timeout)
+            clock.schedule_once(dismiss_func, timeout)
 
     def draw(self):
         self.text.draw()
@@ -655,7 +655,7 @@ def begin_round(*args):
     animations = list()
     in_game = True
     set_overlay(None)
-    pyglet.clock.schedule_once(begin_play, BEGIN_PLAY_DELAY)
+    clock.schedule_once(begin_play, BEGIN_PLAY_DELAY)
 
 
 def begin_play(*args):
@@ -664,7 +664,7 @@ def begin_play(*args):
 
 def begin_life(*args):
     player.reset()
-    pyglet.clock.schedule_once(begin_play, BEGIN_PLAY_DELAY)
+    clock.schedule_once(begin_play, BEGIN_PLAY_DELAY)
 
 
 def life_lost(*args):
@@ -699,8 +699,8 @@ def end_game():
     paused = False
     in_game = False
     player.invincible = True
-    pyglet.clock.unschedule(life_lost)
-    pyglet.clock.unschedule(begin_play)
+    clock.unschedule(life_lost)
+    clock.unschedule(begin_play)
     begin_menu_background()
     set_overlay(MainMenu())
 
@@ -863,7 +863,7 @@ pointer_image_flip = resource.image('pointer.png', flip_x=True)
 explosion_sound = resource.media('explosion.wav', streaming=False)
 bullet_sound = resource.media('bullet.wav', streaming=False)
 
-starfield = Starfield(resource.image('starfield.jpg'))
+starfield = Starfield(resource.image('starfield.png'))
 player = Player(resource.image('ship.png'), wrapping_batch)
 win.push_handlers(player)
 
@@ -935,18 +935,18 @@ def update(dt):
                                            batch=batch))
             player.invincible = True
             player.visible = False
-            pyglet.clock.schedule_once(life_lost, LIFE_LOST_DELAY)
+            clock.schedule_once(life_lost, LIFE_LOST_DELAY)
 
         # Check if the area is clear
         if not asteroids:
             next_round()
 
 
-pyglet.clock.schedule_interval(update, 1 / 60.)
-
 # --------------------------------------------------------------------------
 # Start game
 # --------------------------------------------------------------------------
+clock = pyglet.app.event_loop.clock
+clock.schedule_interval(update, 1 / 60.)
 
 glEnable(GL_BLEND)
 glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)

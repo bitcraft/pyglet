@@ -188,47 +188,47 @@ def add_default_image_codecs():
     # preference.  This is called automatically by pyglet.image.
 
     # Compressed texture in DDS format
-    try:
-        from pyglet.image.codecs import dds
-        add_encoders(dds)
-        add_decoders(dds)
-    except ImportError:
-        pass
-
-    # Mac OS X only support quartz
-    if compat_platform == 'darwin':
-        try:
-            import pyglet.image.codecs.quartz
-            add_encoders(quartz)
-            add_decoders(quartz)
-        except ImportError:
-            pass
-
-    # Windows XP default: GDI+
-    if compat_platform in ('win32', 'cygwin'):
-        try:
-            import pyglet.image.codecs.gdiplus
-            add_encoders(gdiplus)
-            add_decoders(gdiplus)
-        except ImportError:
-            pass
-
-    # Linux default: GdkPixbuf 2.0
-    if compat_platform.startswith('linux'):
-        try:
-            import pyglet.image.codecs.gdkpixbuf2
-            add_encoders(gdkpixbuf2)
-            add_decoders(gdkpixbuf2)
-        except ImportError:
-            pass
-
-    # Fallback: PIL
-    try:
-        import pyglet.image.codecs.pil
-        add_encoders(pil)
-        add_decoders(pil)
-    except ImportError:
-        pass
+    # try:
+    #     from pyglet.image.codecs import dds
+    #     add_encoders(dds)
+    #     add_decoders(dds)
+    # except ImportError:
+    #     pass
+    #
+    # # Mac OS X only support quartz
+    # if compat_platform == 'darwin':
+    #     try:
+    #         import pyglet.image.codecs.quartz
+    #         add_encoders(quartz)
+    #         add_decoders(quartz)
+    #     except ImportError:
+    #         pass
+    #
+    # # Windows XP default: GDI+
+    # if compat_platform in ('win32', 'cygwin'):
+    #     try:
+    #         import pyglet.image.codecs.gdiplus
+    #         add_encoders(gdiplus)
+    #         add_decoders(gdiplus)
+    #     except ImportError:
+    #         pass
+    #
+    # # Linux default: GdkPixbuf 2.0
+    # if compat_platform.startswith('linux'):
+    #     try:
+    #         import pyglet.image.codecs.gdkpixbuf2
+    #         add_encoders(gdkpixbuf2)
+    #         add_decoders(gdkpixbuf2)
+    #     except ImportError:
+    #         pass
+    #
+    # # Fallback: PIL
+    # try:
+    #     import pyglet.image.codecs.pil
+    #     add_encoders(pil)
+    #     add_decoders(pil)
+    # except ImportError:
+    #     pass
 
     # Fallback: PNG loader (slow)
     try:

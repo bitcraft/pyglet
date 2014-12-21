@@ -116,19 +116,19 @@ if compat_platform in ('win32', 'cygwin'):
     # Win32 Sleep function is only 10-millisecond resolution, so instead
     # use a waitable timer object, which has up to 100-nanosecond resolution
     # (hardware and implementation dependent, of course).
-    _kernel32 = ctypes.windll.kernel32
+    kernel32 = ctypes.windll.kernel32
 
     class _ClockBase:
 
         def __init__(self):
-            self._timer = _kernel32.CreateWaitableTimerA(None, True, None)
+            self._timer = kernel32.CreateWaitableTimerA(None, True, None)
 
         def sleep(self, microseconds):
             delay = ctypes.c_longlong(int(-microseconds * 10))
-            _kernel32.SetWaitableTimer(self._timer, ctypes.byref(delay),
+            kernel32.SetWaitableTimer(self._timer, ctypes.byref(delay),
                                        0, ctypes.c_void_p(), ctypes.c_void_p(),
                                        False)
-            _kernel32.WaitForSingleObject(self._timer, 0xffffffff)
+            kernel32.WaitForSingleObject(self._timer, 0xffffffff)
 
     _default_time_function = time.perf_counter
 
@@ -176,12 +176,6 @@ class Clock(_ClockBase):
 
     """Class for scheduling functions.
     """
-
-    # List of functions to call every tick.
-    _schedule_items = None
-
-    # List of schedule interval items kept in sort order.
-    _schedule_interval_items = None
 
     def __init__(self, time_function=_default_time_function):
         """Initialise a Clock, with optional custom time function.
@@ -532,147 +526,3 @@ class Clock(_ClockBase):
         self._schedule_interval_items = \
             [item for item in self._schedule_interval_items
              if item.func is not _dummy_schedule_func]
-
-# Default clock.
-_default = Clock()
-
-
-def tick(poll=False):
-    """Signify that one frame has passed on the default clock.
-
-    This will call any scheduled functions that have elapsed.
-
-    :Parameters:
-        `poll` : bool
-            If True, the function will call any scheduled functions
-            but will not sleep or busy-wait for any reason.  Recommended
-            for advanced applications managing their own sleep timers
-            only.
-
-            Since pyglet 1.1.
-
-    :rtype: float
-    :return: The number of seconds since the last "tick", or 0 if this was the
-        first frame.
-    """
-    return _default.tick(poll)
-
-
-def set_default(default):
-    """Set the default clock to use for all module-level functions.
-
-    By default an instance of `Clock` is used.
-
-    :Parameters:
-        `default` : `Clock`
-            The default clock to use.
-    """
-    global _default
-    _default = default
-
-
-def get_default():
-    """Return the `Clock` instance that is used by all module-level
-    clock functions.
-
-    :rtype: `Clock`
-    :return: The default clock.
-    """
-    return _default
-
-
-def get_sleep_time():
-    """Get the time until the next item is scheduled on the default clock.
-
-    See `Clock.get_sleep_time` for details.
-
-    :rtype: float
-    :return: Time until the next scheduled event in seconds, or ``None``
-        if there is no event scheduled.
-
-    :since: pyglet 1.1
-    """
-    return _default.get_sleep_time()
-
-
-def schedule(func, *args, **kwargs):
-    """Schedule 'func' to be called every frame on the default clock.
-
-    The arguments passed to func are ``dt``, followed by any ``*args`` and
-    ``**kwargs`` given here.
-
-    :Parameters:
-        `func` : function
-            The function to call each frame.
-    """
-    _default.schedule(func, *args, **kwargs)
-
-
-def schedule_interval(func, interval, *args, **kwargs):
-    """Schedule 'func' to be called every 'interval' seconds on the default
-    clock.
-
-    The arguments passed to 'func' are 'dt' (time since last function call),
-    followed by any ``*args`` and ``**kwargs`` given here.
-
-    :Parameters:
-        `func` : function
-            The function to call when the timer lapses.
-        `interval` : float
-            The number of seconds to wait between each call.
-
-    """
-    _default.schedule_interval(func, interval, *args, **kwargs)
-
-
-def schedule_interval_soft(func, interval, *args, **kwargs):
-    """Schedule 'func' to be called every 'interval' seconds on the default
-    clock, beginning at a time that does not coincide with other scheduled
-    events.
-
-    The arguments passed to 'func' are 'dt' (time since last function call),
-    followed by any ``*args`` and ``**kwargs`` given here.
-
-    :see: `Clock.schedule_interval_soft`
-
-    :since: pyglet 1.1
-
-    :Parameters:
-        `func` : function
-            The function to call when the timer lapses.
-        `interval` : float
-            The number of seconds to wait between each call.
-
-    """
-    _default.schedule_interval_soft(func, interval, *args, **kwargs)
-
-
-def schedule_once(func, delay, *args, **kwargs):
-    """Schedule 'func' to be called once after 'delay' seconds (can be
-    a float) on the default clock.  The arguments passed to 'func' are
-    'dt' (time since last function call), followed by any ``*args`` and
-    ``**kwargs`` given here.
-
-    If no default clock is set, the func is queued and will be scheduled
-    on the default clock as soon as it is created.
-
-    :Parameters:
-        `func` : function
-            The function to call when the timer lapses.
-        `delay` : float
-            The number of seconds to wait before the timer lapses.
-
-    """
-    _default.schedule_once(func, delay, *args, **kwargs)
-
-
-def unschedule(func):
-    """Remove 'func' from the default clock's schedule.  No error
-    is raised if the func was never scheduled.
-
-    :Parameters:
-        `func` : function
-            The function to remove from the schedule.
-
-    """
-    _default.unschedule(func)

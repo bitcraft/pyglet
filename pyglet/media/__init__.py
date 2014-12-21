@@ -765,6 +765,20 @@ class SourceGroup:
     def loop(self, loop):
         self._loop = loop
 
+    @property
+    def advance_after_eos(self):
+        """Go to next source after current source is finished.
+
+        Initially True.
+
+        :type: bool
+        """
+        return self._advance_after_eos
+
+    @advance_after_eos.setter
+    def advance_after_eos(self, advance):
+        self._advance_after_eos = advance
+
     def get_audio_data(self, bytes):
         """Get next audio packet.
 
@@ -809,7 +823,7 @@ class SourceGroup:
         if timestamp is None:
             return None
 
-        timestamp = timestamp - self._timestamp_offset
+        timestamp -= self._timestamp_offset
         if timestamp < 0:
             for duration in self._dequeued_durations[::-1]:
                 timestamp += duration
@@ -968,13 +982,10 @@ class Player(pyglet.event.EventDispatcher):
     def __init__(self):
         # List of queued source groups
         self._groups = list()
-
         self._audio_player = None
-
+        self._paused_time = 0.0
         # Desired play state (not an indication of actual state).
         self._playing = False
-
-        self._paused_time = 0.0
 
     def queue(self, source):
         if isinstance(source, SourceGroup):
@@ -986,9 +997,9 @@ class Player(pyglet.event.EventDispatcher):
                 self._groups[-1].queue(source)
             else:
                 group = SourceGroup(source.audio_format, source.video_format)
+                group.advance_after_eos = True
                 group.queue(source)
                 self._groups.append(group)
-                self._set_eos_action(self._eos_action)
 
         self._set_playing(self._playing)
 
@@ -998,6 +1009,7 @@ class Player(pyglet.event.EventDispatcher):
 
         self._playing = playing
         source = self.source
+        clock = pyglet.app.event_loop.clock
 
         if playing and source:
             if not self._audio_player:
@@ -1012,12 +1024,12 @@ class Player(pyglet.event.EventDispatcher):
                     period = 1. / self.source.video_format.frame_rate
                 else:
                     period = 1. / 30.
-                pyglet.clock.schedule_interval(self.update_texture, period)
+                clock.schedule_interval(self.update_texture, period)
         else:
             if self._audio_player:
                 self._audio_player.stop()
 
-            pyglet.clock.unschedule(self.update_texture)
+            clock.unschedule(self.update_texture)
 
     def play(self):
         self._set_playing(True)
@@ -1052,8 +1064,9 @@ class Player(pyglet.event.EventDispatcher):
             return
 
         if self.source.video_format:
+            clock = pyglet.app.event_loop.clock
+            clock.unschedule(self.update_texture)
             self._texture = None
-            pyglet.clock.unschedule(self.update_texture)
 
         if self._audio_player:
             self._audio_player.delete()

@@ -1,62 +1,10 @@
-def get_settings_path(name):
-    """Get a directory to save user preferences.
-
-    Different platforms have different conventions for where to save user
-    preferences, saved games, and settings.  This function implements those
-    conventions.  Note that the returned path may not exist: applications
-    should use ``os.makedirs`` to construct it if desired.
-
-    On Linux, a directory `name` in the user's configuration directory is
-    returned (usually under ``~/.config``).
-
-    On Windows (including under Cygwin) the `name` directory in the user's
-    ``Application Settings`` directory is returned.
-
-    On Mac OS X the `name` directory under ``~/Library/Application Support``
-    is returned.
-
-    :Parameters:
-        `name` : str
-            The name of the application.
-
-    :rtype: str
-    """
-    jpath = os.path.join
-
-    def get_home():
-        return os.path.expanduser('~')
-
-    path = None
-    if pyglet.compat_platform in ('cygwin', 'win32'):
-        if 'APPDATA' in os.environ:
-            path = os.environ['APPDATA']
-        else:
-            path = get_home()
-        return jpath(path, )
-    elif pyglet.compat_platform == 'darwin':
-        path = os.path.expanduser('~/Library/Application Support')
-    elif pyglet.compat_platform.startswith('linux'):
-        if 'XDG_CONFIG_HOME' in os.environ:
-            path = os.path.join(os.environ['XDG_CONFIG_HOME'])
-        else:
-            path = os.path.expanduser('~/.config')
-    else:
-        path = os.path.expanduser('~')
-
-    if path is None:
-        raise Exception
-
-    return os.path.join(path, name)
-
-
 import unittest
 import mock
 import importlib
-import os
-import sys
 import pyglet
 
 
+# TODO: Fill in some meaningful tests for this test case
 class TestResource(unittest.TestCase):
     name = 'pyglet'
 
@@ -65,14 +13,12 @@ class TestResource(unittest.TestCase):
         importlib.reload(pyglet)
         self.assertEqual('linux', pyglet.compat_platform)
         path = pyglet.resource.get_settings_path(self.name)
-        print(path)
 
-    @mock.patch("sys.platform", "unix")
+    @mock.patch("sys.platform", "bsd")
     def test_get_settings_path_unix(self):
         importlib.reload(pyglet)
-        self.assertEqual('unix', pyglet.compat_platform)
+        self.assertEqual('linux-compat', pyglet.compat_platform)
         path = pyglet.resource.get_settings_path(self.name)
-        print(path)
 
     @mock.patch("sys.platform", "darwin")
     @mock.patch("platform.mac_ver", lambda: ['10.10.0'])  # supported version
@@ -81,18 +27,22 @@ class TestResource(unittest.TestCase):
         importlib.reload(pyglet)
         self.assertEqual('darwin', pyglet.compat_platform)
         path = pyglet.resource.get_settings_path(self.name)
-        print(path)
 
+    @mock.patch("os.environ", dict())
     @mock.patch("sys.platform", "win32")
-    def test_get_settings_path_windows(self):
+    def test_get_settings_path_windows_cygwin(self):
         importlib.reload(pyglet)
         self.assertEqual('win32', pyglet.compat_platform)
         path = pyglet.resource.get_settings_path(self.name)
-        print(path)
 
     @mock.patch("sys.platform", "cygwin")
     def test_get_settings_path_cygwin(self):
+        bogus_path = 'C:\Bob\Run\\'
         importlib.reload(pyglet)
         self.assertEqual('cygwin', pyglet.compat_platform)
-        path = pyglet.resource.get_settings_path(self.name)
-        print(path)
+        with mock.patch("os.environ", {'APPDATA': bogus_path}) as p:
+            path = pyglet.resource.get_settings_path(self.name)
+            self.assertTrue(path.startswith(bogus_path))
+        with mock.patch("os.environ", dict()) as p:
+            path = pyglet.resource.get_settings_path(self.name)
+            self.assertFalse(path.startswith(bogus_path))

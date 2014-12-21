@@ -59,19 +59,20 @@ class PNGImageDecoder(ImageDecoder):
         except Exception as e:
             raise ImageDecodeException(
                 'PyPNG cannot read %r: %s' % (filename or file, e))
-
+        import itertools
         if metadata['greyscale']:
-            if metadata['has_alpha']:
+            if metadata['alpha']:
                 format = 'LA'
             else:
                 format = 'L'
         else:
-            if metadata['has_alpha']:
+            if metadata['alpha']:
                 format = 'RGBA'
             else:
                 format = 'RGB'
         pitch = len(format) * width
-        return ImageData(width, height, format, pixels.tostring(), -pitch)
+        pixels = bytes(itertools.chain(*pixels))
+        return ImageData(width, height, format, pixels, -pitch)
 
 
 class PNGImageEncoder(ImageEncoder):

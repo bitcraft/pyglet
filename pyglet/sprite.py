@@ -101,7 +101,6 @@ __version__ = '$Id$'
 import math
 
 from pyglet.gl import *
-from pyglet import clock
 from pyglet import event
 from pyglet import graphics
 from pyglet import image
@@ -231,6 +230,7 @@ class Sprite(event.EventDispatcher):
             self._texture = img.frames[0].image.get_texture()
             self._next_dt = img.frames[0].duration
             if self._next_dt:
+                clock = pyglet.app.event_loop.clock
                 clock.schedule_once(self._animate, self._next_dt)
         else:
             self._texture = img.get_texture()
@@ -255,6 +255,7 @@ class Sprite(event.EventDispatcher):
         sprite is garbage.
         """
         if self._animation:
+            clock = pyglet.app.event_loop.clock
             clock.unschedule(self._animate)
         self._vertex_list.delete()
         self._vertex_list = None
@@ -273,6 +274,7 @@ class Sprite(event.EventDispatcher):
         self._set_texture(frame.image.get_texture())
 
         if frame.duration is not None:
+            clock = pyglet.app.event_loop.clock
             duration = frame.duration - (self._next_dt - dt)
             duration = min(max(0, duration), frame.duration)
             clock.schedule_once(self._animate, duration)
@@ -343,6 +345,8 @@ class Sprite(event.EventDispatcher):
 
     @image.setter
     def image(self, img):
+        clock = pyglet.app.event_loop.clock
+
         if self._animation is not None:
             clock.unschedule(self._animate)
             self._animation = None

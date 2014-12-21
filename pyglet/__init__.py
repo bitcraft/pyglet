@@ -199,7 +199,6 @@ _option_types = {
 
 
 def _choose_darwin_platform():
-    """Choose between Darwin's Carbon and Cocoa implementations."""
     if compat_platform != 'darwin':
         return
     import struct
@@ -209,10 +208,10 @@ def _choose_darwin_platform():
         osx_version = [int(i) for i in platform.mac_ver()[0].split(".")]
         if osx_version[0] == 10 and osx_version[1] < 6:
             raise Exception(
-                'pyglet is not compatible with 64-bit Python for versions of Mac OS X prior to 10.6.')
+                'pyglet is not compatible with versions of Mac OS X prior to 10.6.')
     elif numbits == 32:
         raise Exception(
-            'pyglet is not compatible with 32-bit Python of Mac OS X')
+            'pyglet is not compatible with 32-bit Python for Mac OS X')
     else:
         raise Exception(
             'pyglet is not compatible with this version of Python')

@@ -7,7 +7,7 @@ import pyglet
 from pyglet.input import base
 from pyglet.libs import win32
 from pyglet.libs.win32 import dinput
-from pyglet.libs.win32 import _kernel32
+from pyglet.libs.win32 import kernel32
 
 # These instance names are not defined anywhere, obtained by experiment.  The
 # GUID names (which seem to be ideally what are needed) are wrong/missing for
@@ -127,7 +127,7 @@ class DirectInputDevice(base.Device):
         else:
             flags |= dinput.DISCL_NONEXCLUSIVE
 
-        self._wait_object = _kernel32.CreateEventW(None, False, False, None)
+        self._wait_object = kernel32.CreateEventW(None, False, False, None)
         self._device.SetEventNotification(self._wait_object)
         pyglet.app.platform_event_loop.add_wait_object(self._wait_object,
                                                        self._dispatch_events)
@@ -144,7 +144,7 @@ class DirectInputDevice(base.Device):
         self._device.Unacquire()
         self._device.SetEventNotification(None)
 
-        _kernel32.CloseHandle(self._wait_object)
+        kernel32.CloseHandle(self._wait_object)
 
     def get_controls(self):
         return self.controls
@@ -173,7 +173,7 @@ def _init_directinput():
         return
 
     _i_dinput = dinput.IDirectInput8()
-    module = _kernel32.GetModuleHandleW(None)
+    module = kernel32.GetModuleHandleW(None)
     dinput.DirectInput8Create(module, dinput.DIRECTINPUT_VERSION,
                               dinput.IID_IDirectInput8W,
                               ctypes.byref(_i_dinput), None)

@@ -4,7 +4,7 @@
 import ctypes
 
 import pyglet
-from pyglet.window.win32 import _user32
+from pyglet.window.win32 import user32
 from pyglet.window.win32.constants import *
 from pyglet.window.win32.types import *
 
@@ -76,7 +76,7 @@ for screen in screens:
     handle = screen._handle
     info = MONITORINFOEX()
     info.cbSize = ctypes.sizeof(MONITORINFOEX)
-    _user32.GetMonitorInfoW(handle, ctypes.byref(info))
+    user32.GetMonitorInfoW(handle, ctypes.byref(info))
 
     screen.device_name = info.szDevice
     screen.modes = list()
@@ -85,7 +85,7 @@ for screen in screens:
     while True:
         mode = DEVMODE()
         mode.dmSize = ctypes.sizeof(DEVMODE)
-        r = _user32.EnumDisplaySettingsW(screen.device_name, i,
+        r = user32.EnumDisplaySettingsW(screen.device_name, i,
                                          ctypes.byref(mode))
         if not r:
             break
@@ -120,7 +120,7 @@ def set_mode(screen, width, height, rate=None):
     if best_mode is None:
         raise Exception('No mode is in range of requested resolution.')
 
-    _user32.ChangeDisplaySettingsExW(screen.device_name,
+    user32.ChangeDisplaySettingsExW(screen.device_name,
                                      ctypes.byref(best_mode._devmode),
                                      None,
                                      CDS_FULLSCREEN,

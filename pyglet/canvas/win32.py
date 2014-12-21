@@ -3,7 +3,7 @@
 
 from .base import Display, Screen, ScreenMode, Canvas
 
-from pyglet.libs.win32 import _kernel32, _user32, types, constants
+from pyglet.libs.win32 import kernel32, user32, types, constants
 from pyglet.libs.win32.constants import *
 from pyglet.libs.win32.types import *
 
@@ -21,7 +21,7 @@ class Win32Display(Display):
                 Win32Screen(self, hMonitor, r.left, r.top, width, height))
             return True
         enum_proc_ptr = MONITORENUMPROC(enum_proc)
-        _user32.EnumDisplayMonitors(None, None, enum_proc_ptr, 0)
+        user32.EnumDisplayMonitors(None, None, enum_proc_ptr, 0)
         return screens
 
 
@@ -33,7 +33,7 @@ class Win32Screen(Screen):
         self._handle = handle
 
     def get_matching_configs(self, template):
-        canvas = Win32Canvas(self.display, 0, _user32.GetDC(0))
+        canvas = Win32Canvas(self.display, 0, user32.GetDC(0))
         configs = template.match(canvas)
         # TODO: deprecate config's being screen-specific
         for config in configs:
@@ -43,7 +43,7 @@ class Win32Screen(Screen):
     def get_device_name(self):
         info = MONITORINFOEX()
         info.cbSize = sizeof(MONITORINFOEX)
-        _user32.GetMonitorInfoW(self._handle, byref(info))
+        user32.GetMonitorInfoW(self._handle, byref(info))
         return info.szDevice
 
     def get_modes(self):
@@ -53,7 +53,7 @@ class Win32Screen(Screen):
         while True:
             mode = DEVMODE()
             mode.dmSize = sizeof(DEVMODE)
-            r = _user32.EnumDisplaySettingsW(device_name, i, byref(mode))
+            r = user32.EnumDisplaySettingsW(device_name, i, byref(mode))
             if not r:
                 break
 
@@ -65,7 +65,7 @@ class Win32Screen(Screen):
     def get_mode(self):
         mode = DEVMODE()
         mode.dmSize = sizeof(DEVMODE)
-        _user32.EnumDisplaySettingsW(self.get_device_name(),
+        user32.EnumDisplaySettingsW(self.get_device_name(),
                                      ENUM_CURRENT_SETTINGS,
                                      byref(mode))
         return Win32ScreenMode(self, mode)
@@ -75,7 +75,7 @@ class Win32Screen(Screen):
 
         if not self._initial_mode:
             self._initial_mode = self.get_mode()
-        r = _user32.ChangeDisplaySettingsExW(self.get_device_name(),
+        r = user32.ChangeDisplaySettingsExW(self.get_device_name(),
                                              byref(mode._mode),
                                              None,
                                              CDS_FULLSCREEN,

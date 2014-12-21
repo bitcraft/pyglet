@@ -168,5 +168,4 @@ else:
 
 
 event_loop = EventLoop()
-
 platform_event_loop = PlatformEventLoop()
