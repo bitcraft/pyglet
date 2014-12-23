@@ -39,13 +39,6 @@ def update_particles(dt):
     particles = [p for p in particles if not p.dead]
 
 
-def update_stats(dt):
-    np = len(particles)
-    usage = particles[0].domain.allocator.get_usage()
-    fragmentation = particles[0].domain.allocator.get_fragmentation()
-    blocks = len(particles[0].domain.allocator.starts)
-
-
 def loop(dt):
     update_particles(dt)
     for i in range(min(MAX_ADD_PARTICLES, MAX_PARTICLES - len(particles))):
@@ -62,6 +55,5 @@ def on_draw():
     batch.draw()
 
 clock = pyglet.app.event_loop.clock
-clock.schedule_interval(update_stats, 1)
 clock.schedule(loop)
 pyglet.app.run()

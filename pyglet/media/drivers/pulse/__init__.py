@@ -1,4 +1,5 @@
 import sys
+import weakref
 
 from . import lib_pulseaudio as pa
 from pyglet.media import AbstractAudioDriver, AbstractAudioPlayer, \
@@ -30,7 +31,7 @@ class PulseAudioDriver(AbstractAudioDriver):
         self.mainloop = pa.pa_threaded_mainloop_get_api(
             self.threaded_mainloop)
 
-        self._players = pyglet.app.WeakSet()
+        self._players = weakref.WeakSet()
         self._listener = PulseAudioListener(self)
 
     def create_audio_player(self, source_group, player):

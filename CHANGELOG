@@ -39,6 +39,10 @@
     * removed uneeded shebangs
     * removed __docformat__ because there will be just one format
     * removed __version__ in submodules because it is useless
+    * remove app.WeakSet and replaced all refs. to python sdt lib implementation
+    * merged Clock.tick and Clock.update time methods into tick
+    * re-imagined the clock scheduler with a heapq core.  about 470% faster
+
 
 1.2beta1
     + new API: font.have_font(name) return True if named font is installed

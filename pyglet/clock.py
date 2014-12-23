@@ -7,8 +7,8 @@
 # modification, are permitted provided that the following conditions
 # are met:
 #
-#  * Redistributions of source code must retain the above copyright
-#    notice, this list of conditions and the following disclaimer.
+# * Redistributions of source code must retain the above copyright
+# notice, this list of conditions and the following disclaimer.
 #  * Redistributions in binary form must reproduce the above copyright
 #    notice, this list of conditions and the following disclaimer in
 #    the documentation and/or other materials provided with the
@@ -32,7 +32,7 @@
 # POSSIBILITY OF SUCH DAMAGE.
 # ----------------------------------------------------------------------------
 
-"""Precise framerate calculation, scheduling and framerate limiting.
+"""Scheduler
 
 Scheduling
 ==========
@@ -67,43 +67,32 @@ You can cancel a function scheduled with any of these methods using
 
     clock.unschedule(animate)
 
-Displaying FPS
-==============
 
-The ClockDisplay class provides a simple FPS counter.  You should create
-an instance of ClockDisplay once during the application's start up::
+If you want to schedule a function that doesn't accept the dt argument, you can
+use a `lambda
+<http://docs.python.org/2/reference/expressions.html#lambda>`_ expression
+to write a short function that does accept dt. For Example::
 
-    fps_display = clock.ClockDisplay()
+    def no_args_func():
+        print("I accept no arguments, so don't schedule me in the clock")
 
-Call draw on the ClockDisplay object for each frame::
+    Clock.schedule_once(lambda dt: no_args_func(), 0.5)
 
-    fps_display.draw()
-
-There are several options to change the font, color and text displayed
-within the __init__ method.
 
 Using multiple clocks
 =====================
 
-The clock functions are all relayed to an instance of `Clock` which is
-initialised with the module.  You can get this instance to use directly::
-
-    clk = clock.get_default()
-
-You can also replace the default clock with your own:
-
-    myclk = clock.Clock()
-    clock.set_default(myclk)
-
-Each clock maintains its own set of scheduled functions and FPS
-limiting/measurement.  Each clock must be "ticked" separately.
+Each clock maintains its own set of scheduled functions and must be
+"ticked" separately.
 
 Multiple and derived clocks potentially allow you to separate "game-time" and
 "wall-time", or to synchronise your clock to an audio or video stream instead
 of the system clock.
 """
+import collections
 import time
 import ctypes
+from heapq import heappush, heapify, heappop, heapreplace
 
 import pyglet.lib
 from pyglet import compat_platform
@@ -122,8 +111,8 @@ if compat_platform in ('win32', 'cygwin'):
         def sleep(self, microseconds):
             delay = ctypes.c_longlong(int(-microseconds * 10))
             kernel32.SetWaitableTimer(self._timer, ctypes.byref(delay),
-                                       0, ctypes.c_void_p(), ctypes.c_void_p(),
-                                       False)
+                                      0, ctypes.c_void_p(), ctypes.c_void_p(),
+                                      False)
             kernel32.WaitForSingleObject(self._timer, 0xffffffff)
 
     _default_time_function = time.perf_counter
@@ -134,42 +123,42 @@ else:
 
     class _ClockBase:
 
-        def sleep(self, microseconds):
+        @staticmethod
+        def sleep(microseconds):
             _c.usleep(int(microseconds))
 
     _default_time_function = time.perf_counter
 
 
-class _ScheduledItem:
-    __slots__ = ['func', 'args', 'kwargs']
+class ScheduledItem:
+    """ A class that describes a scheduled callback.
 
-    def __init__(self, func, args, kwargs):
+    This class is never created by the user; instead, pyglet creates and
+    returns an instance of this class when scheduling a callback.
+
+   .. warning::
+   Most of the methods of this class are internal and can change without
+   notice.
+
+    """
+    __slots__ = ['func', 'interval', 'last_ts', 'next_ts', 'args', 'kwargs']
+
+    def __init__(self, func, args, kwargs, last_ts=0, next_ts=0, interval=0):
         self.func = func
         self.args = args
         self.kwargs = kwargs
-
-
-class _ScheduledIntervalItem:
-    __slots__ = ['func', 'interval', 'last_ts', 'next_ts', 'args', 'kwargs']
-
-    def __init__(self, func, interval, last_ts, next_ts, args, kwargs):
-        self.func = func
         self.interval = interval
         self.last_ts = last_ts
         self.next_ts = next_ts
-        self.args = args
-        self.kwargs = kwargs
 
-
-def _dummy_schedule_func(*args, **kwargs):
-    """Dummy function that does nothing, placed onto zombie scheduled items
-    to ensure they have no side effect if already queued.
-    """
-    pass
+    def __lt__(self, other):
+        try:
+            return self.next_ts < other.next_ts
+        except AttributeError:
+            return self.next_ts < other
 
 
 class Clock(_ClockBase):
-
     """Class for scheduling functions.
     """
 
@@ -179,257 +168,35 @@ class Clock(_ClockBase):
         :Parameters:
             `time_function` : function
                 Function to return the elapsed time of the application,
-                in seconds.  Defaults to time.time, but can be replaced
-                to allow for easy time dilation effects or game pausing.
+                in seconds.  Defaults to platform dependant clock, but can be
+                replaced to allow for easy time dilation effects, game pausing,
+                or testing.
 
         """
         super().__init__()
-        self.time = time_function
-        self.next_ts = self.time()
-        self.last_ts = None
-        self.times = list()
         self.cumulative_time = 0
-        self.window_size = 0
+        self._time = time_function
+        self._last_ts = -1
+        self._times = collections.deque(maxlen=10)
+        self._scheduled_items = list()
+        self._every_tick_items = list()
 
-        self._schedule_items = list()
-        self._schedule_interval_items = list()
-
-    def update_time(self):
-        """Get the elapsed time since the last call to `update_time`.
-
-        This updates the clock's internal measure of time and returns
-        the difference since the last update (or since the clock was created).
-
-        :since: pyglet 1.2
-
-        :rtype: float
-        :return: The number of seconds since the last `update_time`, or 0
-                 if this was the first time it was called.
+    def _get_nearest_ts(self):
+        """Get a timestamp for scheduling items while attempting to group
+        items together
         """
-        ts = self.time()
-        if self.last_ts is None:
-            delta_t = 0
-        else:
-            delta_t = ts - self.last_ts
-            self.times.insert(0, delta_t)
-            if len(self.times) > self.window_size:
-                self.cumulative_time -= self.times.pop()
-        self.cumulative_time += delta_t
-        self.last_ts = ts
-
-        return delta_t
-
-    def call_scheduled_functions(self, dt):
-        """Call scheduled functions that elapsed on the last `update_time`.
-
-        :since: pyglet 1.2
-
-        :Parameters:
-            dt : float
-                The elapsed time since the last update to pass to each
-                scheduled function.  This is *not* used to calculate which
-                functions have elapsed.
-
-        :rtype: bool
-        :return: True if any functions were called, otherwise False.
-        """
-        ts = self.last_ts
-        result = False
-
-        # Call functions scheduled for every frame
-        # Dupe list just in case one of the items unchedules itself
-        for item in list(self._schedule_items):
-            result = True
-            item.func(dt, *item.args, **item.kwargs)
-
-        # Call all scheduled interval functions and reschedule for future.
-        need_resort = False
-        # Dupe list just in case one of the items unchedules itself
-        for item in list(self._schedule_interval_items):
-            if item.next_ts > ts:
-                break
-            result = True
-            item.func(ts - item.last_ts, *item.args, **item.kwargs)
-            if item.interval:
-                # Try to keep timing regular, even if overslept this time;
-                # but don't schedule in the past (which could lead to
-                # infinitely-worsing error).
-                item.next_ts = item.last_ts + item.interval
-                item.last_ts = ts
-                if item.next_ts <= ts:
-                    if ts - item.next_ts < 0.05:
-                        # Only missed by a little bit, keep the same schedule
-                        item.next_ts = ts + item.interval
-                    else:
-                        # Missed by heaps, do a soft reschedule to avoid
-                        # lumping everything together.
-                        item.next_ts = self._get_soft_next_ts(
-                            ts, item.interval)
-                        # Fake last_ts to avoid repeatedly over-scheduling in
-                        # future.  Unfortunately means the next reported dt is
-                        # incorrect (looks like interval but actually isn't).
-                        item.last_ts = item.next_ts - item.interval
-                need_resort = True
-            else:
-                item.next_ts = None
-
-        # Remove finished one-shots.
-        self._schedule_interval_items = \
-            [item for item in self._schedule_interval_items
-             if item.next_ts is not None]
-
-        if need_resort:
-            # TODO bubble up changed items might be faster
-            self._schedule_interval_items.sort(key=lambda a: a.next_ts)
-
-        return result
-
-    def tick(self, poll=False):
-        """Signify that one frame has passed.
-
-        This will call any scheduled functions that have elapsed.
-
-        :Parameters:
-            `poll` : bool
-                If True, the function will call any scheduled functions
-                but will not sleep or busy-wait for any reason.  Recommended
-                for advanced applications managing their own sleep timers
-                only.
-
-                Since pyglet 1.1.
-
-        :rtype: float
-        :return: The number of seconds since the last "tick", or 0 if this was
-            the first frame.
-        """
-        if poll:
-            raise Exception('Depreciated')
-
-        delta_t = self.update_time()
-        self.call_scheduled_functions(delta_t)
-
-        return delta_t
-
-    def get_sleep_time(self):
-        """Get the time until the next item is scheduled.
-
-        :rtype: float
-        :return: Time until the next scheduled event in seconds, or ``None``
-                 if there is no event scheduled.
-
-        :since: pyglet 1.1
-        """
-        if self._schedule_items:
-            wake_time = self.next_ts
-            if self._schedule_interval_items:
-                wake_time = min(wake_time,
-                                self._schedule_interval_items[0].next_ts)
-            return max(wake_time - self.time(), 0.)
-
-        if self._schedule_interval_items:
-            return max(self._schedule_interval_items[0].next_ts - self.time(), 0)
-
-    def schedule(self, func, *args, **kwargs):
-        """Schedule a function to be called every frame.
-
-        The function should have a prototype that includes ``dt`` as the
-        first argument, which gives the elapsed time, in seconds, since the
-        last clock tick.  Any additional arguments given to this function
-        are passed on to the callback::
-
-            def callback(dt, *args, **kwargs):
-                pass
-
-        :Parameters:
-            `func` : function
-                The function to call each frame.
-        """
-        item = _ScheduledItem(func, args, kwargs)
-        self._schedule_items.append(item)
-
-    def _schedule_item(self, func, last_ts, next_ts, interval, *args, **kwargs):
-        item = _ScheduledIntervalItem(
-            func, interval, last_ts, next_ts, args, kwargs)
-
-        # Insert in sort order
-        for i, other in enumerate(self._schedule_interval_items):
-            if other.next_ts is not None and other.next_ts > next_ts:
-                self._schedule_interval_items.insert(i, item)
-                break
-        else:
-            self._schedule_interval_items.append(item)
-
-    def schedule_interval(self, func, interval, *args, **kwargs):
-        """Schedule a function to be called every `interval` seconds.
-
-        Specifying an interval of 0 prevents the function from being
-        called again (see `schedule` to call a function as often as possible).
-
-        The callback function prototype is the same as for `schedule`.
-
-        :Parameters:
-            `func` : function
-                The function to call when the timer lapses.
-            `interval` : float
-                The number of seconds to wait between each call.
-
-        """
-        last_ts = self.last_ts or self.next_ts
-        ts = self.time()
+        last_ts = self._last_ts
+        ts = self._time()
         if ts - last_ts > 0.2:
             last_ts = ts
-
-        next_ts = last_ts + interval
-        self._schedule_item(func, last_ts, next_ts, interval, *args, **kwargs)
-
-    def schedule_interval_soft(self, func, interval, *args, **kwargs):
-        """Schedule a function to be called every `interval` seconds,
-        beginning at a time that does not coincide with other scheduled
-        events.
-
-        This method is similar to `schedule_interval`, except that the
-        clock will move the interval out of phase with other scheduled
-        functions so as to distribute CPU more load evenly over time.
-
-        This is useful for functions that need to be called regularly,
-        but not relative to the initial start time.  `pyglet.media`
-        does this for scheduling audio buffer updates, which need to occur
-        regularly -- if all audio updates are scheduled at the same time
-        (for example, mixing several tracks of a music score, or playing
-        multiple videos back simultaneously), the resulting load on the
-        CPU is excessive for those intervals but idle outside.  Using
-        the soft interval scheduling, the load is more evenly distributed.
-
-        Soft interval scheduling can also be used as an easy way to schedule
-        graphics animations out of phase; for example, multiple flags
-        waving in the wind.
-
-        :since: pyglet 1.1
-
-        :Parameters:
-            `func` : function
-                The function to call when the timer lapses.
-            `interval` : float
-                The number of seconds to wait between each call.
-
-        """
-        last_ts = self.last_ts or self.next_ts
-
-        # See schedule_interval
-        ts = self.time()
-        if ts - last_ts > 0.2:
-            last_ts = ts
-
-        next_ts = self._get_soft_next_ts(last_ts, interval)
-        last_ts = next_ts - interval
-        self._schedule_item(func, last_ts, next_ts, interval, *args, **kwargs)
+        return last_ts
 
     def _get_soft_next_ts(self, last_ts, interval):
         def taken(ts, e):
             """Return True if the given time has already got an item
             scheduled nearby.
             """
-            for item in self._schedule_interval_items:
+            for item in self._scheduled_items:
                 if item.next_ts is None:
                     pass
                 elif abs(item.next_ts - ts) <= e:
@@ -472,6 +239,24 @@ class Clock(_ClockBase):
             if divs > 16:
                 return next_ts
 
+    def schedule(self, func, *args, **kwargs):
+        """Schedule a function to be called every tick.
+
+        The function should have a prototype that includes ``dt`` as the
+        first argument, which gives the elapsed time, in seconds, since the
+        last clock tick.  Any additional arguments given to this function
+        are passed on to the callback::
+
+            def callback(dt, *args, **kwargs):
+                pass
+
+        :Parameters:
+            `func` : function
+                The function to call each tick.
+        """
+        item = ScheduledItem(func, args, kwargs)
+        self._every_tick_items.append(item)
+
     def schedule_once(self, func, delay, *args, **kwargs):
         """Schedule a function to be called once after `delay` seconds.
 
@@ -483,14 +268,213 @@ class Clock(_ClockBase):
             `delay` : float
                 The number of seconds to wait before the timer lapses.
         """
-        last_ts = self.last_ts or self.next_ts
-
-        ts = self.time()
-        if ts - last_ts > 0.2:
-            last_ts = ts
-
+        last_ts = self._get_nearest_ts()
         next_ts = last_ts + delay
-        self._schedule_item(func, last_ts, next_ts, 0, *args, **kwargs)
+        item = ScheduledItem(func, args, kwargs, last_ts, next_ts, 0)
+        heappush(self._scheduled_items, item)
+
+    def schedule_interval(self, func, interval, *args, **kwargs):
+        """Schedule a function to be called every `interval` seconds.
+
+        Specifying an interval of 0 prevents the function from being
+        called again (see `schedule` to call a function as often as possible).
+
+        The callback function prototype is the same as for `schedule`.
+
+        :Parameters:
+            `func` : function
+                The function to call when the timer lapses.
+            `interval` : float
+                The number of seconds to wait between each call.
+
+        """
+        last_ts = self._get_nearest_ts()
+        next_ts = last_ts + interval
+        item = ScheduledItem(func, args, kwargs, last_ts, next_ts, interval)
+        heappush(self._scheduled_items, item)
+
+    def schedule_interval_soft(self, func, interval, *args, **kwargs):
+        """Schedule a function to be called every `interval` seconds,
+        beginning at a time that does not coincide with other scheduled
+        events.
+
+        This method is similar to `schedule_interval`, except that the
+        clock will move the interval out of phase with other scheduled
+        functions so as to distribute CPU more load evenly over time.
+
+        This is useful for functions that need to be called regularly,
+        but not relative to the initial start time.  `pyglet.media`
+        does this for scheduling audio buffer updates, which need to occur
+        regularly -- if all audio updates are scheduled at the same time
+        (for example, mixing several tracks of a music score, or playing
+        multiple videos back simultaneously), the resulting load on the
+        CPU is excessive for those intervals but idle outside.  Using
+        the soft interval scheduling, the load is more evenly distributed.
+
+        Soft interval scheduling can also be used as an easy way to schedule
+        graphics animations out of phase; for example, multiple flags
+        waving in the wind.
+
+        :since: pyglet 1.1
+
+        :Parameters:
+            `func` : function
+                The function to call when the timer lapses.
+            `interval` : float
+                The number of seconds to wait between each call.
+
+        """
+        next_ts = self._get_soft_next_ts(self._get_nearest_ts(), interval)
+        last_ts = next_ts - interval
+        item = ScheduledItem(func, args, kwargs, last_ts, next_ts, interval)
+        heappush(self._scheduled_items, item)
+
+    def tick(self):
+        """Cause clock to update self and call scheduled functions.
+
+        This updates the clock's internal measure of time and returns
+        the difference since the last update (or since the clock was created).
+
+        Will call any scheduled functions that have elapsed.
+
+        :rtype: float
+        :return: The number of seconds since the last "tick", or 0 if this was
+                 the first tick.
+        """
+        delta_t = self.set_clock(self._time())
+        self._times.append(delta_t)
+        self.call_scheduled_functions(delta_t)
+
+        return delta_t
+
+    def get_interval(self):
+        """Get the average amount of time passed between each tick.
+
+        Useful for calculating FPS if this clock is used with the display.
+        Returned value is averaged from last 10 ticks.
+
+        Value will be zero if before 1st tick.
+
+        :rtype: float
+        :return: The number of seconds since the last "tick", or 0 if this was
+                 the first tick.
+        """
+        try:
+            return sum(self._times) / len(self._times)
+        except ZeroDivisionError:
+            return 0.0
+
+    def set_clock(self, time_stamp):
+        """Set the clock manually and do not call scheduled functions.  Return
+        the difference in time from the last time clock was updated.
+
+        :Parameters:
+            `time_stamp` : float
+                This will become the new value of the clock.  Setting the clock
+                to negative values will have undefined results.
+
+        :rtype: float
+        :return: The number of seconds since the last update, or 0 if this was
+                 the first update.
+
+        """
+        if self._last_ts < 0:
+            delta_t = 0
+            self._last_ts = time_stamp
+        else:
+            delta_t = time_stamp - self._last_ts
+        self.cumulative_time += delta_t
+        self._last_ts = time_stamp
+        return delta_t
+
+    def call_scheduled_functions(self, dt):
+        """Call scheduled functions that elapsed on the last `update_time`.
+
+        :since: pyglet 1.2
+
+        :Parameters:
+            dt : float
+                The elapsed time since the last update to pass to each
+                scheduled function.  This is *not* used to calculate which
+                functions have elapsed.
+
+        :rtype: bool
+        :return: True if any functions were called, otherwise False.
+        """
+        scheduled_items = self._scheduled_items
+        now = self._last_ts
+        result = False
+
+        for item in self._every_tick_items:
+            result = True
+            item.func(dt, *item.args, **item.kwargs)
+
+        try:
+            item = scheduled_items[0]
+            if item.next_ts > now:
+                return result
+        except IndexError:
+            return result
+
+        result = True
+        replace = False
+        get_soft_next_ts = self._get_soft_next_ts
+        while scheduled_items:
+            head = scheduled_items[0]
+            if head.next_ts > now:
+                if replace:
+                    heappush(scheduled_items, item)
+                replace = False
+                break
+
+            if replace:
+                item = heapreplace(scheduled_items, item)
+            else:
+                item = heappop(scheduled_items)
+
+            item.func(now - item.last_ts, *item.args, **item.kwargs)
+
+            if item.interval:
+                replace = True
+                item.next_ts = item.last_ts + item.interval
+                item.last_ts = now
+
+                # the execution time of this item has already passed
+                # so it must be rescheduled
+                if item.next_ts <= now:
+                    if now - item.next_ts < 0.05:
+                        item.next_ts = now + item.interval
+                    else:
+                        # missed by significant amount, do a soft reschedule
+                        # to avoid lumping everything together
+                        # in this case, the next dt will not be accurate
+                        item.next_ts = get_soft_next_ts(now, item.interval)
+                        item.last_ts = item.next_ts - item.interval
+            else:
+                replace = False
+
+        if replace:
+            heappush(scheduled_items, item)
+
+        return result
+
+    def get_sleep_time(self):
+        """Get the time until the next item is scheduled.
+
+        :rtype: float
+        :return: Time until the next scheduled event in seconds, or ``None``
+                 if there is no event scheduled.
+
+        :since: pyglet 1.1
+        """
+        if self._every_tick_items:
+            return 0
+
+        try:
+            next_ts = self._scheduled_items[0].next_ts
+            return max(next_ts - self._time(), 0.)
+        except IndexError:
+            return None
 
     def unschedule(self, func):
         """Remove a function from the schedule.
@@ -503,22 +487,14 @@ class Clock(_ClockBase):
                 The function to remove from the schedule.
 
         """
-        # First replace zombie items' func with a dummy func that does
-        # nothing, in case the list has already been cloned inside tick().
-        # (Fixes issue 326).
-        for item in self._schedule_items:
-            if item.func == func:
-                item.func = _dummy_schedule_func
+        def remove(list_):
+            resort = False
+            remove_ = list_.remove
+            for i in list(i for i in list_ if i.func is func):
+                remove_(i)
+                resort = True
+            return resort
 
-        for item in self._schedule_interval_items:
-            if item.func == func:
-                item.func = _dummy_schedule_func
-
-        # Now remove matching items from both schedule lists.
-        self._schedule_items = \
-            [item for item in self._schedule_items
-             if item.func is not _dummy_schedule_func]
-
-        self._schedule_interval_items = \
-            [item for item in self._schedule_interval_items
-             if item.func is not _dummy_schedule_func]
+        remove(self._every_tick_items)
+        if remove(self._scheduled_items):
+            heapify(self._scheduled_items)

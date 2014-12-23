@@ -197,7 +197,7 @@ _option_types = {
 
 
 def _choose_darwin_platform():
-    if compat_platform != 'darwin':
+    if not compat_platform == 'darwin':
         return
     import struct
     numbits = 8 * struct.calcsize("P")
@@ -211,9 +211,7 @@ def _choose_darwin_platform():
         raise Exception(
             'pyglet is not compatible with 32-bit Python for Mac OS X')
     else:
-        raise Exception(
-            'pyglet is not compatible with this version of Python')
-
+        raise Exception('pyglet is not compatible with this version of Python')
 _choose_darwin_platform()  # can be overridden by an environment variable below
 
 
@@ -411,8 +409,4 @@ if False:
     from . import resource
     from . import sprite
     from . import text
-    from . import window
-
-# Hack around some epydoc bug that causes it to think pyglet.window is None.
-if False:
     from . import window

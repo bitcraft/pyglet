@@ -155,7 +155,7 @@ class EventLoop(event.EventDispatcher):
         predictor = self._least_squares()
         gradient, offset = next(predictor)
 
-        time = self.clock.time
+        time = self.clock._time
         idle = self.idle
         step = platform_event_loop.step
         send = predictor.send
@@ -268,8 +268,8 @@ class EventLoop(event.EventDispatcher):
         :return: The number of seconds before the idle method
                  should be called again, or `None` to block for user input.
         """
-        dt = self.clock.update_time()
-        redraw_all = self.clock.call_scheduled_functions(dt)
+        self.clock.tick()
+        redraw_all = True
 
         # Redraw all windows
         for window in app.windows:
@@ -280,7 +280,8 @@ class EventLoop(event.EventDispatcher):
                 window._legacy_invalid = False
 
         # Update timeout
-        return self.clock.get_sleep_time()
+        self.clock.get_sleep_time()
+        return 0
 
     @property
     def has_exit(self):

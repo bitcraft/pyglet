@@ -35,7 +35,6 @@
 
 import ctypes
 
-from pyglet import app
 from .base import PlatformEventLoop
 
 from pyglet.libs.win32 import kernel32, user32, types, constants

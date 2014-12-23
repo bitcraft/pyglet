@@ -946,7 +946,7 @@ def update(dt):
 # Start game
 # --------------------------------------------------------------------------
 clock = pyglet.app.event_loop.clock
-clock.schedule_interval(update, 1 / 60.)
+clock.schedule_interval(update, 1 / 120.)
 
 glEnable(GL_BLEND)
 glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
