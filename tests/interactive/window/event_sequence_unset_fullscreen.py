@@ -5,7 +5,7 @@ import unittest
 
 from pyglet import window
 
-from tests.unittests.window import base_event_sequence
+from tests.interactive.window import base_event_sequence
 
 __noninteractive = True
 

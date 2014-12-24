@@ -58,6 +58,7 @@ class WINDOW_SET_MOUSE_PLATFORM_CURSOR(unittest.TestCase):
         return True
 
     def test_set_visible(self):
+        print(__doc__)
         self.width, self.height = 200, 200
         self.w = w = window.Window(self.width, self.height)
         w.push_handlers(self)

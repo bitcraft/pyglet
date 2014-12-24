@@ -117,6 +117,7 @@ class WINDOW_MULTISAMPLE(unittest.TestCase):
         glEnd()
 
     def test_multisample(self):
+        print(__doc__)
         self.set_window()
         self.angle = 0
         clock.set_fps_limit(30)

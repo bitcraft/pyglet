@@ -20,7 +20,7 @@ import unittest
 from pyglet import window
 from pyglet.window import key
 
-from unittests.window import window_util
+from tests.interactive.window import window_util
 
 
 class WINDOW_SET_SIZE(unittest.TestCase):
@@ -37,6 +37,7 @@ class WINDOW_SET_SIZE(unittest.TestCase):
         print('Window size set to %dx%d.' % (self.width, self.height))
 
     def test_set_size(self):
+        print(__doc__)
         self.width, self.height = 200, 200
         self.w = w = window.Window(self.width, self.height, resizable=True)
         w.push_handlers(self)

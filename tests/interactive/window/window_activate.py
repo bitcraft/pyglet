@@ -17,14 +17,13 @@ import time
 import unittest
 
 from pyglet import window
-from pyglet.window.event import WindowEventLogger
 
 
-class WINDOW_ACTVATE(unittest.TestCase):
+class WindowActivate(unittest.TestCase):
 
     def test_activate(self):
+        print(__doc__)
         w = window.Window(200, 200)
-        w.push_handlers(WindowEventLogger())
         last_time = time.time()
         while not w.has_exit:
             if time.time() - last_time > 5:

@@ -1,15 +1,11 @@
-"""
-"""
-
+"""Press a letter to switch to the corresponding mode"""
 
 import unittest
 
 from pyglet import window
-from pyglet.window.event import WindowEventLogger
-from pyglet.window import key
 from pyglet.gl import *
 
-from unittests.window import window_util
+from tests.interactive.window import window_util
 
 
 class WINDOW_SET_FULLSCREEN(unittest.TestCase):
@@ -28,15 +24,13 @@ class WINDOW_SET_FULLSCREEN(unittest.TestCase):
         self.w.flip()
 
     def test_set_fullscreen(self):
+        print(__doc__)
         self.w = w = window.Window(200, 200)
-
         self.modes = w.screen.get_modes()
-        print('Press a letter to switch to the corresponding mode:')
         for i, mode in enumerate(self.modes):
             print('%s: %s' % (chr(i + ord('a')), mode))
 
         w.push_handlers(self)
-        # w.push_handlers(WindowEventLogger())
         self.on_expose()
         while not w.has_exit:
             w.dispatch_events()

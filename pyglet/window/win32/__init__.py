@@ -138,9 +138,7 @@ class Win32Window(BaseWindow):
             self._ex_ws_style = 0  # WS_EX_TOPMOST
         else:
             styles = {
-                self.WINDOW_STYLE_DEFAULT: (WS_OVERLAPPED | WS_CAPTION |
-                                            WS_THICKFRAME | WS_MINIMIZEBOX |
-                                            WS_MAXIMIZEBOX, 0),
+                self.WINDOW_STYLE_DEFAULT: (WS_OVERLAPPEDWINDOW, 0),
                 self.WINDOW_STYLE_DIALOG: (WS_OVERLAPPED | WS_CAPTION |
                                            WS_SYSMENU, WS_EX_DLGMODALFRAME),
                 self.WINDOW_STYLE_TOOL: (WS_OVERLAPPED | WS_CAPTION |
@@ -167,11 +165,12 @@ class Win32Window(BaseWindow):
             black = gdi32.GetStockObject(BLACK_BRUSH)
             self._window_class = WNDCLASS()
             self._window_class.lpszClassName = 'GenericAppClass%d' % id(self)
-            self._window_class.lpfnWndProc = WNDPROC(self._wnd_proc)
+            self._window_class.lpfnWndProc = WNDPROC(
+                self._get_window_proc(self._event_handlers))
             self._window_class.style = CS_VREDRAW | CS_HREDRAW
             self._window_class.hInstance = 0
-            self._window_class.hIcon = user32.LoadIconW(
-                module, MAKEINTRESOURCE(1))
+            self._window_class.hIcon = user32.LoadIconW(module,
+                                                        MAKEINTRESOURCE(1))
             self._window_class.hbrBackground = black
             self._window_class.lpszMenuName = None
             self._window_class.cbClsExtra = 0
@@ -181,7 +180,8 @@ class Win32Window(BaseWindow):
             self._view_window_class = WNDCLASS()
             self._view_window_class.lpszClassName = \
                 'GenericViewClass%d' % id(self)
-            self._view_window_class.lpfnWndProc = WNDPROC(self._wnd_proc_view)
+            self._view_window_class.lpfnWndProc = WNDPROC(
+                self._get_window_proc(self._view_event_handlers))
             self._view_window_class.style = 0
             self._view_window_class.hInstance = 0
             self._view_window_class.hIcon = 0
@@ -608,31 +608,21 @@ class Win32Window(BaseWindow):
                 # win32 event
                 event[0](*event[1:])
 
-    def _wnd_proc(self, hwnd, msg, wParam, lParam):
-        event_handler = self._event_handlers.get(msg, None)
-        result = 0
-        if event_handler:
-            if self._allow_dispatch_event or not self._enable_event_queue:
-                result = event_handler(msg, wParam, lParam)
-            else:
-                self._event_queue.append((event_handler, msg, wParam, lParam))
-                result = 0
-        if not result and msg != WM_CLOSE:
-            result = user32.DefWindowProcW(hwnd, msg, wParam, lParam)
-        return result
-
-    def _wnd_proc_view(self, hwnd, msg, wParam, lParam):
-        event_handler = self._view_event_handlers.get(msg, None)
-        result = 0
-        if event_handler:
-            if self._allow_dispatch_event or not self._enable_event_queue:
-                result = event_handler(msg, wParam, lParam)
-            else:
-                self._event_queue.append((event_handler, msg, wParam, lParam))
-                result = 0
-        if not result and msg != WM_CLOSE:
-            result = user32.DefWindowProcW(hwnd, msg, wParam, lParam)
-        return result
+    def _get_window_proc(self, event_handlers):
+        def f(hwnd, msg, wParam, lParam):
+            event_handler = event_handlers.get(msg, None)
+            result = None
+            if event_handler:
+                if self._allow_dispatch_event or not self._enable_event_queue:
+                    result = event_handler(msg, wParam, lParam)
+                else:
+                    result = 0
+                    self._event_queue.append((event_handler, msg,
+                                              wParam, lParam))
+            if result is None:
+                result = user32.DefWindowProcW(hwnd, msg, wParam, lParam)
+            return result
+        return f
 
     # Event handlers
 
@@ -680,6 +670,7 @@ class Win32Window(BaseWindow):
 
         shell32.DragFinish(hDrop)
         self.dispatch_event('on_file_drop', files, x, y)
+        return 0
 
     @Win32EventHandler(WM_KEYDOWN)
     @Win32EventHandler(WM_KEYUP)
@@ -722,7 +713,6 @@ class Win32Window(BaseWindow):
             else:
                 self.dispatch_event('on_text_motion', motion)
 
-        # Send on to DefWindowProc if not exclusive.
         if self._exclusive_keyboard:
             return 0
         else:
@@ -910,13 +900,17 @@ class Win32Window(BaseWindow):
 
     @Win32EventHandler(WM_SYSCOMMAND)
     def _event_syscommand(self, msg, wParam, lParam):
+        # issue #462
+        # check for alt key and prevent windows from halting app
+        if wParam == SC_KEYMENU and lParam & (1 >> 16) <= 0:
+            return 0
+
+        # Should be in WM_ENTERSIZEMOVE, but we never get that message.
         if wParam & 0xfff0 in (SC_MOVE, SC_SIZE):
-            # Should be in WM_ENTERSIZEMOVE, but we never get that message.
             from pyglet import app
 
             if app.event_loop is not None:
                 app.event_loop.enter_blocking()
-        return 0
 
     @Win32EventHandler(WM_MOVE)
     def _event_move(self, msg, wParam, lParam):
@@ -931,7 +925,6 @@ class Win32Window(BaseWindow):
 
         if app.event_loop is not None:
             app.event_loop.exit_blocking()
-        return 0
 
     """
     # Alternative to using WM_SETFOCUS and WM_KILLFOCUS.  Which is better?

@@ -31,7 +31,6 @@
 # ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 # ----------------------------------------------------------------------------
-# $Id:$
 
 """Provides keyboard and mouse editing procedures for text layout.
 
@@ -213,8 +212,8 @@ class Caret:
         document.
 
         An interactive text selection is determined by its immovable end (the
-        caret's position when a mouse drag begins) and the caret's position, which
-        moves interactively by mouse and keyboard input.
+        caret's position when a mouse drag begins) and the caret's position,
+        which moves interactively by mouse and keyboard input.
 
         This property is ``None`` when there is no selection.
 

@@ -12,14 +12,13 @@ import time
 import unittest
 
 from pyglet import window
-from pyglet.window.event import WindowEventLogger
 
 
-class WINDOW_SET_VISIBLE(unittest.TestCase):
+class WindowSetVisible(unittest.TestCase):
 
     def test_set_visible(self):
+        print(__doc__)
         w = window.Window(200, 200)
-        w.push_handlers(WindowEventLogger())
         last_time = time.time()
         visible = True
         while not w.has_exit:

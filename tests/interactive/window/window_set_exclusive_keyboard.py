@@ -42,6 +42,7 @@ class WINDOW_SET_EXCLUSIVE_KEYBOARD(unittest.TestCase):
               (key.symbol_string(symbol), key.modifiers_string(modifiers)))
 
     def test_set_exclusive_keyboard(self):
+        print(__doc__)
         self.width, self.height = 200, 200
         self.w = w = window.Window(self.width, self.height)
         w.push_handlers(self)

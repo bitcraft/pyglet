@@ -25,6 +25,7 @@ class WINDOW_SET_MOUSE_CURSOR(unittest.TestCase):
         print('on_mousemotion(x=%f, y=%f, dx=%f, dy=%f)' % (x, y, dx, dy))
 
     def test_set_mouse_cursor(self):
+        print(__doc__)
         self.width, self.height = 200, 200
         self.w = w = window.Window(self.width, self.height)
         img = image.load(cursor_file)

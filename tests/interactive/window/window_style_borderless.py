@@ -17,6 +17,7 @@ from pyglet.window import key
 class WINDOW_TEST_STYLE_BORDERLESS(unittest.TestCase):
 
     def test_style_borderless(self):
+        print(__doc__)
         self.width, self.height = 200, 200
         self.w = w = window.Window(self.width, self.height,
                                    style=window.Window.WINDOW_STYLE_BORDERLESS)

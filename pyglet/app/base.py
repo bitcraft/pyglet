@@ -1,5 +1,6 @@
 import threading
 import queue
+import platform
 
 from pyglet import app
 from pyglet import clock
@@ -126,7 +127,7 @@ class EventLoop(event.EventDispatcher):
         self.dispatch_event('on_enter')
 
         self.is_running = True
-        if True:  # TODO runtime option.
+        if int(platform.win32_ver()[0]) <= 5:
             self._run_estimated()
         else:
             self._run()
@@ -279,8 +280,9 @@ class EventLoop(event.EventDispatcher):
                 window.flip()
                 window._legacy_invalid = False
 
-        # Update timeout
-        return self.clock.get_sleep_time()
+        sleep_time = self.clock.get_sleep_time()
+        #app.platform_event_loop.sleep(sleep_time)
+        return sleep_time
 
     @property
     def has_exit(self):

@@ -26,6 +26,7 @@ class WINDOW_OPEN(unittest.TestCase):
         window.flip()
 
     def test_open_window(self):
+        print(__doc__)
         w1 = self.open_window()
         while not w1.has_exit:
             self.draw_window(w1, (1, 0, 1, 1))

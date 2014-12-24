@@ -1,6 +1,3 @@
-#!/usr/bin/python
-# $Id:$
-
 from pyglet.gl import *
 
 

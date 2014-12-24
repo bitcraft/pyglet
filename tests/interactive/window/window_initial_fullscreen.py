@@ -17,12 +17,11 @@ import unittest
 
 import pyglet.window
 from pyglet import window
-from pyglet.window.event import WindowEventLogger
 from pyglet.window import key
 from pyglet.gl import *
 
 
-class WINDOW_INITIAL_FULLSCREEN(unittest.TestCase):
+class WindowInitialFullscreen(unittest.TestCase):
 
     def on_key_press(self, symbol, modifiers):
         if symbol == key.F:
@@ -38,9 +37,9 @@ class WINDOW_INITIAL_FULLSCREEN(unittest.TestCase):
         self.w.flip()
 
     def test_initial_fullscreen(self):
+        print(__doc__)
         self.w = window.Window(fullscreen=True)
         self.w.push_handlers(self)
-        self.w.push_handlers(WindowEventLogger())
         self.on_expose()
         while not self.w.has_exit:
             self.w.dispatch_events()

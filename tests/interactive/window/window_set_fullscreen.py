@@ -15,7 +15,6 @@ Expected behaviour:
 import unittest
 
 from pyglet import window
-from pyglet.window.event import WindowEventLogger
 from pyglet.window import key
 from pyglet.gl import *
 
@@ -36,9 +35,9 @@ class WINDOW_SET_FULLSCREEN(unittest.TestCase):
         self.w.flip()
 
     def test_set_fullscreen(self):
+        print(__doc__)
         self.w = w = window.Window(200, 200)
         w.push_handlers(self)
-        w.push_handlers(WindowEventLogger())
         self.on_expose()
         while not w.has_exit:
             w.dispatch_events()

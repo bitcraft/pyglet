@@ -7,18 +7,16 @@ This test is non-interactive.
 import unittest
 from ctypes import *
 
-from pyglet import window
+from pyglet import window, canvas
 from pyglet.gl import *
 
-__noninteractive = True
 
-
-class CONTEXT_SHARE(unittest.TestCase):
+class ContestShareTestCase(unittest.TestCase):
 
     def create_context(self, share):
-        display = window.get_platform().get_default_display()
+        display = canvas.get_display()
         screen = display.get_default_screen()
-        config = screen.get_best_config()
+        config = pyglet.gl.Config.match(screen)
         return config.create_context(share)
 
     def test_context_share_list(self):

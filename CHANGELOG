@@ -39,16 +39,23 @@
     * updated astraea demo to [my] modern pyglet
     * removed _eos_XXX attributes and associated legacy functions from media
     * pyglet.media has names that shadow built-in bytes; renamed bytes_/bytes
-    * removed uneeded shebangs
+    * removed unneeded shebangs
     * removed __docformat__ because there will be just one format
     * removed __version__ in submodules because it is useless
     * remove app.WeakSet and replaced all refs. to python sdt lib implementation
     * merged Clock.tick and Clock.update time methods into tick
     * re-imagined the clock scheduler with a heapq core.  about 470% faster
-    * made Sprite.subpixel True by default, because reasons
+    * pyglet.clock.Clock will not sleep
+    * moved sleeping functions into app event loop
+    * moved sleep function for win32 from clock into app.win32
+    * made Sprite.subpixel True by default, because it looks better by default
     * new NoHandlerException in event, raised when no handlers for an event type
     * cleaned up profanity in ttf.py
-
+    * added check for windows xp and lower in app.eventloop.run
+      this check determines if the least squares regression should be used
+    * win32 event handlers return None to let windows manage message
+      return 0 will have message discarded
+      it seems this was the intended behaviour, but implementation prevented it
 
 1.2beta1
     + new API: font.have_font(name) return True if named font is installed

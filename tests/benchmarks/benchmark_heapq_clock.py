@@ -29,7 +29,7 @@ def generate_events(clock):
         clock.schedule_interval(random.choice(pool), random.random())
 
     for i in range(100):
-        clock.schedule_interval_soft(random.choice(pool), random.random())
+        clock.schedule_interval_soft(random.choice(pool), random.random() * 10)
 
     for i, f in enumerate(pool[:len(pool)//4]):
         clock.schedule_once(kill(clock, f), i * 100)
@@ -47,7 +47,7 @@ def benchmark(class_):
 if __name__ == '__main__':
     setup = """from __main__ import benchmark
 from pyglet.clock import Clock as HeapClock
-from pyglet.clocklegacy import Clock as LegacyClock"""
+from clocklegacy import Clock as LegacyClock"""
 
     import timeit
     result = timeit.repeat("benchmark(HeapClock)", setup, repeat=10, number=1)

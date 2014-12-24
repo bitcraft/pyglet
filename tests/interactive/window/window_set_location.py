@@ -32,6 +32,7 @@ class WINDOW_SET_SIZE(unittest.TestCase):
         print('Window location set to %dx%d.' % (x, y))
 
     def test_set_size(self):
+        print(__doc__)
         self.w = w = window.Window(200, 200)
         w.push_handlers(self)
         while not w.has_exit:

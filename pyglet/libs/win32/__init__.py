@@ -79,6 +79,12 @@ gdi32.DeleteObject.argtypes = [HGDIOBJ]
 gdi32.DescribePixelFormat.restype = c_int
 gdi32.DescribePixelFormat.argtypes = [
     HDC, c_int, UINT, POINTER(PIXELFORMATDESCRIPTOR)]
+
+# workaround for win 64-bit, see issue #664
+gdi32.EnumFontFamiliesExA.argtype = [c_void_p, c_void_p, c_void_p, c_void_p,
+                                     c_void_p, c_int32]
+gdi32.EnumFontFamiliesExA.restype = c_void_p
+
 gdi32.ExtTextOutA.restype = BOOL
 gdi32.ExtTextOutA.argtypes = [
     HDC, c_int, c_int, UINT, LPRECT, c_char_p, UINT, POINTER(INT)]
@@ -159,9 +165,11 @@ user32.GetClientRect.restype = BOOL
 user32.GetClientRect.argtypes = [HWND, LPRECT]
 user32.GetCursorPos.restype = BOOL
 user32.GetCursorPos.argtypes = [LPPOINT]
+
 # workaround for win 64-bit, see issue #664
-user32.GetDC.restype = c_void_p  # HDC
 user32.GetDC.argtypes = [c_void_p]  # [HWND]
+user32.GetDC.restype = c_void_p     # HDC
+
 user32.GetDesktopWindow.restype = HWND
 user32.GetDesktopWindow.argtypes = list()
 user32.GetKeyState.restype = c_short
@@ -174,6 +182,8 @@ user32.GetQueueStatus.restype = DWORD
 user32.GetQueueStatus.argtypes = [UINT]
 user32.GetSystemMetrics.restype = c_int
 user32.GetSystemMetrics.argtypes = [c_int]
+user32.GetSystemMenu.restype = HMENU
+user32.GetSystemMenu.argtypes = [HWND, BOOL]
 user32.LoadCursorW.restype = HCURSOR
 user32.LoadCursorW.argtypes = [HINSTANCE, c_wchar_p]
 user32.LoadIconW.restype = HICON
@@ -196,9 +206,11 @@ user32.RegisterHotKey.restype = BOOL
 user32.RegisterHotKey.argtypes = [HWND, c_int, UINT, UINT]
 user32.ReleaseCapture.restype = BOOL
 user32.ReleaseCapture.argtypes = list()
+
 # workaround for win 64-bit, see issue #664
-user32.ReleaseDC.restype = c_int32  # c_int
 user32.ReleaseDC.argtypes = [c_void_p, c_void_p]  # [HWND, HDC]
+user32.ReleaseDC.restype = c_int32                # c_int
+
 user32.ScreenToClient.restype = BOOL
 user32.ScreenToClient.argtypes = [HWND, LPPOINT]
 user32.SetCapture.restype = HWND
@@ -242,8 +254,8 @@ user32.UnregisterHotKey.argtypes = [HWND, c_int]
 # Accept drag/drops
 shell32.DragAcceptFiles.argtypes = [HWND, BOOL]
 # Find out file name
-#shell32.DragQueryFile.restype = UINT
-#shell32.DragQueryFile.argtypes = [HDROP, UINT, POINTER(c_wchar), UINT]
+# shell32.DragQueryFile.restype = UINT
+# shell32.DragQueryFile.argtypes = [HDROP, UINT, POINTER(c_wchar), UINT]
 # clean up memory
 shell32.DragFinish.argtypes = [HDROP]
 # Drop x, y

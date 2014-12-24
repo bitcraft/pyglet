@@ -2,11 +2,6 @@ pyglet - Leif's Fork
 ====================
 
 Fork with emphasis on full python 3.4 support (no 2to3), PEP8 compliance and
-internal consistency.  This can be considered a change of goals to a game
-framework without generic goals of a 'multimedia' framework, as well as
-making it more modern and accessible to new people.
-
-This fork isn't meant to be a replacement of pyglet.  There are a few changes
-in the core that will break projects.
+internal consistency.
 
 Please see CHANGELOG for details

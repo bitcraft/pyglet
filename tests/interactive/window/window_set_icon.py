@@ -23,6 +23,7 @@ icon_file = join(dirname(__file__), 'icon1.png')
 class WINDOW_SET_ICON(unittest.TestCase):
 
     def test_set_icon(self):
+        print(__doc__)
         self.width, self.height = 200, 200
         self.w = w = window.Window(self.width, self.height)
         w.set_icon(image.load(icon_file))

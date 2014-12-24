@@ -7,7 +7,7 @@
 # modification, are permitted provided that the following conditions
 # are met:
 #
-#  * Redistributions of source code must retain the above copyright
+# * Redistributions of source code must retain the above copyright
 #    notice, this list of conditions and the following disclaimer.
 #  * Redistributions in binary form must reproduce the above copyright
 #    notice, this list of conditions and the following disclaimer in
@@ -43,19 +43,21 @@ from pyglet.libs.win32.types import *
 
 
 class Win32EventLoop(PlatformEventLoop):
-
     def __init__(self):
         super().__init__()
 
         self._next_idle_time = None
+        self._timer_func = None
+        self._polling = None
+        self._allow_polling = None
 
         # Force immediate creation of an event queue on this thread -- note
         # that since event loop is created on pyglet.app import, whatever
         # imports pyglet.app _must_ own the main run loop.
         msg = types.MSG()
         user32.PeekMessageW(ctypes.byref(msg), 0,
-                             constants.WM_USER, constants.WM_USER,
-                             constants.PM_NOREMOVE)
+                            constants.WM_USER, constants.WM_USER,
+                            constants.PM_NOREMOVE)
 
         self._event_thread = kernel32.GetCurrentThreadId()
 
@@ -84,9 +86,10 @@ class Win32EventLoop(PlatformEventLoop):
             return
 
         self._wait_objects_n = len(self._wait_objects)
-        self._wait_objects_array = \
-            (HANDLE * self._wait_objects_n)(*
-                                            [o for o, f in self._wait_objects])
+        self._wait_objects_array = (HANDLE * self._wait_objects_n)(*
+                                                                   [o for o, f
+                                                                    in
+                                                                    self._wait_objects])
 
     def start(self):
         if kernel32.GetCurrentThreadId() != self._event_thread:
@@ -116,11 +119,11 @@ class Win32EventLoop(PlatformEventLoop):
 
         if result == self._wait_objects_n:
             while user32.PeekMessageW(ctypes.byref(msg),
-                                       0, 0, 0, constants.PM_REMOVE):
+                                      0, 0, 0, constants.PM_REMOVE):
                 user32.TranslateMessage(ctypes.byref(msg))
                 user32.DispatchMessageW(ctypes.byref(msg))
         elif 0 <= result < self._wait_objects_n:
-            object, func = self._wait_objects[result]
+            object_, func = self._wait_objects[result]
             func()
 
         # Return True if timeout was interrupted.
@@ -142,6 +145,19 @@ class Win32EventLoop(PlatformEventLoop):
         self._timer_func = func
         user32.SetTimer(0, self._timer, interval, self._timer_proc)
 
+    def sleep(self, microseconds):
+        if microseconds == 0.0:
+            return
+        microseconds /= 1000000
+        timer = kernel32.CreateWaitableTimerA(None, True, None)
+        delay = ctypes.c_longlong(int(-microseconds * 10))
+        kernel32.SetWaitableTimer(timer, ctypes.byref(delay),
+                                  0, ctypes.c_void_p(), ctypes.c_void_p(),
+                                  False)
+        kernel32.WaitForSingleObject(timer, 0xffffffff)
+
     def _timer_proc_func(self, hwnd, msg, timer, t):
         if self._timer_func:
             self._timer_func()
+
+import time

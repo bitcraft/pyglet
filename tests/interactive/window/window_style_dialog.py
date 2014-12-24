@@ -17,6 +17,7 @@ from pyglet.window import key
 class TEST_WINDOW_STYLE_DIALOG(unittest.TestCase):
 
     def test_style_dialog(self):
+        print(__doc__)
         self.width, self.height = 200, 200
         self.w = w = window.Window(self.width, self.height,
                                    style=window.Window.WINDOW_STYLE_DIALOG)

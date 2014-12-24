@@ -13,7 +13,7 @@ import unittest
 
 from pyglet import window
 
-from tests.unittests.window import window_util
+from tests.interactive.window import window_util
 
 
 class EVENT_RESIZE(unittest.TestCase):

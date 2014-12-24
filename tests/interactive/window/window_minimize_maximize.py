@@ -27,6 +27,7 @@ class WINDOW_MINIMIZE_MAXIMIZE(unittest.TestCase):
             print('Window minimized.')
 
     def test_minimize_maximize(self):
+        print(__doc__)
         self.width, self.height = 200, 200
         self.w = w = window.Window(self.width, self.height, resizable=True)
         w.push_handlers(self)

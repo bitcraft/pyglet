@@ -14,9 +14,10 @@ import unittest
 from pyglet import window
 
 
-class WINDOW_CAPTION(unittest.TestCase):
+class WindowCaption(unittest.TestCase):
 
     def test_caption(self):
+        print(__doc__)
         w1 = window.Window(400, 200, resizable=True)
         w2 = window.Window(400, 200, resizable=True)
         count = 1

@@ -91,43 +91,7 @@ of the system clock.
 """
 import collections
 import time
-import ctypes
 from heapq import heappush, heapify, heappop, heappushpop
-
-import pyglet.lib
-from pyglet import compat_platform
-
-if compat_platform in ('win32', 'cygwin'):
-    # Win32 Sleep function is only 10-millisecond resolution, so instead
-    # use a waitable timer object, which has up to 100-nanosecond resolution
-    # (hardware and implementation dependent, of course).
-    kernel32 = ctypes.windll.kernel32
-
-    class _ClockBase:
-
-        def __init__(self):
-            self._timer = kernel32.CreateWaitableTimerA(None, True, None)
-
-        def sleep(self, microseconds):
-            delay = ctypes.c_longlong(int(-microseconds * 10))
-            kernel32.SetWaitableTimer(self._timer, ctypes.byref(delay),
-                                      0, ctypes.c_void_p(), ctypes.c_void_p(),
-                                      False)
-            kernel32.WaitForSingleObject(self._timer, 0xffffffff)
-
-    _default_time_function = time.perf_counter
-
-else:
-    _c = pyglet.lib.load_library('c')
-    _c.usleep.argtypes = [ctypes.c_ulong]
-
-    class _ClockBase:
-
-        @staticmethod
-        def sleep(microseconds):
-            _c.usleep(int(microseconds))
-
-    _default_time_function = time.perf_counter
 
 
 class ScheduledItem:
@@ -158,11 +122,11 @@ class ScheduledItem:
             return self.next_ts < other
 
 
-class Clock(_ClockBase):
+class Scheduler:
     """Class for scheduling functions.
     """
 
-    def __init__(self, time_function=_default_time_function):
+    def __init__(self, time_function=time.perf_counter):
         """Initialise a Clock, with optional custom time function.
 
         :Parameters:
@@ -182,8 +146,12 @@ class Clock(_ClockBase):
         self._every_tick_items = list()
 
     def _get_nearest_ts(self):
-        """Get a timestamp for scheduling items while attempting to group
-        items together
+        """Schedule from now, unless now is sufficiently close to last_ts, in
+        which case use last_ts.  This clusters together scheduled items that
+        probably want to be scheduled together.  The old (pre 1.1.1)
+        behaviour was to always use self.last_ts, and not look at ts.  The
+        new behaviour is needed because clock ticks can now be quite
+        irregular, and span several seconds.
         """
         last_ts = self._last_ts
         ts = self._time()
@@ -341,7 +309,7 @@ class Clock(_ClockBase):
         :return: The number of seconds since the last "tick", or 0 if this was
                  the first tick.
         """
-        delta_t = self.set_clock(self._time())
+        delta_t = self.set_time(self._time())
         self._times.append(delta_t)
         self.call_scheduled_functions(delta_t)
         return delta_t
@@ -363,7 +331,7 @@ class Clock(_ClockBase):
         except ZeroDivisionError:
             return 0.0
 
-    def set_clock(self, time_stamp):
+    def set_time(self, time_stamp):
         """Set the clock manually and do not call scheduled functions.  Return
         the difference in time from the last time clock was updated.
 
@@ -498,3 +466,8 @@ class Clock(_ClockBase):
         remove(self._every_tick_items)
         if remove(self._scheduled_items):
             heapify(self._scheduled_items)
+
+
+class Clock(Scheduler):
+    """Schedules stuff like a Scheduler, and includes time limiting functions
+    """

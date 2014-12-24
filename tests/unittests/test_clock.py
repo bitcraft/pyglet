@@ -157,7 +157,7 @@ class ClockTestCase(unittest.TestCase):
     def test_call_sched_return_True_if_called_functions_interval(self):
         self.clock.schedule_once(self.callback_a, 1)
         self.assertFalse(self.clock.call_scheduled_functions(0))
-        self.clock.set_clock(1)
+        self.clock.set_time(1)
         self.assertTrue(self.clock.call_scheduled_functions(0))
 
     def test_call_sched_return_False_if_no_called_functions(self):

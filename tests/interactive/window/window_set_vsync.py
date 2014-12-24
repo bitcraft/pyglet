@@ -49,6 +49,7 @@ class WINDOW_SET_VSYNC(unittest.TestCase):
         window.flip()
 
     def test_open_window(self):
+        print(__doc__)
         self.w1 = self.open_window()
         self.w1.push_handlers(self)
         print('vsync is %r' % self.w1.vsync)
