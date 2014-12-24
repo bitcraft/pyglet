@@ -9,8 +9,6 @@ operation).  Messages will be printed to stdout indicating what stage is
 occuring.
 """
 
-__docformat__ = 'restructuredtext'
-__version__ = '$Id: $'
 
 import unittest
 from . import base_save

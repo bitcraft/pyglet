@@ -148,13 +148,19 @@ class EventException(Exception):
     pass
 
 
+class NoHandlerException(Exception):
+
+    """Raised when dispatcher attempts to dispatch event type with no handler
+    """
+    pass
+
+
 class EventDispatcher:
 
     """Generic event dispatcher interface.
 
     See the module docstring for usage.
     """
-    # Placeholder empty stack; real stack is created only if needed
     _event_stack = ()
 
     @classmethod
@@ -208,7 +214,7 @@ class EventDispatcher:
                 for name in dir(object_):
                     if name in self.event_types:
                         yield name, getattr(object_, name)
-        for name, handler in list(kwargs.items()):
+        for name, handler in kwargs.items():
             # Function for handling given event (no magic)
             if name not in self.event_types:
                 raise EventException('Unknown event "%s"' % name)
@@ -246,7 +252,8 @@ class EventDispatcher:
     def pop_handlers(self):
         """Pop the top level of event handlers off the stack.
         """
-        assert self._event_stack and 'No handlers pushed'
+        if len(self._event_stack) == 0:
+            raise NoHandlerException
 
         del self._event_stack[0]
 
@@ -342,8 +349,13 @@ class EventDispatcher:
             is always ``None``.
 
         """
-        assert event_type in self.event_types, "%r not found in %r.event_types == %r" % (
-            event_type, self, self.event_types)
+        try:
+            if event_type not in self.event_types:
+                # "%r not found in %r.event_types == %r" %
+                # (event_type, self, self.event_types)
+                raise NoHandlerException
+        except AttributeError:
+            raise NoHandlerException
 
         invoked = False
 
@@ -444,14 +456,15 @@ class EventDispatcher:
                 self.set_handler(name, func)
                 return func
             return decorator
+
         elif inspect.isroutine(args[0]):        # @window.event
             func = args[0]
             name = func.__name__
             self.set_handler(name, func)
             return args[0]
-        elif type(args[0]) in (str, str):   # @window.event('on_resize')
-            name = args[0]
 
+        elif type(args[0]) in (str, str):       # @window.event('on_resize')
+            name = args[0]
             def decorator(func):
                 self.set_handler(name, func)
                 return func

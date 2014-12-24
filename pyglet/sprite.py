@@ -94,7 +94,7 @@ sprites within batches.
 
 :since: pyglet 1.1
 """
-import math
+from math import sin, cos, radians
 
 from pyglet.gl import *
 from pyglet import event
@@ -185,7 +185,7 @@ class Sprite(event.EventDispatcher):
                  batch=None,
                  group=None,
                  usage='dynamic',
-                 subpixel=False):
+                 subpixel=True):
         """Create a sprite.
 
         :Parameters:
@@ -210,8 +210,8 @@ class Sprite(event.EventDispatcher):
                 ``"stream"``, ``"dynamic"`` (default) or ``"static"``.  Applies
                 only to vertex data.
             `subpixel` : bool
-                Allow floating-point coordinates for the sprite. By default,
-                coordinates are restricted to integer values.
+                Allow floating-point coordinates for the sprite.  Default is
+                True.
 
         """
         if batch is not None:
@@ -235,6 +235,7 @@ class Sprite(event.EventDispatcher):
         self._usage = usage
         self._subpixel = subpixel
         self._create_vertex_list()
+        self._update_position()
 
     def __del__(self):
         try:
@@ -380,8 +381,7 @@ class Sprite(event.EventDispatcher):
         else:
             vertex_format = 'v2i/%s' % self._usage
         if self._batch is None:
-            self._vertex_list = graphics.vertex_list(4,
-                                                     vertex_format,
+            self._vertex_list = graphics.vertex_list(4, vertex_format,
                                                      'c4B', ('t3f', self._texture.tex_coords))
         else:
             self._vertex_list = self._batch.add(4, GL_QUADS, self._group,
@@ -402,9 +402,9 @@ class Sprite(event.EventDispatcher):
             x = self._x
             y = self._y
 
-            r = -math.radians(self._rotation)
-            cr = math.cos(r)
-            sr = math.sin(r)
+            r = -radians(self._rotation)
+            cr = cos(r)
+            sr = sin(r)
             ax = x1 * cr - y1 * sr + x
             ay = x1 * sr + y1 * cr + y
             bx = x2 * cr - y1 * sr + x
@@ -511,8 +511,8 @@ class Sprite(event.EventDispatcher):
         return self._scale_w, self._scale_h
 
     @scale.setter
-    def scale(self, x, y):
-        self._scale_w, self._scale_h = x, y
+    def scale(self, w, h):
+        self._scale_w, self._scale_h = w, h
         self._update_position()
 
     @property
@@ -592,8 +592,9 @@ class Sprite(event.EventDispatcher):
 
     @visible.setter
     def visible(self, visible):
-        self._visible = visible
-        self._update_position()
+        if not visible == self._visible:
+            self._visible = visible
+            self._update_position()
 
     def draw(self):
         """Draw the sprite at its current position.

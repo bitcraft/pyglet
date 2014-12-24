@@ -1,6 +1,3 @@
-__docformat__ = 'restructuredtext'
-__version__ = '$Id$'
-
 import unittest
 from os.path import dirname, join, abspath
 
@@ -51,7 +48,10 @@ class TestImageCodecs(unittest.TestCase):
         self._test_load(png_files, PILImageDecoder(), True)
 
     def test_gdkpixbuf2_load(self):
-        from pyglet.image.codecs.gdkpixbuf2 import GdkPixbuf2ImageDecoder
+        try:
+            from pyglet.image.codecs.gdkpixbuf2 import GdkPixbuf2ImageDecoder
+        except ImportError:
+            return
         self._test_load(gif_files, GdkPixbuf2ImageDecoder(), True)
 
     def test_dds_load(self):

@@ -37,8 +37,6 @@
 :since: pyglet 1.2
 """
 
-import sys
-
 from pyglet.event import EventDispatcher
 
 
@@ -73,9 +71,11 @@ class Device:
         self.display = display
         self.name = name
         self.manufacturer = None
+        self._is_open = False
 
-        # TODO: make private
-        self.is_open = False
+    @property
+    def is_open(self):
+        return self._is_open
 
     def open(self, window=None, exclusive=False):
         """Open the device to begin receiving input from it.
@@ -93,15 +93,15 @@ class Device:
                 opened it).
 
         """
-        if self.is_open:
+        if self._is_open:
             raise DeviceOpenException('Device is already open.')
 
-        self.is_open = True
+        self._is_open = True
 
     def close(self):
         """Close the device.
         """
-        self.is_open = False
+        self._is_open = False
 
     def get_controls(self):
         """Get a list of controls provided by the device.
@@ -136,12 +136,12 @@ class Control(EventDispatcher):
             operating systems.
 
     """
-    _value = None
 
     def __init__(self, name, raw_name=None):
         self.name = name
         self.raw_name = raw_name
         self.inverted = False
+        self._value = None
 
     @property
     def value(self):
@@ -155,11 +155,11 @@ class Control(EventDispatcher):
         """
         return self._value
 
-    def _set_value(self, value):
-        if value == self._value:
-            return
-        self._value = value
-        self.dispatch_event('on_change', value)
+    @value.setter
+    def value(self, value):
+        if not value == self._value:
+            self._value = value
+            self.dispatch_event('on_change', value)
 
     def __repr__(self):
         if self.name:
@@ -203,14 +203,6 @@ class RelativeAxis(Control):
     #: Name of the scroll wheel control
     WHEEL = 'wheel'
 
-    @property
-    def value(self):
-        return self._value
-
-    def _set_value(self, value):
-        self._value = value
-        self.dispatch_event('on_change', value)
-
 
 class AbsoluteAxis(Control):
 
@@ -250,7 +242,6 @@ class AbsoluteAxis(Control):
 
     def __init__(self, name, min, max, raw_name=None):
         super().__init__(name, raw_name)
-
         self.min = min
         self.max = max
 
@@ -265,28 +256,29 @@ class Button(Control):
     def value(self):
         return bool(self._value)
 
-    def _set_value(self, value):
-        if value == self._value:
-            return
-        self._value = value
-        self.dispatch_event('on_change', bool(value))
-        if value:
-            self.dispatch_event('on_press')
-        else:
-            self.dispatch_event('on_release')
+    @value.setter
+    def value(self, value):
+        if not value == self._value:
+            self._value = value
+            self.dispatch_event('on_change', bool(value))
+            if value:
+                self.dispatch_event('on_press')
+            else:
+                self.dispatch_event('on_release')
 
-    # if _is_epydoc:
-    #     def on_press(self):
-    #         """The button was pressed.
-    #
-    #         :event:
-    #         """
-    #
-    #     def on_release(self):
-    #         """The button was released.
-    #
-    #         :event:
-    #         """
+    def on_press(self):
+        """The button was pressed.
+
+        :event:
+        """
+        pass
+
+    def on_release(self):
+        """The button was released.
+
+        :event:
+        """
+        pass
 
 Button.register_event_type('on_press')
 Button.register_event_type('on_release')
@@ -488,6 +480,8 @@ class Joystick(EventDispatcher):
                 The name of the axis that changed.
             `value` : float
                 The current value of the axis, normalized to [-1, 1].
+
+        :event:
         """
 
     def on_joybutton_press(self, joystick, button):
@@ -498,6 +492,8 @@ class Joystick(EventDispatcher):
                 The joystick device whose button was pressed.
             `button` : int
                 The index (in `button_controls`) of the button that was pressed.
+
+        :event:
         """
 
     def on_joybutton_release(self, joystick, button):
@@ -508,6 +504,8 @@ class Joystick(EventDispatcher):
                 The joystick device whose button was released.
             `button` : int
                 The index (in `button_controls`) of the button that was released.
+
+        :event:
         """
 
     def on_joyhat_motion(self, joystick, hat_x, hat_y):
@@ -522,6 +520,8 @@ class Joystick(EventDispatcher):
             `hat_y` : int
                 Current hat (POV) vertical position; one of -1 (bottom), 0
                 (centered) or 1 (top).
+
+        :event:
         """
 
 Joystick.register_event_type('on_joyaxis_motion')
@@ -577,8 +577,9 @@ class AppleRemote(EventDispatcher):
 
         self.device = device
         for control in device.get_controls():
-            if control.name in ('left', 'left_hold', 'right', 'right_hold', 'up', 'down',
-                                'menu', 'select', 'menu_hold', 'select_hold'):
+            if control.name in ('left', 'left_hold', 'right', 'right_hold',
+                                'up', 'down', 'menu', 'select', 'menu_hold',
+                                'select_hold'):
                 add_button(control)
 
     def open(self, window=None, exclusive=False):

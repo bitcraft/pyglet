@@ -3,8 +3,6 @@
 Press ESC to exit the test.
 """
 
-__docformat__ = 'restructuredtext'
-__version__ = '$Id: ELEMENT.py 1764 2008-02-16 05:24:46Z Alex.Holkner $'
 
 import unittest
 import pyglet

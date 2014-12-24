@@ -3,8 +3,6 @@
 This test is non-interactive.
 """
 
-__docformat__ = 'restructuredtext'
-__version__ = '$Id: $'
 
 import unittest
 from ctypes import *

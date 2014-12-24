@@ -12,8 +12,6 @@ Expected behaviour:
     Close the window or press ESC to end the test.
 """
 
-__docformat__ = 'restructuredtext'
-__version__ = '$Id: WINDOW_SET_MOUSE_VISIBLE.py 703 2007-02-28 14:18:00Z Alex.Holkner $'
 
 import unittest
 

@@ -92,7 +92,7 @@ of the system clock.
 import collections
 import time
 import ctypes
-from heapq import heappush, heapify, heappop, heapreplace
+from heapq import heappush, heapify, heappop, heappushpop
 
 import pyglet.lib
 from pyglet import compat_platform
@@ -198,7 +198,7 @@ class Clock(_ClockBase):
             """
             for item in self._scheduled_items:
                 if item.next_ts is None:
-                    pass
+                    continue
                 elif abs(item.next_ts - ts) <= e:
                     return True
                 elif item.next_ts > ts + e:
@@ -344,7 +344,6 @@ class Clock(_ClockBase):
         delta_t = self.set_clock(self._time())
         self._times.append(delta_t)
         self.call_scheduled_functions(delta_t)
-
         return delta_t
 
     def get_interval(self):
@@ -405,9 +404,10 @@ class Clock(_ClockBase):
         now = self._last_ts
         result = False
 
-        for item in self._every_tick_items:
+        if self._every_tick_items:
             result = True
-            item.func(dt, *item.args, **item.kwargs)
+            for item in self._every_tick_items:
+                item.func(dt, *item.args, **item.kwargs)
 
         try:
             item = scheduled_items[0]
@@ -428,7 +428,7 @@ class Clock(_ClockBase):
                 break
 
             if replace:
-                item = heapreplace(scheduled_items, item)
+                item = heappushpop(scheduled_items, item)
             else:
                 item = heappop(scheduled_items)
 

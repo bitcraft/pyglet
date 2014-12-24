@@ -1,6 +1,4 @@
 from pyglet import app
-from pyglet import gl
-from pyglet import window
 
 
 class Display:

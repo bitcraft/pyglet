@@ -8,8 +8,6 @@ One window will open, it should show "Quickly brown fox" at 24pt using:
 
 """
 
-__docformat__ = 'restructuredtext'
-__version__ = '$Id: $'
 
 import unittest
 import sys

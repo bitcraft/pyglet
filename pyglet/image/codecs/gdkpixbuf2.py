@@ -32,9 +32,6 @@
 # POSSIBILITY OF SUCH DAMAGE.
 # ----------------------------------------------------------------------------
 
-"""
-"""
-
 from ctypes import *
 
 from pyglet.gl import *

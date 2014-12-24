@@ -9,8 +9,6 @@ Expected behaviour:
     Close the window or press ESC to end the test.
 """
 
-__docformat__ = 'restructuredtext'
-__version__ = '$Id: $'
 
 import unittest
 

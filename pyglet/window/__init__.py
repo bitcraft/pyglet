@@ -122,13 +122,10 @@ above, "Working with multiple screens")::
 
 """
 
-import pprint
 import sys
 
 import pyglet
 from pyglet import gl
-from pyglet.gl import gl_info
-from pyglet.gl.base import CanvasConfig
 from pyglet.event import EventDispatcher
 import pyglet.window.key
 import pyglet.window.event
@@ -1775,21 +1772,16 @@ class FPSDisplay:
 # Try to determine which platform to use.
 if pyglet.compat_platform == 'darwin':
     from pyglet.window.cocoa import CocoaWindow as Window
+
 elif pyglet.compat_platform in ('win32', 'cygwin'):
     from pyglet.window.win32 import Win32Window as Window
-else:
-    # TODO: HACK around circ problem, should be fixed after removal of
-    # shadow nonsense
-    # pyglet.window = sys.modules[__name__]
-    # import key, mouse
+    pyglet.window = sys.modules[__name__]
+    gl._create_shadow_window()
 
+else:
     from pyglet.window.xlib import XlibWindow as Window
+    pyglet.window = sys.modules[__name__]
+    gl._create_shadow_window()
 
 Display = pyglet.canvas.Display
 Screen = pyglet.canvas.Screen
-
-
-# TODO: remove
-# Create shadow window. (trickery is for circular import)
-pyglet.window = sys.modules[__name__]
-gl._create_shadow_window()

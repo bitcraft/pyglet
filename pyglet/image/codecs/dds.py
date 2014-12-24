@@ -82,6 +82,7 @@ DDSCAPS2_VOLUME = 0x00200000
 
 
 class _filestruct:
+    _fields = []
 
     def __init__(self, data):
         if len(data) < self.get_size():

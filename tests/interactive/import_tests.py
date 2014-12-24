@@ -3,9 +3,6 @@
 This _must_ be the first test run.
 """
 
-__docformat__ = 'restructuredtext'
-__version__ = '$Id: TICK.py 310 2006-12-23 15:56:35Z Alex.Holkner $'
-
 import unittest
 
 import pyglet

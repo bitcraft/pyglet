@@ -12,8 +12,6 @@ Expected behaviour:
     Press escape or close the window to finished the test.
 """
 
-__docformat__ = 'restructuredtext'
-__version__ = '$Id: $'
 
 import time
 import unittest

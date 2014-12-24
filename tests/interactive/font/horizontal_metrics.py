@@ -5,8 +5,6 @@ the left edge of the text.  Blue vertical lines mark the right edge of the
 text.
 """
 
-__docformat__ = 'restructuredtext'
-__version__ = '$Id$'
 
 import os
 import unittest

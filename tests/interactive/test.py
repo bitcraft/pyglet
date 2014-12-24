@@ -162,8 +162,6 @@ capture_regression_image() several times; only the final image will be
 used.
 """
 
-__docformat__ = 'restructuredtext'
-__version__ = '$Id: $'
 
 import array
 import logging

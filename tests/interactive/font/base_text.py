@@ -1,8 +1,6 @@
 """Base class for text tests.
 """
 
-__docformat__ = 'restructuredtext'
-__version__ = '$Id: $'
 
 import unittest
 import sys

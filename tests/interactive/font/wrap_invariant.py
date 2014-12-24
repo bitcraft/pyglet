@@ -5,8 +5,6 @@ You should be able to clearly see "TEST TEST" on a single line (not two)
 and "SPAM SPAM SPAM" over two lines, not three.
 """
 
-__docformat__ = 'restructuredtext'
-__version__ = '$Id: $'
 
 import unittest
 from . import base_text

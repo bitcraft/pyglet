@@ -4,8 +4,6 @@ Three labels will be rendered at the top-left, center and bottom-right of the
 window.  Resize the window to ensure the alignment is as specified.
 """
 
-__docformat__ = 'restructuredtext'
-__version__ = '$Id: $'
 
 import unittest
 

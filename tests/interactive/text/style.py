@@ -9,8 +9,6 @@ replacing text and resizing the window.
 Press ESC to exit the test.
 """
 
-__docformat__ = 'restructuredtext'
-__version__ = '$Id$'
 
 import unittest
 

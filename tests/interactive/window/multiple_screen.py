@@ -15,8 +15,6 @@ Expected behaviour:
     The test will end when all screens have been tested.
 """
 
-__docformat__ = 'restructuredtext'
-__version__ = '$Id: $'
 
 import unittest
 

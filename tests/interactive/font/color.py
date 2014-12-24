@@ -2,8 +2,6 @@
 appear blue.
 """
 
-__docformat__ = 'restructuredtext'
-__version__ = '$Id$'
 
 import unittest
 from . import base_text

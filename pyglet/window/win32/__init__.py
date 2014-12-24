@@ -449,7 +449,7 @@ class Win32Window(BaseWindow):
                 self._view_hwnd, HWND_DESKTOP, byref(rect), 2)
 
             x = x + rect.left
-            y = rect.top + (rect.bottom - rect.top) - y
+            y = rect.top + (rect.bottom - 1 - rect.top) - y
 
         user32.SetCursorPos(x, y)
 
@@ -746,7 +746,7 @@ class Win32Window(BaseWindow):
             self._mouse_y = y
             return 0
 
-        y = self._height - y
+        y = self._height - 1 - y
 
         if self._exclusive_mouse and self._has_focus:
             # Reset mouse position (so we don't hit the edge of the screen).

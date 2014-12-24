@@ -5,8 +5,6 @@ Four lines of text should be displayed, each in a different variant
 included in the test directory (tests/font) as action_man*.ttf.
 """
 
-__docformat__ = 'restructuredtext'
-__version__ = '$Id: $'
 
 import os
 import unittest

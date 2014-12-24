@@ -2,8 +2,6 @@
 You should see the rgb.png image on a checkboard background.
 """
 
-__docformat__ = 'restructuredtext'
-__version__ = '$Id: $'
 
 import unittest
 from . import base_load

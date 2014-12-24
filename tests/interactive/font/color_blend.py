@@ -2,8 +2,6 @@
 appear at 0.1 opacity (faint white)
 """
 
-__docformat__ = 'restructuredtext'
-__version__ = '$Id$'
 
 import unittest
 from . import base_text

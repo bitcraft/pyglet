@@ -8,8 +8,6 @@ relative document positions as the text is scrolled and edited.
 Press ESC to exit the test.
 """
 
-__docformat__ = 'restructuredtext'
-__version__ = '$Id$'
 
 import unittest
 

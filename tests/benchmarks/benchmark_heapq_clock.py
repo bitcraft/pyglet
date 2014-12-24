@@ -6,15 +6,14 @@ benchmark will simulate time passing and scheduling of items.
 
 The purpose of this is to investigate if using a heapq is faster for insertion
 of scheduled elements and for sorting the scheduled items queue.
-"""
 
-import random
-import pyglet
-from pyglet.clock import Clock as HeapClock
-from pyglet.clocklegacy import Clock as LegacyClock
+Always scheduled events (those scheduled with Clock.schedule()) are not tested.
+"""
 
 
 def generate_events(clock):
+    import random
+
     def make_function():
         def _(dt):
             pass

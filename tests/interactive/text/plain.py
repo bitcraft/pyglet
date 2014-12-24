@@ -6,8 +6,6 @@ contents can be scrolled with the mouse wheel.
 Press ESC to exit the test.
 """
 
-__docformat__ = 'restructuredtext'
-__version__ = '$Id: STYLE.py 1754 2008-02-10 13:26:52Z Alex.Holkner $'
 
 import unittest
 

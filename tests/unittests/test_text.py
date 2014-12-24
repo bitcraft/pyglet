@@ -1,11 +1,8 @@
-#!/usr/bin/python
-# $Id:$
-
-from pyglet.text import runlist
-
 import unittest
 
-__noninteractive = True
+import pyglet
+from pyglet.text import runlist
+from pyglet.text.formats.attributed import AttributedTextDecoder
 
 
 class TestStyleRuns(unittest.TestCase):
@@ -298,3 +295,61 @@ class TestStyleRuns(unittest.TestCase):
         runs = self.create_runs2()
         runs.delete(6, 7)
         self.check_value(runs, 'aaaabbccc')
+
+
+class TestIssues(unittest.TestCase):
+
+    def test_issue471(self):
+        doc = pyglet.text.document.FormattedDocument()
+        layout = pyglet.text.layout.IncrementalTextLayout(doc, 100, 100)
+        doc.insert_text(0, "hello", {'bold': True})
+        doc.text = ""
+
+    def test_issue471_comment2(self):
+        doc2 = pyglet.text.decode_attributed('{bold True}a')
+        layout = pyglet.text.layout.IncrementalTextLayout(doc2, 100, 10)
+        layout.document.delete_text(0, len(layout.document.text))
+
+    def test_issue241_comment4a(self):
+        document = pyglet.text.document.FormattedDocument("")
+        layout = pyglet.text.layout.IncrementalTextLayout(document, 50, 50)
+        document.set_style(0, len(document.text), {"font_name": "Arial"})
+
+    def test_issue241_comment4b(self):
+        document = pyglet.text.document.FormattedDocument("test")
+        layout = pyglet.text.layout.IncrementalTextLayout(document, 50, 50)
+        document.set_style(0, len(document.text), {"font_name": "Arial"})
+        document.delete_text(0, len(document.text))
+
+    def test_issue241_comment5(self):
+        document = pyglet.text.document.FormattedDocument('A')
+        document.set_style(0, 1, dict(bold=True))
+        layout = pyglet.text.layout.IncrementalTextLayout(document, 100, 100)
+        document.delete_text(0, 1)
+
+    def test_issue429_comment4a(self):
+        doc = pyglet.text.decode_attributed(
+            '{bold True}Hello{bold False}\n\n\n\n')
+        doc2 = pyglet.text.decode_attributed(
+            '{bold True}Goodbye{bold False}\n\n\n\n')
+        layout = pyglet.text.layout.IncrementalTextLayout(doc, 100, 10)
+        layout.document = doc2
+        layout.document.delete_text(0, len(layout.document.text))
+
+    def test_issue429_comment4b(self):
+        doc2 = pyglet.text.decode_attributed('{bold True}a{bold False}b')
+        layout = pyglet.text.layout.IncrementalTextLayout(doc2, 100, 10)
+        layout.document.delete_text(0, len(layout.document.text))
+
+
+class AttributedTextDecoderTests(unittest.TestCase):
+
+    def testOneNewlineBecomesSpace(self):
+        doc = AttributedTextDecoder().decode('one\ntwo')
+        self.assertEqual('one two', doc.text)
+
+    def testTwoNewlinesBecomesParagraph(self):
+        from pyglet.text.formats.attributed import AttributedTextDecoder
+
+        doc = AttributedTextDecoder().decode('one\n\ntwo')
+        self.assertEqual('one\ntwo', doc.text)

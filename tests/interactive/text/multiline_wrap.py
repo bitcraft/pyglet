@@ -12,8 +12,6 @@ and continue with the next window until finish the test.
 Press ESC to exit the test.
 """
 
-__docformat__ = 'restructuredtext'
-__version__ = '$Id$'
 
 import unittest
 

@@ -3,8 +3,6 @@
 Three labels will be rendered aligned left, center and right.
 """
 
-__docformat__ = 'restructuredtext'
-__version__ = '$Id: $'
 
 import unittest
 

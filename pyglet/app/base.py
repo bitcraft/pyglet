@@ -280,8 +280,7 @@ class EventLoop(event.EventDispatcher):
                 window._legacy_invalid = False
 
         # Update timeout
-        self.clock.get_sleep_time()
-        return 0
+        return self.clock.get_sleep_time()
 
     @property
     def has_exit(self):

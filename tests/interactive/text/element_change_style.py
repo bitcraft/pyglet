@@ -8,8 +8,6 @@ printed to the console.
 Press ESC to end the test.
 """
 
-__docformat__ = 'restructuredtext'
-__version__ = '$Id$'
 
 import unittest
 

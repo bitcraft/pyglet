@@ -3,8 +3,6 @@
 You should see 5 bullet glyphs rendered in the bottom-left of the window.
 """
 
-__docformat__ = 'restructuredtext'
-__version__ = '$Id: $'
 
 import unittest
 

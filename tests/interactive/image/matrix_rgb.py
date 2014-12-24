@@ -5,8 +5,6 @@ You should see the RGB test image correctly rendered.  Press ESC to
 end the test.
 """
 
-__docformat__ = 'restructuredtext'
-__version__ = '$Id$'
 
 import unittest
 from . import base_load

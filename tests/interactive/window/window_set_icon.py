@@ -7,8 +7,6 @@ Expected behaviour:
     Close the window or press ESC to end the test.
 """
 
-__docformat__ = 'restructuredtext'
-__version__ = '$Id: WINDOW_SET_MOUSE_CURSOR.py 717 2007-03-03 07:04:10Z Alex.Holkner $'
 
 import unittest
 

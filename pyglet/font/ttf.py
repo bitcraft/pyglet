@@ -130,7 +130,8 @@ class TruetypeInfo:
         offsets = _read_offset_table(self._data, 0)
         self._tables = dict()
         for table in _read_table_directory_entry.array(self._data,
-                                                       offsets.size, offsets.num_tables):
+                                                       offsets.size,
+                                                       offsets.num_tables):
             self._tables[table.tag] = table
 
         self._names = None
@@ -406,9 +407,6 @@ class TruetypeInfo:
         return self._character_map
 
     def _get_character_map_format4(self, offset):
-        # This is absolutely, without question, the *worst* file
-        # format ever.  Whoever the fuckwit is that thought this up is
-        # a fuckwit.
         header = _read_cmap_format4Header(self._data, offset)
         seg_count = header.seg_count_x2 / 2
         array_size = struct.calcsize('>%dH' % seg_count)

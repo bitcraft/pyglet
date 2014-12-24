@@ -1,8 +1,6 @@
 """Base class for image tests.
 """
 
-__docformat__ = 'restructuredtext'
-__version__ = '$Id: $'
 
 import unittest
 from os.path import dirname, join

@@ -4,8 +4,6 @@ One window will open, it should show one instance of the checkerboard
 pattern in two levels of grey.
 """
 
-__docformat__ = 'restructuredtext'
-__version__ = '$Id: $'
 
 import unittest
 

@@ -4,8 +4,6 @@ Some text in Action Man font will be displayed.  A green box should exactly
 bound the top and bottom of the text.
 """
 
-__docformat__ = 'restructuredtext'
-__version__ = '$Id: $'
 
 import os
 import unittest

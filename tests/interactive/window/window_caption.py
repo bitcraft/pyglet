@@ -8,8 +8,6 @@ Expected behaviour:
     Press escape or close either window to finished the test.
 """
 
-__docformat__ = 'restructuredtext'
-__version__ = '$Id: $'
 
 import time
 import unittest

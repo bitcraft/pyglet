@@ -2,8 +2,6 @@
 of default system font.
 """
 
-__docformat__ = 'restructuredtext'
-__version__ = '$Id: $'
 
 import unittest
 

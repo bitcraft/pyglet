@@ -1,8 +1,6 @@
 """
 """
 
-__docformat__ = 'restructuredtext'
-__version__ = '$Id: $'
 
 import unittest
 
@@ -15,7 +13,18 @@ from tests.unittests.image_tests.texture_base import colorbyte
 __noninteractive = True
 
 
-class TestTextureGrid(unittest.TestCase):
+class TestTexture3D(unittest.TestCase):
+
+    def create_image(self, width, height, color):
+        data = colorbyte(color) * (width * height)
+        return ImageData(width, height, 'L', data)
+
+    def check_image(self, image, width, height, color):
+        self.assertTrue(image.width == width)
+        self.assertTrue(image.height == height)
+        image = image.get_image_data()
+        data = image.get_data('L', image.width)
+        self.assertTrue(data == colorbyte(color) * len(data))
 
     def set_grid_image(self, itemwidth, itemheight, rows, cols, rowpad, colpad):
         data = b''
@@ -35,21 +44,48 @@ class TestTextureGrid(unittest.TestCase):
                 data += (width * b'\0') * rowpad
         assert len(data) == width * height
         self.image = ImageData(width, height, 'L', data)
-        self.grid = ImageGrid(self.image, rows, cols,
-                              itemwidth, itemheight, rowpad,
-                              colpad).get_texture_sequence()
+        grid = ImageGrid(self.image, rows, cols,
+                         itemwidth, itemheight, rowpad, colpad)
+        self.grid = Texture3D.create_for_image_grid(grid)
 
     def check_cell(self, cellimage, cellindex):
         self.assertTrue(cellimage.width == self.grid.item_width)
         self.assertTrue(cellimage.height == self.grid.item_height)
 
-        color = colorbyte(cellindex + 1)
         cellimage = cellimage.get_image_data()
         data = cellimage.get_data('L', cellimage.width)
-        self.assertTrue(data == color * len(data))
+        self.assertTrue(data == colorbyte(cellindex + 1) * len(data))
 
     def setUp(self):
         self.w = Window(visible=False)
+
+    def test2(self):
+        # Test 2 images of 32x32
+        images = [self.create_image(32, 32, i + 1) for i in range(2)]
+        texture = Texture3D.create_for_images(images)
+        self.assertTrue(len(texture) == 2)
+        for i in range(2):
+            self.check_image(texture[i], 32, 32, i + 1)
+
+    def test5(self):
+        # test 5 images of 31x94  (power2 issues)
+        images = [self.create_image(31, 94, i + 1) for i in range(5)]
+        texture = Texture3D.create_for_images(images)
+        self.assertTrue(len(texture) == 5)
+        for i in range(5):
+            self.check_image(texture[i], 31, 94, i + 1)
+
+    def testSet(self):
+        # test replacing an image
+        images = [self.create_image(32, 32, i + 1) for i in range(3)]
+        texture = Texture3D.create_for_images(images)
+        self.assertTrue(len(texture) == 3)
+        for i in range(3):
+            self.check_image(texture[i], 32, 32, i + 1)
+        texture[1] = self.create_image(32, 32, 87)
+        self.check_image(texture[0], 32, 32, 1)
+        self.check_image(texture[1], 32, 32, 87)
+        self.check_image(texture[2], 32, 32, 3)
 
     def testSquare(self):
         # Test a 3x3 grid with no padding and 4x4 images
@@ -71,30 +107,3 @@ class TestTextureGrid(unittest.TestCase):
         self.set_grid_image(10, 9, rows, cols, 3, 7)
         for i in range(rows * cols):
             self.check_cell(self.grid[i], i)
-
-    def testTuple(self):
-        # Test tuple access
-        rows, cols = 3, 4
-        self.set_grid_image(5, 5, rows, cols, 0, 0)
-        for row in range(rows):
-            for col in range(cols):
-                self.check_cell(self.grid[(row, col)], row * cols + col)
-
-    def testRange(self):
-        # Test range access
-        rows, cols = 4, 3
-        self.set_grid_image(10, 1, rows, cols, 0, 0)
-        images = self.grid[4:8]
-        for i, image in enumerate(images):
-            self.check_cell(image, i + 4)
-
-    def testTupleRange(self):
-        # Test range over tuples
-        rows, cols = 10, 10
-        self.set_grid_image(4, 4, rows, cols, 0, 0)
-        images = self.grid[(3, 2):(6, 5)]
-        i = 0
-        for row in range(3, 6):
-            for col in range(2, 5):
-                self.check_cell(images[i], row * cols + col)
-                i += 1
