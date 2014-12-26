@@ -155,8 +155,8 @@ class CocoaContext(Context):
 
     def attach(self, canvas):
         super().attach(canvas)
-        # The NSView instance should be attached to a nondeferred window before calling
-        # setView, otherwise you get an "invalid drawable" message.
+        # The NSView instance should be attached to a nondeferred window before
+        # calling setView, otherwise you get an "invalid drawable" message.
         self._nscontext.setView_(canvas.nsview)
         self.set_current()
 
