@@ -1,9 +1,9 @@
 import struct
-from ctypes import *
 
 import pyglet
 from . import constants
 from .types import *
+
 
 IS64 = struct.calcsize("P") == 8
 
@@ -81,8 +81,8 @@ gdi32.DescribePixelFormat.argtypes = [
     HDC, c_int, UINT, POINTER(PIXELFORMATDESCRIPTOR)]
 
 # workaround for win 64-bit, see issue #664
-gdi32.EnumFontFamiliesExA.argtype = [c_void_p, c_void_p, c_void_p, c_void_p,
-                                     c_void_p, c_int32]
+# HDC, LPLOGFONT, FONTENUMPROC, LPARAM
+gdi32.EnumFontFamiliesExA.argtypes = [HDC, c_void_p, c_void_p, LPARAM, DWORD]
 gdi32.EnumFontFamiliesExA.restype = c_void_p
 
 gdi32.ExtTextOutA.restype = BOOL
