@@ -35,7 +35,7 @@ setup_info = dict(
         'Intended Audience :: Developers',
         'License :: OSI Approved :: BSD License',
         'Operating System :: MacOS :: MacOS X',
-        'Operating System :: Microsoft :: Windows',  # XP
+        'Operating System :: Microsoft :: Windows',
         'Operating System :: POSIX :: Linux',
         'Programming Language :: Python',
         'Topic :: Games/Entertainment',
