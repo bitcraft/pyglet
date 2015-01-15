@@ -220,12 +220,12 @@ def add_default_image_codecs():
     #         pass
     #
     # # Fallback: PIL
-    # try:
-    #     import pyglet.image.codecs.pil
-    #     add_encoders(pil)
-    #     add_decoders(pil)
-    # except ImportError:
-    #     pass
+    try:
+        import pyglet.image.codecs.pil
+        add_encoders(pil)
+        add_decoders(pil)
+    except ImportError:
+        pass
 
     # Fallback: PNG loader (slow)
     try:
