@@ -5,3 +5,63 @@ Fork with emphasis on full python 3.4 support (no 2to3), PEP8 compliance and
 internal consistency.
 
 Please see CHANGELOG for details
+
+
+1.2beta1-lt
+    * merge patch #507: Mouse y coordinate off by one
+    * merge patch #751: Minor event loop optimization
+    * merge patch #454: Utilize ARB_texture_non_power_of_two when present
+    * merge patch #620: drag and drop on windows
+    * address #586: removed depreciated methods, implemented correct fixes
+    * fix #481: sprites x/y axis can be scaled
+    * fix #532: removed shadow window for darwin platform
+    * fix #668: merge upstream pypng (https://github.com/drj11/pypng)
+      commit: 6a2e594e5aac701cd0d710047925aee087060606
+    * removed legacy carbon code
+    * removed contrib/layout/browser
+    * removed experimental/gui
+    * removed other unmaintained demo code under experimental/
+    * very good PEP8 compliance
+    * ran entire codebase through 2to3
+    * changed test names to lowercase (seriously why were they all caps?)
+    * made tests in tests more specific; ie.
+      change assertTrue(z==y) to assertEquals(z, y)
+    * condensed many tests into one test file and removed the need for a window
+      to be opened in many cases
+    * converted many getter/setters to decorated methods
+    * moved TextureGroup to text, since it was only used there, and not meant to
+      be used.  Docstrings said "don't use, just an example"
+    * tests are now split between unit tests and integration tests;
+      the benefit will be easier entry point into mocked tests and reduced
+      burden on the developer to run the full interactive test suite
+    * removed leading underscores in win32._kernel32, _gdi32, _user32, _shell32
+    * many names marked private with leading underscores were being imported and
+      used in other modules.  To make it consistent, leading underscores in
+      those names have been removed.
+    * removed the global clock.  use pyglet.app.event_loop.clock instead
+    * removed custom sphinx parsing.  will use vanilla spinx for modern look
+    * updated many docstrings
+    * rename euclid to pyglet/math.py
+    * removed any classes/methods/functions with 'depreciated' in docstring
+      and provided a fix using new api in occasions where the pyglet lib was
+      internally still using depreciated api
+    * updated astraea demo to [my] modern pyglet
+    * removed _eos_XXX attributes and associated legacy functions from media
+    * pyglet.media has names that shadow built-in bytes; renamed bytes_/bytes
+    * removed unneeded shebangs
+    * removed __docformat__ because there will be just one format
+    * removed __version__ in submodules because it is useless
+    * remove app.WeakSet and replaced all refs. to python sdt lib implementation
+    * merged Clock.tick and Clock.update time methods into tick
+    * re-imagined the clock scheduler with a heapq core.  about 470% faster
+    * pyglet.clock.Clock will not sleep
+    * moved sleeping functions into app event loop
+    * moved sleep function for win32 from clock into app.win32
+    * made Sprite.subpixel True by default, because it looks better by default
+    * new NoHandlerException in event, raised when no handlers for an event type
+    * cleaned up profanity in ttf.py
+    * added check for windows xp and lower in app.eventloop.run
+      this check determines if the least squares regression should be used
+    * win32 event handlers return None to let windows manage message
+      return 0 will have message discarded
+      it seems this was the intended behaviour, but implementation prevented it
