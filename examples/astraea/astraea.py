@@ -794,6 +794,7 @@ def on_draw():
         glTranslatef(x, y, 0)
         wrapping_batch.draw()
 
+
     glLoadIdentity()
     batch.draw()
 

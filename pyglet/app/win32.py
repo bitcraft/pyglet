@@ -60,7 +60,6 @@ class Win32EventLoop(PlatformEventLoop):
                             constants.PM_NOREMOVE)
 
         self._event_thread = kernel32.GetCurrentThreadId()
-
         self._wait_objects = list()
         self._recreate_wait_objects_array()
 
@@ -159,5 +158,3 @@ class Win32EventLoop(PlatformEventLoop):
     def _timer_proc_func(self, hwnd, msg, timer, t):
         if self._timer_func:
             self._timer_func()
-
-import time

@@ -51,9 +51,9 @@ from pyglet.gl import *
 
 try:
     # Try and create a window with multisampling (antialiasing)
-    config = Config(sample_buffers=1, samples=4,
-                    depth_size=16, double_buffer=True, )
-    window = pyglet.window.Window(resizable=True, config=config)
+    #config = Config(sample_buffers=1, samples=4,
+    #                depth_size=16, double_buffer=True, )
+    window = pyglet.window.Window(resizable=True) #, config=config)
 except pyglet.window.NoSuchConfigException:
     # Fall back to no multisampling for old hardware
     window = pyglet.window.Window(resizable=True)
@@ -80,7 +80,7 @@ def update(dt):
     rz %= 360
 
 
-pyglet.clock.schedule(update)
+pyglet.app.event_loop.clock.schedule(update)
 
 
 @window.event
