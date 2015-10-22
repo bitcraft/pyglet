@@ -18,8 +18,6 @@ class ClockTestCase(unittest.TestCase):
         self.callback_c = mock.Mock()
         self.callback_d = mock.Mock()
         self.clock = pyglet.clock.Clock(time_function=lambda: self.time)
-        #import pyglet.clock_
-        #self.clock = pyglet.clock_.Clock(time_function=lambda: self.time)
 
     def advance_clock(self, dt=1):
         """simulate the passage of time like a real clock would"""
@@ -201,7 +199,7 @@ class ClockTestCase(unittest.TestCase):
         self.advance_clock()
         self.assertEqual(sock.call_count, 1)
 
-    def test_slow_clock(self):
+    def test_slow_clock_doesnt_repeat_calls(self):
         """pyglet's clock will not make up for lost time.  in this case, the
         interval scheduled for callback_[bcd] is 1, and 2 seconds have passed.
         since pyglet won't make up for lost time, they are only called once.
@@ -210,12 +208,47 @@ class ClockTestCase(unittest.TestCase):
         self.clock.schedule_once(self.callback_b, 1)
         self.clock.schedule_interval(self.callback_c, 1)
         self.clock.schedule_interval_soft(self.callback_d, 1)
+
+        # simulate slow clock
         self.time = 2
         self.clock.tick()
+
         self.assertEqual(self.callback_a.call_count, 1)
         self.assertEqual(self.callback_b.call_count, 1)
         self.assertEqual(self.callback_c.call_count, 1)
         self.assertEqual(self.callback_d.call_count, 1)
+
+    def test_slow_clock_reschedules(self):
+        """pyglet's clock will not make up for lost time.  in this case, the
+        interval scheduled for callback_[bcd] is 1, and 2 seconds have passed.
+        since pyglet won't make up for lost time, they are only called once.
+        this test verifies that missed events are rescheduled and executed later
+        """
+        self.clock.schedule(self.callback_a)
+        self.clock.schedule_once(self.callback_b, 1)
+        self.clock.schedule_interval(self.callback_c, 1)
+        self.clock.schedule_interval_soft(self.callback_d, 1)
+
+        # simulate slow clock
+        self.time = 2
+        self.clock.tick()
+
+        # simulate a proper clock
+        frames = self.advance_clock()
+
+        # make sure our clock is at 3 seconds
+        self.assertEqual(self.time, 3)
+
+        # the +1 is the call during the slow clock period
+        self.assertEqual(self.callback_a.call_count, frames + 1)
+
+        # only scheduled to happen once
+        self.assertEqual(self.callback_b.call_count, 1)
+
+        # 2 because they 'missed' a call when the clock lagged
+        # with a good clock, this would be 3
+        self.assertEqual(self.callback_c.call_count, 2)
+        self.assertEqual(self.callback_d.call_count, 2)
 
     def test_get_interval(self):
         self.assertEqual(self.clock.get_interval(), 0)
