@@ -138,12 +138,12 @@ class Scheduler:
 
         """
         super().__init__()
-        self.cumulative_time = 0
         self._time = time_function
         self._last_ts = -1
         self._times = collections.deque(maxlen=10)
         self._scheduled_items = list()
         self._every_tick_items = list()
+        self.cumulative_time = 0
 
     def _get_nearest_ts(self):
         """Schedule from now, unless now is sufficiently close to last_ts, in
@@ -345,6 +345,7 @@ class Scheduler:
                  the first update.
 
         """
+        # self._last_ts will be -1 before first time set
         if self._last_ts < 0:
             delta_t = 0
             self._last_ts = time_stamp
@@ -355,7 +356,7 @@ class Scheduler:
         return delta_t
 
     def call_scheduled_functions(self, dt):
-        """Call scheduled functions that elapsed on the last `update_time`.
+        """Call scheduled functions that elapsed during the last `update_time`.
 
         :since: pyglet 1.2
 
@@ -370,31 +371,46 @@ class Scheduler:
         """
         scheduled_items = self._scheduled_items
         now = self._last_ts
-        result = False
+        result = False  # flag indicates if any function was called
 
+        # handle items scheduled for every tick
         if self._every_tick_items:
             result = True
-            for item in self._every_tick_items:
+            for item in list(self._every_tick_items):
                 item.func(dt, *item.args, **item.kwargs)
 
+        # check the next scheduled item that is not called each tick
+        # if it is scheduled in the future, then exit
         try:
             item = scheduled_items[0]
             if item.next_ts > now:
                 return result
+
         except IndexError:
             return result
 
+        # we have at least one item that is due to be called
         result = True
-        replace = False
         get_soft_next_ts = self._get_soft_next_ts
+
+        # whenever this value is true the current item will be pushed
+        # into the heap.  it essentially means that the current
+        # scheduled item is important and needs stay scheduled.
+        # its use is to reduce heap operations
+        replace = False
+
         while scheduled_items:
+
+            # get the next item to be called
+            # if next item is scheduled in the future then exit while
+            # 'head' is used to prevent thrashing the heap
             head = scheduled_items[0]
             if head.next_ts > now:
-                if replace:
-                    heappush(scheduled_items, item)
-                replace = False
                 break
 
+            # the scheduler will hold onto a reference to an item in
+            # case it needs to be rescheduled.  it is more efficient
+            # to push and pop the heap at once rather than two operations
             if replace:
                 item = heappushpop(scheduled_items, item)
             else:
@@ -419,6 +435,7 @@ class Scheduler:
                         item.next_ts = get_soft_next_ts(now, item.interval)
                         item.last_ts = item.next_ts - item.interval
             else:
+                # not an interval, so this item will not be rescheduled
                 replace = False
 
         if replace:
@@ -456,12 +473,11 @@ class Scheduler:
 
         """
         def remove(list_):
-            resort = False
-            remove_ = list_.remove
-            for i in list(i for i in list_ if i.func is func):
-                remove_(i)
-                resort = True
-            return resort
+            to_remove = list(i for i in list_ if i.func is func)
+            if to_remove:
+                [list_.remove(i) for i in to_remove]
+                return True
+            return False
 
         remove(self._every_tick_items)
         if remove(self._scheduled_items):

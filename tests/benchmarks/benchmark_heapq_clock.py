@@ -6,13 +6,11 @@ benchmark will simulate time passing and scheduling of items.
 
 The purpose of this is to investigate if using a heapq is faster for insertion
 of scheduled elements and for sorting the scheduled items queue.
-
-Always scheduled events (those scheduled with Clock.schedule()) are not tested.
 """
 
 
 def generate_events(clock):
-    import random
+    from random import randrange, choice
 
     def make_function():
         def _(dt):
@@ -24,23 +22,31 @@ def generate_events(clock):
             clock.unschedule(f)
         return _
 
+    # make a bunch of schedulable functions
     pool = [make_function() for i in range(100)]
-    for i in range(1000):
-        clock.schedule_interval(random.choice(pool), random.random())
 
-    for i in range(100):
-        clock.schedule_interval_soft(random.choice(pool), random.random() * 10)
+    # randomly each-tick schedule them
+    for i in range(10):
+        clock.schedule(choice(pool))
 
-    for i, f in enumerate(pool[:len(pool)//4]):
-        clock.schedule_once(kill(clock, f), i * 100)
+    # randomly schedule interval them
+    for i in range(200):
+        clock.schedule_interval(choice(pool), randrange(0, 1000))
+
+    # randomly soft_schedule them
+    for i in range(200):
+        clock.schedule_interval_soft(choice(pool), randrange(0, 1000))
+
+    # randomly schedule 25% of all events to be unscheduled
+    for i, f in enumerate(pool[:len(pool) // 4]):
+        clock.schedule_once(kill(clock, f), randrange(500, 1000))
 
 
 def benchmark(class_):
     time = 0
     clock = class_(lambda: time)
     generate_events(clock)
-    for i in range(10000):
-        time = i / 1000.
+    for time in range(1000):
         clock.tick()
 
 
@@ -56,5 +62,6 @@ from clocklegacy import Clock as LegacyClock"""
     result = timeit.repeat("benchmark(LegacyClock)", setup, repeat=10, number=1)
     legacy_time = max(result)
 
-    print ("heap:\t{}\nold:\t{}\ndiff:\t{}".format(heap_time, legacy_time,
-                                                  legacy_time / heap_time* 100))
+    print('max time to execute:')
+    print("heap:\t{}\nold:\t{}\ndiff:\t{}".format(heap_time, legacy_time,
+                                                  legacy_time / heap_time * 100))
