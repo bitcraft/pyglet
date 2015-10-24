@@ -91,6 +91,7 @@ of the system clock.
 """
 import collections
 import time
+from operator import attrgetter
 from heapq import heappush, heapify, heappop, heappushpop
 
 
@@ -164,14 +165,20 @@ class Scheduler:
             """Return True if the given time has already got an item
             scheduled nearby.
             """
-            for item in self._scheduled_items:
-                if item.next_ts is None:
-                    continue
-                elif abs(item.next_ts - ts) <= e:
+            # TODO this function is slow and called very often.  optimise it, maybe?
+            for item in sorted_items:
+                if abs(item.next_ts - ts) <= e:
                     return True
                 elif item.next_ts > ts + e:
                     return False
+
             return False
+
+        # sorted list is required required to produce expected results
+        # taken() will iterate through the heap, expecting it to be sorted
+        # and will not always catch smallest value, so create a sorted variant here
+        # NOTE: do not rewrite as popping from heap, as that is super slow!
+        sorted_items = sorted(self._scheduled_items, key=attrgetter('next_ts'))
 
         # Binary division over interval:
         #
@@ -376,37 +383,29 @@ class Scheduler:
         # handle items scheduled for every tick
         if self._every_tick_items:
             result = True
+            # duplicate list in case event unschedules itself
             for item in list(self._every_tick_items):
                 item.func(dt, *item.args, **item.kwargs)
 
         # check the next scheduled item that is not called each tick
         # if it is scheduled in the future, then exit
         try:
-            item = scheduled_items[0]
-            if item.next_ts > now:
+            if scheduled_items[0].next_ts > now:
                 return result
 
+        # raised when the scheduled_items list is empty
         except IndexError:
             return result
 
-        # we have at least one item that is due to be called
-        result = True
-        get_soft_next_ts = self._get_soft_next_ts
-
-        # whenever this value is true the current item will be pushed
+        # whenever 'replace' is true the current item will be pushed
         # into the heap.  it essentially means that the current
         # scheduled item is important and needs stay scheduled.
         # its use is to reduce heap operations
         replace = False
+        item = None
 
+        get_soft_next_ts = self._get_soft_next_ts
         while scheduled_items:
-
-            # get the next item to be called
-            # if next item is scheduled in the future then exit while
-            # 'head' is used to prevent thrashing the heap
-            head = scheduled_items[0]
-            if head.next_ts > now:
-                break
 
             # the scheduler will hold onto a reference to an item in
             # case it needs to be rescheduled.  it is more efficient
@@ -416,21 +415,36 @@ class Scheduler:
             else:
                 item = heappop(scheduled_items)
 
+            # if next item is scheduled in the future then break
+            if item.next_ts > now:
+                replace = True
+                break
+
+            # execute the callback
             item.func(now - item.last_ts, *item.args, **item.kwargs)
 
             if item.interval:
+                # this item needs to be pushed back onto the heap
                 replace = True
+
+                # Try to keep timing regular, even if overslept this time;
+                # but don't schedule in the past (which could lead to
+                # infinitely-worsening error).
                 item.next_ts = item.last_ts + item.interval
                 item.last_ts = now
 
-                # the execution time of this item has already passed
-                # so it must be rescheduled
+                # test the schedule for the next execution
                 if item.next_ts <= now:
+                    # the scheduled time of this item has already passed
+                    # so it must be rescheduled
                     if now - item.next_ts < 0.05:
+                        # missed execution time by 'reasonable' amount, so
+                        # reschedule at normal interval
                         item.next_ts = now + item.interval
                     else:
-                        # missed by significant amount, do a soft reschedule
-                        # to avoid lumping everything together
+                        # missed by significant amount, now many events have
+                        # likely missed execution. do a soft reschedule to
+                        # avoid lumping many events together.
                         # in this case, the next dt will not be accurate
                         item.next_ts = get_soft_next_ts(now, item.interval)
                         item.last_ts = item.next_ts - item.interval
@@ -441,7 +455,7 @@ class Scheduler:
         if replace:
             heappush(scheduled_items, item)
 
-        return result
+        return True
 
     def get_sleep_time(self):
         """Get the time until the next item is scheduled.
@@ -470,18 +484,15 @@ class Scheduler:
         :Parameters:
             `func` : function
                 The function to remove from the schedule.
-
         """
-        def remove(list_):
-            to_remove = list(i for i in list_ if i.func is func)
-            if to_remove:
-                [list_.remove(i) for i in to_remove]
-                return True
-            return False
+        # clever remove item with disturbing the heap:
+        # 1. set function to an empty lambda -- original function is not call
+        # 2. set interval to 0               -- item will be removed from heap eventually
+        for item in set(item for item in self._scheduled_items if item.func is func):
+            item.interval = 0
+            item.func = lambda x: x
 
-        remove(self._every_tick_items)
-        if remove(self._scheduled_items):
-            heapify(self._scheduled_items)
+        self._every_tick_items = [i for i in self._every_tick_items if i.func is not func]
 
 
 class Clock(Scheduler):

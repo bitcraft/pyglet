@@ -86,17 +86,26 @@ class ClockTestCase(unittest.TestCase):
         self.advance_clock()
         self.assertEqual(self.callback_a.call_count, 0)
 
+        # relies on access to private member
+        self.assertEqual(len(self.clock._every_tick_items), 0)
+
     def test_schedule_interval_unschedule(self):
         self.clock.schedule_interval(self.callback_a, 1)
         self.clock.unschedule(self.callback_a)
         self.advance_clock()
         self.assertEqual(self.callback_a.call_count, 0)
 
+        # relies on access to private member
+        self.assertEqual(len(self.clock._scheduled_items), 0)
+
     def test_schedule_interval_soft_unschedule(self):
         self.clock.schedule_interval_soft(self.callback_a, 1)
         self.clock.unschedule(self.callback_a)
         self.advance_clock()
         self.assertEqual(self.callback_a.call_count, 0)
+
+        # relies on access to private member
+        self.assertEqual(len(self.clock._scheduled_items), 0)
 
     def test_unschedule_removes_all(self):
         self.clock.schedule(self.callback_a)
@@ -109,6 +118,11 @@ class ClockTestCase(unittest.TestCase):
         frames = self.advance_clock(10)
         self.assertEqual(self.callback_a.call_count, 0)
         self.assertEqual(self.callback_b.call_count, frames)
+
+        # relies on access to private member
+        self.assertEqual(len(self.clock._every_tick_items), 1)
+        self.assertEqual(len(self.clock._scheduled_items), 0)
+        self.assertEqual(self.clock._every_tick_items[0].func, self.callback_b)
 
     def test_schedule_will_not_call_function(self):
         self.clock.schedule(self.callback_a)
@@ -189,15 +203,71 @@ class ClockTestCase(unittest.TestCase):
         self.clock.schedule_once(self.callback_b, 1)
         self.assertEqual(self.clock.get_sleep_time(), 0)
 
-    def test_remove_item_during_processing_tasks(self):
-        def suicidal_event(dt, sock):
+    def test_unschedule_item_during_tick(self):
+        def suicidal_event(dt):
             sock()
             self.clock.unschedule(suicidal_event)
 
         sock = mock.Mock()
-        self.clock.schedule(suicidal_event, sock)
+        self.clock.schedule(suicidal_event)
         self.advance_clock()
         self.assertEqual(sock.call_count, 1)
+
+    def test_schedule_item_during_tick(self):
+        def replicating_event(dt):
+            self.clock.schedule(replicating_event)
+            sock()
+
+        sock = mock.Mock()
+        self.clock.schedule(replicating_event)
+
+        # one tick for the original event
+        self.clock.tick()
+        self.assertEqual(sock.call_count, 1)
+
+        # requires access to private member
+        self.assertEqual(len(self.clock._every_tick_items), 2)
+
+        # one tick from original, then two for new
+        # now event queue should have two items as well
+        self.clock.tick()
+        self.assertEqual(sock.call_count, 3)
+
+        # requires access to private member
+        self.assertEqual(len(self.clock._every_tick_items), 4)
+
+    def test_unschedule_interval_item_during_tick(self):
+        def suicidal_event(dt):
+            sock()
+            self.clock.unschedule(suicidal_event)
+
+        sock = mock.Mock()
+        self.clock.schedule_interval(suicidal_event, 1)
+        self.advance_clock()
+        self.assertEqual(sock.call_count, 1)
+
+    def test_schedule_interval_item_during_tick(self):
+        def replicating_event(dt):
+            self.clock.schedule_interval(replicating_event, 1)
+            sock()
+
+        sock = mock.Mock()
+        self.clock.schedule_interval(replicating_event, 1)
+
+        # one tick for the original event
+        self.advance_clock()
+        self.assertEqual(sock.call_count, 1)
+
+        # requires access to private member
+        self.assertEqual(len(self.clock._scheduled_items), 2)
+
+        # one tick from original, then two for new
+        # now event queue should have two items as well
+        self.advance_clock()
+        self.assertEqual(sock.call_count, 3)
+
+        # requires access to private member
+        self.assertEqual(len(self.clock._scheduled_items), 4)
 
     def test_slow_clock_doesnt_repeat_calls(self):
         """pyglet's clock will not make up for lost time.  in this case, the
@@ -254,3 +324,21 @@ class ClockTestCase(unittest.TestCase):
         self.assertEqual(self.clock.get_interval(), 0)
         self.advance_clock(100)
         self.assertEqual(round(self.clock.get_interval(), 10), self.interval)
+
+    def test_soft_scheduling_stress_test(self):
+        """test that the soft scheduler is able to correctly soft-schedule
+        several overlapping events.
+        this test delves into implementation of the clock, and may break
+        """
+        # this value represents evenly scheduled items between 0 & 1
+        # and what is produced by the correct soft-scheduler
+        expected = [0.0625, 0.125, 0.1875, 0.25, 0.3125, 0.375, 0.4375, 0.5,
+                    0.5625, 0.625, 0.6875, 0.75, 0.8125, 0.875, 0.9375, 1]
+
+        for i in range(16):
+            self.clock.schedule_interval_soft(None, 1)
+
+        # sort the clock items
+        items = sorted(i.next_ts for i in self.clock._scheduled_items)
+
+        self.assertEqual(items, expected)
